@@ -1,14 +1,12 @@
 # Randomizer
 
-I'm not well versed in C# or Computer Science/Algorithms, and I expect to have to use those things a lot. So this will take quite some time.
-
 Here's a list of what I think I'll want/have to learn, and how much I think I've mastered that aspect.
 
-1. How lev.ark is structured. [0%]
+1. How lev.ark is structured. [60%]
 2. How a save's lev.ark differs from the original lev.ark, if it does. [0%]
 3. How to create and manipulate JSON in C#. I think it'd be cool to export and import a lev.ark, so people can use whatever tool they want to modify a game, even by hand. [0%]
 4. How to better convert binary to JSON, and vice-versa. [0%]
-5. What every item property/flag does, or at least the most important ones. [0%]
+5. What every item property/flag does, or at least the most important ones. [25%]
   - This is related to how enchantments work, like, what's the difference between a ring of levitate/jump and unsurpassed protection.
 6. Figure out what I could potentially move without breaking stuff. [0%]
 7. Figure out how containers work, and enemy inventories. [0%]
