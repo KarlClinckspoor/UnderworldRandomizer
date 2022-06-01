@@ -1,7 +1,10 @@
 ﻿namespace Randomizer
 {
     // Help visualization
-    public class TileMap
+    /// <summary>
+    /// Static class used to reshape, print and translate tile info buffers into more human readable formats.
+    /// </summary>
+    public static class TileMap
     {
         static readonly IDictionary<int, string> TileTypeDescriptors = new Dictionary<int, string>()
         {
@@ -31,6 +34,12 @@
             {9, '<'}
         };
 
+        /// <summary>
+        /// Converts a 4096 long array of tile numbers (0-9) into a 64x64 array of tile numbers. Can technically have other shapes,
+        /// but depends on TileMapMasterObjectListBlock.TileHeight and TileWidth, which are const 64.
+        /// </summary>
+        /// <param name="TileNumbers">4096 long array of tile numbers.</param>
+        /// <returns></returns>
         static int[,] ReshapeTileNumbers(int[] TileNumbers)
         {
             int[,] array = new int[TileMapMasterObjectListBlock.TileHeight, TileMapMasterObjectListBlock.TileWidth];
@@ -58,6 +67,10 @@
             return array;
         }
 
+        /// <summary>
+        /// Prints, from bottom to top, the tile numbers. Should output something human readable
+        /// </summary>
+        /// <param name="TileNumbers">64x64 array of tile numbers</param>
         static void PrintReshapedTiles(int[,] TileNumbers)
         {
             for (int i = TileMapMasterObjectListBlock.TileHeight - 1; i > 0; i--) // Start is lower left
@@ -71,6 +84,10 @@
             }
         }
 
+        /// <summary>
+        /// Prints, from bottom to top, the tile characters. Should output something human readable.
+        /// </summary>
+        /// <param name="TileChars">64x64 array of tile characters</param>
         static void PrintReshapedTiles(char[,] TileChars)
         {
             for (int i = TileMapMasterObjectListBlock.TileHeight - 1; i > 0; i--) // Start is lower left
@@ -84,6 +101,12 @@
             }
         }
 
+        /// <summary>
+        /// Writes to a text file the tile numbers of a specific block. Writes a .txt file with the block number appended.
+        /// </summary>
+        /// <param name="TileNumbers">64x64 array of tile numbers</param>
+        /// <param name="blocknum">block number that generated the tile numbers</param>
+        /// <param name="basepath">string containing the start of the path and name of the file</param>
         static void SaveReshapedTiles(int[,] TileNumbers, int blocknum,
             string basepath = @"D:\Dropbox\UnderworldStudy\studies\tilenumbers_ints")
         {
@@ -102,6 +125,12 @@
             sw.Close();
         }
 
+        /// <summary>
+        /// Writes to a text file the tile characters of a specific block. Writes a .txt file with the block number appended.
+        /// </summary>
+        /// <param name="TileNumbers">64x64 array of tile numbers</param>
+        /// <param name="blocknum">block number that generated the tile numbers</param>
+        /// <param name="basepath">string containing the start of the path and name of the file</param>
         static void SaveReshapedTiles(char[,] TileNumbers, int blocknum,
             string basepath = @"D:\Dropbox\UnderworldStudy\studies\tilenumbers_chars")
         {
