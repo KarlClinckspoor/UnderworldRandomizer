@@ -61,6 +61,34 @@
                    );  
         }
 
+        /// <summary>
+        /// Gets the bits specified by the mask after shifting "value" to the right by "shift".
+        /// 
+        /// Example:
+        /// 
+        ///     value = 0b1110_0110
+        ///     mask  = 0b11
+        ///     shift = 2
+        ///     expected = 0b01
+        /// 
+        /// Step 1: value &gt&gt shift
+        ///     
+        ///     0b1110_0110 &gt&gt 2 = 0b0011_1001
+        ///       ---- --
+        ///         -- ----
+        ///
+        /// Step 2: AND mask
+        /// 
+        ///     0b0011_1001
+        ///     0b0000_0011
+        ///       ---------
+        ///     0b000000001 == 0b01
+        /// 
+        /// </summary>
+        /// <param name="value">Int containing the bits to get</param>
+        /// <param name="mask">A bitmask containing the number of bits and the positions that will be extracted</param>
+        /// <param name="shift">Number of places the "value" will be shifted to the right</param>
+        /// <returns></returns>
         public static int GetBits(int value, int mask, int shift)
         {
             return (value >> shift) & mask;
