@@ -28,14 +28,15 @@ namespace Randomizer
             LevelNumber = levelnumber;
         }
 
-        public bool SaveBuffer(string basepath = Settings.DefaultArkPath, string extrainfo = "")
+        public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK",
+            string extraInfo = "")
         {
-            if (extrainfo.Length == 0)
+            if (extraInfo.Length == 0)
             {
-                extrainfo = $@"_ObjAnimOverlayInfo_{LevelNumber}";
+                extraInfo = $@"_ObjAnimOverlayInfo_{LevelNumber}";
             }
 
-            return StdSaveBuffer(blockbuffer, basepath, extrainfo);
+            return StdSaveBuffer(blockbuffer, basePath, extraInfo);
         }
 
     }

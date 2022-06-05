@@ -47,8 +47,8 @@ public class TestTileInfo
     {
         // Compare the buffers as-is
         Assert.True(CompareArrays(tinfo1.TileBuffer, tinfo2.TileBuffer));
-        tinfo1.SaveBuffer(basepath:@"D:\Dropbox\UnderworldStudy\studies\tests", extrainfo:"buffer_tinfo1");
-        tinfo2.SaveBuffer(basepath:@"D:\Dropbox\UnderworldStudy\studies\tests", extrainfo:"buffer_tinfo2");
+        tinfo1.SaveBuffer(basePath: @"D:\Dropbox\UnderworldStudy\studies\tests", extraInfo: "buffer_tinfo1");
+        tinfo2.SaveBuffer(basePath: @"D:\Dropbox\UnderworldStudy\studies\tests", extraInfo: "buffer_tinfo2");
         
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();

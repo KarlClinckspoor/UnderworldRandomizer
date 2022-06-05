@@ -223,14 +223,14 @@ namespace Randomizer
             return System.IO.File.ReadAllBytes(path);
         }
 
-    public bool SaveBuffer(string basepath = Settings.DefaultBinaryTestsPath, string extrainfo = "")
+    public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string extraInfo = "")
         {
-            if (extrainfo.Length == 0)
+            if (extraInfo.Length == 0)
             {
-                extrainfo = $@"NEWLEV.ARK";
+                extraInfo = $@"NEWLEV.ARK";
             }
 
-            return StdSaveBuffer(arkbuffer, basepath, extrainfo);
+            return StdSaveBuffer(arkbuffer, basePath, extraInfo);
         }
 
     }

@@ -62,13 +62,13 @@ public class Header: ISaveBinary
         CalculateOffsets();
     }
 
-    public bool SaveBuffer(string basepath = Settings.DefaultArkPath, string extrainfo = "")
+    public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string extraInfo = "")
     {
-        if (extrainfo.Length == 0)
+        if (extraInfo.Length == 0)
         {
-            extrainfo = $@"_HEADER";
+            extraInfo = $@"_HEADER";
         }
 
-        return StdSaveBuffer(buffer, basepath, extrainfo);
+        return StdSaveBuffer(buffer, basePath, extraInfo);
     }
 }

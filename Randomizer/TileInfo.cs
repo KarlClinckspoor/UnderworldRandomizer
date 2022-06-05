@@ -303,14 +303,15 @@ namespace Randomizer
             }
         }
 
-        public bool SaveBuffer(string basepath = Settings.DefaultBinaryTestsPath, string extrainfo = "")
+        public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK",
+            string extraInfo = "")
         {
-            if (extrainfo.Length == 0)
+            if (extraInfo.Length == 0)
             {
-                extrainfo = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
+                extraInfo = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
             }
 
-            return StdSaveBuffer(TileBuffer, basepath, extrainfo);
+            return StdSaveBuffer(TileBuffer, basePath, extraInfo);
 
         }
         

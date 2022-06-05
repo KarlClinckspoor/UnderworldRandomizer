@@ -94,7 +94,14 @@
             return (value >> shift) & mask;
         }
 
-        public static bool StdSaveBuffer(byte[] buffer, string basepath, string extrainfo)
+        /// <summary>
+        /// Saves a specific buffer to a path specified as basepath \ extrainfo.
+        /// </summary>
+        /// <param name="buffer">Byte array (buffer)</param>
+        /// <param name="basepath">Base path to the file (e.g. folder structure) </param>
+        /// <param name="extrainfo">Extra info to add (e.g. name of file) </param>
+        /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
+        public static string? StdSaveBuffer(byte[] buffer, string basepath, string extrainfo)
         {
 
         string fullpath = @$"{basepath}\{extrainfo}";
@@ -106,9 +113,9 @@
         catch (Exception e) // TODO: Specify exception.
         {
             Console.WriteLine($"Unable to write. Error: {e}");
-            return false;
+            return null;
         }
-        return true;
+        return fullpath;
 
         }
 
