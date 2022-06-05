@@ -117,7 +117,7 @@ namespace Randomizer
 
         public TileMapMasterObjectListBlock(byte[] blockbuffer, int levelNumber)
         {
-            Debug.Assert(blockbuffer.Length == TotalBlockLength);
+            // Debug.Assert(blockbuffer.Length == TotalBlockLength);
             this.blockbuffer = blockbuffer;
             this.LevelNumber = levelNumber;
         }

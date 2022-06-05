@@ -9,7 +9,7 @@ namespace Randomizer
 
         public TextureMappingBlock(byte[] buffer, int levelnumber)
         {
-            Debug.Assert(buffer.Length == TotalBlockLength);
+            // Debug.Assert(buffer.Length == TotalBlockLength);
             blockbuffer = buffer;
             LevelNumber = levelnumber;
         }

@@ -1,17 +1,21 @@
 ﻿namespace Randomizer;
 using static Utils;
 
+/// <summary>
+/// A small class that contains the header of a lev.ark file. The header is composed of a short with the number of
+/// entries (blocks) followed by ints with the offsets to the start of each block in lev.ark
+/// </summary>
 public class Header: ISaveBinary
 {
     public byte[] buffer;
-    public static int blockNumSize = 2;
-    public static int blockOffsetSize = 4; // offsets are int32
+    public static int blockNumSize = 2;    // a short
+    public static int blockOffsetSize = 4; // int32
 
     public int[] BlockOffsets;
 
     public int Size
     {
-        get { return blockOffsetSize * NumEntries; }
+        get { return blockOffsetSize * NumEntries + blockNumSize; }
     }
 
     public static short NumEntriesFromBuffer(byte[] buffer)

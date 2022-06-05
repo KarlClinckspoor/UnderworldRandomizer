@@ -174,7 +174,7 @@ namespace Randomizer
         // todo: don't forget to check if these calls to virtual functions will mess stuff up.
         public MobileObject(byte[] buffer)
         {
-            Debug.Assert(buffer.Length == TotalLength);
+            // Debug.Assert(buffer.Length == TotalLength);
             this.Buffer = buffer;
             UpdateEntries();
         }

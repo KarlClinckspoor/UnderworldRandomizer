@@ -29,7 +29,7 @@ namespace Randomizer
         // If not, then just re-implement the methods in this and the derived classes.
         public GameObject(byte[] buffer)
         {
-            Debug.Assert(buffer.Length == TotalLength);
+            // Debug.Assert(buffer.Length == TotalLength);
             this.Buffer = buffer;
             UpdateEntries();
             // this.objid_flagsField = BitConverter.ToInt16(buffer, 0);
@@ -454,7 +454,7 @@ namespace Randomizer
 
         public FreeListObjectEntry(byte[] buffer, int EntryNum)
         {
-            Debug.Assert(buffer.Length == TileMapMasterObjectListBlock.FreeListMobileObjectsEntrySize);
+            // Debug.Assert(buffer.Length == TileMapMasterObjectListBlock.FreeListMobileObjectsEntrySize);
             this.Buffer = buffer;
             this.EntryNum = EntryNum;
             UpdateEntry();

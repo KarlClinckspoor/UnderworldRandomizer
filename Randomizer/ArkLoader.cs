@@ -11,9 +11,24 @@ namespace Randomizer
 {
 
 
+    /// <summary>
+    /// This class loads an lev.ark file and subdivides it into 1) a header and 2) a sequence of blocks.
+    ///
+    /// The block types are:
+    ///
+    /// * Tile Map and Master Object List block
+    /// * Object animation Overlay Info block
+    /// * Texture Mapping block
+    /// * Automap Info block
+    /// * Map Notes block
+    /// * Empty blocks
+    ///
+    /// A publicly accessible buffer is available and can be saved anytime. Each block can also be updated and,
+    /// in turn, update the ark buffer. This also contains a Sha256 hash of the original lev.ark.
+    ///
+    /// </summary>
     public class ArkLoader: ISaveBinary
     {
-
         public const string PristineLevArkSha256Hash =
             "87e9a6e5d249df273e1964f48ad910afee6f7e073165c00237dfb9a22ae3a121";
 
@@ -25,6 +40,11 @@ namespace Randomizer
 
         public Header header;
         public Block[] blocks;
+        public TileMapMasterObjectListBlock[] TileMapObjectsBlocks;
+        public ObjectAnimationOverlayInfoBlock[] ObjAnimBlocks;
+        public TextureMappingBlock[] TextMapBlocks;
+        public AutomapInfosBlock[] AutomapBlocks;
+        public MapNotesBlock[] MapNotesBlocks;
 
         public enum Sections
         {
@@ -50,11 +70,15 @@ namespace Randomizer
         {
         }
 
+        /// <summary>
+        /// Instantiates a new ArkLoader object using a provided path.
+        /// </summary>
+        /// <param name="arkpath"></param>
         public ArkLoader(string arkpath)
         {
             this.arkpath = arkpath;
             arkbuffer = LoadArkfile(arkpath);
-            int headerSize = Header.blockNumSize * Header.blockOffsetSize * Header.NumEntriesFromBuffer(arkbuffer);
+            int headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(arkbuffer);
             header = new Header(arkbuffer[0..headerSize]);
 
             blocks = new Block[header.NumEntries];
@@ -187,7 +211,7 @@ namespace Randomizer
                 case Sections.map_notes:
                     return new MapNotesBlock(buffer, levelnumber);
                 case Sections.unused:
-                    Debug.Assert(buffer.Length == 0); // Got the buffer, but should be empty.
+                    // Debug.Assert(buffer.Length == 0); // Got the buffer, but should be empty.
                     return new EmptyBlock();
                 default:
                     return new EmptyBlock();

@@ -8,7 +8,7 @@ public class AutomapInfosBlock: Block, ISaveBinary
 
     public AutomapInfosBlock(byte[] buffer, int levelnumber)
         {
-            Debug.Assert(buffer.Length == TotalBlockLength);
+            // Debug.Assert(buffer.Length == TotalBlockLength);
             blockbuffer = buffer;
             LevelNumber = levelnumber;
         }
