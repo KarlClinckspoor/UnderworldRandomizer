@@ -39,7 +39,7 @@
         /// but depends on TileMapMasterObjectListBlock.TileHeight and TileWidth, which are const 64.
         /// </summary>
         /// <param name="TileNumbers">4096 long array of tile numbers.</param>
-        /// <returns></returns>
+        /// <returns>Reshaped [64,64] array of numbers </returns>
         static int[,] ReshapeTileNumbers(int[] TileNumbers)
         {
             int[,] array = new int[TileMapMasterObjectListBlock.TileHeight, TileMapMasterObjectListBlock.TileWidth];

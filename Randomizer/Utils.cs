@@ -52,7 +52,7 @@
         /// <param name="newvalue">Variable with a set of bits to change </param>
         /// <param name="mask">A bitmask that selects which bits from currvalue and newvalue will be considered</param>
         /// <param name="shift">A number of leftshift operations on the mask. Note this affects the newvalue before applying the mask</param>
-        /// <returns></returns>
+        /// <returns>Returns "currvalue" modified by "newvalue" using "mask" with specific left bitshift</returns>
         public static int SetBits(int currvalue, int newvalue, int mask, int shift)
         {
             return (
@@ -88,7 +88,7 @@
         /// <param name="value">Int containing the bits to get</param>
         /// <param name="mask">A bitmask containing the number of bits and the positions that will be extracted</param>
         /// <param name="shift">Number of places the "value" will be shifted to the right</param>
-        /// <returns></returns>
+        /// <returns>Returns specific bits in "value" specified by "mask" after shifting "value" to the right by "shift"</returns>
         public static int GetBits(int value, int mask, int shift)
         {
             return (value >> shift) & mask;
