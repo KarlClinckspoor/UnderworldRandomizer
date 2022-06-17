@@ -7,6 +7,20 @@ namespace Randomizer
     public class TileInfo: ISaveBinary
     {
         public const int Size = 4;
+        private enum TileTypes
+        {
+            solid = 0,
+            open,
+            diag_se,
+            diag_sw,
+            diag_ne,
+            diag_nw,
+            slp_n,
+            slp_s,
+            slp_e,
+            slp_w,
+        } ;
+
         public static readonly IDictionary<int, string> TileTypeDescriptors = new Dictionary<int, string>()
         {
             { 0, "#SOLID" },
@@ -116,21 +130,42 @@ namespace Randomizer
         // So if I keep a list of interesting objects, it should make shuffling them easier.
         // I already have a class for objects with textures, which are the ones I want to keep in place.
         // So it's a matter of populating the lists appropriately.
+        public GameObject[] AllObjects = new GameObject[0];
         public MobileObject[] MobileObjects = new MobileObject[0];
         public GameObject[] StaticObjects = new GameObject[0];
 
-        public void PopulateObjectList(MobileObject[] gameObjects)
+        public bool HasTexturedObject
         {
-            Console.WriteLine("'PopulateObjectList' is UNTESTED!");
+            get { 
+                foreach(var obj in StaticObjects)
+                {
+                    if (obj.GetType() == typeof(TexturedGameObject))
+                    {
+                        return true;
+                    }
 
-            if (FirstObjIdx == 0) // no objects in tile.
+                }
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Fills in the list of objects in this Tile given a list of all GameObjects present in that level.
+        /// </summary>
+        /// <param name="AllBlockObjects">All game objects in the level, both static and mobile</param>
+        public void PopulateObjectList(GameObject[] AllBlockObjects)
+        {
+            if (FirstObjIdx == 0)
+            {
                 return;
-            
-            List<MobileObject> lst = new List<MobileObject>();
-            
-            // TODO: HIGHLY INEFFICIENT! TRY TO GET A DICT OR SOME TYPE OF MANAGER!
+            }
+            List<GameObject> allObjects = new List<GameObject>();
+            List<MobileObject> mobileObjects = new List<MobileObject>();
+            List<GameObject> staticObjects = new List<GameObject>();
+
             int safetycounter = 0;
-            int maxcounter = 500;
+            int maxcounter = 1024;
             int currentIdx = FirstObjIdx;
             while (currentIdx != 0) 
             {
@@ -141,94 +176,24 @@ namespace Randomizer
                     break;
                 }
 
-                MobileObject currobj = gameObjects[currentIdx];
-                currentIdx = currobj.next;
-                lst.Add(currobj);
+                GameObject obj = AllBlockObjects[currentIdx];
+                allObjects.Add(obj);
 
-            }
-
-            MobileObjects = lst.ToArray();
-        }
-        
-        public void PopulateObjectList(GameObject[] gameObjects)
-        {
-            Console.WriteLine("'PopulateObjectList' is UNTESTED!");
-
-            if (FirstObjIdx == 0) // no objects in tile.
-                return;
-            
-            List<GameObject> lst = new List<GameObject>();
-            
-            // TODO: HIGHLY INEFFICIENT! TRY TO GET A DICT OR SOME TYPE OF MANAGER!
-            int safetycounter = 0;
-            int maxcounter = 500;
-            int currentIdx = FirstObjIdx;
-            while (currentIdx != 0) 
-            {
-                safetycounter++;
-                if (safetycounter >= maxcounter)
+                if (obj.GetType() == typeof(MobileObject))
                 {
-                    Console.WriteLine("WARNING! Encountered potentially infinite loop when populating ObjectList!");
-                    break;
+                    mobileObjects.Add((MobileObject) obj);                   
                 }
-
-                GameObject currobj = gameObjects[currentIdx];
-                currentIdx = currobj.next;
-                lst.Add(currobj);
-
+                else
+                {
+                    staticObjects.Add(obj);
+                }
+                currentIdx = obj.next;
             }
+            MobileObjects = mobileObjects.ToArray();
+            StaticObjects = staticObjects.ToArray();
+            AllObjects = allObjects.ToArray();
 
-            StaticObjects = lst.ToArray();
         }
-
-        // public void PopulateObjectList(GameObject[] gameObjects)
-        // {
-        //     Console.WriteLine("' PopulateObjectList' is UNTESTED!");
-        //
-        //     if (FirstObjIdx == 0) // no objects in tile.
-        //         return;
-        //     
-        //     List<GameObject> lst = new List<GameObject>();
-        //     
-        //     // TODO: HIGHLY INEFFICIENT! TRY TO GET A DICT OR SOME TYPE OF MANAGER!
-        //     bool finished = false;
-        //     int safetycounter = 0;
-        //     int maxcounter = 500;
-        //     int idToSearch = FirstObjIdx;
-        //     while (true) 
-        //     {
-        //         for (int i = 0; i < gameObjects.Length; i++)
-        //         {
-        //             GameObject currobj = gameObjects[i];
-        //             safetycounter++;
-        //             
-        //             // TODO: Is Idx == ItemID?
-        //             // Not the object I'm looking for
-        //             if (currobj.ItemID != idToSearch) 
-        //                 continue;
-        //             
-        //             // ItemID == 0, end of list
-        //             if (currobj.IsEndOfList) 
-        //                 finished = true;
-        //
-        //             idToSearch = currobj.next;
-        //             lst.Add(currobj);
-        //             
-        //             // To prevent infinite loops in case of a cyclic ID reference.
-        //             if (safetycounter >= maxcounter)
-        //             {
-        //                 Console.WriteLine("WARNING! Encountered infinite loop when populating StaticObjectList!");
-        //                 finished = true;
-        //                 break;
-        //             }
-        //         } 
-        //         
-        //         if (finished)
-        //             break;
-        //     }
-        //
-        //     StaticObjects = lst.ToArray();
-        // }
 
         public int[]? XYPos
         {
@@ -292,14 +257,57 @@ namespace Randomizer
         // TODO: Check if we need that modification in the height value mentioned in the uw-formats.txt
         public void MoveObjectsToSameZLevel()
         {
-            foreach (GameObject obj in MobileObjects)
+            foreach (GameObject obj in AllObjects)
             {
                 obj.Zpos = (byte) TileHeight;
             }
+        }
 
-            foreach (GameObject obj in StaticObjects)
+        // TODO: Make the positions randomized among a set of possible values
+        public void MoveObjectsToCorrectCorner()
+        {
+            Random r = new Random();
+            foreach (GameObject obj in AllObjects)
             {
-                obj.Zpos = (byte) TileHeight;
+                switch (TileType)
+                {
+                    case (int) TileTypes.open:
+                    case (int) TileTypes.slp_n:
+                    case (int) TileTypes.slp_e:
+                    case (int) TileTypes.slp_s:
+                    case (int) TileTypes.slp_w:
+                    case (int) TileTypes.solid:
+                        break;
+                    case (int) TileTypes.diag_se:
+                        {
+                            //int newXpos = r.Next(5) + 1;
+                            //int newYpos = r.Next(newXpos);
+                            //obj.Xpos = (byte)newXpos;
+                            //obj.Ypos = (byte)newYpos;
+                            //break;
+                            obj.Xpos = (byte)6;
+                            obj.Ypos = (byte)1;
+                            break;
+                        }
+                    case (int) TileTypes.diag_sw:
+                        {
+                            obj.Xpos = (byte)1;
+                            obj.Ypos = (byte)1;
+                            break;
+                        }
+                    case (int) TileTypes.diag_ne:
+                        {
+                            obj.Xpos = (byte)6;
+                            obj.Ypos = (byte)6;
+                            break;
+                        }
+                    case (int) TileTypes.diag_nw:
+                        {
+                            obj.Xpos = (byte)1;
+                            obj.Ypos = (byte)6;
+                            break;
+                        }
+                }
             }
         }
 
