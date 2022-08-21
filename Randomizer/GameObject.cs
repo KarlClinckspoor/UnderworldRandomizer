@@ -6,13 +6,14 @@ using static Randomizer.Utils;
 // TODO: Add checks that prevent modification if id=0.
 namespace Randomizer
 {
-    public class GameObject
+    public class GameObject: IEquatable<GameObject>
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;
         public const int BaseLength = InfoNum * InfoSize;
         public const int ExtraLength = 0;
         public const int TotalLength = BaseLength + ExtraLength;
+        public int IdxAtObjectArray;
 
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
@@ -27,10 +28,11 @@ namespace Randomizer
 
         // todo: Rider is complaining about the virtual methods. Check if this will be negatively affected here.
         // If not, then just re-implement the methods in this and the derived classes.
-        public GameObject(byte[] buffer)
+        public GameObject(byte[] buffer, int idxAtObjArray)
         {
             // Debug.Assert(buffer.Length == TotalLength);
             this.Buffer = buffer;
+            this.IdxAtObjectArray = idxAtObjArray;
             UpdateEntries();
             // this.objid_flagsField = BitConverter.ToInt16(buffer, 0);
             // this.positionField = BitConverter.ToInt16(buffer, 2);
@@ -255,6 +257,34 @@ namespace Randomizer
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Checks if two GameObject instances are the same by comparing their buffers
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public virtual bool Equals(GameObject? other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (Buffer.Length != other.Buffer.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < Buffer.Length; i++)
+            {
+                if (Buffer[i] != other.Buffer[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
