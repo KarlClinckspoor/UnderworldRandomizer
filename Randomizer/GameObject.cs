@@ -303,6 +303,13 @@ namespace Randomizer
             set { objid_flagsField = (short)SetBits(objid_flagsField, value, 0b1111111, 9); }
         }
 
+        public TexturedGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public TexturedGameObject(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
+
         // public new void UpdateBuffer()
         // {
         //     base.UpdateBuffer(); // todo: recheck that this is working as intended.
@@ -325,6 +332,16 @@ namespace Randomizer
                 link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer();
             }
         }
+
+        public QuantityGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public QuantityGameObject(short objid_flagsField, short positionField,
+            short quality_chainField, short link_specialField) : base(objid_flagsField, positionField,
+            quality_chainField, link_specialField)
+        { }
+        
+        
     }
 
     // is_quant is true, quantity > 512 (special property)
@@ -348,6 +365,13 @@ namespace Randomizer
                 link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer();
             }
         }
+        
+        public SpecialPropertyGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public SpecialPropertyGameObject(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
     }
 
     // is_quant is false. Enchantments, wands, etc
@@ -359,6 +383,14 @@ namespace Randomizer
             get { return QuantityOrSpecialLinkOrSpecialProperty; }
             set { link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
         }
+        
+        public SpecialLinkGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public SpecialLinkGameObject(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
+        
     }
 
     // Todo: Get enchantment name in strings chunk 5
@@ -395,10 +427,12 @@ namespace Randomizer
             } // todo: these will UpdateBuffer too right?
         }
 
-        public EnchantedObject()
-        {
-            throw new NotImplementedException();
-        }
+        public EnchantedObject(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public EnchantedObject(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
         
     }
 
@@ -426,10 +460,12 @@ namespace Randomizer
             } // todo: these will UpdateBuffer too right?
         }
 
-        public EnchantedWeapon()
-        {
-            throw new NotImplementedException();
-        }
+        public EnchantedWeapon(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public EnchantedWeapon(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
         
     }
 
@@ -449,10 +485,12 @@ namespace Randomizer
             set { Enchantment = value - 256 - 16; } // todo: these will UpdateBuffer too right?
         }
 
-        public EnchantedArmor()
-        {
-            throw new NotImplementedException();
-        }
+        public EnchantedArmor(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public EnchantedArmor(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
     }
 
     public class EnchantedWand : SpecialLinkGameObject
@@ -467,10 +505,12 @@ namespace Randomizer
 
         public GameObject SpellObject;
 
-        public EnchantedWand()
-        {
-            throw new NotImplementedException();
-        }
+        public EnchantedWand(byte[] buffer, int idx) : base(buffer, idx)
+        { }
+
+        public EnchantedWand(short objid_flagsField, short positionField, short quality_chainField,
+            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+        { }
 
     }
 
