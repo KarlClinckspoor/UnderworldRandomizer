@@ -129,21 +129,21 @@ namespace Randomizer
             field4.CopyTo(tempbuffer, 6);
             tempbuffer.CopyTo(Buffer, 0);
             // new ones
-            BitConverter.GetBytes(byte1_hp).CopyTo(Buffer, offset1);
-            BitConverter.GetBytes(byte2_unk).CopyTo(Buffer, offset2);
-            BitConverter.GetBytes(byte3_unk).CopyTo(Buffer, offset3);
+            Buffer[offset1] = byte1_hp;
+            Buffer[offset2] = byte2_unk;
+            Buffer[offset3] = byte3_unk;
             BitConverter.GetBytes(short_NPCGoalGtarg).CopyTo(Buffer, offset4);
             BitConverter.GetBytes(short_NPCLevelTalkedAttitude).CopyTo(Buffer, offset5);
             BitConverter.GetBytes(short_NPCheightQM).CopyTo(Buffer, offset6);
-            BitConverter.GetBytes(byte4_unk).CopyTo(Buffer, offset7);
-            BitConverter.GetBytes(byte5_unk).CopyTo(Buffer, offset8);
-            BitConverter.GetBytes(byte6_unk).CopyTo(Buffer, offset9);
-            BitConverter.GetBytes(byte7_unk).CopyTo(Buffer, offset10);
-            BitConverter.GetBytes(byte8_unk).CopyTo(Buffer, offset11);
+            Buffer[offset7] = byte4_unk;
+            Buffer[offset8] = byte5_unk;
+            Buffer[offset9] = byte6_unk;
+            Buffer[offset10] = byte7_unk;
+            Buffer[offset11] = byte8_unk;
             BitConverter.GetBytes(short_NPChome).CopyTo(Buffer, offset12);
-            BitConverter.GetBytes(byte_NPCheading).CopyTo(Buffer, offset13);
-            BitConverter.GetBytes(byte_NPCHunger).CopyTo(Buffer, offset14);
-            BitConverter.GetBytes(byte_NPCwhoami).CopyTo(Buffer, offset15);
+            Buffer[offset13] = byte_NPCheading;
+            Buffer[offset14] = byte_NPCHunger;
+            Buffer[offset15] = byte_NPCwhoami;
         }
 
         public new void UpdateEntries()
@@ -179,26 +179,69 @@ namespace Randomizer
             UpdateEntries();
         }
 
-        public MobileObject(byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
+        public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
             byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami)
         {
-            this.byte1_hp = byte1_hp;
-            this.byte2_unk = unk2;
-            this.byte3_unk = unk3;
-            this.short_NPCGoalGtarg = NPCGoalGTarg;
-            this.short_NPCLevelTalkedAttitude = NPCLevelTalked;
-            this.short_NPCheightQM = NPCheight;
-            this.byte4_unk = unk4;
-            this.byte5_unk = unk5;
-            this.byte6_unk = unk6;
-            this.byte7_unk = unk7;
-            this.byte8_unk = unk8;
-            this.short_NPChome = NPChome;
-            this.byte_NPCheading = heading;
-            this.byte_NPCHunger = hunger;
-            this.byte_NPCwhoami = whoami;
-            UpdateBuffer();
+            baseBuffer.CopyTo(Buffer, 0);
+            byte[] extra = new byte[ExtraLength]
+            {
+                byte1_hp,
+                byte2_unk,
+                byte3_unk,
+                BitConverter.GetBytes(NPCGoalGTarg)[0],
+                BitConverter.GetBytes(NPCGoalGTarg)[1],
+                BitConverter.GetBytes(NPCLevelTalked)[0],
+                BitConverter.GetBytes(NPCLevelTalked)[1],
+                BitConverter.GetBytes(NPCheight)[0],
+                BitConverter.GetBytes(NPCheight)[1],
+                byte4_unk,
+                byte5_unk,
+                byte6_unk,
+                byte7_unk,
+                byte8_unk,
+                BitConverter.GetBytes(NPChome)[0],
+                BitConverter.GetBytes(NPChome)[1],
+                heading,
+                hunger,
+                whoami
+            };
+            extra.CopyTo(Buffer, BaseLength);
+            UpdateEntries();
+        }
+        public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
+            short NPCheight, byte unk4, byte unk5, byte unk6,
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami)
+        {
+            byte[] baseBuffer = new byte[BaseLength];
+            BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2*0);
+            BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2*1);
+            BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2*2);
+            BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2*3);
+            byte[] extra = new byte[ExtraLength]
+            {
+                byte1_hp,
+                byte2_unk,
+                byte3_unk,
+                BitConverter.GetBytes(NPCGoalGTarg)[0],
+                BitConverter.GetBytes(NPCGoalGTarg)[1],
+                BitConverter.GetBytes(NPCLevelTalked)[0],
+                BitConverter.GetBytes(NPCLevelTalked)[1],
+                BitConverter.GetBytes(NPCheight)[0],
+                BitConverter.GetBytes(NPCheight)[1],
+                byte4_unk,
+                byte5_unk,
+                byte6_unk,
+                byte7_unk,
+                byte8_unk,
+                BitConverter.GetBytes(NPChome)[0],
+                BitConverter.GetBytes(NPChome)[1],
+                heading,
+                hunger,
+                whoami
+            };
+            extra.CopyTo(Buffer, BaseLength);
+            UpdateEntries();
         }
     }
 }
