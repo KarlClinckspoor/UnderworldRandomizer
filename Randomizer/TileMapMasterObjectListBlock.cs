@@ -76,7 +76,7 @@ namespace Randomizer
             {
                 byte[] currbuffer =
                     StaticObjectInfoBuffer[(i * GameObject.TotalLength)..((i + 1) * GameObject.TotalLength)];
-                var currobj = new GameObject(currbuffer);
+                var currobj = new GameObject(currbuffer, i);
                 StaticObjectInfo[i] = currobj;
             }
         }
@@ -88,7 +88,7 @@ namespace Randomizer
             {
                 byte[] currbuffer =
                     MobileObjectInfoBuffer[(i * MobileObject.TotalLength)..((i + 1) * MobileObject.TotalLength)];
-                var currobj = new MobileObject(currbuffer);
+                var currobj = new MobileObject(currbuffer, 10);
                 MobileObjectInfo[i] = currobj;
             }
         }

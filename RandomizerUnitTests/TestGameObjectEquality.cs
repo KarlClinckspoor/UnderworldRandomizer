@@ -89,8 +89,8 @@ class TestGameObjectEquality
             12,
             13,
             14,
-            15
-        );
+            15,
+            10);
         
         Assert.False(staticObj.Equals(mobileObj));
     }
