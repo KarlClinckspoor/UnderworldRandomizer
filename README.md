@@ -1,21 +1,13 @@
 # Randomizer
 
-Here's a list of what I think I'll want/have to learn, and how much I think I've mastered that aspect.
+This project aims to randomize the object positions in Ultima Underworld, to provide a fresh experience for experienced players.
 
-1. How lev.ark is structured. [60%]
-2. How a save's lev.ark differs from the original lev.ark, if it does. [0%]
-3. How to create and manipulate JSON in C#. I think it'd be cool to export and import a lev.ark, so people can use whatever tool they want to modify a game, even by hand. [0%]
-4. How to better convert binary to JSON, and vice-versa. [0%]
-5. What every item property/flag does, or at least the most important ones. [25%]
-  - This is related to how enchantments work, like, what's the difference between a ring of levitate/jump and unsurpassed protection.
-6. Figure out what I could potentially move without breaking stuff. [0%]
-7. Figure out how containers work, and enemy inventories. [0%]
-8. If I'm ever to randomize UW2, I'll have to figure out how to recompress the lev.ark, so the original can read it. [0%]
-9. How to create spoiler logs of changes. [0%]
-10. How to implement the randomizer settings. [0%]
-11. How to combine different settings, if they are used. [0%]
+First, I'm working on loading and editing functionalities. I want to provide a relatively straightforward Object Oriented approach to the game's levels,
+so others can edit stuff without having to mess with operations in binary directly.
 
-After that, creating randomizer settings would be relatively trivial (Or perhaps I haven't thought about that much, so it looks trivial but isn't)
+Then, I'll work on some randomizer logic.
+
+I've transferred my current questions and development to the Issues tab.
 
 Here's a few "normal" rando settings I thought of:
 
@@ -44,4 +36,5 @@ Anyway, I was daydreaming a few cool rando settings.
 
 # Acknowledgements
 
-Thanks to hankmorgan for his phenomenal work in the Underworld Exporter.
+* Thanks to hankmorgan for his phenomenal work in the Underworld Exporter.
+* Thanks to vividos for writing the uw-formats.txt file, fundamental to anyone doing any project with UW.
