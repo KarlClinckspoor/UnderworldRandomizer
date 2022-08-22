@@ -2,10 +2,10 @@
                Ultima Underworld 1 and 2 Formats Specification
 
                             Underworld Adventures
-               https://vividos.github.com/UnderworldAdventures
+               https://vividos.github.io/UnderworldAdventures/
  +--------------------------------------------------------------------------+
 
-Document version: 1.74, as of 2019-10-23
+Document version: 1.82, as of 2022-06-12
 
 
 Table of Contents
@@ -36,16 +36,16 @@ Table of Contents
    4      Level maps and object lists
    4.1    File format
    4.2    Level tilemap
-   4.2    Master object list
-   4.2.1  Enchantments
-   4.2.2  Item Owner
-   4.2.3  Mobile object extra info
-   4.3    Free lists
-   4.4    Texture mappings
-   4.5    Animation infos
-   4.6    Automap infos
-   4.7    Map notes
-   4.8    Terrain texture properties
+   4.3    Object list
+   4.3.1  Enchantments
+   4.3.2  Item Owner
+   4.3.3  Mobile object extra info
+   4.4    Free lists
+   4.5    Texture mappings
+   4.6    Animation infos
+   4.7    Automap infos
+   4.8    Map notes
+   4.9    Terrain texture properties
 
    5      String resources
    5.1    String block contents [uw1]
@@ -69,7 +69,7 @@ Table of Contents
    7.7    Imported variables
    7.8    Quest flags
 
-   8      3d models
+   8      3D models
    8.1    List of all nodes
 
    9      Miscellaneous stuff
@@ -121,7 +121,7 @@ Table of Contents
    - Alistair Brown (basic object format, via the Underworld II editor
      available at http://bearcity.pwp.blueyonder.co.uk/)
    - Ulf Wohlers (Objects and 3D models)
-   - Fabian Pache (about map details and 3d models, uw2 conversations uw2
+   - Fabian Pache (about map details and 3D models, uw2 conversations uw2
      player save http://uw2rev.sourceforge.net)
    - Hank Morgan, from his UnderworldExporter project
      https://github.com/hankmorgan/UnderworldExporter.
@@ -140,6 +140,7 @@ Table of Contents
    Copyright (c) 2000,2001,2002,2003 Jim Cameron
    Copyright (c) 2002,2003,2004 Michael Fink
    Copyright (c) 2004 Kasper Fauerby
+   Copyright (c) 2022 Mike Ratzlaff
 
 
  +--------------------------------------------------------------------------+
@@ -157,8 +158,8 @@ Table of Contents
    out.was released. So it was the first true first-person game on the PC.
 
    Ultima Underworld is a MS-DOS based game created in C with Turbo C++ 2.1
-   and Optasm as the assembler used (as far as we know). 3d models were done
-   with 3d studio max and converted and placed into the executable.
+   and Optasm as the assembler used (as far as we know). 3D models were done
+   with 3D Studio Max and converted and placed into the executable.
 
    Ultima Underworld is a trademark of Origin, Inc.
 
@@ -317,7 +318,7 @@ Table of Contents
 
    * = not in "static" install
 
-   cs???.n00   anim control files (?)
+   cs???.n00   cutscene control files
 
    cs000.n01   black screen
    cs000.n02 * garamon in swirling air
@@ -392,7 +393,7 @@ Table of Contents
    dterrain.dat   terrain texture properties for the demo
    dw??.tr        wall textures
    level13.anx    object animation overlay info
-   level13.st     tilemap and master object list for first level
+   level13.st     tilemap and object list for first level
    level13.txm    level texture usage for first level
    newobj.dat
    presd.byt      "... presents a demo of ..." screen for the demo
@@ -410,7 +411,7 @@ Table of Contents
 
    Files in the "data" folder:
 
-   byt.ark
+   byt.ark        game bitmaps archive
    cnv.ark        compressed conversation archive
    dl.dat
    gempt.gr       red gem parts (?)
@@ -473,20 +474,19 @@ Table of Contents
    uwa05.xmi      Armed
    uwa06.xmi      Victory
    uwa07.xmi      Sewers
-   uwa10.xmi      Talorus
-   uwa11.xmi      Prison Tower / Goblin Prison Tower
+   uwa10.xmi      Talorus, Ethereal Void
+   uwa11.xmi      Prison Tower
    uwa12.xmi      Death
-   uwa13.xmi      Killorn Keep
-   uwa14.xmi      Ice Caverns / Blackrock Prison
-   uwa15.xmi      Scintillus Academy / Ice Caves
-   uwa16.xmi      Praecor Loth / Castle British
+   uwa13.xmi      Killorn Keep, Pits of Carnage
+   uwa14.xmi      Ice Caverns
+   uwa15.xmi      Scintillus Academy
+   uwa16.xmi      Praecor Loth, Castle British
    uwa17.xmi      The Labyrinth of Worlds Theme (again)
    uwa30.xmi      Introduction
    uwa31.xmi      Guardian's Trap
 
-   The second names come from some mp3 files available here:
-   http://www.stygianabyss.com/uw/music/uw2.htm
-
+   Some variations of the names come from some mp3 files available here:
+   http://stygian.ttlg.mobi/uw/music/uw2.htm
 
  +--------------------------------------------------------------------------+
 
@@ -568,12 +568,30 @@ Table of Contents
 
    - Palette #0: in game graphics
 
+    [UW1]
     indices 16 through 23: lava fire effect
-    indices 48 through 51: water effect
+    These 8 indices are rotated for fire/lava effect, but are not all rotated
+    together. The first 5 are rotated together, and the next 3 are rotated
+    together. These rotations move "up", as in the colors "travel" up the
+    palette from lower indices to higher.
+
+    indices 48 through 63: water effect
+    These 16 indices are rotated for water effects, however the group of 16
+    colors are not all rotated together. They are broken up into 4 groups of 4,
+    and those groups are each rotated individually. These rotations move colors
+    "down" from higher indices to lower ones.
+
+    [UW2]
+    Uses the same rules stated above, but palette indices are different:
+    indices 3 through 10: lava fire effect
+    indices 224 through 239: water effect
+
 
    - Palette #2: game start screen
 
-    indices 64 through 127: "Ultima Underworld" logo warping effect
+    indices 64 through 127: "Ultima Underworld" logo warping effect [uw1]
+    indices 43 through 48, 49 through 51, 57 through 66: "Labyrinth of Worlds"
+    logo blinking effect [uw2]
 
 
 3.2  Images
@@ -592,6 +610,15 @@ Table of Contents
    0007  Int32  offset to bitmap #1
    ...
 
+   Entries in .gr files can contain null records. There will be a place-holder
+   entry in the offsets table, but it does not point to a valid graphics record
+   for that entry. A record should be considered null if:
+      The offset points past the end of file or
+      The offset is the same as the next offset in the list
+   If you are ripping graphics from .gr files and notice duplicate graphics,
+   such as the blood splats and damage traps in objects.gr, then you have not
+   properly accounted for null records.
+
    Each bitmap has its own header:
 
    0000  Int8   bitmap type:
@@ -605,13 +632,15 @@ Table of Contents
    auxiliary palette to use (see 2.1).
 
    000n  Int16  size of data for the bitmap.
-                in 4-bit formats, this is the number of 4-bit nibbles, not
-                bytes.
+                For bitmap type 08, this is the number of 4-bit nibbles, not
+                bytes. Actual byte count is nibbles/2 rounded up.
+                For bitmap types 04 & 0A, this is the actual byte count.
 
    The file "panels.gr" contains bitmaps that don't have a bitmap header, but
-   immediately starts with image data. The bitmaps are of type 04 and have
-   a width of 83 and a height of 114 pixels for UW1 and a width of 79 and
-   height of 112 for UW2.
+   immediately start with image data. There are 4 bitmaps of type 04 that have
+   a hard-coded height and width.
+   [UW1] The first three are 83 x 114 and the final one is 3 x 120
+   [UW2] The first three are 79 x 112 and the final one is 3 x 112
 
 
 3.2.1  Uncompressed bitmaps (04: 8-bit, 0A: 4-bit)
@@ -739,7 +768,7 @@ Table of Contents
    textures, and "wXX.tr" are wall textures. XX describes the width and height
    resolution of the texture (textures are always square).
 
-   0000  Int8   unknown, always seems to be 2
+   0000  Int8   graphic file format; always 2
    0001  Int8   x and y resolution
    0002  Int16  number of textures in file
    0004  Int32  offset to texture #0
@@ -803,7 +832,7 @@ Table of Contents
    e.g. the bat and the vampire bat uses the same anim value, but different
    auxiliary palettes.
 
-   Animation for each critter is stored in a file named "CrXXpage.nYY", where
+   Animation for each critter is stored in a file named "crXXpage.nYY", where
       XX = animation number (=anim), YY = page number
       XX and YY are octal numbers
 
@@ -920,14 +949,26 @@ Table of Contents
    The following files of the CRIT folder are involved in Underworld 2
    animations:
 
-   PG.MP :   contains a skiptable to find a frame in the CRxx.yy files
-   CR.AN :   animation sequences for all critter and all actions
-   AS.AN :   contains a mapping of critter IDs to CRxx.yy files and palettes
-   CRxx.yy : the pixel information for critter xx, fragment yy
+   pg.mp     contains a skiptable to find a frame in the crXX.YY files
+   cr.an     animation sequences for all critter and all actions
+   as.an     contains a mapping of critter IDs to crXX.YY files and palettes
+   crXX.YY   the pixel information for critter XX, fragment YY
 
+   XX and YY are using octal digits
 
+   The "pg.mp" file has a map of all crXX.YY files and how many frames are
+   found in each file.
 
-3.6.2.1 Format and use of CR.AN
+   The "as.an" file is like the "assoc.anm" file from uw1, but without the
+   animation name string table at the start; it is 128 bytes long. It maps
+   from actual critter item IDs (0x0040-0x007f, 128) to 32 critter animations,
+   and which auxiliary palette to use for each.
+
+   The "cr.an" file specifies, for each of the 32 critter animation types, the
+   frames needed to render for 8 different animations and 8 viewing
+   directions.
+
+3.6.2.1 Format and use of cr.an
 
    This file contains 32 chunks [C] of 512 bytes each.
    Each chunk contains the complete animation information for one character.
@@ -966,8 +1007,8 @@ Table of Contents
       [SC]+0038 : [AS] rear    left
 
    The layout of each animation sequences is as follows:
-   The frame indices reference values in the offset table of CRxx.*
-   Use the values in PG.MP to find the right fragment, see 3.6.2.4
+   The frame indices reference values in the offset table of crXX.*
+   Use the values in pg.mp to find the right fragment, see 3.6.2.4
 
       [CB]+0 .. [CB]+6 : animation frame index
       [CB]+7           : number of valid entries starting at [CB]
@@ -975,23 +1016,23 @@ Table of Contents
    Invalid entries in the animation frame indices are marked with 0xFF
 
 
-3.6.2.2 Format and use of AS.AN
+3.6.2.2 Format and use of as.an
 
-   Multiple critters use the same pixel layout with differing palettes.
-   This file contains two int8 for each critterID from 0 to 63. 0xFF
-   marks unused indices (the last entry of AS.AN)
+   Multiple critters use the same pixel data, but with different palettes.
+   This file contains two Int8 for each critter from 0 to 63. 0xFF
+   marks unused indices (the last entry of as.an)
 
-      2*n   : [int8] critter file to use (xx of CRxx.*)
-      2*n+1 : [int8] atom to fragment map index
+      2*n     Int8  critter file to use (XX of crXX.*)
+      2*n+1   Int8  atom to fragment map index (=auxiliary palette index)
 
 
-3.6.2.3 Format and use of CRxx.yy
+3.6.2.3 Format and use of crXX.YY
 
-   Each unique critter is contained in its own file CRxx. For various reasons
+   Each unique critter is contained in its own file crXX. For various reasons
    each critter is split across multiple files. There are 32 critter pixel
-   maps. xx in the filename is encoded in octal.
+   maps. XX in the filename is encoded in octal.
 
-      0000..007F : atom to fragment mapping
+      0000..007F : atom to fragment mapping (4 auxiliary palettes)
       0080..027F : [int16] table of offsets into the file for frame data
       0280..eof  : frame data
 
@@ -1000,12 +1041,12 @@ Table of Contents
       Decompressing the pixel map for a frame yields an atom map. The size of
          an atom for a critter is 5 bit.
       The atom is converted to a fragment using the atom to fragment map
-         determined by the entity id and the index from AS.AN.
+         determined by the entity id and the index from as.an.
       The fragment is converted to a colorindex using the current light level
          and LIGHTS.DAT or MONO.DAT.
       Finally the colorindex is translated to a rgb color by applying PALS.DAT
 
-   All fragments of one critter CRxx.00, CRxx.01, etc have the same
+   All fragments of one critter crXX.00, crYY.01, etc have the same
    header describing the pixel mapping from atom to fragment.
 
       0000..001F : atom to fragment mapping 0
@@ -1013,12 +1054,12 @@ Table of Contents
       0040..005F : atom to fragment mapping 2
       0060..007F : atom to fragment mapping 3
 
-   Mapping 3 is never accessed from AS.AN. The trigger for this mapping is
+   Mapping 3 is never accessed from as.an. The trigger for this mapping is
    unknown.
 
    The offset table of the first file starts at index 0. The offset table of
    the next fragment continues with the index where the previous left off.
-   (see also PG.MP).
+   (see also pg.mp).
 
       0080+frame*2 : [int16] offset into this for file [O]
 
@@ -1033,15 +1074,15 @@ Table of Contents
       [O] + 0007                 start of rle-encoded image data (see 2.3)
 
 
-3.6.2.4 Format and use of PG.MP
+3.6.2.4 Format and use of pg.mp
 
-   The purpose of PG.MP is to find the file fragment yy of a specific critter
-   xx, given a specific frame. The file contains 32 fragment id chunks. Each
+   The purpose of pg.mp is to find the file fragment YY of a specific critter
+   XX, given a specific frame. The file contains 32 fragment id chunks. Each
    fragment id chunk has 8 bytes. Each byte corresponds to a fragment and
    contains the last animation frame contained in the fragment. Invalid
-   combinations of xx and yy (== CRxx.yy does not exist) are marked with 0xFF.
+   combinations of XX and YY (== crXX.YY does not exist) are marked with 0xFF.
 
-      8*xx+yy : [int8] last frame in fragment yy (file CRxx.yy)
+      8*xx+yy : [int8] last frame in fragment YY (file crXX.YY)
 
 
 3.7.1  Cutscene animations [uw1]
@@ -1070,6 +1111,8 @@ Table of Contents
       0010   Int32   content type, always contains "ANIM"
       0014   Int16   width in pixels
       0016   Int16   height in pixels
+      ...
+      0044   Int16   frame rate
 
    The whole header is 128 bytes long. After the header color cycling info
    follows (which also is 128 bytes long), which is not used in uw1. Then
@@ -1162,53 +1205,87 @@ Table of Contents
          }
       }
 
+   The .n00 files are special, as they are not following the .anm format, but
+   contain animiation control instructions.
+
+   The file consists of variable length entries, starting with an Int16 frame
+   number, an Int16 command and a variable number of command arguments,
+   depending on the command. In uw1 there are 0x0f commands, and uw2 extends
+   them to 0x1f commands.
+
+   The following commands are used. The command names are not offical and
+   invented for this document.
+
+     Int16  name      args  meaining
+      0000  show-text  2    displays text arg[1] with color arg[0]
+      0001  set-flag   0    sets some flag to 0
+      0002  no-op      2    no-op, arguments are ignored
+      0003  pause      1    pauses for arg[0] / 2 seconds
+
+      0004  to-frame   2    plays up to frame arg[0]
+      0005  ????       1    unknown, set frame for static cutscene?
+      0006  end-cutsc  0    ends cutscene
+      0007  rep-seg    1    repeat segment arg[0] times
+
+      0008  open-file  2    opens a new file csXXX.nYY, with XXX from arg[0]
+                            and YY from arg[1]; XXX and YY are formatted as
+                            octal values
+      0009  fade-out   1    fades out at rate arg[0] (higher is faster)
+      000a  fade-in    1    fades in at rate arg[0] (higher is faster)
+      000b  ????       1    unknown
+
+      000c  ????       1    unknown
+      000d  text-play  3    displays text arg[1] with color arg[0] and plays
+                            audio arg[2]
+      000e  ????       2    unknown
+      000f  klang      0    plays 'klang' sound
+
+   Commands 0000 and 000d output the text at arg[1]; when the value is
+   0xffff, no text is output.
+
 3.7.2  Cutscene animation [uw2]
 
-   Cutscenes in underworld 2 are stored in the CUTS/ folder. Each cutscene is
-   split into a header file and one or more fragment files. Files starting
-   with CSxxx are part of cutscene x with the number encoded in octal in the
-   filename. The extension of the the file is .N00 for the header and .Nyy for
-   fragment y, again encoded in octal.
-   The cutscenes can refer to background files LBACKxxx.BYT
+   Ultima Underworld 2 extends the .n00 file commands with another set of
+   commands:
 
-3.7.2.1 Cutscene header format [uw2]
+     Int16  name      args  meaining
+      0010  ????       *    unknown, not used in uw2
+      0011  ????       *    unknown, not used in uw2
+      0012  no-op2     4    does nothing, not used in uw2
+      0013  ????       3    unknown
 
-   The cutscene header for each cutscene is stored in file CSxxx.N00. The
-   format of the file is yet unknown. The file is supposed to hold
-      the music to play during playback
-      the sound effect (voice over) to play
-      which subtitles to use
-      references to LBACKxxx and paning information
+      0014  ????       3    unknown
+      0015  ????       2    unknown
+      0016  ????       3    unknown
+      0017  ????       3    unknown
 
-3.7.2.2 Cutscene fragment format [uw2]
+      0018  ????       1    unknown, usually at the start of cutscene
+      0019  ????       1    unknown
+      001a  no-op3     1    does nothing, not used in uw2
+      001b  ????       1    unknown
 
-   A cutscene fragment is stored largely in the same manner as in uw1: The file
-   contains one record for each frame in the animation. Records are stored in
-   pages, where each page can contain a variable number of records.
-   Each fragment is associated with a single string of a block in STRINGS.PAK
-   Relevant fields are
+   (*) Commands 0010 and 0011 have a variable number of arguments:
 
-   00000006 - 00000007      number of pages in the the fragment
-   00000008 - 0000000B      number of records (=frames) in the fragment
-   00000044 - 00000045      framerate
-   00000080 - 000000FF      palette cycling information
-   00000100 - 000004FF      initial palette information 256 x[blue green red 0]
-   00000500 - ........      short page header
-   00000B00 - 00010AFF      page 0
-   00010B00 - 00020AFF      page 1
-   ....
+      0010: numArgs = arg[1] * 3 + 2
+      0011: numArgs = arg[3] * 3 + 4
 
-   <<TODO framerate>>
-   <<TODO palette cycling>>
-   <<TODO document page header>>
-   <<TODO document record layout>>
+   The existing 0005 command is slightly changed:
 
+     Int16  name      args  meaining
+      0005  ????       0    unknown
 
-3.7.2.2 Cutscene background format [uw2]
+   The existing 0008 "open-file" command is extended: When arg[0] == 0x03e4
+   (=996) is passed, a random page is used, using the formula:
+     rand() / 4 + 28
 
-   Cutscene backgrounds are simple index maps of 320 x 200 pixel. The pixel
-   are orderes top to bottom and left to right. The palette is stored with
-   the cutscene that references the background.
+   The cutscenes can refer to background files lbackXXX.byt. The files are
+   are simple index maps of 320 x 200 pixel. The pixel are ordered top to
+   bottom and left to right. The palette is stored with the cutscene that
+   references the background.
+
+   The cutscene commands were figured out thanks to khedoros' code in his uw
+   engine:
+   https://github.com/khedoros/uw-engine/blob/master/csparse.cpp
 
 3.8  Weapon animations
 
@@ -1331,7 +1408,7 @@ Table of Contents
    Ultima Underworld 1 has 135 (0x0087) entries (9 levels x 15 blocks). The
    block layout is as following:
 
-   <9 blocks level tilemap/master object list>
+   <9 blocks level tilemap/object list>
    <9 blocks object animation overlay info>
    <9 blocks texture mapping>
    <9 blocks automap infos>
@@ -1342,7 +1419,7 @@ Table of Contents
    The Ultima Underworld Demo uses three separate files to store the map.
    Here's a list of the files and what blocks they contain:
 
-   level13.st    level tilemap/master object list block
+   level13.st    level tilemap/object list block
    level13.txm   texture mapping
    level13.anx   object animation overlay info
 
@@ -1357,7 +1434,7 @@ Table of Contents
    [uw2] Data blocks for Ultima Underworld 2 are compressed using the uw2
    compression scheme described in chapter 9.1.
 
-   The "level tilemap/master object list" for each level contains infos about
+   The "level tilemap/object list" for each level contains infos about
    the level architecture (tilemap) and the objects which live in it:
 
    offset  size   description
@@ -1378,10 +1455,10 @@ Table of Contents
    Each underworld level consists of a 64x64 tile map (just like on a chess
    board). A tile can be of different types and can have various floor
    heights. The ceiling height is fixed. A tile can have an index
-   into the master object list that is the start of an object chain with
+   into the object list that is the start of an object chain with
    objects in this tile.
 
-   The first 0x4000 bytes of each "level tilemap/master object list" contain
+   The first 0x4000 bytes of each "level tilemap/object list" contain
    the tilemap info bytes. For each tile there are two Int16 that describe a
    tile's properties. The map's origin is at the lower left tile, going to the
    right, each line in turn.
@@ -1398,12 +1475,15 @@ Table of Contents
       10-13    4    floor texture index (into texture mapping)
       14       1    when set, no magic is allowed to cast/to be casted upon
       15       1    door bit (when 1, a door is present)
+                    Tiles with this bit set have a door, but not every tile
+                    with a door has this bit set. Perhaps this bit tells if
+                    an NPC can open the door?
 
    0002 tile properties 2 / object list link
 
       bits     len  description
        0- 5    6    wall texture index (into texture mapping)
-       6-15    10   first object in tile (index into master object list)
+       6-15    10   first object in tile (index into object list)
 
    about word 0000, bit 8:
       For UW2 Bit 8 is set pretty often, and if set the light level changes.
@@ -1428,9 +1508,9 @@ Table of Contents
     09      Sloping up to the west
 
 
-4.2  Master object list
+4.3  Object list
 
-   The master object list is stored after the tilemap data. There are 1024
+   The object list is stored after the tilemap data. There are 1024
    (0x0400) list positions. The first 256 are reserved for "mobile objects"
    that have extra NPC info. The rest of the list is used for "static
    objects". The list entries are allocated from the end to the beginning of
@@ -1456,7 +1536,7 @@ Table of Contents
         9-12   4   "flags"     Flags
           12   1   "enchant"   Enchantment flag (enchantable objects only)
           13   1   "doordir"   Direction flag (doors)
-          14   1   "invis"     Invisible flag (don't draw this object)
+          14   1   "invis"     Invisible flag (don't draw this object)
           15   1   "is_quant"  Quantity flag (link field is quantity/special)
         OR
         9-15       texture number
@@ -1509,7 +1589,7 @@ Table of Contents
    document and always mean the same thing.
 
 
-4.2.1  Enchantments
+4.3.1  Enchantments
 
    If the enchantment flag is set and the object is enchantable, then the
    link field (less 512) determines the enchantment. Enchantment names are
@@ -1536,7 +1616,7 @@ Table of Contents
    Other objects may also carry spells in this way.
 
 
-4.2.2  Item Owner
+4.3.2  Item Owner
 
    Some items have a "... belongs to <critter type>" description. The common
    object properties (see chapter 6.2) determine if an object can have an
@@ -1545,7 +1625,7 @@ Table of Contents
    "owner" - 1 + 370. When the field is 0, the object doesn't belong to anyone.
 
 
-4.2.3  Mobile object extra info
+4.3.3  Mobile object extra info
 
    The values stored in the NPC info area (19 bytes) contain infos for
    critters unique to each object.
@@ -1579,15 +1659,15 @@ Table of Contents
    The values are used for combat, AI and conversations.
 
 
-4.3  Free lists
+4.4  Free lists
 
-   The free lists generally contain infos about the master object list usage
+   The free lists generally contain infos about the object list usage
    and are used for object slot allocation/deallocation.
 
    Free list, mobile objects
    -------------------------
    This consists of an Int16 for each mobile object (critter) slot which is
-   not in use, giving the slot position in the master object list. Note that
+   not in use, giving the slot position in the object list. Note that
    there are only 254 entries in this table because object 0 is always the
    null object (and hence is never allocated) and object 1 is always the
    avatar (and can never be free - that's probably a metaphor for life, or
@@ -1600,7 +1680,7 @@ Table of Contents
    above. This table is 768 entries long (room for all possible static objects).
 
 
-4.4  Texture mappings
+4.5  Texture mappings
 
    The texture mapping table are used to map tile texture indices to the
    actual texture used, since wall and floor textures are only encoded with
@@ -1629,7 +1709,7 @@ Table of Contents
    in t64.tr. Floor descriptions start at string 255 without reversing order.
 
 
-4.5  Animation infos
+4.6  Animation infos
 
    This block contains entries with length of 6 bytes with infos about
    objects with animation overlay images from "animo.gr".
@@ -1640,11 +1720,11 @@ Table of Contents
    0004   Int8    tile x coordinate
    0005   Int8    tile y coordinate
 
-   link1's most significant 10 bits contain a link into the master object
+   link1's most significant 10 bits contain a link into the object
    list, to the object that should get an animation overlay.
 
 
-4.6  Automap infos
+4.7  Automap infos
 
    Each block contains the "visited" bytes for each level. Each byte
    describes a tile on the main map. The block size always is 0x1000.
@@ -1676,7 +1756,7 @@ Table of Contents
             BRIDGE   0x6
             LAVA     0xc
 
-4.7  Map notes
+4.8  Map notes
 
    The following was observed in Underworld 2.
    The map labels are compressed with the same scheme as the tiles. Each
@@ -1693,7 +1773,7 @@ Table of Contents
    of the screen and 200 (0xc8) the top of the screen.
 
 
-4.8  Terrain texture properties
+4.9  Terrain texture properties
 
    The file "terrain.dat" in the data directory contains information on the
    terrain types represented by the various wall and floor textures. There is
@@ -1950,58 +2030,58 @@ Table of Contents
          the textures for the doors come from the 6 bytes at the end of the
          texture mapping info from lev.ark.
          the "doordir" bit determines in which direction the door swings open.
-         Doors are rendered using two 3d models, one for the frame and one for
+         Doors are rendered using two 3D models, one for the frame and one for
          the door. It appears that the frame uses the wall texture of the tile
          in which the door is located. The frame also seems to change the color
          of the "border" between the two sides according to the object.
 
    0150  a_bench
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    0154  a_large boulder
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    0157  a_shrine
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    0158  a_table
-         3d object (see section about 3d models). Texture is 32 from tmobj.gr.
+         3D object (see section about 3D models). Texture is 32 from tmobj.gr.
 
    015a  a_moongate
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    015c  a_barrel
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    015c  a_chair
-         3d object (see section about 3d models). Texture is 38 from tmobj.gr.
+         3D object (see section about 3D models). Texture is 38 from tmobj.gr.
 
    015d  a_chest
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    015e  a_nightstand
-         3d object (see section about 3d models)
+         3D object (see section about 3D models)
 
    0160  a_pillar
-         3d object. texture is determined by the lower byte of the "flags"
+         3D object. texture is determined by the lower byte of the "flags"
          field from "tmobj.gr"
 
    0161  a_lever
-         3d object. A clock-like lever with 8 positions; texture is determined
+         3D object. A clock-like lever with 8 positions; texture is determined
          by the "flags" field (lower 3 bits) + 4, from "tmobj.gr".
 
    0162  a_switch
-         3d object. Almost the same as 0161, but starting with image 12 of
+         3D object. Almost the same as 0161, but starting with image 12 of
          "tmobj.gr". Not used in uw1
 
    0163  a_picture [uw2]
-         3d object. Texture is lower byte of flags + 42 from "tmobj.gr"
+         3D object. Texture is lower byte of flags + 42 from "tmobj.gr"
 
          ??? [uw1]
          uw1 has an item with this id but it's currently unknown what it is
 
    0164  a_bridge
-         bridge 3d object. texture to use comes from "flags" field. when the
+         bridge 3D object. texture to use comes from "flags" field. when the
          value is < 2, the bridge texture is taken from "tmobj.gr", index
          30 + flags. for this bridge, string block 0001, string 171 is printed
          as "look" description.
@@ -2033,12 +2113,12 @@ Table of Contents
          the "flags" field. text printed is from strings block 8, 368 + flags
 
    0167  a_bed [uw2]
-         3d object. The "owner" field determines the colour of the sheets and
+         3D object. The "owner" field determines the colour of the sheets and
          pillow. The sheets are colour (4*owner+5), the pillow colour
          (4*owner).
 
    0169  a_shelf [uw2]
-         3d object. Texture is lower byte of flags + 36 from "tmobj.gr"
+         3D object. Texture is lower byte of flags + 36 from "tmobj.gr"
 
    016e  special tmap obj (tmap_c)
          wall decal; texture used is determined from the "owner" field and is
@@ -2050,7 +2130,7 @@ Table of Contents
          be removed by deleting the object.
 
    017x  a_button, etc.
-         3d object. buttons, switches, pull chains and levers, textured with
+         3D object. buttons, switches, pull chains and levers, textured with
          images from "tmflat.gr". The texture index into tmflat.gr is the
          lowest byte of the item id (subclass id).
          Special link usually points to a trigger.
@@ -2079,7 +2159,7 @@ Table of Contents
    0180  a_damage trap
          player vitality is decreased; number of hit points are in "quality"
          field; if the "owner" field is != 0, the hit points are added
-         instead. the trap is only set of when a random value [0..10] is >= 7.
+         instead. the trap is only set off when a random value [0..10] is >= 7.
 
    0181  a_teleport trap
          teleports the player to another level and tile; destination level is
@@ -2295,35 +2375,70 @@ Table of Contents
    The first two bytes of the file contain unknown information (always 01 0E
    in both uw1 and uw2). Then entries for all items follow. Each entry has the
    following format:
-
    0000  Int8    height
+                 [observed in UW1] height seems to be about half the pixel
+                 height of the object. Double this to get the height in pixels.
+                 Seems that non-colliding objects have a height of 0.
    0001  Int16   mass/stuff:
                  bits 0-2: radius
+                 [observed in UW1] This is 4 for bridge and anvil, 3 on doors
+                 and a few other things, 2 for all critters. All other objects
+                 are 1 or 2. and some 0. Not sure how to get a width in pixels
+                 from this.
                  bit 3: 1 for npc's, 3d objects and misc. items (animated flg?)
+                 [observed in UW1] all NPCs, 3d models excepts doors, and a few
+                 animations: blood, mist, damage
                  bits 4-15: mass in 0.1 stones
-   0003  Int8    flags
-                 0/2: object in range [336, 368[ seem to be 3d objects
-                 1: TODO unknown
+   0003  Int8    flags TODO several unknown
+                 0: [observed in UW1] always 0
+                 1: [observed in UW1] is set to 1 for most 3d model objects.
+                 Exceptions are doors, missiles, pillar, gravestone.
+                 2: [observed in UW1] set to 1 for all switches, levers, etc
                  3: magic object (?)
+                 [observed in UW1] set to 1 on some projectiles and animations.
+                 This seems to set for items and effects that when spawned
+                 spontaneously are deleted when they are finished.
                  4: decal object (always 0 in uw1)
                  5: is set when object can be picked up
+                 [oserved in UW1] Almost but not exactly. Some items set to 1
+                 cannot be picked up: urn, orb, campfire, fountain, cauldron
                  6: TODO unknown
+                 [observed in UW1] this is set to 1 for weapons (not missiles),
+                 equipment (even shields), all critters, containers (except
+                 cauldron), and 3d models (except missiles) and all triggers
+                 and traps.
                  7: is set when object is a container
+                 [observed in UW1] except cauldron
    0004  Int16   monetary value
-   0006  Int8    bit 0-1: TODO unknown
-                 bits 2..3: quality class (this value*6+quality gives index
+   0006  Int8    bits 0-1: TODO unknown
+                 bit 0: [observed in UW1] set to 1 for almost every object.
+                 Exceptions: Void monsters, zanium, all triggers and traps,
+                 all animations except silver tree.
+                 bit 1: [observed in UW1] set to 1 for some switches and
+                 missiles.
+                 bits 2-3: quality class (this value*6+quality gives index
                             into string block 5
-                 bits 4..7: TODO unknown
+                 bits 4-7: TODO unknown
+                 bit 4: [observed in UW1] Set to 1 for all projectiles.
    0007  Int8    bit 0: TODO unknown
-                 bits 1..4: type? a=talisman, 9=magic, 3..5=ammunition
-                 but 5-6: TODO unknown
+                 bit 0: [observed in UW1] set to 1 mostly for stones:
+                   sling stone, stone, rings except iron, gems, amulet,
+                   resilient sphere, spike, glowing rock, small boulder
+                 bits 1-4: type? a=talisman, 9=magic, 3..5=ammunition
+                 bits 5-6: TODO unknown
+                 bit 6: [observed in UW1] similar to byte 3 bit 5, seems to
+                 tell if an object can be picked up. Only exception seems to be
+                 the missile 3d models and silver tree.
                  bit 7: if 1, item can have owner ("belongs to ...")
    0008  Int8    scale value (?) TODO
-   0009  Int8    unknown2
-                 bits 0-1: ?? TODO
+   0009  Int8    TODO unknown
+                 bit 0: [observed in UW1] set to 1 for NPCs and flat texture
+                 map objects
+                 bits 6-7: [observed in UW1] always 00
    000A  Int8    bits 0-3: quality type 0-f
                  bit 4: printable "look at" description when 1
-                 bit 5-7: TODO unknown
+                 bits 5-7: TODO unknown
+                 [observed in UW1] always 011, even for null objects
 
    Each possible value of "quality type" maps onto a group of 6 strings in
    block 4 from lowest to highest quality. Items which have a quality are
@@ -2338,14 +2453,15 @@ Table of Contents
    "objects.dat". The file contains several tables. Here is an overview:
 
    pos   size     desc                        entries   bytes per entry
-   0000  Int16    unknown, always 0x010f
+   0000  Int16    unknown, always bytes 0x01 0x0f (or 0x0f01 as word)
    0002  0x80     melee weapons table         16         8 bytes
    0082  0x30     ranged weapons table        16         3 bytes
    00b2  0x80     armour and wearables table  32         4 bytes
    0132  0x0c00   critters table              64        48 bytes
    0d32  0x30     containers table            16         3 bytes
    0d62  0x20     light source table          16         2 bytes
-   0d82  0x20     unknown, maybe jewelry info table
+   0d82  0x10     food nutrition table        16         1 byte
+   0d92  0x10     jewelry table               16         1 byte
    0da2  0x40     animation object table      16         4 bytes
    0de2           end
 
@@ -2354,9 +2470,11 @@ Table of Contents
    0000   Int8   damage modifier for Slash attack
    0001   Int8   damage modifier for Bash attack
    0002   Int8   damage modifier for Stab attack
-   0003   3*Int8 unknown TODO
+   0003   Int8   attack charge calculation: minimum charge?
+   0004   Int8   attack speed - how quickly an attack charge builds up
+   0005   Int8   attack charge calculation: maximum charge?
    0006   Int8   skill type (3: sword, 4: axe, 5: mace, 6: unarmed)
-   0007   Int8   durability
+   0007   Int8   durability (FF means undestroyable)
 
    * Ranged weapons table (0x0010-0x001f)
 
@@ -2368,32 +2486,61 @@ Table of Contents
 
    0000   Int8   protection
    0001   Int8   durability
-   0002   Int8   unknown TODO
-   0003   Int8   category:
-                 00: shield (or none? uwadv says: also: may not be worn on
-                 paperdoll)
+   0002   Int8   unknown, values 0, 4, 5, 6, 7
+   0003   Int8   category / paperdoll position:
+                 00: none/not on paperdoll (only used by shields)
                  01: body armour
                  03: leggings
                  04: gloves
                  05: boots
                  08: hat
                  09: ring
-                 15: unknown
 
    * Critters table  (0x0040-0x007f)
 
-   0000-3 4*Int8 armor: amount of damage subtracted from attacks; either one
+   0000   Int8   npc_level: level of the critter
+
+   0001-3 3*Int8 armor: amount of damage subtracted from attacks; either one
                  value and 3x FF is used, or 4 (often) different values are,
                  used, for body, ??, ?? and head
    0004   Int8   vitality
-   0005   Int8   npc_power
-   000f   Int8   poison score
-   0011   Int8   attack power
+   0005   Int8   npc_power; base damage calculation
+   0006   Int8   dexterity; attack score calculation
+   0007   Int8   intelligence; magic spell attacks?
+   0008   Int8   combination of remains after death and the type of blood
+                 splatters this critter produces:
+                 bits 0-3: blood splatter type;  0: dust, 8: red blood
+                 bits 4-7: remains type; 0: nothing, 2: rotworm corpse,
+                     4: rubble, 6: wood chips, 8: bones, 10: green blood pool,
+                     12: red blood pool, 14: red blood pool giant spider
+   0009   Int8   generic name; index into game strings block 1, value + 370
+   000a   Int8   passiveness; 0xff: will never attack
+   000b   Int8   magic related; extra/specific spells?
+   000c   Int8   movement speed; 0: immobile, 12: maximum, e.g. vampire bat
+   000f   Int8   poison damage; starting value for poison damage in the first
+                 minute, reduced by 1 for every following minute
+   0010   Int8   critter category:
+                 0x00: ethereal (like ghosts, wisps, and shadow beasts)
+                 0x01: humanoid (humanlike non-thinking forms like lizardmen,
+                       trolls, ghouls, and mages)
+                 0x02: flying (like bats and imps)
+                 0x03: swimming (like lurkers),
+                 0x04: creeping (like rats and spiders)
+                 0x05: crawling (like slugs, worms, reapers, and fire
+                       elementals)
+                 0x11: golem (only used for the earth golem)
+                 0x51: human (humanlike thinking forms like goblins,
+                       skeletons, mountainmen, fighters, outcasts, and stone
+                       and metal golems)
+   0011   Int8   attack power (equipment damage?)
    0012   Int8   defense power
    0013   Int8   weapon
    0014   Int8   damage
    001c   Int8   eyes: number of feet (really?)
-   0006-48 42*Int8 unknown TODO
+   0028   Int16  experience when killed
+   002f   In8t   unknown; always 0x65
+
+   Non-listed values in between the described ones are unknown.
 
    Parts of this table were found by comparing with this bestiary table:
    https://gamefaqs.gamespot.com/pc/564592-ultima-underworld-ii-labyrinth-of-worlds/faqs/74915
@@ -2402,17 +2549,23 @@ Table of Contents
    * Containers table (0x0080-0x008f)
 
    0000   Int8   capacity in 0.1 stones
-   0001   Int8   objects accepted; 0: runes, 1: arrows, 2: scrolls, 3: edibles,
-                 0xFF: any
-   0002   Int8   number of slots available?
-                 Only valid values are 2 and 0xFF (any?) (TODO)
+   0001   Int8   objects accepted; 0: runes, 1: arrows, 2: scrolls,
+                 3: edibles, 4: keys [uw2], 0xFF: any
+   0002   Int8   number of slots available
+                 2: only 2 items, 0xFF: any
 
    * Light source table (0x0090-0x009f)
 
-   0000   Int8   light brightness (max. is 4; 0 means unlit)
-   0001   Int8   duration (00: doesn't go out, e.g. taper of sacrifice)
+   0000   Int8   duration (0: doesn't go out, e.g. taper of sacrifice)
+   0001   Int8   light brightness (max. is 4; 0 means unlit)
 
-   * Jewelry info table (?) TODO
+   * Food nutrition table (0x00b0-0x00bf)
+
+   0000   Int8   nutrition value of food (alcoholic beverages +0xF0)
+
+   * Jewelry table (0x00a0-0x00af)
+
+   0000   Int8   jewelry value
 
    * Animation object table (0x01c0-0x01cf)
 
@@ -2465,7 +2618,7 @@ Table of Contents
    * Local Variables store infos during conversation. They are lost when
      conversation ends.
 
-   * NPC infos are stored along with the NPC's data in the Master Object List
+   * NPC infos are stored along with the NPC's data in the Object List
      and contain infos like npc_gtarg or npc_goal. See chapter 7.x for more.
 
    * Game globals are variables that are global to the game, e.g. game time,
@@ -2620,7 +2773,7 @@ Table of Contents
                          register.
    24  PUSH_REG   0 0 1  push the value of the result register on the stack.
    25  STRCMP     ? ? ?  string compare.
-   26  EXIT_OP    0 0 0  end program (?)
+   26  EXIT_OP    0 0 0  end program
    27  SAY_OP     0 1 0  NPC says something. Print a conversation string (from
                          the stack).
    28  RESPOND_OP ? ? ?  respond (?)
@@ -3040,21 +3193,25 @@ Table of Contents
    -------------------------------------------------------------------------
 
    id=002c name="x_skills" ret_type=int
-   parameters:   arg1: when 10001, increase skill by 1?
+   parameters:   arg1: when >= 0 and <= 30, sets skill to this value
+                       when 10001, increase skill by 1?
                        when 9999, return skill value?
                  arg2: skill to use; one of:
                     0 attack, 1 defense, 2 unarmed, 3 swords
                     6 missile, 7 mana, 8 lore, 9 casting,
                     10 disarm, 11 searching, 14 repair,
                     15 charisma, 16 lockpick, 18 evaluation, 19 swimming
-   description:  improves skill?
-   return value: unknown
+                    (maps to the savegame skill values, starting at 0021h,
+                    see chapter 9.2.1)
+   description:  returns or sets skill value
+   return value: skill value/newly set skill value
    -------------------------------------------------------------------------
 
    id=002d name="x_traps" ret_type=int
-   parameters:   unknown
-   description:  unknown
-   return value: unknown
+   parameters:   arg1: value >= 0 and <= 0x3f
+                 arg2: index into savegame array at 0070h
+   description:  unknown; gets or sets some value
+   return value: current value, or newly set value (same as arg1 when in range)
    -------------------------------------------------------------------------
 
    id=002e name="x_obj_pos" ret_type=void
@@ -3082,7 +3239,7 @@ Table of Contents
    parameters:   arg1: 0: npc inventory; 1: player inventory
                  arg2: item id
    description:  searches item in npc or player inventory
-   return value: position in master object list, or 0 if not found
+   return value: position in object list, or 0 if not found
    -------------------------------------------------------------------------
 
    id=0031 name="find_barter" ret_type=int
@@ -3252,21 +3409,26 @@ Table of Contents
     npc_yhome          y coord of home tile
     npc_whoami         npc conversation slot number
     npc_hunger
-    npc_health
-    npc_hp
+    npc_health         vitality?
+    npc_hp             vitality?
     npc_arms           (not used in uw1)
-    npc_power
-    npc_goal           goal that NPC has; 5:kill player 6:? 9:?
+    npc_power          attack power
+    npc_goal           goal that NPC has; see below
     npc_attitude       attitude; 0:hostile, 1:upset, 2:mellow, 3:friendly
     npc_gtarg          goal target; 1:player
     npc_talkedto       is 1 when player already talked to npc
-    npc_level
+    npc_level          NPC level
     npc_name           (not used in uw1)
     dungeon_level      (not used in uw1)
     riddlecounter      (not used in uw1)
     game_time
     game_days
     game_mins
+
+   The npc_goal has the following possible values:
+     5: attack
+     6: flee from goal target
+     9: attack
 
 
 7.8  Quest flags
@@ -3313,13 +3475,30 @@ Table of Contents
     110   Mors Gotha is invading the castle
     112   The Avatar is persona non grata (?)
 
+7.9 Ultima Underworld 2 specialities
+
+Ultima Underworld 1 conversations always have some stock function in the code,
+starting from 0012 up to 029c, even when unused. Conversations always start
+at 029d. In Ultima Underworld 2, the "linker" removed all unused functions and
+conversations may start at a lower position, saving on space in the cnv.ark
+file.
+
+It seems that one conversation has some CALL 0xFFFF opcodes; I guess this call
+is just a no-op, or it would crash the conversation virtual machine.
+
+
+
  +--------------------------------------------------------------------------+
 
 
-8  3d models
+8  3D models
 
-   These are stored within the executable (bad! bad!). From Doug Church, on
-   the 3d models:
+   These are stored within the executable (bad! bad!), in a segment of the
+   overlaid executable. The renderer most probably is written in assembly
+   language for optimization. There are different versions of uw.exe, uw2.exe
+   and uwdemo.exe executables, which makes it a bit harder to find the models.
+
+   From Doug Church, on the 3D models:
 
      We'd take a 3ds model, convert it to an internal ASCII format, and then
      run a "model builder" which would generate an inlined BSP tree for it.
@@ -3347,6 +3526,7 @@ Table of Contents
       uw2  0x00054cf0    d4 64 aa 59   0x00054d8a
       uw2  0x000550e0    d4 64 aa 59   0x0005517a  another UW2 build
 
+   From Abysmal project:
    There's also a model information table stored in the .exe file.
 
    [uw1] It starts at 0x0005f7e5 (in my uw.exe, md5sum:
@@ -3365,39 +3545,39 @@ Table of Contents
    [uw2] The model information table for underworld 2 starts at 0x0006908A
    in a UW2.EXE with base 0x00054cf0. Each table entry has 5 bytes
 
-      0000   int8   high nybble unknown
-                    low nybble contains number of valid color entries
+      0000   int8   high nibble unknown
+                    low nibble contains number of valid color entries
       0001   int8*3 color table as before
       0004   int8
 
 
    Models are:
-   ((All?) models from 0x140 to 0x17F are drawn using 3d models)
+   (All models from 0x140 to 0x17F are drawn using 3D models)
 
    index   item_id   description
-    00               -
+    00               - (empty)
     01     014x      door frame
     02     0164      bridge
     03     0150      bench
     04     015f      Lotus Turbo Esprit (no, really!)
     05     0156      small boulder
-    06     0155?     medium boulder
-    07     0154?     large boulder
+    06     0155      medium boulder
+    07     0153/0154 large boulder
     08     0151      arrow
     09     0159      beam
     0A     0160      pillar
     0B     0157      shrine
-    0C
+    0C               ??? unknown
     0D     0163      painting [uw2]
-    0E               door
-    0F               secret door
-    10     0161,017X texture map (8-way lever and buttons)
+    0E     014x      door (with submodel)
+    0F     014x      secret door (with submodel)
+    10     0161,017x texture map (8-way lever and buttons)
     11     0162      texture map (8-way switch)
     12     0166      texture map (writing)
     13     0165      gravestone
-    14     016e?     texture map (which one?)
-    15               -
-    16     016e      texture map (possibly also for 016f)
+    14     016e      texture map
+    15               - (empty)
+    16     016f      texture map
     17     015a      moongate
     18     0158      table
     19     015d      chest
@@ -3410,7 +3590,7 @@ Table of Contents
 
    Node list
    ---------
-   Actual model data is stored as a list with various "nodes" that do
+   The actual model data is stored as a list with various "nodes" that do
    different things. There also is a vertex array that is filled at start of
    the model, and then faces are defined, using points from the vertex list.
    The list is parsed every frame and tests are done if some faces have to be
@@ -3464,7 +3644,7 @@ Table of Contents
      0012     ???
      0014     ??? colour definition
      0016     ???
-     002E     ??? seems to influence shading for the next face
+     002E     ??? seems to influence shading for the next face [uw2]
      0040     ??? seems to do nothing but introduce a face definition
      0044     ??? this one too
      004A     define translation XZY
@@ -3486,20 +3666,21 @@ Table of Contents
      0090     define vertex offset X,Z
      0092     define vertex offset X,Y
      0094     define vertex offset Y,Z
-     00A0     shorthand textured face definition
+     00A0     define texture mapped face (shorthand)
      00A8     define texture-mapped face
-     00B2     ???
+     00B2     ??? potential texid for following 00B4 calls
      00B4     define face vertices with u,v information
      00BA     render door submodel
-     00BC     define face shade (6 bytes)
+     00BC     define flat face shade
      00BE     ??? seems to define 2 shades
-     00CE     ??? yet another texture-mapped face, same as 007E (?)
-     00D2     shorthand textured face definition (similar to 00A0)
-     00D4     defines shades for gouraud shading
+     00CE     define texture-mapped face, same as 00B4
+     00D2     define texture mapped face (shorthand) (similar to 00A0)
+     00D4     define vertex gouraud shading values
      00D6     turn on on gouraud shading
 
    The same list as above, sorted by node ID and including the number of
-   arguments each node takes
+   arguments each node takes (=argc); var means a variable number of
+   arguments.
 
        ID  argc
      0000     0      end node
@@ -3510,7 +3691,7 @@ Table of Contents
      0012     1      ???
      0014     3      ??? colour definition
      0016     3      ???
-     002E     1      ??? seems to influence shading for the next face
+     002E     1      ??? seems to influence shading for the next face [uw2]
      0040     0      ??? seems to do nothing but introduce a face definition
      0044     0      ??? this one too
      004A     3      define translation XZY
@@ -3534,14 +3715,14 @@ Table of Contents
      0094     4      define vertex offset Y,Z
      00A0     5      shorthand textured face definition
      00A8     var    define texture-mapped face
-     00B2     1      ???
+     00B2     1      ??? potential texid for following 00B4 calls
      00B4     var    define face vertices with u,v information
      00BA     3      render door submodel
      00BC     2      define face shade (6 bytes)
      00BE     2      ??? seems to define 2 shades
      00CE     var    same as 007E (?)
      00D2     4      shorthand textured face definition (similar to 00A0)
-     00D4     var    defines shades for gouraud shading
+     00D4     var    define vertex gouraud shading values
      00D6     0      turn on on gouraud shading
 
    Here's a detailed description of all nodes, sorted after functionality:
@@ -3549,7 +3730,7 @@ Table of Contents
    Misc. nodes
    -----------
      0000   end node
-            just ends current list; also ends sort node sublists
+            just ends current list; also ends sort node sublists and submodels
 
      0078   define model center
               0000   Int16     node id
@@ -3557,7 +3738,7 @@ Table of Contents
               0004   Fixed     origin X coordinate
               0006   Fixed     origin Y coordinate
               0008   Fixed     origin Z coordinate
-              000a   Int16     ???
+              000a   Int16     unknown, always 0
 
             because of the limited resolution available for specifying object
             positions, the origin for model coordinates will typically need to
@@ -3577,7 +3758,7 @@ Table of Contents
 
      0082   define initial vertices
               0002   Int16     number of vertices (=nvert)
-              0004   Int16     first vertex no.?
+              0004   Int16     first vertex number
               0006   Fixed     vertex X coordinate for first vertex
               0008   Fixed     vertex Y coordinate
               000a   Fixed     vertex Z coordinate
@@ -3609,9 +3790,9 @@ Table of Contents
 
      008C   define vertex variable height
             this is used for pillars and doorframes where the model must reach
-            up to the ceiling, wherever it be.
+            up to the ceiling height.
               0002   VertNo    reference vertex to modify
-              0004   Int16     ???
+              0004   Int16     unknown, always 0x0800
               0006   VertNo    new list index to store vertex
 
    Face plane checks
@@ -3620,7 +3801,7 @@ Table of Contents
    not. Usually a face normal vector is defined to verify. A length value
    is given to know how many bytes to omit in the node list.
 
-     0058   define face plane, arbitrary heading (backface cull)
+     0058   define face plane, arbitrary heading (backface culling)
               0002   Int16     number of bytes to skip when not visible
               0004   Fixed     normal vector X coordinate
               0006   Fixed     distance "model origin -> face" X value
@@ -3665,19 +3846,19 @@ Table of Contents
               0002   Int16     number of vertices (=nvert)
               0004   VertNo    vertex list index for first point
               0006   VertNo    vertex list index for second point
-              0008             and so on
+              0008             ... and so on, nvert times
 
      00A8   define texture-mapped face
             vertex u and v coordinates are stored as 0.16 fractional values.
             just divide by 65535.0 to get coordinates in the range [0; 1]
-              0002   Int16     texture number (?)
+              0002   Int16     texture number, always 6
               0004   Int16     number of vertices (=nvert)
               0006   VertNo    vertex list index for first point
               0008   TexCo     first vertex u coordinate
               000a   TexCo     first vertex v coordinate
               000c   VertNo    vertex list index for second point
               000e   TexCo     second vertex u coordinate
-              0010             and so on
+              0010             ... and so on, nvert times
 
      00B4   define face vertices with u,v information
             same structure as 00A8, but without the "texture number" field.
@@ -3688,7 +3869,7 @@ Table of Contents
      00A0   define texture mapped face (shorthand)
             seems to be a quick way to define a face with 4 vertices and
             automatic texture coordinates; vertex list indices
-              0002   Int16     ???
+              0002   Int16     unknown, always 6
               0004   Int8      vertex list index 0
               0005   Int8      vertex list index 1
               0006   Int8      vertex list index 2
@@ -3737,7 +3918,7 @@ Table of Contents
 
    Shading/Coloring nodes
    ----------------------
-     00D4   define vertex shading values
+     00D4   define vertex gouraud shading values
             Build a table of shading information for each vertex.
             Note that the list generated by this command doesn't
             always have the same size as the vertex table.
@@ -3753,7 +3934,7 @@ Table of Contents
                                and so on; if nvert is odd, read another empty
                                byte to have 16 bit word align
 
-     00D6   introduce Gouraud shaded face
+     00D6   turn on on gouraud shading
             switches on gouraud shading. The following faces use
             the color definitions set with the "define vertex shading values"
             (00D4) command
@@ -3762,7 +3943,7 @@ Table of Contents
             Defines a flat shade for the next (or all following?) faces.
             The values given here are the same as in the shading table (00D4)
             so the same calculations and palette indexing rules apply here
-              0002   Color     colour
+              0002   Color     colour offset
               0004   Int16     shade (dark value)
 
    Unknown nodes
@@ -3781,9 +3962,9 @@ Table of Contents
               0004   Color     ??
               0006   Int16     ??
 
-     002E   ???
+     002E   ??? seems to influence shading for the next face [uw2]
             This node influences how the next face is drawn. I'm not sure what
-            it does exactly, but I'm sure that it switches guoraud shading off
+            it does exactly, but I'm sure that it switches gouraud shading off
             (and possibly some other mode on)
             It's used quite a lot in the Lotus Turbo Esprit model and only
             once in the table model (with data=0). Other than that it's not
@@ -3821,7 +4002,7 @@ Table of Contents
                                and visibility.
               0004   Int16     Pointer to first model node of submodel to
                                render. Offset is relative to the location of
-                               the current node (BA).
+                               the current node (00BA).
 
  +--------------------------------------------------------------------------+
 
@@ -3990,7 +4171,7 @@ Table of Contents
    006A   Int8    Quest flag 33
    006B   Int8    Quest flag 34
    006C   Int8    Quest flag 35
-   006D   Int8    num. talismans remaining
+   006D   Int8    Quest flag 36 and above (number of talismans remaining)
    006E   Int8    Garamon dream related
    006F   Int8    unknown
    0070-00A4      conv. variables? 0-52
@@ -3998,9 +4179,8 @@ Table of Contents
    00B4   Int8    difficulty (0=normal, 1=easy)
    00B5   Int8    game options
    ...
-   00CE   Int16   game time related (frame ticks?)
-   00D0   Int8    hour of day (sort of)
-   00D1   Int8    game day (sort of)
+   00CE   Int16   game_time; lower 32 bits
+   00D0   Int16   game_time; upper 32 bits
    ...
    00DC   Int8    current vitality (duplicate of 0035)?
    ...
