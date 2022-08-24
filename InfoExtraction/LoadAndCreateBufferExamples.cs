@@ -22,7 +22,6 @@ public class LoadAndCreateBufferExamples
 
     public void ExtractTileMapObjectBlocks()
     {
-        throw new NotImplementedException();
         int i = 0;
         foreach (var block in Ark.TileMapObjectsBlocks)
         {

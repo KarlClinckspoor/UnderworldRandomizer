@@ -29,7 +29,8 @@ class Program
         Console.WriteLine($"Loading LEV.ARK from {arkpath}");
         var extractor = new LoadAndCreateBufferExamples(arkpath, binarypath);
         Console.WriteLine("Saving generalized blocks");
-        // Console.WriteLine("Saving Tilemap and object data");
         extractor.ExtractBlocks();
+        Console.WriteLine("Saving Tilemap and object data");
+        extractor.ExtractTileMapObjectBlocks();
     }
 }
