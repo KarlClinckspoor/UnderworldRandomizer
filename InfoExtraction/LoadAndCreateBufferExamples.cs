@@ -76,10 +76,10 @@ public class LoadAndCreateBufferExamples
         }
     }
     
-    public LoadAndCreateBufferExamples(string pathToArk = Settings.DefaultArkPath, string pathToBinaries = Settings.DefaultBinaryTestsPath)
+    public LoadAndCreateBufferExamples(string? pathToArk = null, string? pathToBinaries = null)
     {
-        this.pathToBinaries = pathToBinaries;
-        this.pathToArk = pathToArk;
-        Ark = new ArkLoader(pathToArk);
+        this.pathToArk = pathToArk is null ? Settings.DefaultArkPath : pathToArk;
+        this.pathToBinaries = pathToBinaries is null ? Settings.DefaultBinaryTestsPath : pathToBinaries;
+        Ark = new ArkLoader(this.pathToArk);
     }
 }
