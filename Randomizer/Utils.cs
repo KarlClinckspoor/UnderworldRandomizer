@@ -104,7 +104,7 @@
         public static string? StdSaveBuffer(byte[] buffer, string basepath, string extrainfo)
         {
 
-        string fullpath = @$"{basepath}\{extrainfo}";
+        string fullpath = @$"{basepath}\{extrainfo}.bin";
         
         try
         {

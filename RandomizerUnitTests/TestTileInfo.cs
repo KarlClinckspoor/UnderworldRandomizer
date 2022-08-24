@@ -47,8 +47,8 @@ public class TestTileInfo
     {
         // Compare the buffers as-is
         Assert.True(CompareArrays(tinfo1.TileBuffer, tinfo2.TileBuffer));
-        tinfo1.SaveBuffer(basePath: @"D:\Dropbox\UnderworldStudy\studies\tests", extraInfo: "buffer_tinfo1");
-        tinfo2.SaveBuffer(basePath: @"D:\Dropbox\UnderworldStudy\studies\tests", extraInfo: "buffer_tinfo2");
+        string tinfo1Path = tinfo1.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, extraInfo: "buffer_tinfo1");
+        string tinfo2Path = tinfo2.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, extraInfo: "buffer_tinfo2");
         
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();
@@ -57,8 +57,8 @@ public class TestTileInfo
         Assert.True(CompareArrays(tinfo1Hash, tinfo2Hash));
 
         // Reload the buffers
-        var tinfo1RelBuffer = LoadTileData(@"D:\Dropbox\UnderworldStudy\studies\tests\buffer_tinfo1.bin");
-        var tinfo2RelBuffer = LoadTileData(@"D:\Dropbox\UnderworldStudy\studies\tests\buffer_tinfo2.bin");
+        var tinfo1RelBuffer = LoadTileData(tinfo1Path);
+        var tinfo2RelBuffer = LoadTileData(tinfo2Path);
         
         // Compare the hashes again
         var rectinfo1Hash = mySHA256.ComputeHash(tinfo1RelBuffer);
