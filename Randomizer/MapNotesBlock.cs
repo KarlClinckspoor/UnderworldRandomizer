@@ -2,24 +2,16 @@
 
 namespace Randomizer
 {
-    public class MapNotesBlock: Block, ISaveBinary
+    /// <summary>
+    /// Block that stores map notes. Its length is 0 if there are no block notes
+    /// </summary>
+    public class MapNotesBlock: Block
     {
-        public static new int TotalBlockLength = 1; // TODO: Is this fixed or variable length?
-        public MapNotesBlock(byte[] buffer, int levelnumber)
+        public MapNotesBlock(byte[] buffer, int levelnumber): base(buffer, levelnumber)
+        { }
+        public override string? SaveBuffer(string? basePath = null, string extraInfo = "")
         {
-            //Debug.Assert(buffer.Length, TotalBlockLength ) 
-            blockbuffer = buffer;
-            LevelNumber = levelnumber;
-        }
-        public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK",
-            string extraInfo = "")
-        {
-            if (extraInfo.Length == 0)
-            {
-                extraInfo = $@"_AUTOMAP_{LevelNumber}";
-            }
-
-            return StdSaveBuffer(blockbuffer, basePath, extraInfo);
+            return base.SaveBuffer(basePath, extraInfo.Length == 0 ? $@"_MAPNOTES_{LevelNumber}" : extraInfo);
         }
     }
 }

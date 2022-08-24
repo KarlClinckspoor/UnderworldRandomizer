@@ -61,7 +61,7 @@ namespace Randomizer
             {Sections.level_tilemap_objlist, TileMapMasterObjectListBlock.TotalBlockLength},
             {Sections.object_anim_overlay_info, ObjectAnimationOverlayInfoBlock.TotalBlockLength},
             {Sections.texture_mappings, TextureMappingBlock.TotalBlockLength },
-            {Sections.automap_infos,AutomapInfosBlock.TotalBlockLength},
+            {Sections.automap_infos, 0},
             {Sections.map_notes, 0},
             {Sections.unused, 0 }
         };
@@ -82,6 +82,11 @@ namespace Randomizer
             header = new Header(arkbuffer[0..headerSize]);
 
             blocks = new Block[header.NumEntries];
+            TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
+            ObjAnimBlocks = new ObjectAnimationOverlayInfoBlock[NumOfLevels];
+            TextMapBlocks = new TextureMappingBlock[NumOfLevels];
+            AutomapBlocks = new AutomapInfosBlock[NumOfLevels];
+            MapNotesBlocks = new MapNotesBlock[NumOfLevels];
             
             CheckEqualityToPristineLevDotArk();
             LoadBlocks();
@@ -89,18 +94,45 @@ namespace Randomizer
 
         public void LoadBlocks()
         {
-            // Load blocks
             int currblocktypecount = 0;
             int currblocktype = 0;
+            
+            // Loop through all entries specified in the header
             for (short blocknum = 0; blocknum < header.NumEntries; blocknum++)
             {
                 if (currblocktype >= 6)
                 {
                     currblocktype = 5; // Hack
                 }
-                blocks[blocknum] = GetBlock(blocknum, (Sections) currblocktype, currblocktypecount);
+                Block block = GetBlock(blocknum, (Sections) currblocktype, currblocktypecount);
+                // Let's store the blocks this general array
+                blocks[blocknum] = block;
+                
+                // And also in its specific array, depending on its type
+                if (block is TileMapMasterObjectListBlock tilemap)
+                {
+                    TileMapObjectsBlocks[currblocktypecount] = tilemap;
+                }
+                else if (block is ObjectAnimationOverlayInfoBlock obj)
+                {
+                    ObjAnimBlocks[currblocktypecount] = obj;
+                }
+                else if (block is TextureMappingBlock text)
+                {
+                    TextMapBlocks[currblocktypecount] = text;
+                }
+                else if (block is MapNotesBlock map)
+                {
+                    MapNotesBlocks[currblocktypecount] = map;
+                }
+                else if (block is AutomapInfosBlock automap)
+                {
+                    AutomapBlocks[currblocktypecount] = automap;
+                }
+                
                 currblocktypecount++;
-                if (currblocktypecount >= NumOfLevels) // TODO: looks like I could do a % here. Think better
+                // Resets currblocktypecount when going from one block type to another
+                if (currblocktypecount >= NumOfLevels) // TODO: looks like I could do a % here. Think more
                 {
                     currblocktypecount = 0;
                     currblocktype++;
@@ -181,16 +213,20 @@ namespace Randomizer
             return blockBuffer;
         }
 
+        /// <summary>
+        /// Function that returns a Block object of a class depending on the position of the block in LEV.ARK. 
+        /// </summary>
+        /// <param name="BlockNum"></param>
+        /// <param name="BlockType"></param>
+        /// <param name="levelnumber"></param>
+        /// <returns></returns>
         public Block GetBlock(short BlockNum, Sections BlockType, int levelnumber = -1)
         {
             int BlockLength;
-            if (BlockType == Sections.map_notes)
+            if ((BlockType == Sections.map_notes) | (BlockType == Sections.automap_infos))
             {
                 // TODO: When I'm less tired, check if this will go back in the last block.
-                // Here I'm assuming the map notes are of variable length. I should test and see if that's the case.
                 BlockLength = header.BlockOffsets[BlockNum + 1] - header.BlockOffsets[BlockNum];
-                //BlockLength = TotalBlockLength - BlockLengths[Sections.level_tilemap_objlist] - BlockLengths[Sections.object_anim_overlay_info] -
-                //    BlockLengths[Sections.automap_infos];
             }
             else
             {
@@ -218,18 +254,25 @@ namespace Randomizer
             }
         }
 
-        static byte[] LoadArkfile(string path = Settings.DefaultArkPath)
+        static byte[] LoadArkfile(string? path = null)
         {
+            if (path is null)
+            {
+                path = Settings.DefaultArkPath;
+            }
             return System.IO.File.ReadAllBytes(path);
         }
 
-    public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string extraInfo = "")
+    public string? SaveBuffer(string? basePath = null, string extraInfo = "")
         {
+            if (basePath is null)
+            {
+                basePath = Settings.DefaultArkPath;
+            }
             if (extraInfo.Length == 0)
             {
                 extraInfo = $@"NEWLEV.ARK";
             }
-
             return StdSaveBuffer(arkbuffer, basePath, extraInfo);
         }
 

@@ -370,16 +370,13 @@ namespace Randomizer
 
         #endregion
 
-        public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK",
-            string extraInfo = "")
+        public override string? SaveBuffer(string? basePath = null, string extraInfo = "")
         {
-            if (extraInfo.Length == 0)
+            if (basePath is null)
             {
-                extraInfo = $@"_TILEOBJBUFFER_{LevelNumber}";
+                basePath = Settings.DefaultBinaryTestsPath;
             }
-
-            return StdSaveBuffer(blockbuffer, basePath, extraInfo);
-
+            return base.SaveBuffer(basePath, extraInfo.Length == 0 ? $@"_TileMapObjList_{LevelNumber}" : extraInfo);
         }
     }
 }
