@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NUnit.Framework;
 using Randomizer;
 namespace RandomizerUnitTests;
@@ -8,11 +9,11 @@ class ArkLoaderTest
     [Test]
     public void CompareLoadSerialize() 
     {
-        var AL = new ArkLoader(@"D:\Dropbox\UnderworldStudy\UW\DATA\LEV.ARK");
+        var AL = new ArkLoader(Settings.DefaultArkPath);
         Assert.True(AL.CompareCurrentArkWithHash());
         AL.arkbuffer = AL.ReconstructBufferFromBlocks();
-        AL.SaveBuffer(@"D:\Dropbox\UnderworldStudy\UW\DATA");
-        var AL2 = new ArkLoader($@"D:\Dropbox\UnderworldStudy\UW\DATA\NEWLEV.ARK");
+        string savedpath = AL.SaveBuffer(Path.GetDirectoryName(Settings.DefaultArkPath));
+        var AL2 = new ArkLoader(savedpath);
         Assert.True(AL2.CompareCurrentArkWithHash());
 
         for (int i = 0; i < AL.arkbuffer.Length; i++)
