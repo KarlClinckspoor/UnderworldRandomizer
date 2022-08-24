@@ -1,9 +1,8 @@
 ﻿using static Randomizer.Utils;
-using System.Diagnostics;
 
 namespace Randomizer
 {
-    public class TextureMappingBlock: Block, ISaveBinary
+    public class TextureMappingBlock: Block
     {
         public static new int TotalBlockLength = 0x007a;
 
@@ -14,14 +13,9 @@ namespace Randomizer
             LevelNumber = levelnumber;
         }
 
-    public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string extraInfo = "")
+    public override string? SaveBuffer(string? basePath = null, string extraInfo = "")
     {
-        if (extraInfo.Length == 0)
-        {
-            extraInfo = $@"_TEXMAP_{LevelNumber}";
-        }
-
-        return StdSaveBuffer(blockbuffer, basePath, extraInfo);
+        return base.SaveBuffer(basePath, extraInfo.Length == 0 ? $@"_TEXMAP_{LevelNumber}" : extraInfo);
     }
-    }
+}
 }
