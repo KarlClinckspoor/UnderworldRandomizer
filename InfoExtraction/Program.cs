@@ -32,5 +32,16 @@ class Program
         extractor.ExtractBlocks();
         Console.WriteLine("Saving Tilemap and object data");
         extractor.ExtractTileMapObjectBlocks();
+        Console.WriteLine("Saving ObjAnimBlocks");
+        extractor.ExtractObjAnimBlocks();
+        Console.WriteLine("Saving TextMapBlocks");
+        extractor.ExtractTextMapBlocks();
+        Console.WriteLine("Saving AutomapBlocks");
+        extractor.ExtractAutomapBlocks();
+        Console.WriteLine("Saving MapNotesBlocks");
+        extractor.ExtractMapNotesBlocks();
+        
+        Console.WriteLine("Saving each tile");
+        extractor.ExtractTiles();
     }
 }
