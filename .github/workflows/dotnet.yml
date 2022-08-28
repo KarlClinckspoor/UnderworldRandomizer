@@ -7,11 +7,10 @@ jobs:
   tests:
     strategy:
       matrix:
-        platform: [ubuntu-latest, windows-latest]
+        platform: [windows-latest]
     name: Unit Testing
     runs-on: ${{ matrix.platform }}
-#      - windows-latest
-#      - ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET
