@@ -42,6 +42,7 @@ public class TestTileInfo
     }
 
     // todo: break up this massive test. Remove hardcoded paths
+    [Category("RequiresSettings")]
     [Test]
     public void SavingBufferAndReloading()
     {

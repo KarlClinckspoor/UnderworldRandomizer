@@ -22,4 +22,4 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Debug
       - name: Test 
-        run: dotnet test --no-restore --verbosity normal --filter "Category!=RequiresArk"
+        run: dotnet test --no-restore --verbosity normal --filter "Category!=RequiresArk&Category!=RequiresSettings"
