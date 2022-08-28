@@ -4,6 +4,7 @@ using static Randomizer.Settings;
 
 namespace RandomizerUnitTests;
 
+[Category("RequiresArk")]
 public class HeaderTestUW1
 {
     private ArkLoader AL;

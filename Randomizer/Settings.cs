@@ -30,8 +30,12 @@ public static class Settings
         }
         catch (FileNotFoundException e)
         {
-            Console.WriteLine("UWRandomizerSettings.json file not found!");
-            throw;
+            #if !DEBUG
+                Console.WriteLine("UWRandomizerSettings.json file not found!");
+                throw;
+            #else
+                Console.WriteLine("UWRandomizerSettings.json file not found! If you're testing, ignore.");
+            #endif
         }
 
 
