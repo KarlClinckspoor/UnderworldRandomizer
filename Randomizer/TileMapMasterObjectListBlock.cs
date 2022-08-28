@@ -72,7 +72,7 @@ namespace Randomizer
 
         public void PopulateStaticObjectInfoArrFromBuffer()
         {
-            for (int i = 0; i < StaticObjectNum; i++)
+            for (short i = 0; i < StaticObjectNum; i++)
             {
                 byte[] currbuffer =
                     StaticObjectInfoBuffer[(i * GameObject.TotalLength)..((i + 1) * GameObject.TotalLength)];

@@ -13,7 +13,7 @@ namespace Randomizer
         public const int BaseLength = InfoNum * InfoSize;
         public const int ExtraLength = 0;
         public const int TotalLength = BaseLength + ExtraLength;
-        public int IdxAtObjectArray;
+        public short IdxAtObjectArray;
 
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
@@ -28,7 +28,7 @@ namespace Randomizer
 
         // todo: Rider is complaining about the virtual methods. Check if this will be negatively affected here.
         // If not, then just re-implement the methods in this and the derived classes.
-        public GameObject(byte[] buffer, int idxAtObjArray)
+        public GameObject(byte[] buffer, short idxAtObjArray)
         {
             // Debug.Assert(buffer.Length == TotalLength);
             this.Buffer = buffer;
@@ -158,10 +158,10 @@ namespace Randomizer
             set { quality_chainField = (short)SetBits(quality_chainField, value, 0b111111, 0); UpdateBuffer(); }
         }
 
-        public byte next
+        public short next
         {
             // get { return (byte) ((quality_chainField >> 6) & 0b1111111111); }
-            get { return (byte)GetBits(quality_chainField, 0b1111111111, 6); }
+            get { return (short)GetBits(quality_chainField, 0b1111111111, 6); }
             set { quality_chainField = (short)SetBits(quality_chainField, value, 0b1111111111, 6); UpdateBuffer(); }
         }
 
@@ -303,7 +303,7 @@ namespace Randomizer
             set { objid_flagsField = (short)SetBits(objid_flagsField, value, 0b1111111, 9); }
         }
 
-        public TexturedGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        public TexturedGameObject(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public TexturedGameObject(short objid_flagsField, short positionField, short quality_chainField,
@@ -333,7 +333,7 @@ namespace Randomizer
             }
         }
 
-        public QuantityGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        public QuantityGameObject(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public QuantityGameObject(short objid_flagsField, short positionField,
@@ -366,7 +366,7 @@ namespace Randomizer
             }
         }
         
-        public SpecialPropertyGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        public SpecialPropertyGameObject(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public SpecialPropertyGameObject(short objid_flagsField, short positionField, short quality_chainField,
@@ -384,7 +384,7 @@ namespace Randomizer
             set { link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
         }
         
-        public SpecialLinkGameObject(byte[] buffer, int idx) : base(buffer, idx)
+        public SpecialLinkGameObject(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public SpecialLinkGameObject(short objid_flagsField, short positionField, short quality_chainField,
@@ -427,7 +427,7 @@ namespace Randomizer
             } // todo: these will UpdateBuffer too right?
         }
 
-        public EnchantedObject(byte[] buffer, int idx) : base(buffer, idx)
+        public EnchantedObject(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public EnchantedObject(short objid_flagsField, short positionField, short quality_chainField,
@@ -460,7 +460,7 @@ namespace Randomizer
             } // todo: these will UpdateBuffer too right?
         }
 
-        public EnchantedWeapon(byte[] buffer, int idx) : base(buffer, idx)
+        public EnchantedWeapon(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public EnchantedWeapon(short objid_flagsField, short positionField, short quality_chainField,
@@ -485,7 +485,7 @@ namespace Randomizer
             set { Enchantment = value - 256 - 16; } // todo: these will UpdateBuffer too right?
         }
 
-        public EnchantedArmor(byte[] buffer, int idx) : base(buffer, idx)
+        public EnchantedArmor(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public EnchantedArmor(short objid_flagsField, short positionField, short quality_chainField,
@@ -505,7 +505,7 @@ namespace Randomizer
 
         public GameObject SpellObject;
 
-        public EnchantedWand(byte[] buffer, int idx) : base(buffer, idx)
+        public EnchantedWand(byte[] buffer, short idx) : base(buffer, idx)
         { }
 
         public EnchantedWand(short objid_flagsField, short positionField, short quality_chainField,
