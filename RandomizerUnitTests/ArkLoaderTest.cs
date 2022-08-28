@@ -7,6 +7,7 @@ namespace RandomizerUnitTests;
 class ArkLoaderTest
 {
     [Test]
+    [Category("RequiresArk")]
     public void CompareLoadSerialize() 
     {
         var AL = new ArkLoader(Settings.DefaultArkPath);
