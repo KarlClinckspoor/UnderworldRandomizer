@@ -24,8 +24,7 @@ public class UWLinkedList
     /// <param name="item">Item to add at end of list</param>
     public void Add(GameObject item)
     {
-        // TODO: Check if the next item should be a byte or a short!
-        objects[^1].next = (byte) item.IdxAtObjectArray;
+        objects[^1].next =  item.IdxAtObjectArray;
         objects.Add(item);
     }
 
@@ -58,8 +57,7 @@ public class UWLinkedList
         }
         else
         {
-            // TODO: Check if the next item should be a byte or a short!
-            objects[position - 1].next = (byte) objects[position + 1].IdxAtObjectArray;
+            objects[position - 1].next = objects[position + 1].IdxAtObjectArray;
         }
 
         return item;
@@ -177,7 +175,7 @@ public class UWLinkedList
 
         for (int i = 0; i < objects.Count; i++)
         {
-            objects[i].next = (byte) objects[i + 1].IdxAtObjectArray;
+            objects[i].next =  objects[i + 1].IdxAtObjectArray;
         }
     }
     

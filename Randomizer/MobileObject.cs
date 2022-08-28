@@ -173,7 +173,7 @@ namespace Randomizer
         }
         
         // todo: don't forget to check if these calls to virtual functions will mess stuff up.
-        public MobileObject(byte[] buffer, int idx)
+        public MobileObject(byte[] buffer, short idx)
         {
             // Debug.Assert(buffer.Length == TotalLength);
             this.Buffer = buffer;
@@ -183,7 +183,7 @@ namespace Randomizer
 
         public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
-            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, int idx)
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
         {
             baseBuffer.CopyTo(Buffer, 0);
             byte[] extra = new byte[ExtraLength]
@@ -214,7 +214,7 @@ namespace Randomizer
         }
         public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
-            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, int idx)
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
         {
             byte[] baseBuffer = new byte[BaseLength];
             BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2*0);
