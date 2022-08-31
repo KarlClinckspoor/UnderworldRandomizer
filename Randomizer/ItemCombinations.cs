@@ -5,22 +5,77 @@ namespace Randomizer;
 public class CombinationsFile// : ISaveBinary
 {
     public List<ItemCombination> Combinations;
-    public string Path;
+    private string _path;
+    public byte[] Buffer;
 
     public CombinationsFile(string path)
     {
-        throw new NotImplementedException();
+        _path = path;
+        ReadFileIntoBuffer();
+        ProcessCombinations();
     }
 
-    public bool SaveCombinations(string? path)
+    [MemberNotNull(nameof(Buffer))]
+    private void ReadFileIntoBuffer()
     {
-        throw new NotImplementedException();
+        if (!File.Exists(_path))
+        {
+            throw new FileNotFoundException("Could not read 'CMB.DAT' or equivalent!");
+        }
+
+        Buffer = File.ReadAllBytes(_path);
+        ProcessCombinations();
+    }
+
+    [MemberNotNull(nameof(Combinations))]
+    private void ProcessCombinations()
+    {
+        Combinations = new List<ItemCombination>();
+        if (BitConverter.ToInt64(Buffer[^6..]) != 0) // Doesn't end in 0s
+        {
+            throw new ArithmeticException("Buffer does not end in six bytes of 0s!");
+        }
+        
+        for (int i = 0; i < Buffer.Length - ItemCombination.Size; i += ItemCombination.Size)
+        {
+            byte[] buf = Buffer[i..(i + ItemCombination.Size)];
+            Combinations.Add(new ItemCombination(Buffer[i..(i+ItemCombination.Size)]));
+        }
+        Combinations.Add(new FinalCombination());
+    }
+
+    public string SaveCombinations(string? path)
+    {
+        path ??= _path;
+        if (File.Exists(path))
+            Console.WriteLine("Overwriting file");
+        File.WriteAllBytes(path, Buffer);
+        
+        return path;
+    }
+
+    private void UpdateBuffer()
+    {
+        Buffer = new byte[Combinations.Count * ItemCombination.Size];
+        int i = 0;
+        foreach (var comb in Combinations)
+        {
+            comb.Buffer.CopyTo(Buffer, i * ItemCombination.Size);
+            i++; // Oh how I wish for an `enumerate` in C#.
+        }
+    }
+
+    public void AddCombination(ItemCombination comb)
+    {
+        Combinations.Insert(Combinations.Count - 2, comb); // Inserts before null
+        UpdateBuffer();
     }
 }
 
 public class ItemCombination: ISaveBinary
 {
     public const int NumOfItemsInCombination = 3;
+    public const int Size = NumOfItemsInCombination * ItemDescriptor.size;
     
     public byte[] Buffer = new byte[NumOfItemsInCombination * ItemDescriptor.size];
     public ItemDescriptor FirstItem;
@@ -66,7 +121,7 @@ public class FinalCombination: ItemCombination
 /// </summary>
 public class ItemDescriptor
 {
-    public static int size = 2; // In bytes
+    public const int size = 2; // In bytes
     public byte[] buffer;
     private short entry;
 
