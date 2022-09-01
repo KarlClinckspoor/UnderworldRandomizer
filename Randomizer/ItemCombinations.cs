@@ -153,7 +153,7 @@ public class ItemDescriptor
 
         if (isDestroyed)
         {
-            entry |= 0x80;
+            entry |= 0x8000;
         }
         
         UpdateBuffer();
