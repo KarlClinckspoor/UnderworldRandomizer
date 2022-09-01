@@ -24,14 +24,14 @@ public class CombinationsFile// : ISaveBinary
         }
 
         Buffer = File.ReadAllBytes(_path);
-        ProcessCombinations();
     }
 
     [MemberNotNull(nameof(Combinations))]
     private void ProcessCombinations()
     {
         Combinations = new List<ItemCombination>();
-        if (BitConverter.ToInt64(Buffer[^6..]) != 0) // Doesn't end in 0s
+        // if (BitConverter.ToInt64(Buffer[^6..]) != 0) // Doesn't end in 0s
+        if (Buffer[^6] != 0 | Buffer[^5] != 0 | Buffer[^4] != 0| Buffer[^3] != 0 | Buffer[^2] != 0 | Buffer[^1] != 0) // Doesn't end in 0s
         {
             throw new ArithmeticException("Buffer does not end in six bytes of 0s!");
         }
@@ -67,7 +67,23 @@ public class CombinationsFile// : ISaveBinary
 
     public void AddCombination(ItemCombination comb)
     {
-        Combinations.Insert(Combinations.Count - 2, comb); // Inserts before null
+        Combinations.Insert(Combinations.Count - 1, comb); // Inserts before null
+        UpdateBuffer();
+    }
+
+    public void RemoveCombination(int idx)
+    {
+        if (idx == Combinations.Count - 1)
+        {
+            Console.WriteLine("Can't remove final combination!");
+            return;
+        }
+
+        if (idx >= Combinations.Count | idx < 0)
+        {
+            Console.WriteLine("Invalid bounds");
+        }
+        Combinations.RemoveAt(idx);
         UpdateBuffer();
     }
 }
@@ -123,12 +139,12 @@ public class ItemDescriptor
 {
     public const int size = 2; // In bytes
     public byte[] buffer;
-    private short entry;
+    private ushort entry;
 
-    private short itemID;     // TODO: Make this a property. When set, modify buffer
-    private bool IsDestroyed; // TODO: Make this a property. When set, modify buffer
+    public ushort itemID;     // TODO: Make this a property. When set, modify buffer
+    public bool IsDestroyed; // TODO: Make this a property. When set, modify buffer
 
-    public ItemDescriptor(short itemID, bool isDestroyed)
+    public ItemDescriptor(ushort itemID, bool isDestroyed)
     {
         this.itemID = itemID;
         this.IsDestroyed = isDestroyed;
@@ -165,16 +181,16 @@ public class ItemDescriptor
 
     public void UpdateEntry()
     {
-        entry = BitConverter.ToInt16(buffer);
+        entry = BitConverter.ToUInt16(buffer);
 
         // IsDestroyed = (buffer[0] & 0x8) == 1;
-        IsDestroyed = GetBits(entry, 0x80, 0) == 1; // TODO: check this, I always forget how my functions work.
+        IsDestroyed = entry >> 15 == 1;
 
         // Removing first bit by shifting left and right. Note that shifts convert into ints!
-        itemID = (short) ( ((short) (entry << 1)) >> 1);
+        itemID = (ushort) ( ((short) (entry << 1)) >> 1);
 
         // Is this easier?
-        itemID = (short) GetBits(entry, 0x7FFF, 0);
+        itemID = (ushort) GetBits(entry, 0x7FFF, 0);
     }
     
 }
