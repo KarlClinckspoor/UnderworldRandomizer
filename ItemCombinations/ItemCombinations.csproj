@@ -5,6 +5,11 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageVersion>0.1.1</PackageVersion>
+        <Title>ItemCombinations</Title>
+        <Authors>Karl Jan clinckspoor</Authors>
+        <Description>Small program to edit CMB.DAT of UW1.</Description>
+        <RepositoryUrl>https://github.com/KarlClinckspoor/UnderworldRandomizer/</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
