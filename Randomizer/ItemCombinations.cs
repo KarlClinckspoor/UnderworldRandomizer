@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using static Randomizer.Utils;
 namespace Randomizer;
 
@@ -54,6 +55,7 @@ public class CombinationsFile// : ISaveBinary
         return path;
     }
 
+    [MemberNotNull(nameof(Buffer))]
     private void UpdateBuffer()
     {
         Buffer = new byte[Combinations.Count * ItemCombination.Size];
@@ -86,14 +88,55 @@ public class CombinationsFile// : ISaveBinary
         Combinations.RemoveAt(idx);
         UpdateBuffer();
     }
+
+    public CombinationsFile(List<ItemCombination> combinations, string path = "CMB.DAT")
+    {
+        this.Combinations = combinations;
+        this._path = path;
+        UpdateBuffer();
+    }
+
+    /// <summary>
+    /// Checks if the file ends with 3 zeros as combinations
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckEnding() // TODO: this is a bit redundant with the function above.
+    {
+        return Combinations[^1].FirstItem.itemID == 0 &
+               Combinations[^1].SecondItem.itemID == 0 &
+               Combinations[^1].Product.itemID == 0;
+    }
+
+            
+    /// <summary>
+    /// Checks if at least one item is destroyed upon combination
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckConsistency()
+    {
+        // return Combinations.All(cmb => cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed);
+        foreach (var cmb in Combinations)
+        {
+            if (!(cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed) & (cmb.FirstItem.itemID != 0 & cmb.SecondItem.itemID != 0 & cmb.Product.itemID != 0))
+            {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
 }
 
 public class ItemCombination: ISaveBinary
 {
+    [JsonIgnore]
     public const int NumOfItemsInCombination = 3;
+    [JsonIgnore]
     public const int Size = NumOfItemsInCombination * ItemDescriptor.size;
-    
+    [JsonIgnore]
     public byte[] Buffer = new byte[NumOfItemsInCombination * ItemDescriptor.size];
+
     public ItemDescriptor FirstItem;
     public ItemDescriptor SecondItem;
     public ItemDescriptor Product;
@@ -106,6 +149,7 @@ public class ItemCombination: ISaveBinary
         Product = new ItemDescriptor(buffer[(ItemDescriptor.size * 2)..(ItemDescriptor.size * 3)]);
     }
 
+    [JsonConstructor]
     public ItemCombination(ItemDescriptor firstItem, ItemDescriptor secondItem, ItemDescriptor product)
     {
         FirstItem = firstItem;
@@ -137,13 +181,17 @@ public class FinalCombination: ItemCombination
 /// </summary>
 public class ItemDescriptor
 {
+    [JsonIgnore]
     public const int size = 2; // In bytes
+    [JsonIgnore]
     public byte[] buffer;
+    [JsonIgnore]
     private ushort entry;
 
-    public ushort itemID;     // TODO: Make this a property. When set, modify buffer
-    public bool IsDestroyed; // TODO: Make this a property. When set, modify buffer
+    public ushort itemID;
+    public bool IsDestroyed;
 
+    [JsonConstructor]
     public ItemDescriptor(ushort itemID, bool isDestroyed)
     {
         this.itemID = itemID;
@@ -197,11 +245,14 @@ public class ItemDescriptor
 
 public class FinalEntry : ItemDescriptor
 {
+    [JsonIgnore]
     public new byte[] buffer = {0, 0};
+    [JsonIgnore]
     private short entry = 0;
     private short itemID = 0;
     private bool IsDestroyed = false;
 
+    [JsonConstructor]
     public FinalEntry(short itemID, bool isDestroyed): this()
     { }
 

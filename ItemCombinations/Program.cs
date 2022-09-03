@@ -25,8 +25,7 @@ class TUICombinations
     private void Load()
     {
         Console.WriteLine("Loading item names");
-        var opt = new JsonSerializerOptions();
-        opt.PropertyNameCaseInsensitive = true;
+        var opt = new JsonSerializerOptions() {PropertyNameCaseInsensitive = true, IncludeFields = true};
         IDsAndNames = JsonSerializer.Deserialize<List<JsonEntry>>(File.ReadAllText("objects.json"), opt) ?? throw new InvalidOperationException();
         
         Console.WriteLine("Please input CMB.DAT file path [nothing for CWD]");
@@ -138,9 +137,11 @@ class TUICombinations
                               "(R)emove combination\n" +
                               "(D)isplay all item IDs\n" +
                               "(S)ave changes\n" +
+                              "(E)xport as JSON\n" +
+                              "(I)mport from JSON\n" +
                               "(Q)uit");
             string choice = Console.ReadLine() ?? throw new InvalidOperationException();
-            var validChoices = new List<string> {"P", "A", "D", "Q", "S", "R"};
+            var validChoices = new List<string> {"P", "A", "D", "Q", "S", "R", "E", "I"};
             choice = choice.ToUpper();
             if (!validChoices.Contains(choice))
             {
@@ -169,8 +170,50 @@ class TUICombinations
                 case "R":
                     RemoveCombination();
                     break;
+                case "E":
+                    ExportAsJson();
+                    break;
+                case "I":
+                    ImportFromJson();
+                    break;
             }
         }
+    }
+
+    // TODO: Move this to CombinationsFile
+    private void ExportAsJson()
+    {
+        string filename = "CMB.DAT.json";
+        string json = JsonSerializer.Serialize(this._cmb.Combinations, options:new JsonSerializerOptions(){WriteIndented = true, IncludeFields = true});
+        File.WriteAllText(filename, json);
+        Console.WriteLine("Exported as \"CMB.DAT.json\"");
+    }
+
+    // TODO: Move this to CombinationsFile
+    private void ImportFromJson()
+    {
+        string filename = "CMB.DAT.json";
+        var temp = JsonSerializer.Deserialize<List<ItemCombination>>(File.ReadAllText(filename),
+                       options: new JsonSerializerOptions()
+                           {IncludeFields = true, PropertyNameCaseInsensitive = true}) ??
+                   throw new InvalidOperationException();
+        var file = new CombinationsFile(temp, "CMB.DAT");
+        if (!file.CheckConsistency())
+        {
+            Console.WriteLine("One of the combinations has both items preserved. This won't work. Consider editing to remove that combination");
+        }
+
+        if (!file.CheckEnding())
+        {
+            Console.WriteLine("The file doesn't end in zeros. Trying to fix...");
+            file.AddCombination(new FinalCombination());
+            Console.WriteLine("Done");
+        }
+
+        file.Combinations[^1] = new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
+
+        _cmb = file;
+        Console.WriteLine("Loaded");
     }
 
     private void RemoveCombination()
