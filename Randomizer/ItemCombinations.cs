@@ -231,7 +231,7 @@ public class ItemDescriptor
     [JsonIgnore]
     private ushort entry;
 
-    public ushort itemID;
+    public ushort itemID; // TODO: Make this into a property so someone can alter it and update buffer and entry
     public bool IsDestroyed;
 
     [JsonConstructor]
@@ -265,22 +265,15 @@ public class ItemDescriptor
     }
 
     [MemberNotNull(nameof(buffer))] // Tells compiler UpdateBuffer assures buffer isn't null.
-    public void UpdateBuffer()
+    private void UpdateBuffer()
     {
         buffer = BitConverter.GetBytes(entry);
     }
 
-    public void UpdateEntry()
+    private void UpdateEntry()
     {
         entry = BitConverter.ToUInt16(buffer);
-
-        // IsDestroyed = (buffer[0] & 0x8) == 1;
         IsDestroyed = entry >> 15 == 1;
-
-        // Removing first bit by shifting left and right. Note that shifts convert into ints!
-        itemID = (ushort) ( ((short) (entry << 1)) >> 1);
-
-        // Is this easier?
         itemID = (ushort) GetBits(entry, 0x7FFF, 0);
     }
     
@@ -288,12 +281,12 @@ public class ItemDescriptor
 
 public class FinalEntry : ItemDescriptor
 {
-    [JsonIgnore]
     public new byte[] buffer = {0, 0};
-    [JsonIgnore]
     private short entry = 0;
-    private short itemID = 0;
-    private bool IsDestroyed = false;
+    [JsonInclude]
+    public short itemID = 0;
+    [JsonInclude]
+    public bool IsDestroyed = false;
 
     [JsonConstructor]
     public FinalEntry(short itemID, bool isDestroyed): this()
