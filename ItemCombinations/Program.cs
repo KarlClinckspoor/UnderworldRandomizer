@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Randomizer;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ItemCombinations;
 
@@ -59,9 +60,9 @@ class TUICombinations
             string destroy3 = combination.Product.IsDestroyed ? "*" : "";
             
             Console.WriteLine(
-                $"{i}: ({id1}){IDsAndNames[id1].Name}{destroy1}+" +
-                $"({id2}){IDsAndNames[id2].Name}{destroy2}=" +
-                $"({prod}){IDsAndNames[prod].Name}{destroy3}"
+                $"{i}: ({id1}:0x{id1:X}){IDsAndNames[id1].Name}{destroy1}+" +
+                $"({id2}:0x{id1:X}){IDsAndNames[id2].Name}{destroy2}=" +
+                $"({prod}:0x{id1:X}){IDsAndNames[prod].Name}{destroy3}"
             );
             i++;
         }
@@ -71,7 +72,7 @@ class TUICombinations
     {
         foreach (var IDItem in IDsAndNames)
         {
-            Console.WriteLine($"{IDItem.ItemID}:{IDItem.Name}");
+            Console.WriteLine($"{IDItem.ID}(0x{IDItem.ID:X}):{IDItem.Name}");
         }
     }
 
@@ -177,8 +178,7 @@ class TUICombinations
         PrintExistingCombinations();
         Console.WriteLine("Which combination do you want to remove?");
         string choice = Console.ReadLine() ?? throw new InvalidOperationException();
-        int val;
-        if (Int32.TryParse(choice, out val))
+        if (int.TryParse(choice, out int val))
         {
             _cmb.RemoveCombination(val);
             Console.WriteLine("Removed!");
@@ -201,18 +201,20 @@ class TUICombinations
 
 class JsonEntry
 {
+    public int ID { get; set; }
     public string ItemID { get; set; }
     public string Name { get; set; }
-    public string Unk1 { get; set; }
-    public string Unk2 { get; set; }
-    public string Unk3 { get; set; }
-    public string Unk4 { get; set; }
-    public string Unk5 { get; set; }
-    public string Unk6 { get; set; }
-    public string Unk7 { get; set; }
-    public string Unk8 { get; set; }
-    public string Unk9 { get; set; }
-    public string Unk10 { get; set; }
+
+    [JsonConstructor]
+    public JsonEntry(string ItemID, string Name)
+    {
+        if (int.TryParse(ItemID, out int temp))
+        {
+            this.ID = temp;
+        }
+
+        this.Name = Name;
+    }
 
 }
        
