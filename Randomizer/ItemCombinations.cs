@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using static Randomizer.Utils;
 namespace Randomizer;
@@ -126,6 +127,48 @@ public class CombinationsFile// : ISaveBinary
         return true;
 
     }
+    
+    public void ExportAsJson(string filename)
+    {
+        string json = JsonSerializer.Serialize(Combinations,
+            options: new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                IncludeFields = true
+            });
+        File.WriteAllText(filename, json);
+    }
+    
+    public static CombinationsFile ImportFromJson(string filename)
+    {
+        var temp = JsonSerializer.Deserialize<List<ItemCombination>>(File.ReadAllText(filename),
+                       options: new JsonSerializerOptions()
+                       {
+                           IncludeFields = true,
+                           PropertyNameCaseInsensitive = true
+                       }) ??
+                   throw new InvalidOperationException();
+        
+        var file = new CombinationsFile(temp, "CMB.DAT");
+        
+        if (!file.CheckConsistency())
+        {
+            Console.WriteLine("One of the combinations has both items preserved. This won't work. Consider editing to remove that combination");
+        }
+
+        if (!file.CheckEnding())
+        {
+            Console.WriteLine("The file doesn't end in zeros. Trying to fix...");
+            file.AddCombination(new FinalCombination());
+            Console.WriteLine("Done");
+        }
+
+        file.Combinations[^1] = new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
+
+        return file;
+    }
+    
+    
 }
 
 public class ItemCombination: ISaveBinary

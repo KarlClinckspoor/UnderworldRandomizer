@@ -180,39 +180,25 @@ class TUICombinations
         }
     }
 
-    // TODO: Move this to CombinationsFile
     private void ExportAsJson()
     {
-        string filename = "CMB.DAT.json";
-        string json = JsonSerializer.Serialize(this._cmb.Combinations, options:new JsonSerializerOptions(){WriteIndented = true, IncludeFields = true});
-        File.WriteAllText(filename, json);
-        Console.WriteLine("Exported as \"CMB.DAT.json\"");
+        Console.WriteLine("Exporting. What will be the filename? (nothing for CMB.DAT.json)");
+        string choice = Console.ReadLine() ?? throw new InvalidOperationException();
+        if (choice.Length == 0)
+            choice = "CMB.DAT.json";
+        this._cmb.ExportAsJson(choice);
+        Console.WriteLine($"Exported as \"{choice}\"");
     }
 
-    // TODO: Move this to CombinationsFile
     private void ImportFromJson()
     {
-        string filename = "CMB.DAT.json";
-        var temp = JsonSerializer.Deserialize<List<ItemCombination>>(File.ReadAllText(filename),
-                       options: new JsonSerializerOptions()
-                           {IncludeFields = true, PropertyNameCaseInsensitive = true}) ??
-                   throw new InvalidOperationException();
-        var file = new CombinationsFile(temp, "CMB.DAT");
-        if (!file.CheckConsistency())
+        Console.WriteLine("What is the filename to load (default is \"CMB.DAT.json\")");
+        string filename = Console.ReadLine() ?? throw new InvalidOperationException();
+        if (filename.Length == 0)
         {
-            Console.WriteLine("One of the combinations has both items preserved. This won't work. Consider editing to remove that combination");
+            filename = "CMB.DAT.json";
         }
-
-        if (!file.CheckEnding())
-        {
-            Console.WriteLine("The file doesn't end in zeros. Trying to fix...");
-            file.AddCombination(new FinalCombination());
-            Console.WriteLine("Done");
-        }
-
-        file.Combinations[^1] = new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
-
-        _cmb = file;
+        _cmb = CombinationsFile.ImportFromJson(filename);
         Console.WriteLine("Loaded");
     }
 
