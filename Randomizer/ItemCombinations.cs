@@ -231,29 +231,42 @@ public class ItemDescriptor
     [JsonIgnore]
     private ushort entry;
 
-    public ushort itemID; // TODO: Make this into a property so someone can alter it and update buffer and entry
-    public bool IsDestroyed;
+    public ushort itemID
+    {
+        get
+        {
+            return (ushort) GetBits(entry, 0x3FF, 0);
+        }
+        set
+        {
+            entry = (ushort) SetBits(entry, value, 0x3FF, 0);
+        }
+    }
+
+    public bool IsDestroyed
+    {
+        get
+        {
+            return entry >> 15 == 1;
+        }
+        set
+        {
+            entry = (ushort) SetBits(entry, value? 1:0, 0b1, 15);
+        }
+    }
 
     [JsonConstructor]
     public ItemDescriptor(ushort itemID, bool isDestroyed)
     {
         this.itemID = itemID;
         this.IsDestroyed = isDestroyed;
-
-        entry |= itemID;
-
-        if (isDestroyed)
-        {
-            entry |= 0x8000;
-        }
-        
-        UpdateBuffer();
+        buffer = BitConverter.GetBytes(entry);
     }
 
     public ItemDescriptor(byte[] buffer)
     {
         this.buffer = buffer;
-        UpdateEntry();
+        entry = BitConverter.ToUInt16(buffer);
     }
 
     public ItemDescriptor()
@@ -263,20 +276,6 @@ public class ItemDescriptor
         itemID = 0;
         IsDestroyed = false;
     }
-
-    [MemberNotNull(nameof(buffer))] // Tells compiler UpdateBuffer assures buffer isn't null.
-    private void UpdateBuffer()
-    {
-        buffer = BitConverter.GetBytes(entry);
-    }
-
-    private void UpdateEntry()
-    {
-        entry = BitConverter.ToUInt16(buffer);
-        IsDestroyed = entry >> 15 == 1;
-        itemID = (ushort) GetBits(entry, 0x7FFF, 0);
-    }
-    
 }
 
 public class FinalEntry : ItemDescriptor

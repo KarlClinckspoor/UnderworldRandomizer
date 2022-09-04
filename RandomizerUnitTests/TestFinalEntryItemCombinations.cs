@@ -32,11 +32,10 @@ public class TestFinalEntry
     {
         var entry = new FinalEntry();
         var json = JsonSerializer.Serialize(entry, options: new JsonSerializerOptions() {WriteIndented = true});
-        var expectedJson = 
-@"{
+        var expectedJson = @"{
   ""itemID"": 0,
   ""IsDestroyed"": false
-}";  
+}";
         Assert.True(json == expectedJson);
     }
 }
@@ -58,16 +57,29 @@ public class TestItemDescriptor
     {
         var itemDescriptor = new ItemDescriptor(1, false);
         var itemDescriptor2 = new ItemDescriptor(1, true);
-        
+
         Assert.True(itemDescriptor.itemID == 1);
         Assert.True(itemDescriptor.IsDestroyed == false);
         Assert.True(itemDescriptor.buffer[0] == 1);
         Assert.True(itemDescriptor.buffer[1] == 0);
-        
+
         Assert.True(itemDescriptor2.itemID == 1);
         Assert.True(itemDescriptor2.IsDestroyed == true);
         Assert.True(itemDescriptor2.buffer[0] == 1);
         Assert.True(itemDescriptor2.buffer[1] == 0x80);
+
+        var itemDescriptor3 = new ItemDescriptor(300, false);
+        var itemDescriptor4 = new ItemDescriptor(300, true);
+
+        Assert.True(itemDescriptor3.itemID == 300); // Testing outside the limit of 1 byte
+        Assert.True(itemDescriptor3.IsDestroyed == false);
+        Assert.True(itemDescriptor3.buffer[0] == 0b0010_1100);
+        Assert.True(itemDescriptor3.buffer[1] == 0b0000_0001);
+
+        Assert.True(itemDescriptor4.itemID == 300);
+        Assert.True(itemDescriptor4.IsDestroyed == true);
+        Assert.True(itemDescriptor4.buffer[0] == 0b0010_1100);
+        Assert.True(itemDescriptor4.buffer[1] == 0b1000_0001);
     }
 
     [Test]
@@ -75,18 +87,11 @@ public class TestItemDescriptor
     {
         var itemDescriptor = new ItemDescriptor(new byte[] {1, 0});
         var itemDescriptor2 = new ItemDescriptor(new byte[] {1, 0x80});
-        
+
         Assert.True(itemDescriptor.itemID == 1);
         Assert.True(itemDescriptor.IsDestroyed == false);
-        
+
         Assert.True(itemDescriptor2.itemID == 1);
         Assert.True(itemDescriptor2.IsDestroyed == true);
-    }
-
-    // TODO: I can't call UpdateBuffer 
-    public void TestDescriptorUpdBuffer()
-    {
-        var itemDescriptor = new ItemDescriptor(1, false);
-        itemDescriptor.itemID = 2;
     }
 }
