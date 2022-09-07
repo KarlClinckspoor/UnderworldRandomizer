@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static Randomizer.Utils;
 namespace Randomizer;
 
@@ -54,6 +56,7 @@ public class CombinationsFile// : ISaveBinary
         return path;
     }
 
+    [MemberNotNull(nameof(Buffer))]
     private void UpdateBuffer()
     {
         Buffer = new byte[Combinations.Count * ItemCombination.Size];
@@ -86,14 +89,97 @@ public class CombinationsFile// : ISaveBinary
         Combinations.RemoveAt(idx);
         UpdateBuffer();
     }
+
+    public CombinationsFile(List<ItemCombination> combinations, string path = "CMB.DAT")
+    {
+        this.Combinations = combinations;
+        this._path = path;
+        UpdateBuffer();
+    }
+
+    /// <summary>
+    /// Checks if the file ends with 3 zeros as combinations
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckEnding() // TODO: this is a bit redundant with the function above.
+    {
+        return Combinations[^1].FirstItem.itemID == 0 &
+               Combinations[^1].SecondItem.itemID == 0 &
+               Combinations[^1].Product.itemID == 0;
+    }
+
+            
+    /// <summary>
+    /// Checks if at least one item is destroyed upon combination
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckConsistency()
+    {
+        // return Combinations.All(cmb => cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed);
+        foreach (var cmb in Combinations)
+        {
+            if (!(cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed) & (cmb.FirstItem.itemID != 0 & cmb.SecondItem.itemID != 0 & cmb.Product.itemID != 0))
+            {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+    
+    public void ExportAsJson(string filename)
+    {
+        string json = JsonSerializer.Serialize(Combinations,
+            options: new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                IncludeFields = true
+            });
+        File.WriteAllText(filename, json);
+    }
+    
+    public static CombinationsFile ImportFromJson(string filename)
+    {
+        var temp = JsonSerializer.Deserialize<List<ItemCombination>>(File.ReadAllText(filename),
+                       options: new JsonSerializerOptions()
+                       {
+                           IncludeFields = true,
+                           PropertyNameCaseInsensitive = true
+                       }) ??
+                   throw new InvalidOperationException();
+        
+        var file = new CombinationsFile(temp, "CMB.DAT");
+        
+        if (!file.CheckConsistency())
+        {
+            Console.WriteLine("One of the combinations has both items preserved. This won't work. Consider editing to remove that combination");
+        }
+
+        if (!file.CheckEnding())
+        {
+            Console.WriteLine("The file doesn't end in zeros. Trying to fix...");
+            file.AddCombination(new FinalCombination());
+            Console.WriteLine("Done");
+        }
+
+        file.Combinations[^1] = new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
+
+        return file;
+    }
+    
+    
 }
 
 public class ItemCombination: ISaveBinary
 {
+    [JsonIgnore]
     public const int NumOfItemsInCombination = 3;
+    [JsonIgnore]
     public const int Size = NumOfItemsInCombination * ItemDescriptor.size;
-    
+    [JsonIgnore]
     public byte[] Buffer = new byte[NumOfItemsInCombination * ItemDescriptor.size];
+
     public ItemDescriptor FirstItem;
     public ItemDescriptor SecondItem;
     public ItemDescriptor Product;
@@ -106,6 +192,7 @@ public class ItemCombination: ISaveBinary
         Product = new ItemDescriptor(buffer[(ItemDescriptor.size * 2)..(ItemDescriptor.size * 3)]);
     }
 
+    [JsonConstructor]
     public ItemCombination(ItemDescriptor firstItem, ItemDescriptor secondItem, ItemDescriptor product)
     {
         FirstItem = firstItem;
@@ -137,32 +224,50 @@ public class FinalCombination: ItemCombination
 /// </summary>
 public class ItemDescriptor
 {
+    [JsonIgnore]
     public const int size = 2; // In bytes
+    [JsonIgnore]
     public byte[] buffer;
+    [JsonIgnore]
     private ushort entry;
 
-    public ushort itemID;     // TODO: Make this a property. When set, modify buffer
-    public bool IsDestroyed; // TODO: Make this a property. When set, modify buffer
+    // TODO is Item ID 9 or 10 bits?
+    public ushort itemID
+    {
+        get
+        {
+            return (ushort) GetBits(entry, 0x3FF, 0);
+        }
+        set
+        {
+            entry = (ushort) SetBits(entry, value, 0x3FF, 0);
+        }
+    }
 
+    public bool IsDestroyed
+    {
+        get
+        {
+            return entry >> 15 == 1;
+        }
+        set
+        {
+            entry = (ushort) SetBits(entry, value? 1:0, 0b1, 15);
+        }
+    }
+
+    [JsonConstructor]
     public ItemDescriptor(ushort itemID, bool isDestroyed)
     {
         this.itemID = itemID;
         this.IsDestroyed = isDestroyed;
-
-        entry |= itemID;
-
-        if (isDestroyed)
-        {
-            entry |= 0x8000;
-        }
-        
-        UpdateBuffer();
+        buffer = BitConverter.GetBytes(entry);
     }
 
     public ItemDescriptor(byte[] buffer)
     {
         this.buffer = buffer;
-        UpdateEntry();
+        entry = BitConverter.ToUInt16(buffer);
     }
 
     public ItemDescriptor()
@@ -172,36 +277,18 @@ public class ItemDescriptor
         itemID = 0;
         IsDestroyed = false;
     }
-
-    [MemberNotNull(nameof(buffer))] // Tells compiler UpdateBuffer assures buffer isn't null.
-    public void UpdateBuffer()
-    {
-        buffer = BitConverter.GetBytes(entry);
-    }
-
-    public void UpdateEntry()
-    {
-        entry = BitConverter.ToUInt16(buffer);
-
-        // IsDestroyed = (buffer[0] & 0x8) == 1;
-        IsDestroyed = entry >> 15 == 1;
-
-        // Removing first bit by shifting left and right. Note that shifts convert into ints!
-        itemID = (ushort) ( ((short) (entry << 1)) >> 1);
-
-        // Is this easier?
-        itemID = (ushort) GetBits(entry, 0x7FFF, 0);
-    }
-    
 }
 
 public class FinalEntry : ItemDescriptor
 {
     public new byte[] buffer = {0, 0};
     private short entry = 0;
-    private short itemID = 0;
-    private bool IsDestroyed = false;
+    [JsonInclude]
+    public short itemID = 0;
+    [JsonInclude]
+    public bool IsDestroyed = false;
 
+    [JsonConstructor]
     public FinalEntry(short itemID, bool isDestroyed): this()
     { }
 

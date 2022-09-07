@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Randomizer;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ItemCombinations;
 
@@ -24,8 +25,7 @@ class TUICombinations
     private void Load()
     {
         Console.WriteLine("Loading item names");
-        var opt = new JsonSerializerOptions();
-        opt.PropertyNameCaseInsensitive = true;
+        var opt = new JsonSerializerOptions() {PropertyNameCaseInsensitive = true, IncludeFields = true};
         IDsAndNames = JsonSerializer.Deserialize<List<JsonEntry>>(File.ReadAllText("objects.json"), opt) ?? throw new InvalidOperationException();
         
         Console.WriteLine("Please input CMB.DAT file path [nothing for CWD]");
@@ -59,9 +59,9 @@ class TUICombinations
             string destroy3 = combination.Product.IsDestroyed ? "*" : "";
             
             Console.WriteLine(
-                $"{i}: ({id1}){IDsAndNames[id1].Name}{destroy1}+" +
-                $"({id2}){IDsAndNames[id2].Name}{destroy2}=" +
-                $"({prod}){IDsAndNames[prod].Name}{destroy3}"
+                $"{i}: ({id1}:0x{id1:X}){IDsAndNames[id1].Name}{destroy1}+" +
+                $"({id2}:0x{id2:X}){IDsAndNames[id2].Name}{destroy2}=" +
+                $"({prod}:0x{prod:X}){IDsAndNames[prod].Name}{destroy3}"
             );
             i++;
         }
@@ -71,7 +71,7 @@ class TUICombinations
     {
         foreach (var IDItem in IDsAndNames)
         {
-            Console.WriteLine($"{IDItem.ItemID}:{IDItem.Name}");
+            Console.WriteLine($"{IDItem.ID}(0x{IDItem.ID:X}):{IDItem.Name}");
         }
     }
 
@@ -137,9 +137,11 @@ class TUICombinations
                               "(R)emove combination\n" +
                               "(D)isplay all item IDs\n" +
                               "(S)ave changes\n" +
+                              "(E)xport as JSON\n" +
+                              "(I)mport from JSON\n" +
                               "(Q)uit");
             string choice = Console.ReadLine() ?? throw new InvalidOperationException();
-            var validChoices = new List<string> {"P", "A", "D", "Q", "S", "R"};
+            var validChoices = new List<string> {"P", "A", "D", "Q", "S", "R", "E", "I"};
             choice = choice.ToUpper();
             if (!validChoices.Contains(choice))
             {
@@ -168,8 +170,36 @@ class TUICombinations
                 case "R":
                     RemoveCombination();
                     break;
+                case "E":
+                    ExportAsJson();
+                    break;
+                case "I":
+                    ImportFromJson();
+                    break;
             }
         }
+    }
+
+    private void ExportAsJson()
+    {
+        Console.WriteLine("Exporting. What will be the filename? (nothing for CMB.DAT.json)");
+        string choice = Console.ReadLine() ?? throw new InvalidOperationException();
+        if (choice.Length == 0)
+            choice = "CMB.DAT.json";
+        this._cmb.ExportAsJson(choice);
+        Console.WriteLine($"Exported as \"{choice}\"");
+    }
+
+    private void ImportFromJson()
+    {
+        Console.WriteLine("What is the filename to load (default is \"CMB.DAT.json\")");
+        string filename = Console.ReadLine() ?? throw new InvalidOperationException();
+        if (filename.Length == 0)
+        {
+            filename = "CMB.DAT.json";
+        }
+        _cmb = CombinationsFile.ImportFromJson(filename);
+        Console.WriteLine("Loaded");
     }
 
     private void RemoveCombination()
@@ -177,8 +207,7 @@ class TUICombinations
         PrintExistingCombinations();
         Console.WriteLine("Which combination do you want to remove?");
         string choice = Console.ReadLine() ?? throw new InvalidOperationException();
-        int val;
-        if (Int32.TryParse(choice, out val))
+        if (int.TryParse(choice, out int val))
         {
             _cmb.RemoveCombination(val);
             Console.WriteLine("Removed!");
@@ -201,18 +230,20 @@ class TUICombinations
 
 class JsonEntry
 {
+    public int ID { get; set; }
     public string ItemID { get; set; }
     public string Name { get; set; }
-    public string Unk1 { get; set; }
-    public string Unk2 { get; set; }
-    public string Unk3 { get; set; }
-    public string Unk4 { get; set; }
-    public string Unk5 { get; set; }
-    public string Unk6 { get; set; }
-    public string Unk7 { get; set; }
-    public string Unk8 { get; set; }
-    public string Unk9 { get; set; }
-    public string Unk10 { get; set; }
+
+    [JsonConstructor]
+    public JsonEntry(string ItemID, string Name)
+    {
+        if (int.TryParse(ItemID, out int temp))
+        {
+            this.ID = temp;
+        }
+
+        this.Name = Name;
+    }
 
 }
        
