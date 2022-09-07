@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Randomizer.LEVDotARK.GameObjects;
 
-namespace Randomizer;
+namespace Randomizer.LEVDotARK;
 
 public class UWLinkedList
 {

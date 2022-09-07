@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
+using Randomizer.LEVDotARK.GameObjects;
 using static Randomizer.Utils;
 
-namespace Randomizer
+namespace Randomizer.LEVDotARK.Blocks
 {
     // TODO: Separate this into TileMap and Object List...?
     public class TileMapMasterObjectListBlock : Block, ISaveBinary

@@ -1,4 +1,6 @@
-﻿namespace Randomizer
+﻿using Randomizer.LEVDotARK.Blocks;
+
+namespace Randomizer.LEVDotARK
 {
     // Help visualization
     /// <summary>

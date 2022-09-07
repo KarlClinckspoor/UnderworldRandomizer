@@ -1,6 +1,6 @@
 ﻿using static Randomizer.Utils;
 
-namespace Randomizer
+namespace Randomizer.LEVDotARK.Blocks
 {
     /// <summary>
     /// Block that stores map notes. Its length is 0 if there are no block notes

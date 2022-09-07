@@ -1,4 +1,4 @@
-﻿namespace Randomizer;
+﻿namespace Randomizer.LEVDotARK;
 
 static public class SwapItemTools
 {

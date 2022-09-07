@@ -1,6 +1,6 @@
 ﻿using static Randomizer.Utils;
 
-namespace Randomizer;
+namespace Randomizer.LEVDotARK.Blocks;
 public class AutomapInfosBlock: Block
 {
     public static new int TotalBlockLength = 0x1000;

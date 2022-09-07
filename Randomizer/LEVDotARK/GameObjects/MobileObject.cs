@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
-using static Randomizer.Utils;
+﻿using static Randomizer.Utils;
 
-namespace Randomizer
+namespace Randomizer.LEVDotARK.GameObjects
 {
     // TODO: CONTINUE HERE
     public class MobileObject : GameObject

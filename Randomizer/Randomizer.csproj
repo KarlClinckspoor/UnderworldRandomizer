@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>library</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>Randomizer.Randomizer</StartupObject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="StaticObject.cs" />
-  </ItemGroup>
 
 </Project>

@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+﻿using Randomizer.LEVDotARK.Blocks;
 using static Randomizer.Utils;
 
 // TODO: Maybe make a different class of Container objects?
 // TODO: What about empty entries? And the null entry (id = 0)?
 // TODO: Add checks that prevent modification if id=0.
-namespace Randomizer
+namespace Randomizer.LEVDotARK.GameObjects
 {
     public class GameObject: IEquatable<GameObject>
     {

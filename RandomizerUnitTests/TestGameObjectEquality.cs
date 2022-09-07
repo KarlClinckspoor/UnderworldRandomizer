@@ -1,6 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
 using Randomizer;
+using Randomizer.LEVDotARK.GameObjects;
+
 namespace RandomizerUnitTests;
 
 class TestGameObjectEquality

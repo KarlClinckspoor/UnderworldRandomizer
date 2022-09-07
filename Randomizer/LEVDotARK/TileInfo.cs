@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using Randomizer.LEVDotARK.Blocks;
+using Randomizer.LEVDotARK.GameObjects;
 using static Randomizer.Utils;
 
-namespace Randomizer
+namespace Randomizer.LEVDotARK
 {
     
     public class TileInfo: ISaveBinary

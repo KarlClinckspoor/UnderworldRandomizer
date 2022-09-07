@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Randomizer
+﻿namespace Randomizer.LEVDotARK.Blocks
 {
     public class EmptyBlock: Block
     {
