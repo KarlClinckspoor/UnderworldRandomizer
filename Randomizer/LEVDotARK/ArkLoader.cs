@@ -166,7 +166,6 @@ namespace Randomizer.LEVDotARK
             }
         }
 
-
         public bool CompareCurrentArkWithHash()
         {
             if (PristineLevArkSha256Hash.Length / 2 != CurrentLevArkSha256Hash.Length)

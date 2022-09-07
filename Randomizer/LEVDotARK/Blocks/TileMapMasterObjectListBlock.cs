@@ -7,172 +7,6 @@ namespace Randomizer.LEVDotARK.Blocks
     // TODO: Separate this into TileMap and Object List...?
     public class TileMapMasterObjectListBlock : Block, ISaveBinary
     {
-        public TileInfo[] TileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
-        
-        public MobileObject[] MobileObjectInfo = new MobileObject[MobileObjectNum];
-        public GameObject[] StaticObjectInfo = new GameObject[StaticObjectNum];
-        public FreeListObjectEntry[] FreeListMobileObject = new FreeListObjectEntry[FreeListMobileObjectsNum];
-        public FreeListObjectEntry[] FreeListStaticObject = new FreeListObjectEntry[FreeListStaticObjectsNum];
-        // public int LevelNumber;  // for safekeeping, irrelevant to the buffers.
-
-        // todo: Recheck and make sure the number of entries is correct.
-        public void UpdateBuffer()
-        {
-            TileMapBuffer.CopyTo(blockbuffer, TileMapOffset);
-            MobileObjectInfoBuffer.CopyTo(blockbuffer, MobileObjectInfoOffset);
-            StaticObjectInfoBuffer.CopyTo(blockbuffer, StaticObjectInfoOffset);
-            FreeListMobileObjectBuffer.CopyTo(blockbuffer, FreeListMobileObjectsOffset);
-            FreeListStaticObjectBuffer.CopyTo(blockbuffer, FreeListStaticObjectsOffset);
-            UnknownBuffer.CopyTo(blockbuffer, UnknownOffset);
-            Unknown2Buffer.CopyTo(blockbuffer, Unknown2Offset);
-            // todo: do I really need these 2? Seems this is always kept updated.
-            BitConverter.GetBytes(NumEntriesInMobileListMinus1).CopyTo(blockbuffer, NumEntriesMobileFreeListAdjOffset);
-            BitConverter.GetBytes(NumEntriesInStaticListMinus1).CopyTo(blockbuffer, NumEntriesStaticFreeListAdjOffset); 
-            BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(blockbuffer, EndOfBlockConfirmationOffset);
-            Debug.Assert(blockbuffer.Length == TotalBlockLength);
-        }
-
-        public void UpdateObjectInfoBuffer()
-        {
-            UpdateMobileObjectInfoBuffer();
-            UpdateStaticObjectInfoBuffer();
-            UpdateFreeListMobileObjectBuffer();
-            UpdateFreeListStaticObjectBuffer();
-        }
-
-        // todo: are these filled in backwards or not? Check the doc again.
-        public void UpdateMobileObjectInfoBuffer()
-        {
-            int i = 0;
-            foreach (MobileObject mobj in MobileObjectInfo)
-            {
-                mobj.Buffer.CopyTo(MobileObjectInfoBuffer, i * MobileObject.TotalLength);
-                i++;
-            }
-        }
-
-        public void UpdateStaticObjectInfoBuffer()
-        {
-            int i = 0;
-            foreach (GameObject obj in StaticObjectInfo)
-            {
-                obj.Buffer.CopyTo(StaticObjectInfoBuffer, i * GameObject.TotalLength);
-                i++;
-            }
-        }
-
-        public void UpdateFreeListStaticObjectBuffer()
-        {
-            throw new NotImplementedException();//todo
-        }
-        
-        public void UpdateFreeListMobileObjectBuffer()
-        {
-            throw new NotImplementedException();//todo
-        }
-
-        public void PopulateStaticObjectInfoArrFromBuffer()
-        {
-            for (short i = 0; i < StaticObjectNum; i++)
-            {
-                byte[] currbuffer =
-                    StaticObjectInfoBuffer[(i * GameObject.TotalLength)..((i + 1) * GameObject.TotalLength)];
-                var currobj = new GameObject(currbuffer, i);
-                StaticObjectInfo[i] = currobj;
-            }
-        }
-        
-        // todo: consider also providing an entry number, for safekeeping
-        public void PopulateMobileObjectInfoArrFromBuffer()
-        {
-            for (int i = 0; i < MobileObjectNum; i++)
-            {
-                byte[] currbuffer =
-                    MobileObjectInfoBuffer[(i * MobileObject.TotalLength)..((i + 1) * MobileObject.TotalLength)];
-                var currobj = new MobileObject(currbuffer, 10);
-                MobileObjectInfo[i] = currobj;
-            }
-        }
-        
-        public void PopulateFreeListMobileObjectArrFromBuffer()
-        {
-            for (int i = 0; i < FreeListMobileObjectsNum; i++)
-            {
-                byte[] currbuffer =
-                    FreeListMobileObjectBuffer[(i * FreeListObjectEntry.EntrySize)..((i + 1) * FreeListObjectEntry.EntrySize)];
-                var currobj = new FreeListObjectEntry(currbuffer, i);
-                FreeListMobileObject[i] = currobj;
-            }
-        }
-        
-        public void PopulateFreeListStaticObjectArrFromBuffer()
-        {
-            for (int i = 0; i < FreeListStaticObjectsNum; i++)
-            {
-                byte[] currbuffer =
-                    FreeListStaticObjectBuffer[(i * FreeListObjectEntry.EntrySize)..((i + 1) * FreeListObjectEntry.EntrySize)];
-                var currobj = new FreeListObjectEntry(currbuffer, i);
-                FreeListStaticObject[i] = currobj;
-            }
-        }
-
-        public TileMapMasterObjectListBlock(byte[] blockbuffer, int levelNumber)
-        {
-            // Debug.Assert(blockbuffer.Length == TotalBlockLength);
-            this.blockbuffer = blockbuffer;
-            this.LevelNumber = levelNumber;
-        }
-
-        #region information extraction
-
-        public void ExtractInfoFromTileMapBuffer()
-        {
-            // TileInfo[] tileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
-
-            for (int i = 0; i < TileMapLength / TileMapEntrySize; i++)
-            {
-                
-                int offset = i * TileMapEntrySize;
-                // Todo: Seems a bit weird to convert and de-convert later. Think better.
-                int entry = BitConverter.ToInt32(TileMapBuffer, offset);
-                TileInfo currInfo = new TileInfo(i, entry, offset, LevelNumber);
-
-                TileInfos[i] = currInfo;
-            }
-        }
-
-        
-        public void UpdateTileMapBuffer()
-        {
-            // Todo: Check that TileInfos is the required length AND there aren't repeat indices.
-            foreach (TileInfo currInfo in TileInfos)
-            {
-                currInfo.TileBuffer.CopyTo(TileMapBuffer, currInfo.Offset);
-            }
-            // byte[] newbuffer = new byte[TileInfos.Length * TileInfo.Size];
-            
-            // Thinking... which approach is better? I stored the offset for a reason... I think the second method can allow for
-            // more flexibility though.
-
-            //int i = 0;
-            //foreach (TileInfo currInfo in TileInfos)
-            //{
-            //    currInfo.TileBuffer.CopyTo(newbuffer, i * TileInfo.Size);
-            //    i++;
-            //}
-
-            // foreach (TileInfo currInfo in TileInfos)
-            // {
-            //     currInfo.TileBuffer.CopyTo(newbuffer, currInfo.Offset);
-            // }
-            // return newbuffer;
-            // return newbuffer;
-        }
-
-        #endregion
-
-        #region offsets and lengths
-
         // From uw-formats.txt
         // offset  size   description
         // 0000    4000   tilemap (64 x 64 x 4 bytes)
@@ -241,8 +75,170 @@ namespace Randomizer.LEVDotARK.Blocks
         public const short EndOfBlockConfirmationValue = 0x7775; // "uw"
 
         public static new int TotalBlockLength = 0x7c08;
+        
+        public TileInfo[] TileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
+        
+        public MobileObject[] MobileObjects = new MobileObject[MobileObjectNum];
+        public StaticObject[] StaticObjects = new StaticObject[StaticObjectNum];
+        
+        public FreeListObjectEntry[] FreeListMobileObject = new FreeListObjectEntry[FreeListMobileObjectsNum];
+        public FreeListObjectEntry[] FreeListStaticObject = new FreeListObjectEntry[FreeListStaticObjectsNum];
+        // public int LevelNumber;  // for safekeeping, irrelevant to the buffers.
+
+        // todo: Recheck and make sure the number of entries is correct.
+        public void UpdateBuffer()
+        {
+            TileMapBuffer.CopyTo(blockbuffer, TileMapOffset);
+            MobileObjectInfoBuffer.CopyTo(blockbuffer, MobileObjectInfoOffset);
+            StaticObjectInfoBuffer.CopyTo(blockbuffer, StaticObjectInfoOffset);
+            FreeListMobileObjectBuffer.CopyTo(blockbuffer, FreeListMobileObjectsOffset);
+            FreeListStaticObjectBuffer.CopyTo(blockbuffer, FreeListStaticObjectsOffset);
+            UnknownBuffer.CopyTo(blockbuffer, UnknownOffset);
+            Unknown2Buffer.CopyTo(blockbuffer, Unknown2Offset);
+            // todo: do I really need these 2? Seems this is always kept updated.
+            BitConverter.GetBytes(NumEntriesInMobileListMinus1).CopyTo(blockbuffer, NumEntriesMobileFreeListAdjOffset);
+            BitConverter.GetBytes(NumEntriesInStaticListMinus1).CopyTo(blockbuffer, NumEntriesStaticFreeListAdjOffset); 
+            BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(blockbuffer, EndOfBlockConfirmationOffset);
+            Debug.Assert(blockbuffer.Length == TotalBlockLength);
+        }
+
+        public void UpdateObjectInfoBuffer()
+        {
+            UpdateMobileObjectInfoBuffer();
+            UpdateStaticObjectInfoBuffer();
+            UpdateFreeListMobileObjectBuffer();
+            UpdateFreeListStaticObjectBuffer();
+        }
+
+        public void UpdateMobileObjectInfoBuffer()
+        {
+            // Let's use the object's own index to decide where it goes
+            foreach (MobileObject mobj in MobileObjects)
+            {
+                mobj.Buffer.CopyTo(MobileObjectInfoBuffer, mobj.IdxAtObjectArray * MobileObject.TotalLength);
+            }
+        }
+
+        public void UpdateStaticObjectInfoBuffer()
+        {
+            foreach (GameObject obj in StaticObjects)
+            {
+                obj.Buffer.CopyTo(StaticObjectInfoBuffer, obj.IdxAtObjectArray * GameObject.TotalLength);
+            }
+        }
+
+        public void UpdateFreeListStaticObjectBuffer()
+        {
+            throw new NotImplementedException();//todo
+        }
+        
+        public void UpdateFreeListMobileObjectBuffer()
+        {
+            throw new NotImplementedException();//todo
+        }
+
+        public void Populate_StaticObjectsFromBuffer()
+        {
+            for (short i = 0; i < StaticObjectNum; i++)
+            {
+                byte[] currbuffer =
+                    StaticObjectInfoBuffer[(i * StaticObject.TotalLength)..((i + 1) * StaticObject.TotalLength)];
+                var currobj = (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (short) (i +  MobileObjectNum));
+                StaticObjects[i] = currobj;
+            }
+        }
+        
+        // todo: consider also providing an entry number, for safekeeping
+        public void Populate_MobileObjectsFromBuffer()
+        {
+            for (short i = 0; i < MobileObjectNum; i++)
+            {
+                byte[] currbuffer =
+                    MobileObjectInfoBuffer[(i * MobileObject.TotalLength)..((i + 1) * MobileObject.TotalLength)];
+                var currobj = (MobileObject) GameObjectFactory.CreateFromBuffer(currbuffer, i);
+                MobileObjects[i] = currobj;
+            }
+        }
+        
+        public void Populate_FreeListMobileObjectArrFromBuffer()
+        {
+            for (int i = 0; i < FreeListMobileObjectsNum; i++)
+            {
+                byte[] currbuffer =
+                    FreeListMobileObjectBuffer[(i * FreeListObjectEntry.EntrySize)..((i + 1) * FreeListObjectEntry.EntrySize)];
+                var currobj = new FreeListObjectEntry(currbuffer, i);
+                FreeListMobileObject[i] = currobj;
+            }
+        }
+        
+        public void Populate_FreeListStaticObjectArrFromBuffer()
+        {
+            for (int i = 0; i < FreeListStaticObjectsNum; i++)
+            {
+                byte[] currbuffer =
+                    FreeListStaticObjectBuffer[(i * FreeListObjectEntry.EntrySize)..((i + 1) * FreeListObjectEntry.EntrySize)];
+                var currobj = new FreeListObjectEntry(currbuffer, i);
+                FreeListStaticObject[i] = currobj;
+            }
+        }
+
+        public TileMapMasterObjectListBlock(byte[] blockbuffer, int levelNumber)
+        {
+            // Debug.Assert(blockbuffer.Length == TotalBlockLength);
+            this.blockbuffer = blockbuffer;
+            this.LevelNumber = levelNumber;
+        }
+
+        #region information extraction
+
+        public void ExtractInfoFromTileMapBuffer()
+        {
+            // TileInfo[] tileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
+
+            for (int i = 0; i < TileMapLength / TileMapEntrySize; i++)
+            {
+                
+                int offset = i * TileMapEntrySize;
+                // Todo: Seems a bit weird to convert and de-convert later. Think better.
+                int entry = BitConverter.ToInt32(TileMapBuffer, offset);
+                TileInfo currInfo = new TileInfo(i, entry, offset, LevelNumber);
+
+                TileInfos[i] = currInfo;
+            }
+        }
+
+        
+        public void UpdateTileMapBuffer()
+        {
+            // Todo: Check that TileInfos is the required length AND there aren't repeat indices.
+            foreach (TileInfo currInfo in TileInfos)
+            {
+                currInfo.TileBuffer.CopyTo(TileMapBuffer, currInfo.Offset);
+            }
+            // byte[] newbuffer = new byte[TileInfos.Length * TileInfo.Size];
+            
+            // Thinking... which approach is better? I stored the offset for a reason... I think the second method can allow for
+            // more flexibility though.
+
+            //int i = 0;
+            //foreach (TileInfo currInfo in TileInfos)
+            //{
+            //    currInfo.TileBuffer.CopyTo(newbuffer, i * TileInfo.Size);
+            //    i++;
+            //}
+
+            // foreach (TileInfo currInfo in TileInfos)
+            // {
+            //     currInfo.TileBuffer.CopyTo(newbuffer, currInfo.Offset);
+            // }
+            // return newbuffer;
+            // return newbuffer;
+        }
 
         #endregion
+
+
+
         
         // #region properties
         // TODO: Verify this implementation!
