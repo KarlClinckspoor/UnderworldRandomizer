@@ -1,6 +1,6 @@
 ﻿using static Randomizer.Utils;
 
-namespace Randomizer
+namespace Randomizer.LEVDotARK.Blocks
 {
     public class TextureMappingBlock: Block
     {

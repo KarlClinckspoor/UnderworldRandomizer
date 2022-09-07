@@ -2,6 +2,8 @@
 using System.IO;
 using NUnit.Framework;
 using Randomizer;
+using Randomizer.LEVDotARK;
+
 namespace RandomizerUnitTests;
 
 class ArkLoaderTest

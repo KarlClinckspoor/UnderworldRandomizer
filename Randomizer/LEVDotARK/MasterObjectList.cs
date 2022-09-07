@@ -1,4 +1,4 @@
-﻿namespace Randomizer
+﻿namespace Randomizer.LEVDotARK
 {
     public class MasterObjectList
     {

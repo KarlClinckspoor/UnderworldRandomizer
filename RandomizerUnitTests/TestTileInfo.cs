@@ -2,6 +2,8 @@ using System;
 using System.Security.Cryptography;
 using NUnit.Framework;
 using Randomizer;
+using Randomizer.LEVDotARK;
+
 namespace RandomizerUnitTests;
 
 public class TestTileInfo
