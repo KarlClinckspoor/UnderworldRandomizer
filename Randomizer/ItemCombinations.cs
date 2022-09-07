@@ -231,6 +231,7 @@ public class ItemDescriptor
     [JsonIgnore]
     private ushort entry;
 
+    // TODO is Item ID 9 or 10 bits?
     public ushort itemID
     {
         get

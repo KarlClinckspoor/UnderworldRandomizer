@@ -60,8 +60,8 @@ class TUICombinations
             
             Console.WriteLine(
                 $"{i}: ({id1}:0x{id1:X}){IDsAndNames[id1].Name}{destroy1}+" +
-                $"({id2}:0x{id1:X}){IDsAndNames[id2].Name}{destroy2}=" +
-                $"({prod}:0x{id1:X}){IDsAndNames[prod].Name}{destroy3}"
+                $"({id2}:0x{id2:X}){IDsAndNames[id2].Name}{destroy2}=" +
+                $"({prod}:0x{prod:X}){IDsAndNames[prod].Name}{destroy3}"
             );
             i++;
         }
