@@ -1,6 +1,6 @@
 ﻿namespace Randomizer.LEVDotARK.GameObjects;
 
-public class SpecialLinkGameObject : GameObject
+public class SpecialLinkGameObject : StaticObject
 {
     // is_quant is false. Enchantments, wands, etc
     public new readonly int IsQuant = 0;

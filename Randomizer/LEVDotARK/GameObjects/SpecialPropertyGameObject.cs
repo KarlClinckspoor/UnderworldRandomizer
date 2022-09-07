@@ -1,7 +1,7 @@
 ﻿namespace Randomizer.LEVDotARK.GameObjects;
 
 // is_quant is true, quantity > 512 (special property)
-public class SpecialPropertyGameObject : GameObject
+public class SpecialPropertyGameObject : StaticObject
 {
     public short RawSpecialLink
     {

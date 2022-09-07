@@ -1,4 +1,4 @@
-﻿namespace Randomizer.LEVDotARK.GameObjects;
+﻿namespace Randomizer.LEVDotARK.GameObjects.Specifics;
 
 public class EnchantedWand : SpecialLinkGameObject
 {

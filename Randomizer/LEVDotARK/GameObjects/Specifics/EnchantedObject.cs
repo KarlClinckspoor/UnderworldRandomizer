@@ -1,4 +1,4 @@
-﻿namespace Randomizer.LEVDotARK.GameObjects;
+﻿namespace Randomizer.LEVDotARK.GameObjects.Specifics;
 
 // Todo: Get enchantment name in strings chunk 5
 // Todo: create an enum or something with spell names, and their indices, to use here.

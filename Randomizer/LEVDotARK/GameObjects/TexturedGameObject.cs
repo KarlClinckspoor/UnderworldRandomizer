@@ -1,6 +1,6 @@
 ﻿namespace Randomizer.LEVDotARK.GameObjects;
 
-public class TexturedGameObject : GameObject
+public class TexturedGameObject : StaticObject
 {
     public new bool HasTexture = true;
     public new readonly int? Flags = null;
@@ -8,6 +8,8 @@ public class TexturedGameObject : GameObject
     public new readonly int? Doordir = null;
     public new readonly int? Invis = null;
     public new readonly int? IsQuant = null;
+
+    public new bool ShouldBeMoved = false;
 
     public int TextureNumber
     {

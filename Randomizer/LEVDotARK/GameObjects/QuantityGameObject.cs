@@ -1,6 +1,6 @@
 ﻿namespace Randomizer.LEVDotARK.GameObjects;
 
-public class QuantityGameObject : GameObject
+public class QuantityGameObject : StaticObject
 {
     // is_quant is true, quantity < 512 (coins, etc)
     public short Quantity

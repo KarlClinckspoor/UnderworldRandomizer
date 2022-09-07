@@ -13,6 +13,7 @@ namespace Randomizer.LEVDotARK.GameObjects
         public const int ExtraLength = 0;
         public const int TotalLength = BaseLength + ExtraLength;
         public short IdxAtObjectArray;
+        public bool ShouldBeMoved = true;
 
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
