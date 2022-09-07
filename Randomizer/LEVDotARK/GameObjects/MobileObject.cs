@@ -42,6 +42,7 @@ namespace Randomizer.LEVDotARK.GameObjects
 
         public new byte[] Buffer = new byte[TotalLength];
         public int ObjectBufferIfx;
+        public new bool ShouldBeMoved = false; // TODO: temporary
 
         public int HP
         {

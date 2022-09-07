@@ -8,8 +8,8 @@ public static class GameObjectFactory
 
     private static short getItemIDFromBuffer(byte[] buffer)
     {
-        short objid_flagsField = BitConverter.ToInt16(buffer[0..4]);
-        // TODO: Duplicated, but of well
+        short objid_flagsField = BitConverter.ToInt16(buffer, 0);
+        // TODO: Duplicated, but oh well
         return (short) GetBits(objid_flagsField, 0b111111111, 0);  
     }
 
