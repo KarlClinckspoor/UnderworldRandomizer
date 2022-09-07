@@ -1,4 +1,4 @@
-﻿using Randomizer.LEVDotARK.Blocks;
+using Randomizer.LEVDotARK.Blocks;
 using static Randomizer.Utils;
 
 // TODO: Maybe make a different class of Container objects?
