@@ -2,6 +2,11 @@
 
 public class Door: SpecialLinkGameObject
 {
-    public new bool ShouldBeMoved = false;
     public Door(byte[] buffer, short idxAtObjArray): base(buffer, idxAtObjArray) {}
+    
+    public new bool ShouldBeMoved
+    {
+        get { return false;}
+        set { }
+    }
 }

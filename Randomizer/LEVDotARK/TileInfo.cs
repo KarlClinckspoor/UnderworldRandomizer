@@ -9,7 +9,7 @@ using static Randomizer.Utils;
 namespace Randomizer.LEVDotARK
 {
     
-    public class TileInfo: ISaveBinary
+    public class TileInfo: ISaveBinary, IEquatable<TileInfo>
     {
         public const int Size = 4;
         private enum TileTypes
@@ -149,15 +149,23 @@ namespace Randomizer.LEVDotARK
         {
             get
             {
-                return ObjectChain.startingIdx;
+                if (ObjectChain.Initialized) 
+                    return ObjectChain.startingIdx;
+                return GetBits(Entry,0b1111111111, 22);
             }
             set
             {
                 Entry = SetBits(Entry, value, 0b1111111111, 22);
-                // TODO: If this is set, do I update the Chain?
-                if (ObjectChain[0].IdxAtObjectArray != value)
+                if (!ObjectChain.Initialized)
                 {
-                    Debug.WriteLine("Attempting to set the FirstObjIdx of a tile to something different from what it truly is");
+                    ObjectChain.startingIdx = value;
+                    UpdateBuffer();
+                    return;
+                }
+                
+                if (ObjectChain.Initialized & ObjectChain[0].IdxAtObjectArray != value)
+                {
+                    ObjectChain.startingIdx = value;
                 }
                 UpdateBuffer();
             }
@@ -198,7 +206,7 @@ namespace Randomizer.LEVDotARK
         private void UpdateBuffer() // Modified entry, updates buffer
         {
             // Sets the "first object index" value
-            if (ObjectChain.initialized)
+            if (ObjectChain.Initialized)
                 _entry = SetBits(_entry, ObjectChain.startingIdx, 0b1111111111, 22);
             _tileBuffer = BitConverter.GetBytes(_entry);
             // Debug.Assert(TileBuffer.Length == Size);
@@ -293,6 +301,44 @@ namespace Randomizer.LEVDotARK
             return StdSaveBuffer(TileBuffer, basePath, extraInfo);
 
         }
-        
+
+        public bool Equals(TileInfo? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            // I think I shouldn't have to consider the object chain, only the first index and the level num
+            // I've added the other flags for completeness, because comparing only the "Entry" should be enough to cover them
+            if (
+                this.Entry == other.Entry &
+                this.TileBuffer.SequenceEqual(other.TileBuffer) &
+                this.EntryNum == other.EntryNum &
+                this.LevelNum == other.LevelNum &
+                this.TileType == other.TileType &
+                this.TileHeight == other.TileHeight &
+                this.Light == other.Light &
+                this.FloorTextureIdx == other.FloorTextureIdx &
+                this.NoMagic == other.NoMagic &
+                this.DoorBit == other.DoorBit &
+                this.WallTextureIdx == other.WallTextureIdx
+                )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TileInfo) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_entry, _tileBuffer, EntryNum, LevelNum, ObjectChain);
+        }
     }
 }

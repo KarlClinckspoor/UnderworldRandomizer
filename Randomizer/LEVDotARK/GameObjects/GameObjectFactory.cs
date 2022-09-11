@@ -47,17 +47,17 @@ public static class GameObjectFactory
         if (itemID >= 0x130 & itemID <= 0x13f) // Books and scrolls
             return new StaticObject(buffer, idxAtArray);
         if (itemID >= 0x140 & itemID <= 0x14f) // Doors
-            return new Door(buffer, idxAtArray);
+            return new Door(buffer, idxAtArray){ShouldBeMoved = false};
         if (itemID >= 0x150 & itemID <= 0x15f) // Furniture
-            return new Furniture(buffer, idxAtArray);
+            return new Furniture(buffer, idxAtArray){ShouldBeMoved = false};
         if (itemID >= 0x160 & itemID <= 0x16f) // Pillars, etc
-            return new Furniture(buffer, idxAtArray); // TODO: should be joined with furniture?
+            return new Furniture(buffer, idxAtArray){ShouldBeMoved = false}; // TODO: should be joined with furniture?
         if (itemID >= 0x170 & itemID <= 0x17f) // Switches
-            return new TexturedGameObject(buffer, idxAtArray);
+            return new TexturedGameObject(buffer, idxAtArray){ShouldBeMoved = false};
         if (itemID >= 0x180 & itemID <= 0x19f) // Traps
-            return new Trap(buffer, idxAtArray);
+            return new Trap(buffer, idxAtArray){ShouldBeMoved = false};
         if (itemID >= 0x1a0 & itemID <= 0x1bf) // Triggers
-            return new Trigger(buffer, idxAtArray);
+            return new Trigger(buffer, idxAtArray){ShouldBeMoved = false};
         if (itemID >= 0x1c0 & itemID <= 0x1cf) // Explosions, splats, fountain, silver tree
             return new StaticObject(buffer, idxAtArray) {ShouldBeMoved = false};
         

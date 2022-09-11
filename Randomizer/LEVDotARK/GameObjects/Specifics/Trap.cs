@@ -2,7 +2,11 @@
 
 public class Trap: StaticObject
 {
-    public new bool ShouldBeMoved = false;
+    public bool ShouldBeMoved
+    {
+        get { return false; }
+        set { }
+    }
     public Trap(byte[] buffer, short idxAtObjArray) : base(buffer, idxAtObjArray)
     { }
 }

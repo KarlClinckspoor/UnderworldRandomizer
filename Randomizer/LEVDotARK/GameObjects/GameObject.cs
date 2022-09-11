@@ -5,7 +5,7 @@ using static Randomizer.Utils;
 // TODO: Add checks that prevent modification if id=0.
 namespace Randomizer.LEVDotARK.GameObjects
 {
-    public class GameObject: IEquatable<GameObject>
+    public class GameObject: IEquatable<GameObject>, IShouldIMove
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;
@@ -13,7 +13,13 @@ namespace Randomizer.LEVDotARK.GameObjects
         public const int ExtraLength = 0;
         public const int TotalLength = BaseLength + ExtraLength;
         public short IdxAtObjectArray;
-        public bool ShouldBeMoved = true;
+
+        private bool _shouldBeMoved = true;
+        public bool ShouldBeMoved
+        {
+            get { return _shouldBeMoved; }
+            set { _shouldBeMoved = value; }
+        }
 
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
@@ -287,4 +293,10 @@ namespace Randomizer.LEVDotARK.GameObjects
             return true;
         }
     }
+}
+
+interface IShouldIMove
+{
+    public bool ShouldBeMoved { get; set; }
+
 }

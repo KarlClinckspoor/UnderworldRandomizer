@@ -1,25 +1,40 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using Randomizer.LEVDotARK.GameObjects;
+using Randomizer.LEVDotARK.GameObjects.Specifics;
 
 namespace Randomizer.LEVDotARK;
 
 public class UWLinkedList: IList<GameObject>
 {
-    public bool initialized = false;
+    public bool Initialized = false;
+
+    private int _startingIdx;
     public int startingIdx
     {
         get
         {
-            if (objects.Count == 0)
+            // if (objects.Count == 0)
+            // {
+            //     return 0;
+            // }
+            if (Initialized)
+                return objects[0].IdxAtObjectArray;
+            return _startingIdx;
+        }
+        set
+        {
+            if (Initialized)
             {
-                return 0;
+                Debug.WriteLine("Attempting to change the starting index of an initialized UWLinkedList. This will clear the list and de-initialize it");
+                Clear();
             }
 
-            return objects[0].IdxAtObjectArray;
+            _startingIdx = value;
         }
     }
 
@@ -55,6 +70,7 @@ public class UWLinkedList: IList<GameObject>
 
     public void Clear()
     {
+        Initialized = false;
         objects.Clear();
     }
 
@@ -211,7 +227,7 @@ public class UWLinkedList: IList<GameObject>
             return false;
         }
 
-        for (int i = 0; i < objects.Count; i++)
+        for (int i = 0; i < objects.Count - 1; i++)
         {
             if (objects[i].next != objects[i + 1].IdxAtObjectArray)
             {
@@ -263,14 +279,31 @@ public class UWLinkedList: IList<GameObject>
 
     public List<GameObject> PopObjectsThatShouldBeMoved()
     {
-        var tempList = new List<GameObject>();
-        foreach (var obj in objects)
+        // TODO: Fix the mess I made with this "should be moved" system
+        var shouldBeMoved = new Dictionary<string, bool>()
         {
-            if (obj.ShouldBeMoved)
+            {nameof(StaticObject), true},
+            {nameof(QuantityGameObject), true},
+            {nameof(Door), false},
+            {nameof(Trap), false},
+            {nameof(TexturedGameObject), false},
+            {nameof(EnchantedArmor), true},
+            {nameof(EnchantedWeapon), true},
+        };
+        
+        var tempList = new List<GameObject>();
+        foreach (IShouldIMove obj in objects)
+        {
+            // if (obj.GetType())
+            if (shouldBeMoved[obj.GetType().Name])
             {
-                tempList.Add(obj);
-                Remove(obj);
+                tempList.Add((GameObject) obj);
             }
+        }
+
+        foreach (var removedObject in tempList)
+        {
+            objects.Remove(removedObject);
         }
 
         return tempList;
@@ -283,6 +316,7 @@ public class UWLinkedList: IList<GameObject>
     /// <param name="AllBlockObjects">All game objects in the level, both static and mobile</param>
     public void PopulateObjectList(GameObject[] AllBlockObjects)
     {
+        objects.Clear();
         if (startingIdx == 0)
             return;
 
@@ -302,7 +336,7 @@ public class UWLinkedList: IList<GameObject>
             currentIdx = obj.next;
         }
 
-        initialized = true;
+        Initialized = true;
     }
     
     

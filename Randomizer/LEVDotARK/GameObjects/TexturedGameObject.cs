@@ -9,7 +9,11 @@ public class TexturedGameObject : StaticObject
     public new readonly int? Invis = null;
     public new readonly int? IsQuant = null;
 
-    public new bool ShouldBeMoved = false;
+    public new bool ShouldBeMoved
+    {
+        get { return false; }
+        set { }
+    }
 
     public int TextureNumber
     {
