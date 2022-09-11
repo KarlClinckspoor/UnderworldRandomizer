@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using Randomizer.LEVDotARK.GameObjects;
-using static Randomizer.Utils;
 
 namespace Randomizer.LEVDotARK.Blocks
 {
     // TODO: Separate this into TileMap and Object List...?
-    public class TileMapMasterObjectListBlock : Block, ISaveBinary
+    public class TileMapMasterObjectListBlock : Block
     {
         // From uw-formats.txt
         // offset  size   description
@@ -77,7 +76,8 @@ namespace Randomizer.LEVDotARK.Blocks
         public static new int TotalBlockLength = 0x7c08;
         
         public TileInfo[] TileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
-        
+
+        public GameObject[] AllGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
         public MobileObject[] MobileObjects = new MobileObject[MobileObjectNum];
         public StaticObject[] StaticObjects = new StaticObject[StaticObjectNum];
         
@@ -144,7 +144,15 @@ namespace Randomizer.LEVDotARK.Blocks
                 byte[] currbuffer =
                     StaticObjectInfoBuffer[(i * StaticObject.TotalLength)..((i + 1) * StaticObject.TotalLength)];
                 var currobj = (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (short) (i +  MobileObjectNum));
+
+                if (currobj.IdxAtObjectArray < MobileObjectNum)
+                {
+                    throw new Exception(
+                        "Attempted to add a static object to the region of mobile objects. Should not happen!");
+                }
+                
                 StaticObjects[i] = currobj;
+                AllGameObjects[currobj.IdxAtObjectArray] = currobj;
             }
         }
         
@@ -156,8 +164,22 @@ namespace Randomizer.LEVDotARK.Blocks
                 byte[] currbuffer =
                     MobileObjectInfoBuffer[(i * MobileObject.TotalLength)..((i + 1) * MobileObject.TotalLength)];
                 var currobj = (MobileObject) GameObjectFactory.CreateFromBuffer(currbuffer, i);
+                
+                if (currobj.IdxAtObjectArray >= MobileObjectNum)
+                {
+                    throw new Exception(
+                        "Attempted to add a static object to the region of mobile objects. Should not happen!");
+                }
+                
                 MobileObjects[i] = currobj;
+                AllGameObjects[currobj.IdxAtObjectArray] = currobj;
             }
+        }
+
+        public void Populate_AllGameObjectsFromBuffer()
+        {
+            Populate_MobileObjectsFromBuffer();
+            Populate_StaticObjectsFromBuffer();
         }
         
         public void Populate_FreeListMobileObjectArrFromBuffer()

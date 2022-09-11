@@ -1,66 +1,121 @@
-﻿using Randomizer.LEVDotARK.GameObjects;
+﻿using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Net.Sockets;
+using System.Text;
+using Randomizer.LEVDotARK.GameObjects;
 
 namespace Randomizer.LEVDotARK;
 
-public class UWLinkedList
+public class UWLinkedList: IList<GameObject>
 {
-    public int startingIdx;
-    private List<GameObject> objects;
-    private int lastItemIdx = 0;
-
-    /// <summary>
-    /// Returns the GameObject at index `idx`
-    /// </summary>
-    /// <param name="idx"></param>
-    /// <returns></returns>
-    public GameObject GetItemAt(int idx)
+    public bool initialized = false;
+    public int startingIdx
     {
-        return objects[idx];
+        get
+        {
+            if (objects.Count == 0)
+            {
+                return 0;
+            }
+
+            return objects[0].IdxAtObjectArray;
+        }
     }
-    
-    /// <summary>
-    /// Add an item to the end of the linked list and updates the pointers
-    /// </summary>
-    /// <param name="item">Item to add at end of list</param>
+
+    private int lastItemIdx
+    {
+        get
+        {
+            if (objects.Count == 0)
+            {
+                return 0;
+            }
+            return objects[^1].IdxAtObjectArray;
+        }
+    }
+    private List<GameObject> objects;
+
+    public IEnumerator<GameObject> GetEnumerator()
+    {
+        return objects.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
     public void Add(GameObject item)
     {
-        objects[^1].next =  item.IdxAtObjectArray;
-        objects.Add(item);
+       objects[^1].next =  item.IdxAtObjectArray;
+       item.next = 0;
+       objects.Add(item);
     }
 
-    /// <summary>
-    /// Removes an entry from the list that's equal to the item provided.
-    /// </summary>
-    /// <param name="item"></param>
-    public void RemoveItemLike(GameObject item)
+    public void Clear()
     {
-        for (int i = 0; i < objects.Count; i++)
+        objects.Clear();
+    }
+
+    public bool Contains(GameObject item)
+    {
+        return objects.Contains(item);
+    }
+
+    public void CopyTo(GameObject[] array, int arrayIndex)
+    {
+        objects.CopyTo(array, arrayIndex);
+    }
+
+    public bool Remove(GameObject item)
+    {
+        return objects.Remove(item);
+    }
+
+    public int Count
+    {
+        get
         {
-            if (item.Equals(objects[i]))
-            {
-                RemoveItemAt(i);
-            }
+            return objects.Count;
         }
     }
 
-    public GameObject RemoveItemAt(int position)
+    public bool IsReadOnly
     {
-        GameObject item = objects[position];
+        get { return false; }
+    }
+    public int IndexOf(GameObject item)
+    {
+        return objects.IndexOf(item);
+    }
+
+    public void Insert(int index, GameObject item)
+    {
+        if (index < 0 | index > objects.Count)
+        {
+            throw new IndexOutOfRangeException();
+        }
+        objects[index - 1].next = item.IdxAtObjectArray;
+        objects.Insert(index, item);
+    }
+
+    public void RemoveAt(int index)
+    {
+        if (index < 0 | index > Count - 1)
+        {
+            throw new IndexOutOfRangeException();
+        }
         
-        if (position == 0)
+        if (index == Count - 1)
         {
-            startingIdx = objects[1].IdxAtObjectArray;
-        }
-        else if (position == objects.Count - 1)
-        {
-            objects[position - 1].next = 0;
+            objects[index - 1].next = 0;
         }
         else
         {
-            objects[position - 1].next = objects[position + 1].IdxAtObjectArray;
+            objects[index - 1].next = objects[index + 1].IdxAtObjectArray;
         }
-
-        return item;
+        objects.RemoveAt(index); // todo: Should this go in the beginning of the function?
     }
     
     /// <summary>
@@ -75,19 +130,36 @@ public class UWLinkedList
 
         AppendItems(items);
         AppendItems(oldObjectList);
-        
-        startingIdx = objects[0].IdxAtObjectArray;
-    }
-    
-    /// <summary>
-    /// Adds items from array to the start of the object chain
-    /// </summary>
-    /// <param name="items"></param>
-    public void PrependItems(GameObject[] items)
-    {
-        PrependItems(items.ToList());
     }
 
+    public GameObject this[int index]
+    {
+        get
+        {
+            return objects[index];
+        }
+        set
+        {
+            objects[index - 1] = value;
+            objects[index] = value;
+            value.next = objects[index + 1].IdxAtObjectArray;
+        }
+    }
+
+    public UWLinkedList()
+    {
+        objects = new List<GameObject>();
+    }
+     public UWLinkedList(List<GameObject> objects)
+     {
+         this.objects = objects;
+     }
+
+     public UWLinkedList(GameObject[] objects)
+     {
+         this.objects = objects.ToList();
+     }
+    
     /// <summary>
     /// Adds items to the end of the object chain
     /// </summary>
@@ -118,8 +190,8 @@ public class UWLinkedList
     public GameObject Pop()
     {
         int position = objects.Count - 1;
-        var obj = GetItemAt(position);
-        RemoveItemAt(position);
+        var obj = objects[position];
+        RemoveAt(position);
         return obj;
     }
 
@@ -149,6 +221,16 @@ public class UWLinkedList
 
         return true;
     }
+    
+    public static bool CheckIntegrity(TileInfo tile)
+    {
+        if (tile.FirstObjIdx != tile.ObjectChain.startingIdx)
+        {
+            return false;
+        }
+
+        return tile.ObjectChain.CheckIntegrity();
+    }
 
     public static bool CheckIntegrity(TileInfo tile, UWLinkedList linkedList)
     {
@@ -160,32 +242,68 @@ public class UWLinkedList
         return linkedList.CheckIntegrity();
     }
 
-    public void FixIntegrity()
+    // public void FixIntegrity()
+    // {
+    //     if (objects.Count == 0)
+    //     {
+    //         startingIdx = 0;
+    //         return;
+    //     }
+    //     startingIdx = objects[0].IdxAtObjectArray;
+    //     if (objects[^1].next != 0)
+    //     {
+    //         objects[^1].next = 0;
+    //     }
+    //
+    //     for (int i = 0; i < objects.Count; i++)
+    //     {
+    //         objects[i].next =  objects[i + 1].IdxAtObjectArray;
+    //     }
+    // }
+
+    public List<GameObject> PopObjectsThatShouldBeMoved()
     {
-        if (objects.Count == 0)
+        var tempList = new List<GameObject>();
+        foreach (var obj in objects)
         {
-            startingIdx = 0;
-            return;
-        }
-        startingIdx = objects[0].IdxAtObjectArray;
-        if (objects[^1].next != 0)
-        {
-            objects[^1].next = 0;
+            if (obj.ShouldBeMoved)
+            {
+                tempList.Add(obj);
+                Remove(obj);
+            }
         }
 
-        for (int i = 0; i < objects.Count; i++)
-        {
-            objects[i].next =  objects[i + 1].IdxAtObjectArray;
-        }
+        return tempList;
     }
     
-    public UWLinkedList(List<GameObject> objects)
+    
+    /// <summary>
+    /// Fills in the list of objects given a list of all GameObjects present in a level.
+    /// </summary>
+    /// <param name="AllBlockObjects">All game objects in the level, both static and mobile</param>
+    public void PopulateObjectList(GameObject[] AllBlockObjects)
     {
-        this.objects = objects;
-    }
+        if (startingIdx == 0)
+            return;
 
-    public UWLinkedList(GameObject[] objects)
-    {
-        this.objects = objects.ToList();
+        int safetycounter = 0;
+        int maxcounter = 1024;
+        int currentIdx = startingIdx;
+        while (currentIdx != 0) 
+        {
+            safetycounter++;
+            if (safetycounter >= maxcounter)
+            {
+                throw new ConstraintException("Encountered potentially infinite loop when populating ObjectList!");
+            }
+
+            GameObject obj = AllBlockObjects[currentIdx];
+            objects.Add(obj);
+            currentIdx = obj.next;
+        }
+
+        initialized = true;
     }
+    
+    
 }

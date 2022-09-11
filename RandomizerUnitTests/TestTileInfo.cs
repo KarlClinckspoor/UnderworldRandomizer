@@ -10,12 +10,14 @@ public class TestTileInfo
 {
     // Let's create one random entry from an int.
     // And another from a buffer
-    private TileInfo tinfo1 = new TileInfo(0, 240, 0, 0);
-    private TileInfo tinfo2 = new TileInfo(0, BitConverter.GetBytes(240), 0, 0);
+    private TileInfo tinfo1;
+    private TileInfo tinfo2;
     
     [SetUp]
     public void Setup()
     {
+         tinfo1 = new TileInfo(0, 240, 0, 0);
+         tinfo2 = new TileInfo(0, BitConverter.GetBytes(240), 0, 0);
     }
 
     public bool CompareTwoTileInfos(TileInfo first, TileInfo second)
