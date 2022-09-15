@@ -1,4 +1,6 @@
-﻿namespace Randomizer.LEVDotARK;
+﻿using Randomizer.Interfaces;
+
+namespace Randomizer.LEVDotARK;
 using static Utils;
 
 /// <summary>

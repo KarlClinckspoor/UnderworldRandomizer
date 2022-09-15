@@ -1,4 +1,5 @@
-﻿using static Randomizer.Utils;
+﻿using Randomizer.Interfaces;
+using static Randomizer.Utils;
 
 namespace Randomizer.LEVDotARK.Blocks
 {

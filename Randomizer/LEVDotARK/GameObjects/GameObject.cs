@@ -1,4 +1,4 @@
-﻿using Randomizer.LEVDotARK.Blocks;
+using Randomizer.Interfaces;
 using static Randomizer.Utils;
 
 // TODO: Maybe make a different class of Container objects?
@@ -6,7 +6,7 @@ using static Randomizer.Utils;
 // TODO: Add checks that prevent modification if id=0.
 namespace Randomizer.LEVDotARK.GameObjects
 {
-    public class GameObject: IEquatable<GameObject>
+    public class GameObject: IEquatable<GameObject>, IShouldIMove
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;
@@ -15,10 +15,11 @@ namespace Randomizer.LEVDotARK.GameObjects
         public const int TotalLength = BaseLength + ExtraLength;
         public short IdxAtObjectArray;
 
+        public virtual bool ShouldBeMoved { get; set; } = true;
+
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
 
-        public bool HasTexture = false;
         protected short link_specialField;
         protected short objid_flagsField;
         protected short positionField;
@@ -200,6 +201,7 @@ namespace Randomizer.LEVDotARK.GameObjects
             set { Owner_or_special = (byte) (value + 1 - 370); }
         }
 
+        // TODO: Revise all these "Is..." functions. Would they be needed by the GameObjectFactory?
         public static bool IsTexturedObject(byte[] buffer)
         {
             byte firstByte = buffer[0];
@@ -287,269 +289,4 @@ namespace Randomizer.LEVDotARK.GameObjects
             return true;
         }
     }
-
-    public class TexturedGameObject : GameObject
-    {
-        public new bool HasTexture = true;
-        public new readonly int? Flags = null;
-        public new readonly int? EnchantFlag = null;
-        public new readonly int? Doordir = null;
-        public new readonly int? Invis = null;
-        public new readonly int? IsQuant = null;
-
-        public int TextureNumber
-        {
-            get { return GetBits(objid_flagsField, 0b1111111, 9); }
-            set { objid_flagsField = (short)SetBits(objid_flagsField, value, 0b1111111, 9); }
-        }
-
-        public TexturedGameObject(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public TexturedGameObject(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-
-        // public new void UpdateBuffer()
-        // {
-        //     base.UpdateBuffer(); // todo: recheck that this is working as intended.
-        // }
-    }
-
-    // is_quant is true, quantity < 512 (coins, etc)
-    public class QuantityGameObject : GameObject
-    {
-        public short Quantity
-        {
-            // get { return (byte) ((link_specialField >> 6) & 0b1111111111); }
-            get { return QuantityOrSpecialLinkOrSpecialProperty; }
-            set
-            {
-                if (value > 512)
-                {
-                    throw new Exception("Cannot have a Quantity Game Object with quantity > 512");
-                }
-                link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer();
-            }
-        }
-
-        public QuantityGameObject(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public QuantityGameObject(short objid_flagsField, short positionField,
-            short quality_chainField, short link_specialField) : base(objid_flagsField, positionField,
-            quality_chainField, link_specialField)
-        { }
-        
-        
-    }
-
-    // is_quant is true, quantity > 512 (special property)
-    public class SpecialPropertyGameObject : GameObject
-    {
-        public short RawSpecialLink
-        {
-            get { return Convert.ToInt16(SpecialLink + 512); }
-            set { SpecialLink = Convert.ToInt16(value + 512); }
-        }
-        public short SpecialLink
-        {
-            // get { return (byte) ((link_specialField >> 6) & 0b1111111111); }
-            get { return Convert.ToInt16(QuantityOrSpecialLinkOrSpecialProperty - 512); }
-            set
-            {
-                if (value < 512)
-                {
-                    throw new Exception("Cannot have a SpecialLink with value < 512");
-                }
-                link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer();
-            }
-        }
-        
-        public SpecialPropertyGameObject(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public SpecialPropertyGameObject(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-    }
-
-    // is_quant is false. Enchantments, wands, etc
-    public class SpecialLinkGameObject : GameObject
-    {
-        public new readonly int IsQuant = 0;
-        public short SpecialIdx
-        {
-            get { return QuantityOrSpecialLinkOrSpecialProperty; }
-            set { link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
-        }
-        
-        public SpecialLinkGameObject(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public SpecialLinkGameObject(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-        
-    }
-
-    // Todo: Get enchantment name in strings chunk 5
-    // Todo: create an enum or something with spell names, and their indices, to use here.
-    public class EnchantedObject : SpecialLinkGameObject
-    {
-        public new readonly int EnchantFlag = 1;
-
-        public int Enchantment
-        {
-            get { return SpecialIdx - 512; }
-            set { SpecialIdx = (short) (value + 512); }
-        }
-
-        public int Spell
-        {
-            get
-            {
-                if ((Enchantment >= 0) | (Enchantment <= 63))
-                    return Enchantment + 256;
-                else if (ItemID == 0x01c9) // a fountain
-                    return Enchantment;
-                else
-                    return Enchantment + 144;
-            }
-            set
-            {
-                if ((Enchantment >= 0) | (Enchantment <= 63))
-                    Enchantment = value - 256;
-                else if (ItemID == 0x01c9) // a fountain
-                    Enchantment = value;
-                else
-                    Enchantment = value - 144;
-            } // todo: these will UpdateBuffer too right?
-        }
-
-        public EnchantedObject(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public EnchantedObject(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-        
-    }
-
-    public class EnchantedWeapon : SpecialLinkGameObject
-    {
-        
-        public new readonly int EnchantFlag = 1;
-
-        public int Enchantment
-        {
-            get { return SpecialIdx - 512; }
-            set { SpecialIdx = (short) (value + 512); }
-        }
-
-        // Oh boy. This is more complicated. Need to have logic to differentiate between Acc/Dam/Prot/Tough and other spells
-        public int Spell
-        {
-            get
-            {
-                return Enchantment + 256;
-            }
-            set
-            {
-                Enchantment = value - 256;
-            } // todo: these will UpdateBuffer too right?
-        }
-
-        public EnchantedWeapon(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public EnchantedWeapon(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-        
-    }
-
-    public class EnchantedArmor : SpecialLinkGameObject
-    {
-        public new readonly int EnchantFlag = 1;
-        public int Enchantment
-        {
-            get { return SpecialIdx - 512; }
-            set { SpecialIdx = (short) (value + 512); }
-        }
-
-        // Oh boy. This is more complicated. Need to have logic to differentiate between Acc/Dam/Prot/Tough and other spells
-        public int Spell
-        {
-            get { return Enchantment + 256 + 16; }
-            set { Enchantment = value - 256 - 16; } // todo: these will UpdateBuffer too right?
-        }
-
-        public EnchantedArmor(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public EnchantedArmor(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-    }
-
-    public class EnchantedWand : SpecialLinkGameObject
-    {
-        public new readonly int EnchantFlag = 1;
-
-        public int SpellObjectLink
-        {
-            get { return SpecialIdx; }
-            set { SpecialIdx = (short) value; }
-        }
-
-        public GameObject SpellObject;
-
-        public EnchantedWand(byte[] buffer, short idx) : base(buffer, idx)
-        { }
-
-        public EnchantedWand(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-        { }
-
-    }
-
-    public class FreeListObjectEntry
-    {
-        // FreeListMobileObjectEntrySize is also 4 (short).
-        public const int EntrySize = TileMapMasterObjectListBlock.FreeListStaticObjectsEntrySize;
-        public byte[] Buffer = new byte[EntrySize];
-        public short Entry;
-        public int EntryNum;
-
-        public FreeListObjectEntry(byte[] buffer, int EntryNum)
-        {
-            // Debug.Assert(buffer.Length == TileMapMasterObjectListBlock.FreeListMobileObjectsEntrySize);
-            this.Buffer = buffer;
-            this.EntryNum = EntryNum;
-            UpdateEntry();
-        }
-
-        public FreeListObjectEntry(short Entry, int EntryNum)
-        {
-            this.Entry = Entry;
-            this.EntryNum = EntryNum;
-            UpdateBuffer();
-        }
-
-        public FreeListObjectEntry() // For non-entries.
-        { }
-
-        public void UpdateBuffer()
-        {
-            Buffer = BitConverter.GetBytes(Entry);
-        }
-
-        public void UpdateEntry()
-        {
-            Entry = BitConverter.ToInt16(Buffer);
-        }
-    }
-
-
 }

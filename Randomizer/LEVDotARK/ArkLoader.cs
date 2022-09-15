@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
+using Randomizer.Interfaces;
 using Randomizer.LEVDotARK.Blocks;
 using static Randomizer.Utils;
 
@@ -165,7 +166,6 @@ namespace Randomizer.LEVDotARK
                 Debug.WriteLine("Current lev.ark is the same as the original.");
             }
         }
-
 
         public bool CompareCurrentArkWithHash()
         {

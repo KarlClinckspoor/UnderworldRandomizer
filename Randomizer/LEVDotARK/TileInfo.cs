@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Tracing;
+using Randomizer.Interfaces;
 using Randomizer.LEVDotARK.Blocks;
 using Randomizer.LEVDotARK.GameObjects;
 using static Randomizer.Utils;
@@ -6,7 +10,7 @@ using static Randomizer.Utils;
 namespace Randomizer.LEVDotARK
 {
     
-    public class TileInfo: ISaveBinary
+    public class TileInfo: ISaveBinary, IEquatable<TileInfo>
     {
         public const int Size = 4;
         private enum TileTypes
@@ -51,19 +55,42 @@ namespace Randomizer.LEVDotARK
         };
 
         // Defined in the constructor
-        public int Entry;
-        public byte[] TileBuffer;
-        // todo: Offset and EntryNum are linearly dependent. I should remove their "independence" here.
+        private int _entry;
+        public int Entry
+        {
+            get { UpdateEntry(); return _entry; }
+            set { _entry = value; UpdateBuffer(); }
+        }
+
+        private byte[] _tileBuffer;
+        public byte[] TileBuffer
+        {
+            get
+            {
+                UpdateBuffer(); // Let's assure the buffer is always updated
+                return _tileBuffer;
+            }
+            private set
+            {
+                _tileBuffer = value;
+            }
+        }
         public int EntryNum;
-        public int Offset;
+
+        // TODO: Test this
+        public int Offset
+        {
+            get
+            {
+                return EntryNum * Size;
+            }  
+        } 
         public int LevelNum;
 
         public int TileType
         {
-            //get { return Entry & 0b1111; }
-            //set { Entry |= ((value & 0b1111) << 0); UpdateBuffer(); } // This only works if Entry is all zeros. Have to clear it first.
             get { return GetBits(Entry, 0b1111, 0); }
-            set { Entry = SetBits(Entry, value, 0b1111, 0); UpdateBuffer(); }
+            set { Entry = SetBits(Entry, value, 0b1111, 0);}
         }
 
         public int TileHeight
@@ -121,81 +148,32 @@ namespace Randomizer.LEVDotARK
         }
         public int FirstObjIdx
         {
-            // get { return (Entry >> 22) & 0b1111111111; }
-            // set { Entry |= ((value & 0b1111111111) << 22); UpdateBuffer(); }
-            get { return GetBits(Entry, 0b1111111111, 22);}
-            set { Entry = SetBits(Entry, value, 0b1111111111, 22); UpdateBuffer(); }
-        }
-
-        // TODO: Maybe it would be convenient to keep a list of "interesting" objects.
-        // For instance, plaques and doors aren't that interesting to shuffle
-        // So if I keep a list of interesting objects, it should make shuffling them easier.
-        // I already have a class for objects with textures, which are the ones I want to keep in place.
-        // So it's a matter of populating the lists appropriately.
-        public GameObject[] AllObjects = new GameObject[0];
-        public MobileObject[] MobileObjects = new MobileObject[0];
-        public GameObject[] StaticObjects = new GameObject[0];
-
-        public bool HasTexturedObject
-        {
-            get { 
-                foreach(var obj in StaticObjects)
-                {
-                    if (obj.GetType() == typeof(TexturedGameObject))
-                    {
-                        return true;
-                    }
-
-                }
-                return false;
-            }
-        }
-
-
-        /// <summary>
-        /// Fills in the list of objects in this Tile given a list of all GameObjects present in that level.
-        /// </summary>
-        /// <param name="AllBlockObjects">All game objects in the level, both static and mobile</param>
-        public void PopulateObjectList(GameObject[] AllBlockObjects)
-        {
-            if (FirstObjIdx == 0)
+            get
             {
-                return;
+                if (ObjectChain.Initialized) 
+                    return ObjectChain.startingIdx;
+                return GetBits(Entry,0b1111111111, 22);
             }
-            List<GameObject> allObjects = new List<GameObject>();
-            List<MobileObject> mobileObjects = new List<MobileObject>();
-            List<GameObject> staticObjects = new List<GameObject>();
-
-            int safetycounter = 0;
-            int maxcounter = 1024;
-            int currentIdx = FirstObjIdx;
-            while (currentIdx != 0) 
+            set
             {
-                safetycounter++;
-                if (safetycounter >= maxcounter)
+                Entry = SetBits(Entry, value, 0b1111111111, 22);
+                if (!ObjectChain.Initialized)
                 {
-                    Console.WriteLine("WARNING! Encountered potentially infinite loop when populating ObjectList!");
-                    break;
+                    ObjectChain.startingIdx = value;
+                    UpdateBuffer();
+                    return;
                 }
-
-                GameObject obj = AllBlockObjects[currentIdx];
-                allObjects.Add(obj);
-
-                if (obj.GetType() == typeof(MobileObject))
+                
+                if (ObjectChain.Initialized & ObjectChain[0].IdxAtObjectArray != value)
                 {
-                    mobileObjects.Add((MobileObject) obj);                   
+                    ObjectChain.startingIdx = value;
                 }
-                else
-                {
-                    staticObjects.Add(obj);
-                }
-                currentIdx = obj.next;
+                UpdateBuffer();
             }
-            MobileObjects = mobileObjects.ToArray();
-            StaticObjects = staticObjects.ToArray();
-            AllObjects = allObjects.ToArray();
-
         }
+
+        public UWLinkedList ObjectChain; // Store 
+        
 
         public int[]? XYPos
         {
@@ -207,59 +185,45 @@ namespace Randomizer.LEVDotARK
             }
         }
 
-        public bool CheckValidityOfObjects()
+        [MemberNotNull(nameof(_tileBuffer))]
+        private void UpdateBuffer() // Modified entry, updates buffer
         {
-            bool ends = false;
-            foreach (MobileObject mobileObject in MobileObjects)
-            {
-                if (mobileObject.IsEndOfList)
-                    ends = true;
-            }
-
-            if (!ends)
-                return false;
-
-            if (MobileObjects[0].ItemID != FirstObjIdx)
-                return false;
-            
-            return true;
+            // Sets the "first object index" value
+            if (ObjectChain.Initialized)
+                _entry = SetBits(_entry, ObjectChain.startingIdx, 0b1111111111, 22);
+            _tileBuffer = BitConverter.GetBytes(_entry);
+            // Debug.Assert(TileBuffer.Length == Size);
         }
 
-        public void UpdateBuffer()
+        private void UpdateEntry() // Modified buffer, updates entry
         {
-            TileBuffer = BitConverter.GetBytes(Entry);
-            Debug.Assert(TileBuffer.Length == Size);
-        }
-
-        public void UpdateEntry()
-        {
-            Debug.Assert(TileBuffer.Length == Size);
-            Entry = BitConverter.ToInt32(TileBuffer);
+            // Debug.Assert(TileBuffer.Length == Size);
+            _entry = BitConverter.ToInt32(_tileBuffer);
         }
 
 
         public TileInfo(int entrynum, int entry, int offset, int levelNumber)
         {
             EntryNum = entrynum;
-            Entry = entry;
+            _entry = entry;
             LevelNum = levelNumber;
+            ObjectChain = new UWLinkedList();
             UpdateBuffer();
-            Offset = offset;
         }
 
         public TileInfo(int entrynum, byte[] buffer, int offset, int levelNumber)
         {
             EntryNum = entrynum;
             LevelNum = levelNumber;
-            TileBuffer = buffer;
+            _tileBuffer = buffer;
+            ObjectChain = new UWLinkedList();
             UpdateEntry();
-            Offset = offset;
         }
 
         // TODO: Check if we need that modification in the height value mentioned in the uw-formats.txt
         public void MoveObjectsToSameZLevel()
         {
-            foreach (GameObject obj in AllObjects)
+            foreach (GameObject obj in ObjectChain)
             {
                 obj.Zpos = (byte) TileHeight;
             }
@@ -268,8 +232,8 @@ namespace Randomizer.LEVDotARK
         // TODO: Make the positions randomized among a set of possible values
         public void MoveObjectsToCorrectCorner()
         {
-            Random r = new Random();
-            foreach (GameObject obj in AllObjects)
+            Random r = new Random(); // TODO: Make a singleton random instance
+            foreach (var obj in ObjectChain)
             {
                 switch (TileType)
                 {
@@ -282,40 +246,36 @@ namespace Randomizer.LEVDotARK
                         break;
                     case (int) TileTypes.diag_se:
                         {
-                            //int newXpos = r.Next(5) + 1;
-                            //int newYpos = r.Next(newXpos);
-                            //obj.Xpos = (byte)newXpos;
-                            //obj.Ypos = (byte)newYpos;
-                            //break;
-                            obj.Xpos = (byte)6;
-                            obj.Ypos = (byte)1;
+                            obj.Xpos = 6;
+                            obj.Ypos = 1;
                             break;
                         }
                     case (int) TileTypes.diag_sw:
                         {
-                            obj.Xpos = (byte)1;
-                            obj.Ypos = (byte)1;
+                            obj.Xpos = 1;
+                            obj.Ypos = 1;
                             break;
                         }
                     case (int) TileTypes.diag_ne:
                         {
-                            obj.Xpos = (byte)6;
-                            obj.Ypos = (byte)6;
+                            obj.Xpos = 6;
+                            obj.Ypos = 6;
                             break;
                         }
                     case (int) TileTypes.diag_nw:
                         {
-                            obj.Xpos = (byte)1;
-                            obj.Ypos = (byte)6;
+                            obj.Xpos = 1;
+                            obj.Ypos = 6;
                             break;
                         }
                 }
             }
         }
 
-        public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK",
-            string extraInfo = "")
+        public string? SaveBuffer(string? basePath, string? extraInfo)
         {
+            basePath ??= Settings.DefaultBinaryTestsPath;
+            extraInfo ??= string.Empty;
             if (extraInfo.Length == 0)
             {
                 extraInfo = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
@@ -324,6 +284,44 @@ namespace Randomizer.LEVDotARK
             return StdSaveBuffer(TileBuffer, basePath, extraInfo);
 
         }
-        
+
+        public bool Equals(TileInfo? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            // I think I shouldn't have to consider the object chain, only the first index and the level num
+            // I've added the other flags for completeness, because comparing only the "Entry" should be enough to cover them
+            if (
+                this.Entry == other.Entry &
+                this.TileBuffer.SequenceEqual(other.TileBuffer) &
+                this.EntryNum == other.EntryNum &
+                this.LevelNum == other.LevelNum &
+                this.TileType == other.TileType &
+                this.TileHeight == other.TileHeight &
+                this.Light == other.Light &
+                this.FloorTextureIdx == other.FloorTextureIdx &
+                this.NoMagic == other.NoMagic &
+                this.DoorBit == other.DoorBit &
+                this.WallTextureIdx == other.WallTextureIdx
+                )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TileInfo) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_entry, _tileBuffer, EntryNum, LevelNum, ObjectChain);
+        }
     }
 }
