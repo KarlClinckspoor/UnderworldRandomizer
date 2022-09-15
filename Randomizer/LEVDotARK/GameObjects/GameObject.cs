@@ -1,3 +1,4 @@
+using Randomizer.Interfaces;
 using static Randomizer.Utils;
 
 // TODO: Maybe make a different class of Container objects?
@@ -14,17 +15,11 @@ namespace Randomizer.LEVDotARK.GameObjects
         public const int TotalLength = BaseLength + ExtraLength;
         public short IdxAtObjectArray;
 
-        private bool _shouldBeMoved = true;
-        public bool ShouldBeMoved
-        {
-            get { return _shouldBeMoved; }
-            set { _shouldBeMoved = value; }
-        }
+        public virtual bool ShouldBeMoved { get; set; } = true;
 
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
 
-        public bool HasTexture = false;
         protected short link_specialField;
         protected short objid_flagsField;
         protected short positionField;
@@ -206,6 +201,7 @@ namespace Randomizer.LEVDotARK.GameObjects
             set { Owner_or_special = (byte) (value + 1 - 370); }
         }
 
+        // TODO: Revise all these "Is..." functions. Would they be needed by the GameObjectFactory?
         public static bool IsTexturedObject(byte[] buffer)
         {
             byte firstByte = buffer[0];
@@ -293,10 +289,4 @@ namespace Randomizer.LEVDotARK.GameObjects
             return true;
         }
     }
-}
-
-interface IShouldIMove
-{
-    public bool ShouldBeMoved { get; set; }
-
 }

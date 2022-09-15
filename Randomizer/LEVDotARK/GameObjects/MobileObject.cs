@@ -2,7 +2,6 @@
 
 namespace Randomizer.LEVDotARK.GameObjects
 {
-    // TODO: CONTINUE HERE
     public class MobileObject : GameObject
     {
         public new const int ExtraLength = 19;
@@ -42,7 +41,8 @@ namespace Randomizer.LEVDotARK.GameObjects
 
         public new byte[] Buffer = new byte[TotalLength];
         public int ObjectBufferIfx;
-        public new bool ShouldBeMoved = false; // TODO: temporary
+
+        public override bool ShouldBeMoved { get; set; } = false;
 
         public int HP
         {

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Tracing;
+using Randomizer.Interfaces;
 using Randomizer.LEVDotARK.Blocks;
 using Randomizer.LEVDotARK.GameObjects;
 using static Randomizer.Utils;
@@ -183,24 +184,6 @@ namespace Randomizer.LEVDotARK
                 return new int[] {row, col};
             }
         }
-
-        // public bool CheckValidityOfObjects()
-        // {
-        //     bool ends = false;
-        //     foreach (MobileObject mobileObject in MobileObjects)
-        //     {
-        //         if (mobileObject.IsEndOfList)
-        //             ends = true;
-        //     }
-        //
-        //     if (!ends)
-        //         return false;
-        //
-        //     if (MobileObjects[0].ItemID != FirstObjIdx)
-        //         return false;
-        //     
-        //     return true;
-        // }
 
         [MemberNotNull(nameof(_tileBuffer))]
         private void UpdateBuffer() // Modified entry, updates buffer

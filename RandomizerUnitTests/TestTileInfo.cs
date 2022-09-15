@@ -125,12 +125,12 @@ public class TestTileInfoWithUWLinkedList
         _gameObjects = new List<GameObject>()
         {
             new StaticObject(fillerBytes, 0) {next = 0}, // end TODO: What is the buffer of object 0?
-            new QuantityGameObject(fillerBytes, 1) {next = 2, ShouldBeMoved = true}, // 1.1   movable
-            new Door(fillerBytes, 2) {next = 6, ShouldBeMoved = false}, // 1.2         immovable
-            new Trap(fillerBytes, 3) {next = 4, ShouldBeMoved = false}, // 2.1         immovable
-            new TexturedGameObject(fillerBytes, 4) {next = 5, ShouldBeMoved = false}, // 2.2   immovable
-            new EnchantedArmor(fillerBytes, 5) {next = 0, ShouldBeMoved = true}, // 2.3 (last) movable
-            new EnchantedWeapon(fillerBytes, 6) {next = 0, ShouldBeMoved = true} // 1.3 (last) movable
+            new QuantityGameObject(fillerBytes, 1) {next = 2}, // 1.1   movable
+            new Door(fillerBytes, 2) {next = 6}, // 1.2         immovable
+            new Trap(fillerBytes, 3) {next = 4}, // 2.1         immovable
+            new TexturedGameObject(fillerBytes, 4) {next = 5}, // 2.2   immovable
+            new EnchantedArmor(fillerBytes, 5) {next = 0}, // 2.3 (last) movable
+            new EnchantedWeapon(fillerBytes, 6) {next = 0} // 1.3 (last) movable
         };
     }
 

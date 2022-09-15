@@ -1,4 +1,4 @@
-﻿namespace Randomizer;
+﻿namespace Randomizer.Interfaces;
 
 public interface ISaveBinary
 {

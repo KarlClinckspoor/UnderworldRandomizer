@@ -279,25 +279,12 @@ public class UWLinkedList: IList<GameObject>
 
     public List<GameObject> PopObjectsThatShouldBeMoved()
     {
-        // TODO: Fix the mess I made with this "should be moved" system
-        var shouldBeMoved = new Dictionary<string, bool>()
-        {
-            {nameof(StaticObject), true},
-            {nameof(QuantityGameObject), true},
-            {nameof(Door), false},
-            {nameof(Trap), false},
-            {nameof(TexturedGameObject), false},
-            {nameof(EnchantedArmor), true},
-            {nameof(EnchantedWeapon), true},
-        };
-        
         var tempList = new List<GameObject>();
-        foreach (IShouldIMove obj in objects)
+        foreach (var obj in objects)
         {
-            // if (obj.GetType())
-            if (shouldBeMoved[obj.GetType().Name])
+            if (obj.ShouldBeMoved)
             {
-                tempList.Add((GameObject) obj);
+                tempList.Add(obj);
             }
         }
 
