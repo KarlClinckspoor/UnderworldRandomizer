@@ -161,4 +161,18 @@ public class TestTileInfoWithUWLinkedList
          Assert.True(info2Pops[0] == _gameObjects[5]);
          Assert.True(tinfo2.ObjectChain.Count == 2);
     }
+
+    [Test]
+    public void TestMovingObjectsFromOneTileToAnother()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Test]
+    public void TestSwappingObjectsFromTiles()
+    {
+        throw new NotImplementedException();
+        
+    }
+    
 }
