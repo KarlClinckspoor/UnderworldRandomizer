@@ -143,19 +143,24 @@ public class TestTileInfoWithUWLinkedList
          tinfo1.ObjectChain.PopulateObjectList(_gameObjects.ToArray());
          tinfo2.ObjectChain.PopulateObjectList(_gameObjects.ToArray());
          
-         Assert.True(tinfo1.ObjectChain[0] == _gameObjects[1]);
-         Assert.True(tinfo1.ObjectChain[^1] == _gameObjects[6]);
+         Assert.True(tinfo1.ObjectChain[0].Equals(_gameObjects[1]));
+         Assert.True(tinfo1.ObjectChain[1].Equals(_gameObjects[2]));
+         Assert.True(tinfo1.ObjectChain[2].Equals(_gameObjects[6]));
          Assert.True(tinfo1.ObjectChain.Count == 3);
          Assert.True(tinfo1.ObjectChain.CheckIntegrity());
+         
 
-         Assert.True(tinfo2.ObjectChain[0] == _gameObjects[3]);
-         Assert.True(tinfo2.ObjectChain[^1] == _gameObjects[5]);
+         Assert.True(tinfo2.ObjectChain[0].Equals(_gameObjects[3]));
+         Assert.True(tinfo2.ObjectChain[1].Equals(_gameObjects[4]));
+         Assert.True(tinfo2.ObjectChain[2].Equals(_gameObjects[5]));
          Assert.True(tinfo2.ObjectChain.Count == 3);
          Assert.True(tinfo2.ObjectChain.CheckIntegrity());
 
          var info1Pop = tinfo1.ObjectChain.Pop();
-         Assert.True(info1Pop == _gameObjects[6]);
          Assert.True(tinfo1.ObjectChain.Count == 2);
+         tinfo1.ObjectChain.PopObjectsThatShouldBeMoved();
+         Assert.True(tinfo1.ObjectChain.Count == 1);
+         Assert.True(tinfo1.ObjectChain[0].Equals(_gameObjects[2]));
 
          var info2Pops = tinfo2.ObjectChain.PopObjectsThatShouldBeMoved();
          Assert.True(info2Pops[0] == _gameObjects[5]);
@@ -163,16 +168,110 @@ public class TestTileInfoWithUWLinkedList
     }
 
     [Test]
-    public void TestMovingObjectsFromOneTileToAnother()
+    public void TestSwappingObjectsFromTilesWithObjects()
     {
-        throw new NotImplementedException();
+        tinfo1.FirstObjIdx = 1;
+        tinfo2.FirstObjIdx = 3;
+        
+        tinfo1.ObjectChain.PopulateObjectList(_gameObjects.ToArray());
+        tinfo2.ObjectChain.PopulateObjectList(_gameObjects.ToArray());
+        
+        // tinfo1 has items in idx 1*,2,6*
+        // tinfo2 has items in idx 3,4,5*
+        var objs1 = tinfo1.ObjectChain.PopObjectsThatShouldBeMoved();
+        var objs2 = tinfo2.ObjectChain.PopObjectsThatShouldBeMoved();
+        
+        // tinfo1 has items in idx 2
+        // tinfo2 has items in idx 3,4
+        
+        tinfo1.ObjectChain.AppendItems(objs2);
+        tinfo2.ObjectChain.AppendItems(objs1);
+        
+        // tinfo1 has items in idx 2,5
+        // tinfo2 has items in idx 3,4,1,6
+        
+        Assert.True(tinfo1.ObjectChain.Count == 2);
+        Assert.True(tinfo2.ObjectChain.Count == 4);
+
+        var idxs_tinfo1 = from obj in tinfo1.ObjectChain select obj.IdxAtObjectArray;
+        var idxs_tinfo2 = from obj in tinfo2.ObjectChain select obj.IdxAtObjectArray;
+
+        // Do I really need this?
+        var correctIdxs_tinfo1 = new List<short> {2, 5};
+        var correctIdxs_tinfo2 = new List<short> {3,4,1,6};
+
+        foreach (var idx in idxs_tinfo1)
+        {
+            var temp = correctIdxs_tinfo1[0];
+            Assert.True(idx == temp);
+            correctIdxs_tinfo1.RemoveAt(0);
+        }
+
+        foreach (var idx in idxs_tinfo2)
+        {
+            var temp = correctIdxs_tinfo2[0];
+            Assert.True(idx == temp);
+            correctIdxs_tinfo2.RemoveAt(0);
+        }
     }
 
     [Test]
-    public void TestSwappingObjectsFromTiles()
+    public void TestSwappingObjectsBetweenOneTileWithObjectsAndAnotherWithout()
     {
-        throw new NotImplementedException();
+        tinfo1.FirstObjIdx = 1;
+        tinfo2.FirstObjIdx = 0;
         
+        tinfo1.ObjectChain.PopulateObjectList(_gameObjects.ToArray());
+        tinfo2.ObjectChain.PopulateObjectList(_gameObjects.ToArray());
+        
+        Assert.True(tinfo1.ObjectChain.CheckIntegrity());
+        Assert.True(tinfo2.ObjectChain.CheckIntegrity());
+        
+        // tinfo1 has items in idx 1*,2,6*
+        // tinfo2 has no items
+        var objs1 = tinfo1.ObjectChain.PopObjectsThatShouldBeMoved();
+        var objs2 = tinfo2.ObjectChain.PopObjectsThatShouldBeMoved();
+        
+        // tinfo1 has items in idx 2
+        // tinfo2 has no items
+        // objs1 has 1, 6
+        // objs2 is empty
+        
+        Assert.True(tinfo1.ObjectChain.CheckIntegrity());
+        Assert.True(tinfo2.ObjectChain.CheckIntegrity());
+        
+        tinfo1.ObjectChain.AppendItems(objs2);
+        tinfo2.ObjectChain.AppendItems(objs1);
+        
+        Assert.True(tinfo1.ObjectChain.CheckIntegrity());
+        Assert.True(tinfo2.ObjectChain.CheckIntegrity());
+        
+        // tinfo1 has items in idx 2
+        // tinfo2 has items in idx 1, 6
+        
+        Assert.True(tinfo1.ObjectChain.Count == 1);
+        Assert.True(tinfo2.ObjectChain.Count == 2);
+
+        var idxs_tinfo1 = from obj in tinfo1.ObjectChain select obj.IdxAtObjectArray;
+        var idxs_tinfo2 = from obj in tinfo2.ObjectChain select obj.IdxAtObjectArray;
+
+        // This is essentially checking if 'CheckIntegrity' is working correctly. Move to another test.
+        var correctIdxs_tinfo1 = new List<short> {2};
+        var correctIdxs_tinfo2 = new List<short> {1,6};
+
+        foreach (var idx in idxs_tinfo1)
+        {
+            var temp = correctIdxs_tinfo1[0];
+            Assert.True(idx == temp);
+            correctIdxs_tinfo1.RemoveAt(0);
+        }
+
+        foreach (var idx in idxs_tinfo2)
+        {
+            var temp = correctIdxs_tinfo2[0];
+            Assert.True(idx == temp);
+            correctIdxs_tinfo2.RemoveAt(0);
+        }
     }
     
 }
