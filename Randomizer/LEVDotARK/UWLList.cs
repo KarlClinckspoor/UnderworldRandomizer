@@ -11,33 +11,26 @@ namespace Randomizer.LEVDotARK;
 
 public class UWLinkedList: IList<GameObject>
 {
-    public bool Initialized = false;
-
-    private int _startingIdx;
+    private int _startingIdx = 0;
     public int startingIdx
     {
         get
         {
-            if (Initialized & objects.Count > 0)
-                return objects[0].IdxAtObjectArray;
-            if (Initialized & objects.Count == 0)
-                return 0;
-            // if (!Initialized)
+            if (objects.Count > 0)
+            {
+                // In case this isn't true, the LList is invalid, so it's good to check now
+                Debug.Assert(_startingIdx == objects[0].IdxAtObjectArray);
+                return _startingIdx;
+            }
             return _startingIdx;
         }
         set
         {
-            if (Initialized & objects.Count > 0)
+            if (objects.Count > 0)
             {
                 Debug.WriteLine("Attempting to change the starting index of an initialized UWLinkedList. This will clear the list");
                 Clear();
             }
-
-            if (Initialized & objects.Count == 0)
-            {
-                _startingIdx = value;
-            }
-
             _startingIdx = value;
         }
     }
@@ -73,16 +66,14 @@ public class UWLinkedList: IList<GameObject>
         }
         else
         {
-           objects[^1].next =  item.IdxAtObjectArray;
+            objects[^1].next =  item.IdxAtObjectArray;
         }
         item.next = 0;
-        Initialized = true;
         objects.Add(item);
     }
 
     public void Clear()
     {
-        Initialized = false;
         _startingIdx = 0;
         objects.Clear();
     }
@@ -211,15 +202,15 @@ public class UWLinkedList: IList<GameObject>
     {
         objects = new List<GameObject>();
     }
-     public UWLinkedList(List<GameObject> objects)
-     {
-         this.objects = objects;
-     }
+    public UWLinkedList(List<GameObject> objects)
+    {
+        this.objects = objects;
+    }
 
-     public UWLinkedList(GameObject[] objects)
-     {
-         this.objects = objects.ToList();
-     }
+    public UWLinkedList(GameObject[] objects)
+    {
+        this.objects = objects.ToList();
+    }
     
     /// <summary>
     /// Adds items to the end of the object chain
@@ -256,19 +247,29 @@ public class UWLinkedList: IList<GameObject>
     }
 
     /// <summary>
-    /// Checks if the sequence of objects is valid, i.e., the `next` fields all point to the actual next value
+    /// Checks if the sequence of objects is valid:
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>
+    ///         The starting index is equal to the first GameObject's index (except if there's no objects, then it has to be 0)
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///         The last object's <c>next</c> field should be 0.
+    ///     </description>
+    ///     </item>
+    ///     <item>
+    ///         Every intermediate GameObjects <c>next</c> points to the following GameObject's index.
+    ///     </item>
+    /// </list>
     /// </summary>
     /// <returns></returns>
     public bool CheckIntegrity()
     {
-
-        if (!Initialized)
+        if (objects.Count == 0)  // Empty list, so the starting index has to be 0
         {
-            return false;
-        }
-        if (objects.Count == 0)
-        {
-            if (startingIdx != 0)
+            if (_startingIdx != 0) // TODO: _startingIdx or startingIdx?
             {
                 return false;
             }
@@ -276,7 +277,7 @@ public class UWLinkedList: IList<GameObject>
             return true;
         }
         
-        if (startingIdx != objects[0].IdxAtObjectArray)
+        if (_startingIdx != objects[0].IdxAtObjectArray)
         {
             return false;
         }
@@ -364,7 +365,6 @@ public class UWLinkedList: IList<GameObject>
         objects.Clear();
         if (startingIdx == 0) // Tile empty of objects
         {
-            Initialized = true;
             return;
         }
 
@@ -385,7 +385,6 @@ public class UWLinkedList: IList<GameObject>
             Add(obj);
         }
 
-        Initialized = true;
     }
     
     
