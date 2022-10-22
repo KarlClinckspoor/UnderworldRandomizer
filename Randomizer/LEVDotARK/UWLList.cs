@@ -158,16 +158,30 @@ public class UWLinkedList: IList<GameObject>
         {
             throw new IndexOutOfRangeException();
         }
-        
+
+        if (index == 0 & Count == 1)
+        {
+            objects.RemoveAt(0);
+            _startingIdx = 0;
+            return;
+        }
+
+        if (index == 0 & Count > 1)
+        {
+            objects.RemoveAt(0);
+            _startingIdx = objects[0].IdxAtObjectArray;
+            return;
+        }
+
         if (index == Count - 1)
         {
             objects[index - 1].next = 0;
+            objects.RemoveAt(index);
+            return;
         }
-        else
-        {
-            objects[index - 1].next = objects[index + 1].IdxAtObjectArray;
-        }
-        objects.RemoveAt(index); // todo: Should this go in the beginning of the function?
+        
+        objects[index - 1].next = objects[index + 1].IdxAtObjectArray;
+        objects.RemoveAt(index);
     }
     
     /// <summary>
@@ -198,18 +212,30 @@ public class UWLinkedList: IList<GameObject>
         }
     }
 
+    /// <summary>
+    /// Constructed a new empty UWLinkedList. To fill it, either set the starting index and provide a
+    /// list of GameObjects, or add the objects individually.
+    /// </summary>
     public UWLinkedList()
     {
         objects = new List<GameObject>();
     }
-    public UWLinkedList(List<GameObject> objects)
+    /// <summary>
+    /// Creates a UWLinkedList containing the provided list of objects.
+    /// </summary>
+    /// <param name="objectsToBeInTheList"></param>
+    public UWLinkedList(List<GameObject> objectsToBeInTheList, short firstObjectIndex)
     {
-        this.objects = objects;
+        startingIdx = firstObjectIndex;
+        objects = objectsToBeInTheList;
+        Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
 
-    public UWLinkedList(GameObject[] objects)
+    public UWLinkedList(GameObject[] objectsToBeInTheList, short firstObjectIndex)
     {
+        startingIdx = firstObjectIndex;
         this.objects = objects.ToList();
+        Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
     
     /// <summary>
@@ -240,6 +266,10 @@ public class UWLinkedList: IList<GameObject>
     /// <returns></returns>
     public GameObject Pop()
     {
+        if (Count == 0)
+        {
+            throw new InvalidOperationException("Can't pop from an empty Linked List!");
+        }
         int position = objects.Count - 1;
         var obj = objects[position];
         RemoveAt(position);
@@ -308,7 +338,7 @@ public class UWLinkedList: IList<GameObject>
         return tile.ObjectChain.CheckIntegrity();
     }
 
-    private void FixIntegrity()
+    private void ForceFixIntegrity()
     {
         int i = 0;
         foreach (var obj in objects)
@@ -325,16 +355,6 @@ public class UWLinkedList: IList<GameObject>
             }
             i++;
         }
-    }
-
-    public static bool CheckIntegrity(TileInfo tile, UWLinkedList linkedList)
-    {
-        if (tile.FirstObjIdx != linkedList.startingIdx)
-        {
-            return false;
-        }
-
-        return linkedList.CheckIntegrity();
     }
 
     public List<GameObject> PopObjectsThatShouldBeMoved()
@@ -385,6 +405,11 @@ public class UWLinkedList: IList<GameObject>
             Add(obj);
         }
 
+    }
+
+    public void PopulateObjectList(List<GameObject> Objects)
+    {
+        PopulateObjectList(Objects.ToArray());
     }
     
     
