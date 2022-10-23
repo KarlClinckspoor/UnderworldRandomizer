@@ -150,24 +150,12 @@ namespace Randomizer.LEVDotARK
         {
             get
             {
-                if (ObjectChain.Initialized) 
-                    return ObjectChain.startingIdx;
-                return GetBits(Entry,0b1111111111, 22);
+                return ObjectChain.startingIdx;
             }
             set
             {
                 Entry = SetBits(Entry, value, 0b1111111111, 22);
-                if (!ObjectChain.Initialized)
-                {
-                    ObjectChain.startingIdx = value;
-                    UpdateBuffer();
-                    return;
-                }
-                
-                if (ObjectChain.Initialized & ObjectChain[0].IdxAtObjectArray != value)
-                {
-                    ObjectChain.startingIdx = value;
-                }
+                ObjectChain.startingIdx = value;
                 UpdateBuffer();
             }
         }
@@ -188,16 +176,12 @@ namespace Randomizer.LEVDotARK
         [MemberNotNull(nameof(_tileBuffer))]
         private void UpdateBuffer() // Modified entry, updates buffer
         {
-            // Sets the "first object index" value
-            if (ObjectChain.Initialized)
-                _entry = SetBits(_entry, ObjectChain.startingIdx, 0b1111111111, 22);
+            _entry = SetBits(_entry, ObjectChain.startingIdx, 0b1111111111, 22);
             _tileBuffer = BitConverter.GetBytes(_entry);
-            // Debug.Assert(TileBuffer.Length == Size);
         }
 
         private void UpdateEntry() // Modified buffer, updates entry
         {
-            // Debug.Assert(TileBuffer.Length == Size);
             _entry = BitConverter.ToInt32(_tileBuffer);
         }
 

@@ -278,6 +278,11 @@ namespace Randomizer.LEVDotARK.GameObjects
                 return false;
             }
 
+            if (this.GetType() != other.GetType())
+            {
+                return false;
+            }
+
             for (int i = 0; i < Buffer.Length; i++)
             {
                 if (Buffer[i] != other.Buffer[i])

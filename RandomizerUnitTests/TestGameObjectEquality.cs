@@ -64,7 +64,7 @@ class TestGameObjectEquality
             link_specialField: 0xFFF
         );
 
-        Assert.True(obj1.Equals(obj2));
+        Assert.False(obj1.Equals(obj2));
     }
 
     [Test]
