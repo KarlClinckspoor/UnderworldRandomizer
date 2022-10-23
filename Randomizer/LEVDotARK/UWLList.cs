@@ -35,17 +35,6 @@ public class UWLinkedList: IList<GameObject>
         }
     }
 
-    private int lastItemIdx
-    {
-        get
-        {
-            if (objects.Count == 0)
-            {
-                return 0;
-            }
-            return objects[^1].IdxAtObjectArray;
-        }
-    }
     private List<GameObject> objects;
 
     public IEnumerator<GameObject> GetEnumerator()
@@ -141,15 +130,38 @@ public class UWLinkedList: IList<GameObject>
         return objects.IndexOf(item);
     }
 
+    /// <summary>
+    /// Inserts an object and its new position in the LinkedList is the index provided.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="item"></param>
+    /// <exception cref="IndexOutOfRangeException"></exception>
     public void Insert(int index, GameObject item)
     {
-        if (index < 0 | index > objects.Count)
+        if (index < 0 | index > Count)
         {
             throw new IndexOutOfRangeException();
         }
-        objects[index - 1].next = item.IdxAtObjectArray;
-        item.next = objects[index + 1].IdxAtObjectArray;
-        objects.Insert(index, item);
+
+        if (index == 0)
+        {
+            _startingIdx = item.IdxAtObjectArray;
+            item.next = objects[0].IdxAtObjectArray;
+            objects.Insert(index, item);
+        }
+        else if (index == Count)
+        {
+            objects[^1].next = item.IdxAtObjectArray;
+            item.next = 0;
+            objects.Insert(index, item);
+        }
+        else
+        {
+            objects[index - 1].next = item.IdxAtObjectArray;
+            item.next = objects[index].IdxAtObjectArray;
+            objects.Insert(index, item);
+        }
+        
     }
 
     public void RemoveAt(int index)
@@ -202,13 +214,46 @@ public class UWLinkedList: IList<GameObject>
     {
         get
         {
+            if (index < 0 | index >= Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
             return objects[index];
         }
         set
         {
-            objects[index - 1] = value;
-            objects[index] = value;
+            if (index < 0 | index >= Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            if (index == 0 & Count > 1)
+            {
+                _startingIdx = value.IdxAtObjectArray;
+                value.next = objects[index + 1].IdxAtObjectArray;
+                objects[index] = value;
+                return;
+            }
+
+            if (index == 0 & Count == 1)
+            {
+                _startingIdx = value.IdxAtObjectArray;
+                value.next = 0;
+                objects[0] = value;
+                return;
+            }
+
+            if (index == Count - 1)
+            {
+                value.next = 0;
+                objects[index] = value;
+                objects[index - 1].next = value.IdxAtObjectArray;
+                return;
+            }
+            
+            objects[index - 1].next = value.IdxAtObjectArray;
             value.next = objects[index + 1].IdxAtObjectArray;
+            objects[index] = value;
         }
     }
 
@@ -226,15 +271,15 @@ public class UWLinkedList: IList<GameObject>
     /// <param name="objectsToBeInTheList"></param>
     public UWLinkedList(List<GameObject> objectsToBeInTheList, short firstObjectIndex)
     {
-        startingIdx = firstObjectIndex;
+        _startingIdx = firstObjectIndex;
         objects = objectsToBeInTheList;
         Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
 
     public UWLinkedList(GameObject[] objectsToBeInTheList, short firstObjectIndex)
     {
-        startingIdx = firstObjectIndex;
-        this.objects = objects.ToList();
+        _startingIdx = firstObjectIndex;
+        this.objects = objectsToBeInTheList.ToList();
         Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
     
@@ -277,7 +322,7 @@ public class UWLinkedList: IList<GameObject>
     }
 
     /// <summary>
-    /// Checks if the sequence of objects is valid:
+    /// Checks if the sequence of objects is valid.
     /// <list type="bullet">
     ///   <item>
     ///     <description>
@@ -290,13 +335,22 @@ public class UWLinkedList: IList<GameObject>
     ///     </description>
     ///     </item>
     ///     <item>
-    ///         Every intermediate GameObjects <c>next</c> points to the following GameObject's index.
+    ///         Every intermediate GameObjects <c>next</c> points to the following GameObject's index. If there's duplicates,
+    ///         then this will make the list invalid immediately.
     ///     </item>
     /// </list>
     /// </summary>
     /// <returns></returns>
     public bool CheckIntegrity()
     {
+        foreach (var obj in objects)
+        {
+            if (obj.IdxAtObjectArray == 0)
+            {
+                return false;
+            }
+        }
+        
         if (objects.Count == 0)  // Empty list, so the starting index has to be 0
         {
             if (_startingIdx != 0) // TODO: _startingIdx or startingIdx?
@@ -328,16 +382,6 @@ public class UWLinkedList: IList<GameObject>
         return true;
     }
     
-    public static bool CheckIntegrity(TileInfo tile)
-    {
-        if (tile.FirstObjIdx != tile.ObjectChain.startingIdx)
-        {
-            return false;
-        }
-
-        return tile.ObjectChain.CheckIntegrity();
-    }
-
     private void ForceFixIntegrity()
     {
         int i = 0;

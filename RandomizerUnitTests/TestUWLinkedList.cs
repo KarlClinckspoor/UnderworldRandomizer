@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using Randomizer.LEVDotARK;
@@ -55,6 +57,14 @@ public class TestUWLinkedList
         Assert.True(LList1.Count == 0);
         LList1.PopulateObjectList(_gameObjects.ToArray());
         Assert.True(LList1.Count == 0);
+        
+        // Trying to trigger the ContraintException
+        _gameObjects[1].next = 2;
+        _gameObjects[2].next = 1;
+        LList1.Clear();
+        LList1.startingIdx = 1;
+        Assert.Throws<ConstraintException>(() => LList1.PopulateObjectList(_gameObjects.ToArray()));
+
     }
 
     [Test]
@@ -138,8 +148,8 @@ public class TestUWLinkedList
         
         // LList1 should have 2,5
         // LList2 should have 3,4,1,6
-        LList1.AppendItems(objs2);
-        LList2.AppendItems(objs1);
+        LList1.AppendItems(objs2.ToArray()); // Changing to ToArray just to cover the test
+        LList2.AppendItems(objs1.ToArray());
         
         Assert.True(CheckObjectsAtPositions(LList1.ToList(), new List<short>() {2, 5}));
         Assert.True(CheckObjectsAtPositions(LList2.ToList(), new List<short>() {3, 4, 1, 6}));
@@ -307,6 +317,77 @@ public class TestUWLinkedList
         Assert.True(LList1.CheckIntegrity());
     }
 
+    [Test]
+    public void TestRemove_1Element()
+    {
+        LList1.startingIdx = 1;
+        _gameObjects[1].next = 0;
+        LList1.PopulateObjectList(_gameObjects);
+        LList1.Remove(_gameObjects[1]);
+        Assert.True(LList1.Count == 0);
+        Assert.True(LList1.CheckIntegrity());
+    }
+
+    [Test]
+    public void TestRemoveFromMiddle()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        LList1.Remove(_gameObjects[2]);
+        Assert.True(LList1.Count == 2);
+        Assert.True(LList1.CheckIntegrity());
+    }
+
+    [Test]
+    public void TestRemove_NotFound()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        Assert.False(LList1.Remove(_gameObjects[^2]));
+    }
+
+    [Test]
+    public void TestIsReadOnly()
+    {
+        Assert.False(LList1.IsReadOnly);
+    }
+
+    [Test]
+    public void TestInsert()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        
+        LList1.Insert(0, _gameObjects[3]);
+        Assert.True(LList1.Count == 4);
+        Assert.True(LList1.CheckIntegrity());
+        LList1.RemoveAt(0);
+        Assert.True(LList1.CheckIntegrity());
+        
+        LList1.Insert(3, _gameObjects[3]);
+        Assert.True(LList1.Count == 4);
+        Assert.True(LList1.CheckIntegrity());
+        LList1.RemoveAt(3);
+        Assert.True(LList1.CheckIntegrity());
+        
+        LList1.Insert(2, _gameObjects[3]);
+        Assert.True(LList1.Count == 4);
+        Assert.True(LList1.CheckIntegrity());
+
+        Assert.Throws<IndexOutOfRangeException>(() => LList1.Insert(-1, _gameObjects[1]));
+        Assert.Throws<IndexOutOfRangeException>(() => LList1.Insert(1000, _gameObjects[1]));
+    }
+
+    [Test]
+    public void TestGetEnumerator()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        foreach (var foo in LList1) { }
+        // todo: How do I get to IEnumerator IEnumerable.GetEnumerator?
+    }
+    
+
     private bool CheckObjectsAtPositions(List<GameObject> list, List<short> correctIdxs)
     {
         if (list.Count != correctIdxs.Count)
@@ -327,12 +408,126 @@ public class TestUWLinkedList
     [Test]
     public void TestListCheckIntegrity()
     {
+        // This is what should be run normally 
         LList1.startingIdx = 1;
         LList1.PopulateObjectList(_gameObjects);
         Assert.True(LList1.CheckIntegrity());
+        
+        // Changing the index of the first object should invalidate the list because it wouldn't be pointing correctly
+        LList1[0].IdxAtObjectArray = 100; // Should be 1
+        Assert.False(LList1.CheckIntegrity());
+        LList1[0].IdxAtObjectArray = 1; // Returning to normal
+        Assert.True(LList1.CheckIntegrity());
+        
+        // Changing the index of an object in the middle, or its next attribute, should invalidate the LList
+        LList1[1].IdxAtObjectArray = 100; // Should be 2
+        Assert.False(LList1.CheckIntegrity());
+        LList1[1].IdxAtObjectArray = 2; // Returning
+        Assert.True(LList1.CheckIntegrity());
+        
+        LList1[1].next = 100; // Should be 6
+        Assert.False(LList1.CheckIntegrity());
+        LList1[1].next = 6; // Returning
+        Assert.True(LList1.CheckIntegrity());
+        
+        // 
         _gameObjects[^1].next = 100;
+        Assert.False(LList1.CheckIntegrity()); 
+        
+        // Having a starting index but no objects is invalid
+        LList1.Clear();
+        LList1.startingIdx = 1;
+        Assert.False(LList1.CheckIntegrity());
+        
+    }
+
+    [Test]
+    public void TestContains()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        Assert.True(LList1.Contains(_gameObjects[1]));
+        Assert.True(LList1.Contains(_gameObjects[2]));
+        Assert.True(LList1.Contains(_gameObjects[6]));
+        Assert.False(LList1.Contains(_gameObjects[3]));
+        Assert.False(LList1.Contains(_gameObjects[4]));
+        Assert.False(LList1.Contains(_gameObjects[5]));
+    }
+
+    [Test]
+    public void TestIndexOf()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        Assert.True(LList1.IndexOf(_gameObjects[1]) == 0);
+        Assert.True(LList1.IndexOf(_gameObjects[2]) == 1);
+        Assert.True(LList1.IndexOf(_gameObjects[6]) == 2);
+        Assert.True(LList1.IndexOf(_gameObjects[3]) == -1);
+        Assert.True(LList1.IndexOf(_gameObjects[4]) == -1);
+        Assert.True(LList1.IndexOf(_gameObjects[5]) == -1);
+    }
+
+    [Test]
+    public void TestListCtor()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+
+        var LList3 = new UWLinkedList(LList1.ToList(), (short) LList1.startingIdx);
+        var LList4 = new UWLinkedList(LList1.ToArray(), (short) LList1.startingIdx);
+        Assert.True(LList3.CheckIntegrity());
+        Assert.True(LList4.CheckIntegrity());
+        
+    }
+
+    [Test]
+    public void TestSet()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+
+        LList1[0] = _gameObjects[3];
+        Assert.True(LList1.CheckIntegrity());
+        LList1[2] = _gameObjects[4];
+        Assert.True(LList1.CheckIntegrity());
+        LList1[1] = _gameObjects[5];
+        Assert.True(LList1.CheckIntegrity());
+        
+        Assert.Throws<IndexOutOfRangeException>(() => LList1[-1] = _gameObjects[2]);
+        Assert.Throws<IndexOutOfRangeException>(() => LList1[100] = _gameObjects[2]);
+        
+        LList1.Clear();
+        LList1.Add(_gameObjects[1]);
+        LList1[0] = _gameObjects[2];
+        Assert.True(LList1.CheckIntegrity());
+    }
+
+    [Test]
+    public void TestGet()
+    {
+        LList1.startingIdx = 1;
+        LList1.PopulateObjectList(_gameObjects);
+        
+        Assert.True(LList1[0].Equals(_gameObjects[1]));
+        Assert.True(LList1[1].Equals(_gameObjects[2]));
+        Assert.True(LList1[2].Equals(_gameObjects[6]));
+
+        Assert.Throws<IndexOutOfRangeException>(() => LList1[-1].ToString());
+        Assert.Throws<IndexOutOfRangeException>(() => LList1[100].ToString());
+    }
+
+    [Test]
+    public void TestAddingTwoOfTheSameItem()
+    {
+        LList1.Add(_gameObjects[1]);
+        LList1.Add(_gameObjects[1]);
         Assert.False(LList1.CheckIntegrity());
     }
-    
 
+    [Test]
+    public void TestHavingItemOfIdx0()
+    {
+        LList1.Add(_gameObjects[0]);
+        Assert.False(LList1.CheckIntegrity());
+    }
 }
