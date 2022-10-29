@@ -1,4 +1,5 @@
 namespace UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+using static UWRandomizerEditor.Utils;
 
 public class Door: SpecialLinkGameObject
 {
@@ -69,17 +70,17 @@ public class Door: SpecialLinkGameObject
         UpdateBuffer();
     }
 
-    // On locks:
-    // Bit 9 of the flags indicates if the lock is locked (1) or unlocked (0).
-    // Lower 6 bits of link/special field determines the lock id. When unlocking,
-    // the ID must match the key ID on the key
-    public void Unlock(GameObject[] levelGameObjects)
+    public void Unlock(GameObject[] blockGameObjects)
     {
-        // TODO: Make a lock class and implement functions to change ID and lock/unlock
-        throw new NotImplementedException();
-        // GameObject Lock = levelGameObjects[link_specialField];
-        // SetBits(Lock.objid_flagsField, 0, 0b1, 9);
-        // Lock.UpdateBuffer();
+        if (blockGameObjects[link_specialField] is Lock LockObject)
+        {
+            LockObject.IsLocked = false;
+            LockObject.UpdateBuffer();
+        }
+        else
+        {
+            throw new InvalidOperationException("Cannot unlock because door isn't pointing to a lock object");
+        }
     }
     
 }
