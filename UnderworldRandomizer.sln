@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomizerUnitTests", "Rand
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCombinations", "ItemCombinations\ItemCombinations.csproj", "{6B880621-0FCE-421D-BEF6-A27696C09B2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizer", "UWRandomizer\UWRandomizer.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{6B880621-0FCE-421D-BEF6-A27696C09B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B880621-0FCE-421D-BEF6-A27696C09B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B880621-0FCE-421D-BEF6-A27696C09B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
