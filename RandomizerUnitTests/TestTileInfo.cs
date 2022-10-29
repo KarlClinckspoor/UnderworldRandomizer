@@ -42,9 +42,9 @@ public class TestTileInfo
     {
         // Compare the buffers as-is
         Assert.True(tinfo1.TileBuffer.SequenceEqual(tinfo2.TileBuffer));
-        string tinfo1Path = tinfo1.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, extraInfo: "buffer_tinfo1");
-        string tinfo2Path = tinfo2.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, extraInfo: "buffer_tinfo2");
-        string tinfo3Path = tinfo3.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, extraInfo: "buffer_tinfo3");
+        string tinfo1Path = tinfo1.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, filename: "buffer_tinfo1");
+        string tinfo2Path = tinfo2.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, filename: "buffer_tinfo2");
+        string tinfo3Path = tinfo3.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, filename: "buffer_tinfo3");
         
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();

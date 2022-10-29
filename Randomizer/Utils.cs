@@ -121,29 +121,18 @@
         }
 
         /// <summary>
-        /// Saves a specific buffer to a path specified as basepath \ extrainfo.
+        /// Saves a specific buffer to a path specified as basepath \ filename.
         /// </summary>
         /// <param name="buffer">Byte array (buffer)</param>
         /// <param name="basepath">Base path to the file (e.g. folder structure) </param>
-        /// <param name="extrainfo">Extra info to add (e.g. name of file) </param>
+        /// <param name="filename">Extra info to add (e.g. name of file) </param>
         /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
-        public static string? StdSaveBuffer(byte[] buffer, string basepath, string extrainfo)
+        public static string StdSaveBuffer(byte[] buffer, string basepath, string filename)
         {
-
-            // TODO: Use Path instead of interpolating strings.
-            string fullpath = @$"{basepath}\{extrainfo}.bin";
+            string fullpath = Path.Join(basepath, filename);
         
-            try
-            {
-                File.WriteAllBytes(fullpath, buffer);
-            }
-            catch (Exception e) // TODO: Specify exception.
-            {
-                Console.WriteLine($"Unable to write. Error: {e}");
-                return null;
-            }
+            File.WriteAllBytes(fullpath, buffer);
             return fullpath;
-
         }
 
     }

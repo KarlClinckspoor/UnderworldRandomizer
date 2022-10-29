@@ -256,16 +256,16 @@ namespace Randomizer.LEVDotARK
             }
         }
 
-        public string? SaveBuffer(string? basePath, string? extraInfo)
+        public string SaveBuffer(string? basePath, string? filename)
         {
             basePath ??= Settings.DefaultBinaryTestsPath;
-            extraInfo ??= string.Empty;
-            if (extraInfo.Length == 0)
+            filename ??= string.Empty;
+            if (filename.Length == 0)
             {
-                extraInfo = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
+                filename = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
             }
 
-            return StdSaveBuffer(TileBuffer, basePath, extraInfo);
+            return StdSaveBuffer(TileBuffer, basePath, filename);
 
         }
 

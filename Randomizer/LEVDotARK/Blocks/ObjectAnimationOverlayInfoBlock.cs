@@ -27,9 +27,9 @@ namespace Randomizer.LEVDotARK.Blocks
             LevelNumber = levelnumber;
         }
 
-        public override string? SaveBuffer(string? basePath = null, string extraInfo = "")
+        public override string SaveBuffer(string? basePath = null, string filename = "")
         {
-            return base.SaveBuffer(basePath, extraInfo.Length == 0 ? $@"_ObjAnimOverlayInfo_{LevelNumber}" : extraInfo);
+            return base.SaveBuffer(basePath, filename.Length == 0 ? $@"_ObjAnimOverlayInfo_{LevelNumber}" : filename);
         }
 
     }

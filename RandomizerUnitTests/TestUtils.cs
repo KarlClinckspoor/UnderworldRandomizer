@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using static Randomizer.Utils;
 
 namespace RandomizerUnitTests;
 
+[TestFixture]
 internal class TestSetBits
 {
     [Test]
@@ -109,6 +111,7 @@ internal class TestSetBits
 
 }
 
+[TestFixture]
 internal class TestGetBits
 {
     [Test]
@@ -155,4 +158,31 @@ internal class TestGetBits
     }
 
 
+}
+
+[TestFixture]
+internal class TestSaveBuffer
+{
+    private byte[] buffer;
+    [SetUp]
+    public void Setup()
+    {
+        int[] temp = new[] {0, 1, 2, 3, 4, 5, 6, 7};
+        buffer = (from i in temp select (byte) i).ToArray(); // Really necessary?!?
+    }
+
+    [Test]
+    public void TestSaveB()
+    {
+        string path = Path.GetFullPath(".");
+        string filename = "TestSaveBuffer.bin";
+        string output = StdSaveBuffer(buffer, path, filename);
+        
+        byte[] savedStuff = File.ReadAllBytes(output);
+        for (int i = 0; i < savedStuff.Length; i++)
+        {
+            Assert.True(savedStuff[i] == buffer[i]);
+        }
+        File.Delete(output);
+    }
 }

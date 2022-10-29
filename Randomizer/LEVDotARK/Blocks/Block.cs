@@ -18,13 +18,13 @@ namespace Randomizer.LEVDotARK.Blocks
             this.LevelNumber = levelNumber;
         }
 
-        public virtual string? SaveBuffer(string? basePath = null, string extraInfo = "")
+        public virtual string SaveBuffer(string? basePath = null, string filename = "")
         {
             if (basePath is null)
             {
                 basePath = Settings.DefaultBinaryTestsPath;
             }
-            return StdSaveBuffer(blockbuffer, basePath, extraInfo);
+            return StdSaveBuffer(blockbuffer, basePath, filename);
         }
     }
 }
