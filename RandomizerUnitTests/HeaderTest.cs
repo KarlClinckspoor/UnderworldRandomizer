@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using Randomizer;
-using Randomizer.LEVDotARK;
-using static Randomizer.Settings;
+using UWRandomizerEditor.LEVDotARK;
+using static UWRandomizerEditor.Settings;
 
 namespace RandomizerUnitTests;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using Randomizer;
-using Randomizer.LEVDotARK;
+using UWRandomizerEditor;
+using UWRandomizerEditor.LEVDotARK;
 
 namespace RandomizerUnitTests;
 

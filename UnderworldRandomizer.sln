@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Randomizer", "Randomizer\Randomizer.csproj", "{6AE36EBC-FB26-41F8-9179-611A7704A10E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerEditor", "UWRandomizerEditor\UWRandomizerEditor.csproj", "{6AE36EBC-FB26-41F8-9179-611A7704A10E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomizerUnitTests", "RandomizerUnitTests\RandomizerUnitTests.csproj", "{3C8CFAF0-AD93-4542-A88E-7534211314AB}"
 EndProject

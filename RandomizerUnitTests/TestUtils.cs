@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-using static Randomizer.Utils;
+using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
 
