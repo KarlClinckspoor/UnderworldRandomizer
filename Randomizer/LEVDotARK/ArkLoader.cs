@@ -259,17 +259,17 @@ namespace Randomizer.LEVDotARK
             return System.IO.File.ReadAllBytes(path);
         }
 
-    public string? SaveBuffer(string? basePath = null, string extraInfo = "")
+    public string SaveBuffer(string? basePath = null, string filename = "")
         {
             if (basePath is null)
             {
                 basePath = Settings.DefaultArkPath;
             }
-            if (extraInfo.Length == 0)
+            if (filename.Length == 0)
             {
-                extraInfo = $@"NEWLEV.ARK";
+                filename = $@"NEWLEV.ARK";
             }
-            return StdSaveBuffer(arkbuffer, basePath, extraInfo);
+            return StdSaveBuffer(arkbuffer, basePath, filename);
         }
 
     }

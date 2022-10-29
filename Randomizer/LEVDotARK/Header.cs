@@ -64,13 +64,13 @@ public class Header: ISaveBinary
         CalculateOffsets();
     }
 
-    public string? SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string extraInfo = "")
+    public string SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string filename = "")
     {
-        if (extraInfo.Length == 0)
+        if (filename.Length == 0)
         {
-            extraInfo = $@"_HEADER";
+            filename = $@"_HEADER";
         }
 
-        return StdSaveBuffer(buffer, basePath, extraInfo);
+        return StdSaveBuffer(buffer, basePath, filename);
     }
 }

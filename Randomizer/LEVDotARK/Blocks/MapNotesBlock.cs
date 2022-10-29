@@ -9,9 +9,9 @@ namespace Randomizer.LEVDotARK.Blocks
     {
         public MapNotesBlock(byte[] buffer, int levelnumber): base(buffer, levelnumber)
         { }
-        public override string? SaveBuffer(string? basePath = null, string extraInfo = "")
+        public override string SaveBuffer(string? basePath = null, string filename = "")
         {
-            return base.SaveBuffer(basePath, extraInfo.Length == 0 ? $@"_MAPNOTES_{LevelNumber}" : extraInfo);
+            return base.SaveBuffer(basePath, filename.Length == 0 ? $@"_MAPNOTES_{LevelNumber}" : filename);
         }
     }
 }

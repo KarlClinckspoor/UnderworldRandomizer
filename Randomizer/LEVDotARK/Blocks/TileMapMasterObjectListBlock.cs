@@ -389,13 +389,13 @@ namespace Randomizer.LEVDotARK.Blocks
 
         #endregion
 
-        public override string? SaveBuffer(string? basePath = null, string extraInfo = "")
+        public override string SaveBuffer(string? basePath = null, string filename = "")
         {
             if (basePath is null)
             {
                 basePath = Settings.DefaultBinaryTestsPath;
             }
-            return base.SaveBuffer(basePath, extraInfo.Length == 0 ? $@"_TileMapObjList_{LevelNumber}" : extraInfo);
+            return base.SaveBuffer(basePath, filename.Length == 0 ? $@"_TileMapObjList_{LevelNumber}" : filename);
         }
     }
 }

@@ -205,13 +205,13 @@ public class ItemCombination: ISaveBinary
         product.buffer.CopyTo(Buffer, ItemDescriptor.size * 2);
     }
 
-    public string? SaveBuffer(string? basePath = null, string extraInfo = "")
+    public string SaveBuffer(string? basePath = null, string filename = "")
     {
         if (basePath is null)
         {
             basePath = Settings.DefaultBinaryTestsPath;
         }
-        return StdSaveBuffer(Buffer, basePath, extraInfo);
+        return StdSaveBuffer(Buffer, basePath, filename);
     }
 }
 
