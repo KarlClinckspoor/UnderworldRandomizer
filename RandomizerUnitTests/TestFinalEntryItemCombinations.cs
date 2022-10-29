@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using Randomizer;
 using System.Linq;
 using System.Text.Json;
+using UWRandomizerEditor;
 
 namespace RandomizerUnitTests;
 

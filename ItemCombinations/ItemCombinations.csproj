@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Randomizer\Randomizer.csproj" />
+      <ProjectReference Include="..\UWRandomizerEditor\UWRandomizerEditor.csproj" />
     </ItemGroup>
 
 </Project>

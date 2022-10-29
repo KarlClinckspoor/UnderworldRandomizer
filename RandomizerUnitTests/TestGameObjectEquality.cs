@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
-using Randomizer;
-using Randomizer.LEVDotARK.GameObjects;
+using UWRandomizerEditor;
+using UWRandomizerEditor.LEVDotARK.GameObjects;
 
 namespace RandomizerUnitTests;
 

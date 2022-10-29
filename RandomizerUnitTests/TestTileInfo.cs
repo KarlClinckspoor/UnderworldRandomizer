@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using Randomizer;
-using Randomizer.LEVDotARK;
-using Randomizer.LEVDotARK.GameObjects;
-using Randomizer.LEVDotARK.GameObjects.Specifics;
+using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor;
 
 namespace RandomizerUnitTests;
 

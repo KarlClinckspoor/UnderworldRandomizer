@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Randomizer;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using UWRandomizerEditor;
 
 namespace ItemCombinations;
 
