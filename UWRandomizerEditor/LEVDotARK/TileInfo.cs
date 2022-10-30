@@ -10,7 +10,7 @@ namespace UWRandomizerEditor.LEVDotARK
     public class TileInfo: ISaveBinary, IEquatable<TileInfo>
     {
         public const int Size = 4;
-        private enum TileTypes
+        public enum TileTypes
         {
             solid = 0,
             open,
