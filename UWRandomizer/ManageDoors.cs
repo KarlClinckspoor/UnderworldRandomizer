@@ -5,15 +5,15 @@ namespace UWRandomizer;
 
 public static partial class RandoTools
 {
-    public static void RemoveAllReferencesToLocks(ArkLoader ArkFile)
+    public static void RemoveAllDoorReferencesToLocks(ArkLoader arkFile)
     {
-        foreach (var block in ArkFile.TileMapObjectsBlocks)
+        foreach (var block in arkFile.TileMapObjectsBlocks)
         {
             foreach (var staticObject in block.StaticObjects)
             {
                 if (staticObject is Door door)
                 {
-                    // door.RemoveLock();
+                    door.RemoveLock();
                 }
             }
         }

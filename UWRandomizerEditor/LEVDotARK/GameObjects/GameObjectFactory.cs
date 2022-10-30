@@ -38,8 +38,10 @@ public static class GameObjectFactory
             return new StaticObject(buffer, idxAtArray);
         if (itemID >= 0xe0 & itemID <= 0xff) // Runes and bits of key
             return new StaticObject(buffer, idxAtArray);
-        if (itemID >= 0x100 & itemID <= 0x10f) // Keys, lockpick, lock
-            return new StaticObject(buffer, idxAtArray);
+        if (itemID >= 0x100 & itemID <= 0x10e)
+            return new Key(buffer, idxAtArray);
+        if (itemID == 0x10f)
+            return new Lock(buffer, idxAtArray);
         if (itemID >= 0x110 & itemID <= 0x11f) // quest items
             return new StaticObject(buffer, idxAtArray);
         if (itemID >= 0x120 & itemID <= 0x12f) // Inventory items, misc stuff
