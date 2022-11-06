@@ -109,6 +109,12 @@ namespace UWRandomizerEditor.LEVDotARK
                 if (block is TileMapMasterObjectListBlock tilemap)
                 {
                     TileMapObjectsBlocks[currblocktypecount] = tilemap;
+                    tilemap.Populate_MobileObjectsFromBuffer();
+                    tilemap.Populate_StaticObjectsFromBuffer();
+                    tilemap.Populate_AllGameObjectsFromBuffer();
+                    tilemap.Populate_FreeListMobileObjectArrFromBuffer();
+                    tilemap.Populate_FreeListStaticObjectArrFromBuffer();
+                    tilemap.ExtractInfoFromTileMapBuffer();
                 }
                 else if (block is ObjectAnimationOverlayInfoBlock obj)
                 {

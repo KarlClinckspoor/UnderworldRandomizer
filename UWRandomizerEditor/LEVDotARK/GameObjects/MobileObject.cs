@@ -247,5 +247,14 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             IdxAtObjectArray = idx;
             UpdateEntries();
         }
+    public override string SaveBuffer(string? basePath = null, string filename = "")
+    {
+        if (basePath is null)
+        {
+            basePath = Settings.DefaultBinaryTestsPath;
+        }
+        return StdSaveBuffer(Buffer, basePath, filename.Length == 0 ? $@"_GameObject_{IdxAtObjectArray}" : filename);
+    }
+        
     }
 }

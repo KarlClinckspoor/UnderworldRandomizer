@@ -160,7 +160,7 @@ namespace UWRandomizerEditor.LEVDotARK
         public UWLinkedList ObjectChain; // Store 
         
 
-        public int[]? XYPos
+        public int[] XYPos
         {
             get
             {

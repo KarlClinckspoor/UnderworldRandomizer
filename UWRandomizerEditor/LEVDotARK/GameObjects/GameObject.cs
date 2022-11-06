@@ -6,7 +6,7 @@ using static UWRandomizerEditor.Utils;
 // TODO: Add checks that prevent modification if id=0.
 namespace UWRandomizerEditor.LEVDotARK.GameObjects
 {
-    public class GameObject: IEquatable<GameObject>, IShouldIMove
+    public class GameObject: IEquatable<GameObject>, IShouldIMove, ISaveBinary
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;
@@ -292,6 +292,15 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             }
 
             return true;
+        }
+
+        public virtual string SaveBuffer(string? basePath = null, string filename = "")
+        {
+            if (basePath is null)
+            {
+                basePath = Settings.DefaultBinaryTestsPath;
+            }
+            return StdSaveBuffer(Buffer, basePath, filename.Length == 0 ? $@"_GameObject_{IdxAtObjectArray}" : filename);
         }
     }
 }
