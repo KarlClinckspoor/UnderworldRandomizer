@@ -6,16 +6,13 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 public static class GameObjectFactory
 {
 
-    private static short getItemIDFromBuffer(byte[] buffer)
-    {
-        short objid_flagsField = BitConverter.ToInt16(buffer, 0);
-        // TODO: Duplicated, but oh well
-        return (short) GetBits(objid_flagsField, 0b111111111, 0);  
-    }
-
+    // TODO: I'll likely need to add a reference to "FreeListOfStatic/Mobile objects"
     public static GameObject CreateFromBuffer(byte[] buffer, short idxAtArray)
     {
-        short itemID = getItemIDFromBuffer(buffer);
+        var tempObject = new StaticObject(buffer[0..8], 2);
+        // Just to get the itemID. I'll use this later to separate StaticObjects into different classes
+        int itemID = tempObject.ItemID;
+        
         if (buffer.Length == MobileObject.TotalLength)
         {
             return new MobileObject(buffer, idxAtArray);
