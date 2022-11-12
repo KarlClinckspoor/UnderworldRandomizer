@@ -26,7 +26,7 @@ public class Door: SpecialLinkGameObject
     /// is the index of the lock.
     /// </summary>
     /// <returns>Index of the lock object</returns>
-    public short HasLock()
+    public ushort HasLock()
     {
         if (link_specialField != 0)
         {
@@ -40,7 +40,7 @@ public class Door: SpecialLinkGameObject
     /// Replaces sp_link (link_specialField) with the value provided. Does not check if it really points to a lock object.
     /// </summary>
     /// <param name="lock_idx"></param>
-    public void AddLock(short lock_idx)
+    public void AddLock(ushort lock_idx)
     {
         // TODO: add some checks
         link_specialField = lock_idx;

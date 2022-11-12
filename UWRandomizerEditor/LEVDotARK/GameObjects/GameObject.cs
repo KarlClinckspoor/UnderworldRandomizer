@@ -20,10 +20,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public byte[] Buffer = new byte[TotalLength];
         public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
 
-        protected short link_specialField;
-        protected short objid_flagsField;
-        protected short positionField;
-        protected short quality_chainField;
+        public ushort link_specialField;
+        protected ushort objid_flagsField;
+        protected ushort positionField;
+        protected ushort quality_chainField;
 
         protected GameObject() { }
 
@@ -41,8 +41,8 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             // this.link_specialField = BitConverter.ToInt16(buffer, 6);
         }
 
-        public GameObject(short objid_flagsField, short positionField, short quality_chainField,
-            short link_specialField)
+        public GameObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
+            ushort link_specialField)
         {
             this.objid_flagsField = objid_flagsField;
             this.positionField = positionField;
@@ -53,10 +53,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
 
         public void UpdateEntries()
         {
-            this.objid_flagsField = BitConverter.ToInt16(Buffer, 0);
-            this.positionField = BitConverter.ToInt16(Buffer, 2);
-            this.quality_chainField = BitConverter.ToInt16(Buffer, 4);
-            this.link_specialField = BitConverter.ToInt16(Buffer, 6);
+            this.objid_flagsField = BitConverter.ToUInt16(Buffer, 0);
+            this.positionField = BitConverter.ToUInt16(Buffer, 2);
+            this.quality_chainField = BitConverter.ToUInt16(Buffer, 4);
+            this.link_specialField = BitConverter.ToUInt16(Buffer, 6);
         }
         
         public void UpdateBuffer()
@@ -79,7 +79,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public int ItemID
         {
             get { return GetBits(objid_flagsField, 0b111111111, 0); }
-            set { objid_flagsField = (short)SetBits(objid_flagsField, value, 0b111111111, 0); UpdateBuffer(); }
+            set { objid_flagsField = (ushort)SetBits(objid_flagsField, value, 0b111111111, 0); UpdateBuffer(); }
         }
 
         public int Flags
@@ -90,7 +90,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
                 // return GetBits(objid_flagsField, 0b1111, 9);
                 return GetBits(objid_flagsField, 0b111, 9);
             }
-            set { objid_flagsField = (short)SetBits(objid_flagsField, value, 0b1111, 9); UpdateBuffer(); }
+            set { objid_flagsField = (ushort)SetBits(objid_flagsField, value, 0b1111, 9); UpdateBuffer(); }
         }
 
         public int EnchantFlag
@@ -127,28 +127,28 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         {
             // get { return (byte) (positionField & 0b1111111); }
             get { return (byte)GetBits(positionField, 0b1111111, 0); }
-            set { this.positionField = (short)SetBits(positionField, value, 0b1111111, 0); UpdateBuffer(); }
+            set { this.positionField = (ushort)SetBits(positionField, value, 0b1111111, 0); UpdateBuffer(); }
         }
 
         public byte Heading
         {
             // get { return (byte) ((positionField >> 7) & 0b111); }
             get { return (byte)GetBits(positionField, 0b111, 7); }
-            set { positionField = (short)SetBits(positionField, value, 0b111, 7); UpdateBuffer(); }
+            set { positionField = (ushort)SetBits(positionField, value, 0b111, 7); UpdateBuffer(); }
         }
 
         public byte Ypos
         {
             // get { return (byte) ((positionField >> 10) & 0b111); }
             get { return (byte)GetBits(positionField, 0b111, 10); }
-            set { positionField = (short)SetBits(positionField, value, 0b111, 10); UpdateBuffer(); }
+            set { positionField = (ushort)SetBits(positionField, value, 0b111, 10); UpdateBuffer(); }
         }
 
         public byte Xpos
         {
             // get { return (byte) ((positionField >> 13) & 0b111); }
             get { return (byte)GetBits(positionField, 0b111, 13); }
-            set { positionField = (short)SetBits(positionField, value, 0b111, 13); UpdateBuffer(); }
+            set { positionField = (ushort)SetBits(positionField, value, 0b111, 13); UpdateBuffer(); }
         }
         #endregion
         #region Third Short
@@ -156,14 +156,14 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         {
             // get { return (byte) (quality_chainField & 0b111111); }
             get { return (byte)GetBits(quality_chainField, 0b111111, 0); }
-            set { quality_chainField = (short)SetBits(quality_chainField, value, 0b111111, 0); UpdateBuffer(); }
+            set { quality_chainField = (ushort)SetBits(quality_chainField, value, 0b111111, 0); UpdateBuffer(); }
         }
 
         public short next
         {
             // get { return (byte) ((quality_chainField >> 6) & 0b1111111111); }
             get { return (short)GetBits(quality_chainField, 0b1111111111, 6); }
-            set { quality_chainField = (short)SetBits(quality_chainField, value, 0b1111111111, 6); UpdateBuffer(); }
+            set { quality_chainField = (ushort)SetBits(quality_chainField, value, 0b1111111111, 6); UpdateBuffer(); }
         }
 
 
@@ -177,14 +177,14 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         {
             // get { return (byte) (link_specialField & 0b111111); }
             get { return (byte)GetBits(link_specialField, 0b111111, 0); }
-            set { link_specialField = (short)SetBits(link_specialField, value, 0b111111, 0); UpdateBuffer(); }
+            set { link_specialField = (ushort)SetBits(link_specialField, value, 0b111111, 0); UpdateBuffer(); }
         }
 
         public short QuantityOrSpecialLinkOrSpecialProperty
         {
             // get { return (byte) ((link_specialField >> 6) & 0b1111111111); }
             get { return (byte)GetBits(link_specialField, 0b1111111111, 6); }
-            set { link_specialField = (short)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
+            set { link_specialField = (ushort)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
         }
         #endregion
 

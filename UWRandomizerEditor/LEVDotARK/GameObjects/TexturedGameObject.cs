@@ -14,14 +14,14 @@ public class TexturedGameObject : StaticObject
     public int TextureNumber
     {
         get { return Utils.GetBits(objid_flagsField, 0b1111111, 9); }
-        set { objid_flagsField = (short)Utils.SetBits(objid_flagsField, value, 0b1111111, 9); }
+        set { objid_flagsField = (ushort)Utils.SetBits(objid_flagsField, value, 0b1111111, 9); }
     }
 
     public TexturedGameObject(byte[] buffer, short idx) : base(buffer, idx)
     { }
 
-    public TexturedGameObject(short objid_flagsField, short positionField, short quality_chainField,
-        short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public TexturedGameObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
+        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
     { }
 
     // public new void UpdateBuffer()

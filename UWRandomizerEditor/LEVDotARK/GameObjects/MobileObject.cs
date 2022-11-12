@@ -150,10 +150,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public new void UpdateEntries()
         {
             // From base
-            objid_flagsField = BitConverter.ToInt16(Buffer, 0);
-            positionField = BitConverter.ToInt16(Buffer, 2);
-            quality_chainField = BitConverter.ToInt16(Buffer, 4);
-            link_specialField = BitConverter.ToInt16(Buffer, 6);
+            objid_flagsField = BitConverter.ToUInt16(Buffer, 0);
+            positionField = BitConverter.ToUInt16(Buffer, 2);
+            quality_chainField = BitConverter.ToUInt16(Buffer, 4);
+            link_specialField = BitConverter.ToUInt16(Buffer, 6);
             // New ones
             byte1_hp = Buffer[offset1];
             byte2_unk = Buffer[offset2];
