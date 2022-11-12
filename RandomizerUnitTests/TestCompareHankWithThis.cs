@@ -13,12 +13,12 @@ public class TestArkLoading
 {
     [Test]
     [Category("RequiresArk")]
-    public void TestItemIDsBlock0()
+    public void TestItemIDsBlocks([Range(0, 8, 1)]int blocknum)
     {
         var path =
-            @"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\Block0_objects.json";
+            $@"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\Block{blocknum}_objects.json";
         // var json = JsonSerializer.Deserialize(File.ReadAllText(path), Dictionary<string, int>);
-        var json = JsonSerializer.Deserialize<List<Dictionary<string, int>>>(File.ReadAllText(path));
+        var json = JsonSerializer.Deserialize<List<Dictionary<string, int>>>(File.ReadAllText(path), new JsonSerializerOptions() {AllowTrailingCommas = true});
 
         var ark = new ArkLoader(Settings.DefaultArkPath);
 
@@ -33,12 +33,14 @@ public class TestArkLoading
             if (i < 256)
             {
                 var compare = ark.TileMapObjectsBlocks[0].MobileObjects[i];
-                Assert.True(correct["item_id"] == compare.ItemID);
+                var correctID = correct["item_id"];
+                Assert.True(correctID == compare.ItemID, $"Mobile object {i}: Correct: {correctID}. Got {compare.ItemID}");
             }
             else
             {
                 var compare = ark.TileMapObjectsBlocks[0].StaticObjects[i - 256];
-                Assert.True(correct["item_id"] == compare.ItemID);
+                var correctID = correct["item_id"];
+                Assert.True(correctID == compare.ItemID, $"Static object {i}: Correct: {correctID}. Got {compare.ItemID}");
             }
             
         }
