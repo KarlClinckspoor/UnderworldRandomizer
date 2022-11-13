@@ -24,7 +24,7 @@ public class TestArkLoading
 
         // For whatever reason, hank's loader has objects [0-1024], but it should have been [0-1024[, right? krokot's goes
         // goes up to 1023.
-        Assert.True(json.Count - 1 == ark.TileMapObjectsBlocks[0].AllGameObjects.Length);
+        Assert.True(json.Count - 1 == ark.TileMapObjectsBlocks[blocknum].AllGameObjects.Length);
 
         for (int i = 0; i < json.Count - 1; i++)
         {
@@ -32,13 +32,13 @@ public class TestArkLoading
             
             if (i < 256)
             {
-                var compare = ark.TileMapObjectsBlocks[0].MobileObjects[i];
+                var compare = ark.TileMapObjectsBlocks[blocknum].MobileObjects[i];
                 var correctID = correct["item_id"];
                 Assert.True(correctID == compare.ItemID, $"Mobile object {i}: Correct: {correctID}. Got {compare.ItemID}");
             }
             else
             {
-                var compare = ark.TileMapObjectsBlocks[0].StaticObjects[i - 256];
+                var compare = ark.TileMapObjectsBlocks[blocknum].StaticObjects[i - 256];
                 var correctID = correct["item_id"];
                 Assert.True(correctID == compare.ItemID, $"Static object {i}: Correct: {correctID}. Got {compare.ItemID}");
             }
