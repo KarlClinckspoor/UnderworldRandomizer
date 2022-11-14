@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using NUnit.Framework;
 using UWRandomizerEditor;
@@ -9,19 +11,69 @@ using UWRandomizerEditor.LEVDotARK.GameObjects;
 namespace RandomizerUnitTests;
 
 [TestFixture]
-public class TestArkLoading
+public class TestGameObjectLists_Cleaned
 {
+    private const int numOfLevels = 9;
+    private Stream[] streams = new Stream[numOfLevels];
+    private List<List<Dictionary<string, int>>> jsons = new List<List<Dictionary<string, int>>>(numOfLevels);
+
+    [SetUp]
+    [Category("RequiresArk")]
+    public void Setup()
+    {
+        
+    }
+    
+}
+
+[TestFixture]
+public class TestGameObjectLists_Pristine
+{
+    private const int numOfLevels = 9;
+    private Stream[] streamsPristine = new Stream[numOfLevels];
+    private List<List<Dictionary<string, int>>> jsonsPristine = new List<List<Dictionary<string, int>>>(numOfLevels);
+    private ArkLoader arkPristine;
+    
+    private Stream[] streamsCleaned = new Stream[numOfLevels];
+    private List<List<Dictionary<string, int>>> jsonsCleaned = new List<List<Dictionary<string, int>>>(numOfLevels);
+    private ArkLoader arkCleaned;
+
+    [SetUp]
+    [Category("RequiresArk")]
+    public void Setup()
+    {
+        for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
+        {
+            // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader isntances
+            streamsPristine[blocknum] =
+                Assembly.GetExecutingAssembly()
+                    .GetManifestResourceStream(
+                        $"RandomizerUnitTests.testdata.PristineUW1.Block{blocknum}_objects.json") ??
+                throw new InvalidOperationException();
+            jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
+                new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
+            arkPristine = new ArkLoader(Settings.DefaultArkPath);
+
+            streamsCleaned[blocknum] =
+                Assembly.GetExecutingAssembly()
+                    .GetManifestResourceStream(
+                        $"RandomizerUnitTests.testdata.CleanedUW1.Block{blocknum}_objects.json") ??
+                throw new InvalidOperationException();
+            jsonsCleaned.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(
+                streamsCleaned[blocknum],
+                new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
+            // TODO: De-hardcode this
+            arkCleaned = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Copy\DATA\LEV.ARK");
+        }
+    }
+    
     [Test]
     [Category("RequiresArk")]
-    public void TestItemIDsBlocks([Range(0, 8, 1)]int blocknum)
+    // Range is [from, to], not [from, to[
+    public void TestGameObjectIDs([Range(0, numOfLevels - 1, 1)] int blocknum, [Values(true, false)] bool pristine)
     {
-        var path =
-            $@"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\Block{blocknum}_objects.json";
-        // var json = JsonSerializer.Deserialize(File.ReadAllText(path), Dictionary<string, int>);
-        var json = JsonSerializer.Deserialize<List<Dictionary<string, int>>>(File.ReadAllText(path), new JsonSerializerOptions() {AllowTrailingCommas = true});
-
-        var ark = new ArkLoader(Settings.DefaultArkPath);
-
+        var (ark, json) = selectArkAndJson(blocknum, pristine);
+        
         // For whatever reason, hank's loader has objects [0-1024], but it should have been [0-1024[, right? krokot's goes
         // goes up to 1023.
         Assert.True(json.Count - 1 == ark.TileMapObjectsBlocks[blocknum].AllGameObjects.Length);
@@ -44,10 +96,27 @@ public class TestArkLoading
             }
             
         }
-
-        // for (int i = 0)
     }
-    
+
+    private Tuple<ArkLoader, List<Dictionary<string, int>>> selectArkAndJson(int blocknum, bool pristine)
+    {
+        ArkLoader ark;
+        List<Dictionary<string, int>> json;
+        if (pristine)
+        {
+            json = jsonsPristine[blocknum];
+            ark = arkPristine;
+        }
+        else
+        {
+            json = jsonsCleaned[blocknum];
+            ark = arkCleaned;
+        }
+
+        return new Tuple<ArkLoader, List<Dictionary<string, int>>>(ark, json);
+    }
+
+
     [Test]
     public void TestTileInfoComparingToUltimateEditor_manual()
     {

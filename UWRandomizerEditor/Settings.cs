@@ -7,8 +7,8 @@ namespace UWRandomizerEditor;
 
 public static class Settings
 {
-    public static readonly string DefaultArkPath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK";
-    public static readonly string DefaultBinaryTestsPath = "D:\\Dropbox\\UnderworldStudy\\studies\\tests";
+    public static readonly string DefaultArkPath = @"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK";
+    public static readonly string DefaultBinaryTestsPath = @"C:\Users\Karl\Desktop\UnderworldStudy\Buffers";
 
     static Settings()
     {
