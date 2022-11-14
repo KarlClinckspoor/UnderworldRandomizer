@@ -15,11 +15,15 @@ namespace RandomizerUnitTests;
 public class TestGameObjectProperties
 {
     private const int numOfLevels = 9;
-    private Stream[] streamsPristine = new Stream[numOfLevels];
+    // Removing this to temporarily avoid problems with building in github actions. Keeping the same for now.
+    // TODO: Can I put the .json test files without problems?
+    // private Stream[] streamsPristine = new Stream[numOfLevels];
+    private String[] streamsPristine = new String[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsPristine = new List<List<Dictionary<string, int>>>(numOfLevels);
     private ArkLoader arkPristine;
 
-    private Stream[] streamsCleaned = new Stream[numOfLevels];
+    // private Stream[] streamsCleaned = new Stream[numOfLevels];
+    private String[] streamsCleaned = new String[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsCleaned = new List<List<Dictionary<string, int>>>(numOfLevels);
     private ArkLoader arkCleaned;
 
@@ -54,20 +58,25 @@ public class TestGameObjectProperties
         for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
         {
             // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader isntances
+            // streamsPristine[blocknum] =
+            //     Assembly.GetExecutingAssembly()
+            //         .GetManifestResourceStream(
+            //             $"RandomizerUnitTests.testdata.PristineUW1.Block{blocknum}_objects.json") ??
+            //     throw new InvalidOperationException();
             streamsPristine[blocknum] =
-                Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream(
-                        $"RandomizerUnitTests.testdata.PristineUW1.Block{blocknum}_objects.json") ??
-                throw new InvalidOperationException();
+                File.ReadAllText(
+                    @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\PristineUW1\Block{blocknum}_objects.json");
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
             arkPristine = new ArkLoader(Settings.DefaultArkPath);
 
-            streamsCleaned[blocknum] =
-                Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream(
-                        $"RandomizerUnitTests.testdata.CleanedUW1.Block{blocknum}_objects.json") ??
-                throw new InvalidOperationException();
+            // streamsCleaned[blocknum] =
+            //     Assembly.GetExecutingAssembly()
+            //         .GetManifestResourceStream(
+            //             $"RandomizerUnitTests.testdata.CleanedUW1.Block{blocknum}_objects.json") ??
+            //     throw new InvalidOperationException();
+            streamsCleaned[blocknum] = File.ReadAllText(
+                    @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\CleanedUW1\Block{blocknum}_objects.json");
             jsonsCleaned.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(
                 streamsCleaned[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
