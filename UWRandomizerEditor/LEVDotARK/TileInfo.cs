@@ -72,7 +72,7 @@ namespace UWRandomizerEditor.LEVDotARK
                 _tileBuffer = value;
             }
         }
-        public int EntryNum;
+        public int EntryNum { get; set; }
 
         // TODO: Test this
         public int Offset
@@ -82,7 +82,7 @@ namespace UWRandomizerEditor.LEVDotARK
                 return EntryNum * Size;
             }  
         } 
-        public int LevelNum;
+        public int LevelNum { get; set; }
 
         public int TileType
         {
@@ -92,16 +92,12 @@ namespace UWRandomizerEditor.LEVDotARK
 
         public int TileHeight
         {
-            // get { return (Entry >> 4) & 0b1111; }
-            // set { Entry |= ((value & 0b1111) << 4); UpdateBuffer(); }
             get { return GetBits(Entry, 0b1111, 4); }
             set { Entry = SetBits(Entry, value, 0b1111, 4); UpdateBuffer(); }
         }
 
         public int Light
         {
-            // get { return (Entry >> 8) & 0b1; }
-            // set { Entry |= ((value & 0b1) << 8); UpdateBuffer(); }
             get { return GetBits(Entry, 0b1, 8); }
             set { Entry = SetBits(Entry, value, 0b1, 8); UpdateBuffer(); }
         }
@@ -109,37 +105,27 @@ namespace UWRandomizerEditor.LEVDotARK
         // todo: recheck this.
         public int Bit9
         {
-            // get { return ((Entry >> 9) & 0b1); }
-            // set { Entry |= ((value & 0b1) << 9); UpdateBuffer(); }
             get { return GetBits(Entry, 0b1, 9); }
             set { Entry = SetBits(Entry, value, 0b1, 9); UpdateBuffer(); }
         }
 
         public int FloorTextureIdx
         {
-            // get { return (Entry >> 10) & 0b1111; }
-            // set { Entry |= ((value & 0b1111) << 10); UpdateBuffer(); }
             get { return GetBits(Entry, 0b1111, 10); }
             set { Entry = SetBits(Entry, value, 0b1111, 10); UpdateBuffer(); }
         }
         public int NoMagic
         {
-            // get { return (Entry >> 14) & 0b1; }
-            // set { Entry |= ((value & 0b1) << 14); UpdateBuffer(); }
             get { return GetBits(Entry, 0b1, 14); }
             set { Entry = SetBits(Entry, value, 0b1, 14); UpdateBuffer(); }
         }
         public int DoorBit
         {
-            // get { return (Entry >> 15) & 0b1; }
-            // set { Entry |= ((value & 0b1) << 15); UpdateBuffer(); }
             get { return GetBits(Entry, 0b1, 15); }
             set { Entry = SetBits(Entry, value, 0b1, 15); UpdateBuffer(); }
         }
         public int WallTextureIdx
         {
-            // get { return (Entry >> 16) & 0b111111; }
-            // set { Entry |= ((value & 0b111111) >> 16); UpdateBuffer(); }
             get { return GetBits(Entry, 0b111111, 16); }
             set { Entry = SetBits(Entry, value, 0b111111, 16); UpdateBuffer(); }
         }
@@ -157,10 +143,10 @@ namespace UWRandomizerEditor.LEVDotARK
             }
         }
 
-        public UWLinkedList ObjectChain; // Store 
-        
+        public UWLinkedList ObjectChain { get; }
 
-        public int[]? XYPos
+
+        public int[] XYPos
         {
             get
             {

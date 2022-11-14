@@ -19,7 +19,7 @@ public class EnchantedArmor : SpecialLinkGameObject
     public EnchantedArmor(byte[] buffer, short idx) : base(buffer, idx)
     { }
 
-    public EnchantedArmor(short objid_flagsField, short positionField, short quality_chainField,
-        short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public EnchantedArmor(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
+        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
     { }
 }

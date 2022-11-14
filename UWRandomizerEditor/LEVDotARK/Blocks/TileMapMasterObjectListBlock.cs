@@ -309,7 +309,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
 
         #region buffer definitions
 
-        protected byte[] TileMapBuffer
+        public byte[] TileMapBuffer
         {
             get { return blockbuffer[TileMapOffset..(TileMapOffset + TileMapLength)]; }
             set
@@ -319,7 +319,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             }
         }
 
-        protected byte[] MobileObjectInfoBuffer
+        public byte[] MobileObjectInfoBuffer
         {
             get { return blockbuffer[MobileObjectInfoOffset..(MobileObjectInfoOffset + MobileObjectInfoLength)]; }
             set
@@ -329,7 +329,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             }
         }
 
-        protected byte[] StaticObjectInfoBuffer
+        public byte[] StaticObjectInfoBuffer
         {
             get { return blockbuffer[StaticObjectInfoOffset..(StaticObjectInfoOffset + StaticObjectInfoLength)]; }
             set
@@ -339,7 +339,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             }
         }
 
-        protected byte[] FreeListMobileObjectBuffer
+        public byte[] FreeListMobileObjectBuffer
         {
             get
             {
@@ -353,7 +353,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             }
         }
 
-        protected byte[] FreeListStaticObjectBuffer
+        public byte[] FreeListStaticObjectBuffer
         {
             get
             {

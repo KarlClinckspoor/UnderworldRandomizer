@@ -150,10 +150,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public new void UpdateEntries()
         {
             // From base
-            objid_flagsField = BitConverter.ToInt16(Buffer, 0);
-            positionField = BitConverter.ToInt16(Buffer, 2);
-            quality_chainField = BitConverter.ToInt16(Buffer, 4);
-            link_specialField = BitConverter.ToInt16(Buffer, 6);
+            objid_flagsField = BitConverter.ToUInt16(Buffer, 0);
+            positionField = BitConverter.ToUInt16(Buffer, 2);
+            quality_chainField = BitConverter.ToUInt16(Buffer, 4);
+            link_specialField = BitConverter.ToUInt16(Buffer, 6);
             // New ones
             byte1_hp = Buffer[offset1];
             byte2_unk = Buffer[offset2];
@@ -172,11 +172,11 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             byte_NPCwhoami = Buffer[offset15];
         }
         
-        // todo: don't forget to check if these calls to virtual functions will mess stuff up.
         public MobileObject(byte[] buffer, short idx)
         {
             // Debug.Assert(buffer.Length == TotalLength);
             this.Buffer = buffer;
+            base.Buffer = buffer[..8]; // In case this is cast as a GameObject, it'll preserve the base buffer
             this.IdxAtObjectArray = idx;
             UpdateEntries();
         }
@@ -186,6 +186,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
         {
             baseBuffer.CopyTo(Buffer, 0);
+            base.Buffer = baseBuffer;
             byte[] extra = new byte[ExtraLength]
             {
                 byte1_hp,
@@ -221,6 +222,8 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2*1);
             BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2*2);
             BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2*3);
+            base.Buffer = baseBuffer;
+            
             byte[] extra = new byte[ExtraLength]
             {
                 byte1_hp,
@@ -247,5 +250,14 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             IdxAtObjectArray = idx;
             UpdateEntries();
         }
+    public override string SaveBuffer(string? basePath = null, string filename = "")
+    {
+        if (basePath is null)
+        {
+            basePath = Settings.DefaultBinaryTestsPath;
+        }
+        return StdSaveBuffer(Buffer, basePath, filename.Length == 0 ? $@"_GameObject_{IdxAtObjectArray}" : filename);
+    }
+        
     }
 }

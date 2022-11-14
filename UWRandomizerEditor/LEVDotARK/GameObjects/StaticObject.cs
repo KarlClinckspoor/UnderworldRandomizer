@@ -4,7 +4,7 @@ public class StaticObject: GameObject
 {
     public StaticObject(byte[] buffer, short idxAtObjArray) : base(buffer, idxAtObjArray) { }
 
-    public StaticObject(short objid_flagsField, short positionField, short quality_chainField, short link_specialField)
+    public StaticObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField, ushort link_specialField)
         : base(objid_flagsField, positionField, quality_chainField, link_specialField)
     { }
 

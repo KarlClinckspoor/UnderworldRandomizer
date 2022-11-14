@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCombinations", "ItemCom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizer", "UWRandomizer\UWRandomizer.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractingBuffersOfEverything", "ExtractingBuffersOfEverything\ExtractingBuffersOfEverything.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B40CA507-E157-47FC-8A79-62EACC44AD3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

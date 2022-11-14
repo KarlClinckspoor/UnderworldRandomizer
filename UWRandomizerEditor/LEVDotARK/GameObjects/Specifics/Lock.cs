@@ -8,7 +8,7 @@ public class Lock : StaticObject
     {
     }
 
-    public Lock(short objid_flagsField, short positionField, short quality_chainField, short link_specialField)
+    public Lock(ushort objid_flagsField, ushort positionField, ushort quality_chainField, ushort link_specialField)
         : base(objid_flagsField, positionField, quality_chainField, link_specialField)
     {
     }
@@ -20,7 +20,7 @@ public class Lock : StaticObject
     public bool IsLocked
     {
         get { return GetBits(objid_flagsField, 0b1, 9) == 1; }
-        set { objid_flagsField = (short) SetBits(objid_flagsField, value ? 1 : 0, 0b1, 9); }
+        set { objid_flagsField = (ushort) SetBits(objid_flagsField, value ? 1 : 0, 0b1, 9); }
     }
 
     public byte KeyID

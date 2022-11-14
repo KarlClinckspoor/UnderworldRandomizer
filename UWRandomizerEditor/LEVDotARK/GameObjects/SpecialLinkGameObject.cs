@@ -7,14 +7,14 @@ public class SpecialLinkGameObject : StaticObject
     public short SpecialIdx
     {
         get { return QuantityOrSpecialLinkOrSpecialProperty; }
-        set { link_specialField = (short)Utils.SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
+        set { link_specialField = (ushort)Utils.SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
     }
         
     public SpecialLinkGameObject(byte[] buffer, short idx) : base(buffer, idx)
     { }
 
-    public SpecialLinkGameObject(short objid_flagsField, short positionField, short quality_chainField,
-        short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public SpecialLinkGameObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
+        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
     { }
         
 }

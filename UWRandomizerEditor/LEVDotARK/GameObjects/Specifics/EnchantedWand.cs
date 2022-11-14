@@ -17,8 +17,8 @@ public class EnchantedWand : SpecialLinkGameObject
         throw new NotImplementedException(); // TODO: Need to link to SpellObject
     }
 
-    public EnchantedWand(short objid_flagsField, short positionField, short quality_chainField,
-        short link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public EnchantedWand(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
+        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
     {
         throw new NotImplementedException();
     }

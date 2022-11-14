@@ -7,14 +7,20 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
     {
         public byte[] blockbuffer;
         public int LevelNumber;
-        public int TotalBlockLength;
+
+        public int TotalBlockLength
+        {
+            get
+            {
+                return blockbuffer.Length;
+            }
+        }
 
         protected Block(): this(new byte[] { }, -1){ }
 
         public Block(byte[] blockbuffer, int levelNumber)
         {
             this.blockbuffer = blockbuffer;
-            this.TotalBlockLength = blockbuffer.Length;
             this.LevelNumber = levelNumber;
         }
 
