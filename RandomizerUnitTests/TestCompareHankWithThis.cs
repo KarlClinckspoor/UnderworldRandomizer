@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using NUnit.Framework;
@@ -11,34 +12,42 @@ using UWRandomizerEditor.LEVDotARK.GameObjects;
 namespace RandomizerUnitTests;
 
 [TestFixture]
-public class TestGameObjectLists_Cleaned
-{
-    private const int numOfLevels = 9;
-    private Stream[] streams = new Stream[numOfLevels];
-    private List<List<Dictionary<string, int>>> jsons = new List<List<Dictionary<string, int>>>(numOfLevels);
-
-    [SetUp]
-    [Category("RequiresArk")]
-    public void Setup()
-    {
-        
-    }
-    
-}
-
-[TestFixture]
-public class TestGameObjectLists_Pristine
+public class TestGameObjectProperties
 {
     private const int numOfLevels = 9;
     private Stream[] streamsPristine = new Stream[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsPristine = new List<List<Dictionary<string, int>>>(numOfLevels);
     private ArkLoader arkPristine;
-    
+
     private Stream[] streamsCleaned = new Stream[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsCleaned = new List<List<Dictionary<string, int>>>(numOfLevels);
     private ArkLoader arkCleaned;
 
-    [SetUp]
+    public enum PossibleLevArkToTest
+    {
+        pristine = 0,
+        cleaned = 1
+    }
+
+    private static readonly Dictionary<string, string> json_to_UWR = new Dictionary<string, string>()
+    {
+        {"item_id", "ItemID"},
+        {"flags", "Flags"},
+        {"enchantment", "EnchantFlag"},
+        {"doordir", "Doordir"},
+        {"invis", "Invis"},
+        {"is_quant", "IsQuant"},
+        {"zpos", "Zpos"},
+        {"heading", "Heading"},
+        {"xpos", "Xpos"},
+        {"ypos", "Ypos"},
+        {"quality", "Quality"},
+        {"next", "next"},
+        {"owner", "Owner_or_special"},
+        {"link", "QuantityOrSpecialLinkOrSpecialProperty"}
+    };
+
+    [OneTimeSetUp]
     [Category("RequiresArk")]
     public void Setup()
     {
@@ -66,43 +75,79 @@ public class TestGameObjectLists_Pristine
             arkCleaned = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Copy\DATA\LEV.ARK");
         }
     }
-    
+
+
     [Test]
     [Category("RequiresArk")]
-    // Range is [from, to], not [from, to[
-    public void TestGameObjectIDs([Range(0, numOfLevels - 1, 1)] int blocknum, [Values(true, false)] bool pristine)
+    public void TestStaticObjectProperties(
+        [Range(0, numOfLevels - 1, 1)] int blocknum, // Reminder: Range is [from, to], not [from, to[
+        [Values(PossibleLevArkToTest.pristine, PossibleLevArkToTest.cleaned)]
+        PossibleLevArkToTest pristine,
+        [Values("item_id", "flags", "enchantment", "doordir", "invis", "is_quant", "zpos", "heading", "ypos", "xpos",
+            "quality", "next", "owner", "link")]
+        string key
+    )
     {
         var (ark, json) = selectArkAndJson(blocknum, pristine);
-        
+
         // For whatever reason, hank's loader has objects [0-1024], but it should have been [0-1024[, right? krokot's goes
         // goes up to 1023.
         Assert.True(json.Count - 1 == ark.TileMapObjectsBlocks[blocknum].AllGameObjects.Length);
 
+        IterateAndCompareAttributesStaticObject(json, key, ark, json_to_UWR[key], blocknum);
+    }
+
+    private void IterateAndCompareAttributesStaticObject(List<Dictionary<string, int>> json, string correctLabel,
+        ArkLoader ark, string compareLabel, int blocknum)
+    {
         for (int i = 0; i < json.Count - 1; i++)
         {
             var correct = json[i];
-            
+
             if (i < 256)
             {
                 var compare = ark.TileMapObjectsBlocks[blocknum].MobileObjects[i];
-                var correctID = correct["item_id"];
-                Assert.True(correctID == compare.ItemID, $"Mobile object {i}: Correct: {correctID}. Got {compare.ItemID}");
+                var correctProperty = correct[correctLabel];
+                var compareProperty = GetPropertyValue(compare, compareLabel);
+                Assert.True(correctProperty == compareProperty,
+                    $"Mobile object {i}: Correct: {correctProperty}. Got {compareProperty}");
             }
             else
             {
                 var compare = ark.TileMapObjectsBlocks[blocknum].StaticObjects[i - 256];
-                var correctID = correct["item_id"];
-                Assert.True(correctID == compare.ItemID, $"Static object {i}: Correct: {correctID}. Got {compare.ItemID}");
+                var correctProperty = correct[correctLabel];
+                var compareProperty = GetPropertyValue(compare, compareLabel);
+                Assert.True(correctProperty == compareProperty,
+                    $"Static object {i}: Correct: {correctProperty}. Got {compareProperty}");
             }
-            
         }
     }
 
-    private Tuple<ArkLoader, List<Dictionary<string, int>>> selectArkAndJson(int blocknum, bool pristine)
+
+    /// <summary>
+    /// This is used to get a property from StaticObject or Mobile object, which are typically bytes, shorts, ints,
+    /// and convert them into ints.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="propname"></param>
+    /// <returns></returns>
+    private static int GetPropertyValue(object obj, string propname)
+    {
+        return Convert.ToInt32(obj.GetType().GetProperty(propname).GetValue(obj, null));
+    }
+
+    /// <summary>
+    /// This selects if I'm using a "Pristine" UW1 (from GOG copy) or a "Cleaned" UW1 (from Ultimate Editor)
+    /// </summary>
+    /// <param name="blocknum"></param>
+    /// <param name="pristine"></param>
+    /// <returns></returns>
+    private Tuple<ArkLoader, List<Dictionary<string, int>>> selectArkAndJson(int blocknum,
+        PossibleLevArkToTest pristine)
     {
         ArkLoader ark;
         List<Dictionary<string, int>> json;
-        if (pristine)
+        if (pristine == PossibleLevArkToTest.pristine)
         {
             json = jsonsPristine[blocknum];
             ark = arkPristine;
@@ -115,8 +160,10 @@ public class TestGameObjectLists_Pristine
 
         return new Tuple<ArkLoader, List<Dictionary<string, int>>>(ark, json);
     }
+}
 
-
+public class ManualTests
+{
     [Test]
     public void TestTileInfoComparingToUltimateEditor_manual()
     {
@@ -130,33 +177,8 @@ public class TestGameObjectLists_Pristine
         reference.FloorTextureIdx = 8;
         reference.WallTextureIdx = 30;
         reference.FirstObjIdx = 0;
-        
+
 
         Assert.True(tile.Equals(reference));
     }
-
-    // [Test]
-    // public void TestObjectFromUltimateEditor_manual()
-    // {
-    //     // // A torch to the west of the tile above
-    //     // var obj = new StaticObject(new byte[] {0x91, 0x80, 0x48, 0x34, 0x28, 0x00, 0x40, 0x00}, 540);
-    //     // var reference = new StaticObject(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}, 540);
-    //     // reference.Xpos = 1;
-    //     // reference.Ypos = 5;
-    //     // reference.Zpos = 72;
-    //     // reference.IsQuant = 1;
-    //     // reference.Invis = 0;
-    //     // reference.EnchantFlag = 0;
-    //     // reference.Heading = 0;
-    //     // reference.Flags = 0;
-    //     // reference.Quality = 40;
-    //     // reference.Owner_or_special = 0;
-    //     // reference.next = 0;
-    //     // reference.ItemID = 145;
-    //     // reference.QuantityOrSpecialLinkOrSpecialProperty = 1;
-    //     // reference.link_specialField = 64;
-    //     // reference.UpdateBuffer();
-    //     //
-    //     // Assert.True(obj.Equals(reference));
-    // }
 }
