@@ -1,35 +1,39 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Net.Mime;
 using UWRandomizerEditor;
 using UWRandomizerEditor.LEVDotARK;
 using static UWRandomizerEditor.Utils;
 
 namespace ExtractingEverything;
 
-public static class Program {
+public static class Program
+{
     public static void Main()
     {
         var path = @"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK";
         var baseBufferPath = @"C:\Users\Karl\Desktop\UnderworldStudy\Buffers";
 
         Directory.CreateDirectory(baseBufferPath);
-        
+
         var Ark = new ArkLoader(path);
-        
+
         // Header
         Ark.header.SaveBuffer(baseBufferPath, "header.bin");
-        
+
         // Blocks
         int counter_block = 0;
         var blockPath = Path.Join(baseBufferPath, "Blocks");
         Directory.CreateDirectory(blockPath);
         foreach (var block in Ark.blocks)
         {
-            block.SaveBuffer(blockPath, $"Block{counter_block}_level{block.LevelNumber}_length{block.TotalBlockLength}.bin");
+            block.SaveBuffer(blockPath,
+                $"Block{counter_block}_level{block.LevelNumber}_length{block.TotalBlockLength}.bin");
             counter_block++;
         }
-        
-        // Tilemap Blocks
+
+        #region TilemapBlocks
+
         counter_block = 0;
         var tilemapBlocksPath = Path.Join(baseBufferPath, "TileMaps");
         Directory.CreateDirectory(tilemapBlocksPath);
@@ -37,7 +41,7 @@ public static class Program {
         {
             var nthTileMapBlockPath = Path.Join(tilemapBlocksPath, $"TileMapBlock{counter_block}");
             Directory.CreateDirectory(nthTileMapBlockPath);
-            
+
             block.SaveBuffer(nthTileMapBlockPath, $"TileMapBlock{counter_block}_fullbuffer.bin");
             StdSaveBuffer(block.TileMapBuffer, nthTileMapBlockPath, $"TileMapBuffer{counter_block}_fullbuffer.bin");
             StdSaveBuffer(block.MobileObjectInfoBuffer, nthTileMapBlockPath,
@@ -48,7 +52,7 @@ public static class Program {
                 $"FreeListMobileObject{counter_block}_fullbuffer.bin");
             StdSaveBuffer(block.FreeListStaticObjectBuffer, nthTileMapBlockPath,
                 $"FreeListStaticObject{counter_block}_fullbuffer.bin");
-            
+
             var counter_objects = 0;
             // Save Mobile Object buffers
             counter_objects = 0;
@@ -58,7 +62,7 @@ public static class Program {
                     $"MobileObjectIdx{mobileObject.IdxAtObjectArray}_ctr{counter_objects}.bin");
                 counter_objects++;
             }
-            
+
             // Save static Object buffers
             // Doesn't reset to 0.
             foreach (var staticObject in block.StaticObjects)
@@ -81,7 +85,10 @@ public static class Program {
                     StdSaveBuffer(mobileFreeObject.Buffer, nthTileMapBlockPath,
                         $"mobileFreeObjectIdx{mobileFreeObject.EntryNum}_ctr{counter_objects}.bin");
                     counter_objects++;
-                    MobileDuplicateCounter += setMobile.Add(mobileFreeObject.Entry) ? 0 : 1; // Reminder: Add returns false if element is already present
+                    MobileDuplicateCounter +=
+                        setMobile.Add(mobileFreeObject.Entry)
+                            ? 0
+                            : 1; // Reminder: Add returns false if element is already present
                 }
 
                 var setStatic = new HashSet<int>();
@@ -93,7 +100,10 @@ public static class Program {
                     StdSaveBuffer(staticFreeObject.Buffer, nthTileMapBlockPath,
                         $"staticFreeObjectIdx{staticFreeObject.EntryNum}_ctr{counter_objects}.bin");
                     counter_objects++;
-                    StaticDuplicateCounter += setStatic.Add(staticFreeObject.Entry) ? 0 : 1; // Reminder: Add returns false if element is already present
+                    StaticDuplicateCounter +=
+                        setStatic.Add(staticFreeObject.Entry)
+                            ? 0
+                            : 1; // Reminder: Add returns false if element is already present
                 }
 
                 sw.WriteLine($"Summary: Mobile list contains {block.FreeListMobileObject.Length} entries of which" +
@@ -103,7 +113,7 @@ public static class Program {
                 var allMobileIdxs = Enumerable.Range(0, 255).ToHashSet();
                 allMobileIdxs.ExceptWith(setMobile);
                 sw.WriteLine($"Indexes not present: {string.Join(",", allMobileIdxs)}");
-                
+
                 sw.WriteLine($"Summary: Static list contains {block.FreeListStaticObject.Length} entries of which" +
                              $" {StaticDuplicateCounter} are duplicates." +
                              $" Indexes present in Mobile List: {string.Join(",", setStatic.OrderBy(x => x))}");
@@ -116,10 +126,66 @@ public static class Program {
             counter_objects = 0;
             foreach (var tile in block.TileInfos)
             {
-                tile.SaveBuffer(nthTileMapBlockPath, $"TileIdx{counter_objects}Offset{tile.Offset},X{tile.XYPos[0]}Y{tile.XYPos[1]}.bin");
+                tile.SaveBuffer(nthTileMapBlockPath,
+                    $"TileIdx{counter_objects}Offset{tile.Offset},X{tile.XYPos[0]}Y{tile.XYPos[1]}.bin");
                 counter_objects++;
             }
+
+            counter_block++;
+
+        }
+        #endregion
+
+        #region TextureMappingBlock
+
+        counter_block = 0;
+        var TextureMappingBlocksPath = Path.Join(baseBufferPath, "TextureMappingBlock");
+        Directory.CreateDirectory(TextureMappingBlocksPath);
+        foreach (var textMapBlock in Ark.TextMapBlocks)
+        {
+            textMapBlock.SaveBuffer(TextureMappingBlocksPath, $"fullbuffer_{counter_block}.bin");
             counter_block++;
         }
+
+        #endregion
+
+        #region ObjectAnimationOverlayMap
+
+        counter_block = 0;
+        var ObjectAnimationOverlayMapPath = Path.Join(baseBufferPath, "ObjectAnimationOverlayBlock");
+        Directory.CreateDirectory(ObjectAnimationOverlayMapPath);
+        foreach (var objAnimBlock in Ark.ObjAnimBlocks)
+        {
+            objAnimBlock.SaveBuffer(ObjectAnimationOverlayMapPath, $"fullbuffer_{counter_block}.bin");
+            counter_block++;
+        }
+
+        #endregion
+
+        #region MapNotesBlock
+
+        counter_block = 0;
+        var MapNotesBlockPath = Path.Join(baseBufferPath, "MapNotesBlock");
+        Directory.CreateDirectory(MapNotesBlockPath);
+        foreach (var mapNotesBlock in Ark.MapNotesBlocks)
+        {
+            mapNotesBlock.SaveBuffer(MapNotesBlockPath, $"fullbuffer_{counter_block}.bin");
+            counter_block++;
+        }
+
+        #endregion
+
+        #region AutomapInfosBlock
+
+        counter_block = 0;
+        var AutomapInfosBlockPath = Path.Join(baseBufferPath, "AutomapInfosBlock");
+        Directory.CreateDirectory(AutomapInfosBlockPath);
+        foreach (var automapInfosBlock in Ark.AutomapBlocks)
+        {
+            automapInfosBlock.SaveBuffer(AutomapInfosBlockPath, $"fullbuffer_{counter_block}.bin");
+            counter_block++;
+        }
+
+        #endregion
     }
 }
