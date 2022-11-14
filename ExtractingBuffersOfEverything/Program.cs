@@ -50,14 +50,6 @@ public static class Program {
                 $"FreeListStaticObject{counter_block}_fullbuffer.bin");
             
             var counter_objects = 0;
-            // GameObjects
-            // foreach (var gameObject in block.AllGameObjects)
-            // {
-            //     gameObject.SaveBuffer(nthTileMapBlockPath, 
-            //         $"GameObjectIdx{gameObject.IdxAtObjectArray}_ctr{counter_objects}_id{gameObject.ItemID}.bin");
-            //     counter_objects++;
-            // }
-            
             // Save Mobile Object buffers
             counter_objects = 0;
             foreach (var mobileObject in block.MobileObjects)
@@ -75,23 +67,51 @@ public static class Program {
                     $"StaticObjectIdx{staticObject.IdxAtObjectArray}_ctr{counter_objects}.bin");
                 counter_objects++;
             }
-            
-            // Save free list Mobile objects buffers
-            counter_objects = 0;
-            foreach (var mobileFreeObject in block.FreeListMobileObject)
+
+            using (StreamWriter sw = new StreamWriter(Path.Join(tilemapBlocksPath,
+                       $"FreeListObjectDescription_block{counter_block}.txt")))
             {
-                StdSaveBuffer(mobileFreeObject.Buffer, nthTileMapBlockPath,
-                    $"mobileFreeObjectIdx{mobileFreeObject.EntryNum}_ctr{counter_objects}.bin");
-                counter_objects++;
+                var setMobile = new HashSet<int>(); // To get which values are referenced in the end
+                int MobileDuplicateCounter = 0;
+                // Save free list Mobile objects buffers
+                counter_objects = 0;
+                foreach (var mobileFreeObject in block.FreeListMobileObject)
+                {
+                    sw.WriteLine($"Mobile Free Object entry {counter_objects} has value {mobileFreeObject.Entry}");
+                    StdSaveBuffer(mobileFreeObject.Buffer, nthTileMapBlockPath,
+                        $"mobileFreeObjectIdx{mobileFreeObject.EntryNum}_ctr{counter_objects}.bin");
+                    counter_objects++;
+                    MobileDuplicateCounter += setMobile.Add(mobileFreeObject.Entry) ? 0 : 1; // Reminder: Add returns false if element is already present
+                }
+
+                var setStatic = new HashSet<int>();
+                int StaticDuplicateCounter = 0;
+                // Save free list Static objects buffers
+                foreach (var staticFreeObject in block.FreeListStaticObject)
+                {
+                    sw.WriteLine($"Static Free Object entry {counter_objects} has value {staticFreeObject.Entry}");
+                    StdSaveBuffer(staticFreeObject.Buffer, nthTileMapBlockPath,
+                        $"staticFreeObjectIdx{staticFreeObject.EntryNum}_ctr{counter_objects}.bin");
+                    counter_objects++;
+                    StaticDuplicateCounter += setStatic.Add(staticFreeObject.Entry) ? 0 : 1; // Reminder: Add returns false if element is already present
+                }
+
+                sw.WriteLine($"Summary: Mobile list contains {block.FreeListMobileObject.Length} entries of which" +
+                             $" {MobileDuplicateCounter} are duplicates." +
+                             $" Indexes present in Mobile List: {string.Join(",", setMobile.OrderBy(x => x))}."
+                );
+                var allMobileIdxs = Enumerable.Range(0, 255).ToHashSet();
+                allMobileIdxs.ExceptWith(setMobile);
+                sw.WriteLine($"Indexes not present: {string.Join(",", allMobileIdxs)}");
+                
+                sw.WriteLine($"Summary: Static list contains {block.FreeListStaticObject.Length} entries of which" +
+                             $" {StaticDuplicateCounter} are duplicates." +
+                             $" Indexes present in Mobile List: {string.Join(",", setStatic.OrderBy(x => x))}");
+                var allStaticIdxs = Enumerable.Range(256, 1024 - 256).ToHashSet();
+                allStaticIdxs.ExceptWith(setStatic);
+                sw.WriteLine($"Indexes not present: {string.Join(",", allStaticIdxs)}");
             }
-            // Save free list Static objects buffers
-            foreach (var staticFreeObject in block.FreeListStaticObject)
-            {
-                StdSaveBuffer(staticFreeObject.Buffer, nthTileMapBlockPath,
-                    $"staticFreeObjectIdx{staticFreeObject.EntryNum}_ctr{counter_objects}.bin");
-                counter_objects++;
-            }
-            
+
             // Iterate through tiles
             counter_objects = 0;
             foreach (var tile in block.TileInfos)
