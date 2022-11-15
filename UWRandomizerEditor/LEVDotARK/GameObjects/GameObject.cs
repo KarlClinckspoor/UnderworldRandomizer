@@ -25,6 +25,11 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         protected ushort positionField;
         protected ushort quality_chainField;
 
+        /// <summary>
+        /// Tells whether or not an item has matching itemID and buffer size, i.e., can't have a Sword as a Mobile Object
+        /// </summary>
+        public bool Invalid { get; set; } = false;
+
         protected GameObject() { }
 
         // todo: Rider is complaining about the virtual methods. Check if this will be negatively affected here.
