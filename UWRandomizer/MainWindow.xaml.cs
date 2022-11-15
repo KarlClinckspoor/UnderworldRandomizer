@@ -12,17 +12,31 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UWRandomizerEditor.LEVDotARK;
+using static UWRandomizer.RandoTools;
 
-namespace UWRandomizer
+namespace UWRandomizer;
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+
+
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    ArkLoader ark;
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        ark = new ArkLoader(PathToArk.Text);
+    }
+
+    private void Button_Click_1(object sender, RoutedEventArgs e)
+    {
+        RandoTools.RemoveAllDoorReferencesToLocks(ark);
+        ark.SaveBuffer(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(PathToArk.Text)), "LEV.ARK_test");
     }
 }

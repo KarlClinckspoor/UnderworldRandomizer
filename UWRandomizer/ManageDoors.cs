@@ -16,6 +16,9 @@ public static partial class RandoTools
                     door.RemoveLock();
                 }
             }
+            block.UpdateStaticObjectInfoBuffer();
+            block.UpdateBuffer();
         }
+        arkFile.ReconstructBufferFromBlocks();
     }
 }
