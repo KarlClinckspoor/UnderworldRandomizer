@@ -25,15 +25,23 @@ public class Door: SpecialLinkGameObject
     /// Checks if sp_link (link_specialField) points to something other than 0. If so, returns the value, which
     /// is the index of the lock.
     /// </summary>
-    /// <returns>Index of the lock object</returns>
-    public ushort HasLock()
+    public bool HasLock(out ushort LockIdx)
+    {
+        LockIdx = link_specialField;
+        return HasLock();
+    }
+
+    /// <summary>
+    /// Checks if sp_link (link_specialField) points to something other than 0.
+    /// </summary>
+    public bool HasLock()
     {
         if (link_specialField != 0)
         {
-            return link_specialField;
+            return true;
         }
 
-        return link_specialField;
+        return false;
     }
 
     /// <summary>
