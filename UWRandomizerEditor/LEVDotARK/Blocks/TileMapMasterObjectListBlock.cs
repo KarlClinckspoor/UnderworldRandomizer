@@ -121,10 +121,14 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
 
         public void UpdateStaticObjectInfoBuffer()
         {
-            foreach (GameObject obj in StaticObjects)
+            var tempBuffer = new byte[StaticObjectInfoBuffer.Length];
+            foreach (var obj in StaticObjects)
             {
-                obj.Buffer.CopyTo(StaticObjectInfoBuffer, obj.IdxAtObjectArray * GameObject.TotalLength);
+                // obj.Buffer.CopyTo(StaticObjectInfoBuffer, (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.TotalLength);
+                obj.Buffer.CopyTo(tempBuffer, (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.TotalLength);
             }
+
+            StaticObjectInfoBuffer = tempBuffer;
         }
 
         public void UpdateFreeListStaticObjectBuffer()

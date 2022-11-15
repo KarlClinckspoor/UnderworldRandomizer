@@ -14,7 +14,7 @@ class ArkLoaderTest
     {
         var AL = new ArkLoader(Settings.DefaultArkPath);
         Assert.True(AL.CompareCurrentArkWithHash());
-        AL.arkbuffer = AL.ReconstructBufferFromBlocks();
+        AL.ReconstructBufferFromBlocks();
         string savedpath = AL.SaveBuffer(Path.GetDirectoryName(Settings.DefaultArkPath));
         var AL2 = new ArkLoader(savedpath);
         Assert.True(AL2.CompareCurrentArkWithHash());

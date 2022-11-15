@@ -143,19 +143,17 @@ namespace UWRandomizerEditor.LEVDotARK
             }
         }
 
-        public byte[] ReconstructBufferFromBlocks()
+        public void ReconstructBufferFromBlocks()
         {
-            byte[] tempbuffer = new byte[arkbuffer.Length];
             List<byte> templist = new List<byte>();
             templist.AddRange(header.buffer);
             foreach(var block in blocks)
             {
+                // todo: Perhaps I should have a "UpdateBuffer" here.
                 templist.AddRange(block.blockbuffer);
             }
             byte[] concatbuffers = templist.ToArray();
-            concatbuffers.CopyTo(tempbuffer, 0);
-
-            return tempbuffer;
+            concatbuffers.CopyTo(arkbuffer, 0);
         }
 
         public void CheckEqualityToPristineLevDotArk()
