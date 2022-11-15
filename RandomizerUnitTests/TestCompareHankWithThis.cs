@@ -7,7 +7,9 @@ using System.Text.Json;
 using NUnit.Framework;
 using UWRandomizerEditor;
 using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerEditor.LEVDotARK.Blocks;
 using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
 
 namespace RandomizerUnitTests;
 
@@ -189,5 +191,105 @@ public class ManualTests
 
 
         Assert.True(tile.Equals(reference));
+    }
+
+    [Test]
+    public void TestRemovingLockFromDoor_ManualBuffers()
+    {
+        var doorUnlocked = new Door( new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0x00, 0x00} , 1012);
+        var doorLocked = new Door( new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0xC0, 0xF8}, 1012);
+        var doorToModify = new Door( new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0xC0, 0xF8}, 1012);
+        
+        Assert.False(doorLocked.Equals(doorUnlocked));
+        Assert.True(doorLocked.Equals(doorToModify));
+        Assert.False(doorToModify.Equals(doorUnlocked));
+        
+        doorToModify.RemoveLock();
+        
+        Assert.False(doorLocked.Equals(doorUnlocked));
+        Assert.False(doorLocked.Equals(doorToModify));
+        Assert.True(doorToModify.Equals(doorUnlocked));
+    }
+
+    [Test]
+    [Category("RequiresArk")]
+    public void TestRemovingLockFromDoor_WithArk()
+    {
+        var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
+        var ArkEditor = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Doors\DATA\LEV.ARK");
+
+        var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
+        var doorUnlockedByEditor = (Door)  ArkEditor.TileMapObjectsBlocks[0].AllGameObjects[1012];
+
+        Assert.True(doorToUnlock.HasLock());
+        Assert.False(doorUnlockedByEditor.HasLock());
+        Assert.False(doorToUnlock.Equals(doorUnlockedByEditor));
+        
+        doorToUnlock.RemoveLock();
+        Assert.False(doorToUnlock.HasLock());
+        Assert.True(doorToUnlock.Equals(doorUnlockedByEditor));
+        Assert.True(doorToUnlock.Equals( new Door( new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0x00, 0x00} , 1012) ));
+
+        ArkOriginal.TileMapObjectsBlocks[0].UpdateStaticObjectInfoBuffer();
+        ArkOriginal.TileMapObjectsBlocks[0].UpdateBuffer();
+        ArkOriginal.ReconstructBufferFromBlocks();
+        var path = ArkOriginal.SaveBuffer(@"C:\Users\Karl\Desktop\UnderworldStudy\Buffers - Doors study",
+            "ark_withdoor1012unlocked.bin");
+
+        var ArkModified = new ArkLoader(path);
+        var doorUnlockedHere = (Door) ArkModified.TileMapObjectsBlocks[0].AllGameObjects[1012];
+        Assert.False(doorUnlockedHere.HasLock());
+        Assert.True(doorUnlockedHere.Equals(doorUnlockedByEditor));
+        Assert.True(doorUnlockedHere.Equals( new Door( new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0x00, 0x00} , 1012) ));
+    }
+
+    // This test isn't working ATM because somehow an object isn't updating its buffer. But checking with UE and UWE, it's fine
+    [Test]
+    [Category("RequiresArk")]
+    public void TestRemovingAllLocks_WithArk()
+    {
+        var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
+        var ArkToModify = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
+
+        // Remove all locks
+        foreach (var block in ArkToModify.TileMapObjectsBlocks)
+        {
+            foreach (var obj in block.StaticObjects)
+            {
+                if (obj is Door door)
+                {
+                    door.RemoveLock();
+                }
+            }
+            block.UpdateStaticObjectInfoBuffer();
+            block.UpdateBuffer();
+        }
+        ArkToModify.ReconstructBufferFromBlocks();
+        var path = ArkToModify.SaveBuffer(@"C:\Users\Karl\Desktop\UnderworldStudy\Buffers - Doors study",
+            "ark_nodoors.bin");
+        
+        // Check if only the doors were unlocked/modified
+
+        for (int blocknum = 0; blocknum < ArkLoader.NumOfLevels; blocknum++)
+        {
+            var blockOriginal = ArkOriginal.TileMapObjectsBlocks[blocknum];
+            var blockModified = ArkOriginal.TileMapObjectsBlocks[blocknum];
+
+            for (int objnum = 0; objnum < TileMapMasterObjectListBlock.StaticObjectNum; objnum++)
+            {
+                var objOriginal = blockOriginal.StaticObjects[objnum];
+                var objModified = blockModified.StaticObjects[objnum];
+
+                if (objOriginal is Door doorOriginal)
+                {
+                    var doorModified = (Door) objModified;
+                    Assert.False(doorModified.HasLock(out ushort temp), $"For object " +
+                                                                        $"{doorModified.IdxAtObjectArray} " +
+                                                                        $"of level {blocknum}, a lock remained {temp}");
+                    continue;
+                }
+                Assert.True(objOriginal.Equals(objModified));
+            }
+        }
     }
 }
