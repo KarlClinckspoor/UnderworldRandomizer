@@ -16,6 +16,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\UWRandomizerEditor\UWRandomizerEditor.csproj" />
+      <ProjectReference Include="..\UWRandomizer\UWRandomizer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="ReSharperTestRunner.dll.config">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
