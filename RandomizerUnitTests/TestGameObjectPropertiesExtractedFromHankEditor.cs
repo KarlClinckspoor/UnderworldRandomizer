@@ -83,7 +83,7 @@ public class TestGameObjectProperties
             // @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\PristineUW1\Block{blocknum}_objects.json");
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = new ArkLoader(config.AppSettings.Settings["ArkOriginalPath"].Value);
+            arkPristine = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
 
             // streamsCleaned[blocknum] =
             //     Assembly.GetExecutingAssembly()
