@@ -161,15 +161,6 @@ internal class TestGetBits
 [TestFixture]
 internal class TestSaveBuffer
 {
-    private byte[] buffer;
-
-    [SetUp]
-    public void Setup()
-    {
-        int[] temp = new[] {0, 1, 2, 3, 4, 5, 6, 7};
-        buffer = (from i in temp select (byte) i).ToArray(); // Really necessary?!?
-    }
-
     // TODO: Is there a better way of making this?
     private class MockBuffer : IBufferObject
     {
@@ -199,7 +190,7 @@ internal class TestSaveBuffer
 
         for (int i = 0; i < outputBytes.Length; i++)
         {
-            Assert.True(outputBytes[i] == buffer[i]);
+            Assert.True(outputBytes[i] == mock.Buffer[i]);
         }
 
         File.Delete(outputPath);
