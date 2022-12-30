@@ -3,6 +3,7 @@
 public class EnchantedArmor : SpecialLinkGameObject
 {
     public new readonly int EnchantFlag = 1;
+
     public int Enchantment
     {
         get { return SpecialIdx - 512; }
@@ -13,13 +14,15 @@ public class EnchantedArmor : SpecialLinkGameObject
     public int Spell
     {
         get { return Enchantment + 256 + 16; }
-        set { Enchantment = value - 256 - 16; } // todo: these will UpdateBuffer too right?
+        set { Enchantment = value - 256 - 16; } // todo: these will ReconstructBuffer too right?
     }
 
     public EnchantedArmor(byte[] buffer, short idx) : base(buffer, idx)
-    { }
+    {
+    }
 
     public EnchantedArmor(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
         ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-    { }
+    {
+    }
 }

@@ -1,19 +1,27 @@
 ﻿using UWRandomizerEditor.Interfaces;
 
 namespace UWRandomizerEditor.LEVDotARK;
+
 using static Utils;
 
 /// <summary>
 /// A small class that contains the header of a lev.ark file. The header is composed of a short with the number of
 /// entries (blocks) followed by ints with the offsets to the start of each block in lev.ark
 /// </summary>
-public class Header: ISaveBinary
+public class Header : IBufferObject
 {
-    public byte[] buffer;
-    public static int blockNumSize = 2;    // a short
+    public byte[] Buffer { get; set; }
+    public static int blockNumSize = 2; // a short
     public static int blockOffsetSize = 4; // int32
 
     public int[] BlockOffsets;
+
+    public bool ReconstructBuffer()
+    {
+        // TODO: Ideally, this should get all the blocks... But I'm leaving it like this for now, for simplicity.
+        // It's very unlikely that I'll change the block sizes in the near future.
+        return true;
+    }
 
     public int Size
     {
@@ -22,30 +30,31 @@ public class Header: ISaveBinary
 
     public static short NumEntriesFromBuffer(byte[] buffer)
     {
-        return BitConverter.ToInt16(buffer, 0);  
+        return BitConverter.ToInt16(buffer, 0);
     }
 
     public short NumEntries
     {
-        get { return NumEntriesFromBuffer(buffer); }
+        get { return NumEntriesFromBuffer(Buffer); }
         set
         {
             if (value <= 0)
             {
                 throw new ArgumentException("Number of entries has to be greater than 0!");
             }
+
             Console.WriteLine("Changing number of entries. Be careful!");
             byte[] newbuffer = new byte[value];
             BitConverter.GetBytes(value).CopyTo(newbuffer, 0);
-            buffer.CopyTo(newbuffer, 0);
-            buffer = newbuffer;
+            Buffer.CopyTo(newbuffer, 0);
+            Buffer = newbuffer;
         }
     }
 
     public int GetOffsetForBlock(int blockNum)
     {
         // int blockOffset = BitConverter.ToInt32(buffer[(2 + 4 * blockNum)..(6 + 4 * blockNum)]);
-        int blockOffset =  BitConverter.ToInt32(buffer, (blockNumSize + blockOffsetSize * blockNum));
+        int blockOffset = BitConverter.ToInt32(Buffer, (blockNumSize + blockOffsetSize * blockNum));
         return blockOffset;
     }
 
@@ -60,17 +69,7 @@ public class Header: ISaveBinary
 
     public Header(byte[] buffer)
     {
-        this.buffer = buffer;
+        Buffer = buffer;
         CalculateOffsets();
-    }
-
-    public string SaveBuffer(string basePath = "D:\\Dropbox\\UnderworldStudy\\studies\\LEV.ARK", string filename = "")
-    {
-        if (filename.Length == 0)
-        {
-            filename = $@"_HEADER";
-        }
-
-        return StdSaveBuffer(buffer, basePath, filename);
     }
 }

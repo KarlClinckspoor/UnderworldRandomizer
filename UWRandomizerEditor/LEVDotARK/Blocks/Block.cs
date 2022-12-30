@@ -3,34 +3,30 @@ using static UWRandomizerEditor.Utils;
 
 namespace UWRandomizerEditor.LEVDotARK.Blocks
 {
-    public abstract class Block: ISaveBinary
+    public abstract class Block : IBufferObject
     {
-        public byte[] blockbuffer;
+        public byte[] Buffer { get; set; }
+
+        public bool ReconstructBuffer()
+        {
+            throw new NotImplementedException();
+        }
+
         public int LevelNumber;
 
         public int TotalBlockLength
         {
-            get
-            {
-                return blockbuffer.Length;
-            }
+            get { return Buffer.Length; }
         }
 
-        protected Block(): this(new byte[] { }, -1){ }
-
-        public Block(byte[] blockbuffer, int levelNumber)
+        protected Block() : this(new byte[] { }, -1)
         {
-            this.blockbuffer = blockbuffer;
+        }
+
+        public Block(byte[] buffer, int levelNumber)
+        {
+            this.Buffer = buffer;
             this.LevelNumber = levelNumber;
-        }
-
-        public virtual string SaveBuffer(string? basePath = null, string filename = "")
-        {
-            if (basePath is null)
-            {
-                basePath = Settings.DefaultBinaryTestsPath;
-            }
-            return StdSaveBuffer(blockbuffer, basePath, filename);
         }
     }
 }

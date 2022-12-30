@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-
+using UWRandomizerEditor.Interfaces;
 using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
@@ -23,16 +23,15 @@ internal class TestSetBits
         byte expected = 0b0111;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
-
     }
-    [Test]
-    public void TestSetBits2() 
-    { 
 
-        byte currval  = 0b0001;
-        byte mask     = 0b0110;
-        byte newval   = 0b0011;
-        byte shift    = 0;
+    [Test]
+    public void TestSetBits2()
+    {
+        byte currval = 0b0001;
+        byte mask = 0b0110;
+        byte newval = 0b0011;
+        byte shift = 0;
         byte expected = 0b0011;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
@@ -41,10 +40,10 @@ internal class TestSetBits
     [Test]
     public void TestSetBits3()
     {
-        byte currval  = 0b1111;
-        byte mask     = 0b0011;
-        byte newval   = 0b1100;
-        byte shift    = 1;
+        byte currval = 0b1111;
+        byte mask = 0b0011;
+        byte newval = 0b1100;
+        byte shift = 1;
         byte expected = 0b1001;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
@@ -53,10 +52,10 @@ internal class TestSetBits
     [Test]
     public void TestSetBits4()
     {
-        byte currval  = 0b1111;
-        byte mask     = 0b0110;
-        byte newval   = 0b0000;
-        byte shift    = 0;
+        byte currval = 0b1111;
+        byte mask = 0b0110;
+        byte newval = 0b0000;
+        byte shift = 0;
         byte expected = 0b1001;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
@@ -65,21 +64,22 @@ internal class TestSetBits
     [Test]
     public void TestSetBits5()
     {
-        byte currval  = 0b1111_1111;
-        byte mask     = 0b0011_1100;
-        byte newval   = 0b0000_0000;
-        byte shift    = 0;
+        byte currval = 0b1111_1111;
+        byte mask = 0b0011_1100;
+        byte newval = 0b0000_0000;
+        byte shift = 0;
         byte expected = 0b1100_0011;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
+
     [Test]
     public void TestSetBits6()
     {
-        byte currval  = 0b1111_1111;
-        byte mask     = 0b0000_1111;
-        byte newval   = 0b0000_0000;
-        byte shift    = 2;
+        byte currval = 0b1111_1111;
+        byte mask = 0b0000_1111;
+        byte newval = 0b0000_0000;
+        byte shift = 2;
         byte expected = 0b1100_0011;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
@@ -88,27 +88,26 @@ internal class TestSetBits
     [Test]
     public void TestSetBits7()
     {
-        byte currval  = 0b1100_1110;
-        byte mask     = 0b0011_1000;
-        byte newval   = 0b1001_0000;
-        byte shift    = 0;
+        byte currval = 0b1100_1110;
+        byte mask = 0b0011_1000;
+        byte newval = 0b1001_0000;
+        byte shift = 0;
         byte expected = 0b1101_0110;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
+
     [Test]
     public void TestSetBits8()
     {
-        byte currval  = 0b1111_0000;
-        byte mask     = 0b0000_1111;
-        byte newval   = 0b0000_1010;
-        byte shift    = 4;
+        byte currval = 0b1111_0000;
+        byte mask = 0b0000_1111;
+        byte newval = 0b0000_1010;
+        byte shift = 4;
         byte expected = 0b1010_0000;
         int calc = SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
-
-
 }
 
 [TestFixture]
@@ -117,53 +116,53 @@ internal class TestGetBits
     [Test]
     public void TestGetBits1()
     {
-        int value    = 0b1010;
-        int mask     = 0b0011;
-        int shift    = 0;
+        int value = 0b1010;
+        int mask = 0b0011;
+        int shift = 0;
         int expected = 0b0010;
-        int calc     = GetBits(value, mask, shift);
+        int calc = GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
+
     [Test]
     public void TestGetBits2()
     {
-        int value    = 0b0000;
-        int mask     = 0b0011;
-        int shift    = 0;
+        int value = 0b0000;
+        int mask = 0b0011;
+        int shift = 0;
         int expected = 0b0000;
-        int calc     = GetBits(value, mask, shift);
+        int calc = GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
     [Test]
     public void TestGetBits3()
     {
-        int value    = 0b1100_1001;
-        int mask     = 0b1111;
-        int shift    = 4;
+        int value = 0b1100_1001;
+        int mask = 0b1111;
+        int shift = 4;
         int expected = 0b1100;
-        int calc     = GetBits(value, mask, shift);
+        int calc = GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
     [Test]
     public void TestGetBits4()
     {
-        int value    = 0b1010_0101;
-        int mask     = 0b1111;
-        int shift    = 2;
+        int value = 0b1010_0101;
+        int mask = 0b1111;
+        int shift = 2;
         int expected = 0b1001;
-        int calc     = GetBits(value, mask, shift);
+        int calc = GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
-
-
 }
 
 [TestFixture]
 internal class TestSaveBuffer
 {
     private byte[] buffer;
+
     [SetUp]
     public void Setup()
     {
@@ -171,18 +170,38 @@ internal class TestSaveBuffer
         buffer = (from i in temp select (byte) i).ToArray(); // Really necessary?!?
     }
 
+    // TODO: Is there a better way of making this?
+    private class MockBuffer : IBufferObject
+    {
+        private Random r = new Random();
+        public byte[] Buffer { get; set; } = new byte[256];
+
+        public bool ReconstructBuffer()
+        {
+            return true;
+        }
+
+        public MockBuffer()
+        {
+            r.NextBytes(Buffer);
+        }
+    }
+
     [Test]
-    public void TestSaveB()
+    public void Test()
     {
         string path = Path.GetFullPath(".");
         string filename = "TestSaveBuffer.bin";
-        string output = StdSaveBuffer(buffer, path, filename);
-        
-        byte[] savedStuff = File.ReadAllBytes(output);
-        for (int i = 0; i < savedStuff.Length; i++)
+        var mock = new MockBuffer();
+
+        string outputPath = StdSaveBuffer(mock, path, filename);
+        byte[] outputBytes = File.ReadAllBytes(outputPath);
+
+        for (int i = 0; i < outputBytes.Length; i++)
         {
-            Assert.True(savedStuff[i] == buffer[i]);
+            Assert.True(outputBytes[i] == buffer[i]);
         }
-        File.Delete(output);
+
+        File.Delete(outputPath);
     }
 }

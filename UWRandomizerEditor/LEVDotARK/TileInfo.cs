@@ -6,10 +6,10 @@ using static UWRandomizerEditor.Utils;
 
 namespace UWRandomizerEditor.LEVDotARK
 {
-    
-    public class TileInfo: ISaveBinary, IEquatable<TileInfo>
+    public class TileInfo : IBufferObject, IEquatable<TileInfo>
     {
         public const int Size = 4;
+
         public enum TileTypes
         {
             solid = 0,
@@ -22,124 +22,160 @@ namespace UWRandomizerEditor.LEVDotARK
             slp_s,
             slp_e,
             slp_w,
-        } ;
+        };
 
         public static readonly IDictionary<int, string> TileTypeDescriptors = new Dictionary<int, string>()
         {
-            { 0, "#SOLID" },
-            { 1, "#OPEN" },
-            { 2, "#DIAG_SE" },
-            { 3, "#DIAG_SW" },
-            { 4, "#DIAG_NE" },
-            { 5, "#DIAG_NW" },
-            { 6, "#SLP_N" },
-            { 7, "#SLP_S" },
-            { 8, "#SLP_E" },
-            { 9, "#SLP_W" }
+            {0, "#SOLID"},
+            {1, "#OPEN"},
+            {2, "#DIAG_SE"},
+            {3, "#DIAG_SW"},
+            {4, "#DIAG_NE"},
+            {5, "#DIAG_NW"},
+            {6, "#SLP_N"},
+            {7, "#SLP_S"},
+            {8, "#SLP_E"},
+            {9, "#SLP_W"}
         };
+
         public static readonly IDictionary<int, char> TileCharReplacements = new Dictionary<int, char>()
         {
-            { 0, '#' },
-            { 1, '_' },
-            { 2, '/' },
-            { 3, '\\' },
-            { 4, '\\' },
-            { 5, '/' },
-            { 6, '^' },
-            { 7, 'v' },
-            { 8, '>' },
-            { 9, '<' }
+            {0, '#'},
+            {1, '_'},
+            {2, '/'},
+            {3, '\\'},
+            {4, '\\'},
+            {5, '/'},
+            {6, '^'},
+            {7, 'v'},
+            {8, '>'},
+            {9, '<'}
         };
 
         // Defined in the constructor
         private int _entry;
-        public int Entry
-        {
-            get { UpdateEntry(); return _entry; }
-            set { _entry = value; UpdateBuffer(); }
-        }
 
-        private byte[] _tileBuffer;
-        public byte[] TileBuffer
+        public int Entry
         {
             get
             {
-                UpdateBuffer(); // Let's assure the buffer is always updated
-                return _tileBuffer;
+                UpdateEntry();
+                return _entry;
             }
-            private set
+            set
             {
-                _tileBuffer = value;
+                _entry = value;
+                ReconstructBuffer();
             }
         }
+
+        private byte[] _tileBuffer;
+
+        public byte[] Buffer
+        {
+            get
+            {
+                ReconstructBuffer(); // Let's assure the buffer is always updated
+                return _tileBuffer;
+            }
+            set { _tileBuffer = value; }
+        }
+
         public int EntryNum { get; set; }
 
         // TODO: Test this
         public int Offset
         {
-            get
-            {
-                return EntryNum * Size;
-            }  
-        } 
+            get { return EntryNum * Size; }
+        }
+
         public int LevelNum { get; set; }
 
         public int TileType
         {
             get { return GetBits(Entry, 0b1111, 0); }
-            set { Entry = SetBits(Entry, value, 0b1111, 0);}
+            set { Entry = SetBits(Entry, value, 0b1111, 0); }
         }
 
         public int TileHeight
         {
             get { return GetBits(Entry, 0b1111, 4); }
-            set { Entry = SetBits(Entry, value, 0b1111, 4); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1111, 4);
+                ReconstructBuffer();
+            }
         }
 
         public int Light
         {
             get { return GetBits(Entry, 0b1, 8); }
-            set { Entry = SetBits(Entry, value, 0b1, 8); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1, 8);
+                ReconstructBuffer();
+            }
         }
-        
+
         // todo: recheck this.
         public int Bit9
         {
             get { return GetBits(Entry, 0b1, 9); }
-            set { Entry = SetBits(Entry, value, 0b1, 9); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1, 9);
+                ReconstructBuffer();
+            }
         }
 
         public int FloorTextureIdx
         {
             get { return GetBits(Entry, 0b1111, 10); }
-            set { Entry = SetBits(Entry, value, 0b1111, 10); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1111, 10);
+                ReconstructBuffer();
+            }
         }
+
         public int NoMagic
         {
             get { return GetBits(Entry, 0b1, 14); }
-            set { Entry = SetBits(Entry, value, 0b1, 14); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1, 14);
+                ReconstructBuffer();
+            }
         }
+
         public int DoorBit
         {
             get { return GetBits(Entry, 0b1, 15); }
-            set { Entry = SetBits(Entry, value, 0b1, 15); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1, 15);
+                ReconstructBuffer();
+            }
         }
+
         public int WallTextureIdx
         {
             get { return GetBits(Entry, 0b111111, 16); }
-            set { Entry = SetBits(Entry, value, 0b111111, 16); UpdateBuffer(); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b111111, 16);
+                ReconstructBuffer();
+            }
         }
+
         public int FirstObjIdx
         {
-            get
-            {
-                return ObjectChain.startingIdx;
-            }
+            get { return ObjectChain.startingIdx; }
             set
             {
                 Entry = SetBits(Entry, value, 0b1111111111, 22);
                 ObjectChain.startingIdx = value;
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -157,10 +193,11 @@ namespace UWRandomizerEditor.LEVDotARK
         }
 
         [MemberNotNull(nameof(_tileBuffer))]
-        private void UpdateBuffer() // Modified entry, updates buffer
+        public bool ReconstructBuffer() // Modified entry, updates buffer
         {
             _entry = SetBits(_entry, ObjectChain.startingIdx, 0b1111111111, 22);
             _tileBuffer = BitConverter.GetBytes(_entry);
+            return true;
         }
 
         private void UpdateEntry() // Modified buffer, updates entry
@@ -175,7 +212,7 @@ namespace UWRandomizerEditor.LEVDotARK
             _entry = entry;
             LevelNum = levelNumber;
             ObjectChain = new UWLinkedList();
-            UpdateBuffer();
+            ReconstructBuffer();
         }
 
         public TileInfo(int entrynum, byte[] buffer, int offset, int levelNumber)
@@ -212,45 +249,35 @@ namespace UWRandomizerEditor.LEVDotARK
                     case (int) TileTypes.solid:
                         break;
                     case (int) TileTypes.diag_se:
-                        {
-                            obj.Xpos = 6;
-                            obj.Ypos = 1;
-                            break;
-                        }
+                    {
+                        obj.Xpos = 6;
+                        obj.Ypos = 1;
+                        break;
+                    }
                     case (int) TileTypes.diag_sw:
-                        {
-                            obj.Xpos = 1;
-                            obj.Ypos = 1;
-                            break;
-                        }
+                    {
+                        obj.Xpos = 1;
+                        obj.Ypos = 1;
+                        break;
+                    }
                     case (int) TileTypes.diag_ne:
-                        {
-                            obj.Xpos = 6;
-                            obj.Ypos = 6;
-                            break;
-                        }
+                    {
+                        obj.Xpos = 6;
+                        obj.Ypos = 6;
+                        break;
+                    }
                     case (int) TileTypes.diag_nw:
-                        {
-                            obj.Xpos = 1;
-                            obj.Ypos = 6;
-                            break;
-                        }
+                    {
+                        obj.Xpos = 1;
+                        obj.Ypos = 6;
+                        break;
+                    }
                 }
             }
         }
 
-        public string SaveBuffer(string? basePath, string? filename)
-        {
-            basePath ??= Settings.DefaultBinaryTestsPath;
-            filename ??= string.Empty;
-            if (filename.Length == 0)
-            {
-                filename = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
-            }
-
-            return StdSaveBuffer(TileBuffer, basePath, filename);
-
-        }
+        // TODO: Keeping this because of the filename string interp. Might use this somewhere else
+        //         filename = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
 
         public bool Equals(TileInfo? other)
         {
@@ -260,7 +287,7 @@ namespace UWRandomizerEditor.LEVDotARK
             // I've added the other flags for completeness, because comparing only the "Entry" should be enough to cover them
             if (
                 this.Entry == other.Entry &
-                this.TileBuffer.SequenceEqual(other.TileBuffer) &
+                this.Buffer.SequenceEqual(other.Buffer) &
                 this.EntryNum == other.EntryNum &
                 this.LevelNum == other.LevelNum &
                 this.TileType == other.TileType &
@@ -270,7 +297,7 @@ namespace UWRandomizerEditor.LEVDotARK
                 this.NoMagic == other.NoMagic &
                 this.DoorBit == other.DoorBit &
                 this.WallTextureIdx == other.WallTextureIdx
-                )
+            )
             {
                 return true;
             }

@@ -47,73 +47,121 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public int HP
         {
             get { return (int) byte1_hp; }
-            set { byte1_hp = (byte) value; UpdateBuffer();}
+            set
+            {
+                byte1_hp = (byte) value;
+                UpdateBuffer();
+            }
         }
 
         public int Goal
         {
             get { return GetBits(short_NPCGoalGtarg, 0b1111, 0); }
-            set { short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b1111, 0); UpdateBuffer();}
+            set
+            {
+                short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b1111, 0);
+                UpdateBuffer();
+            }
         }
 
         public int Gtarg
         {
             get { return GetBits(short_NPCGoalGtarg, 0b11111111, 4); }
-            set { short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b11111111, 4); UpdateBuffer();}
+            set
+            {
+                short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b11111111, 4);
+                UpdateBuffer();
+            }
         }
 
         public int Level
         {
             get { return GetBits(short_NPCLevelTalkedAttitude, 0b111, 0); }
-            set { short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0); UpdateBuffer();}
+            set
+            {
+                short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0);
+                UpdateBuffer();
+            }
         }
 
         public bool TalkedTo
         {
             get { return GetBits(short_NPCLevelTalkedAttitude, 0b1, 13) == 1; }
-            set { short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value ? 1:0, 0b1, 13); UpdateBuffer();}
+            set
+            {
+                short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
+                UpdateBuffer();
+            }
         }
 
         public int Attitude
         {
             get { return GetBits(short_NPCLevelTalkedAttitude, 0b11, 14); }
-            set { short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14); UpdateBuffer();}
+            set
+            {
+                short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14);
+                UpdateBuffer();
+            }
         }
 
         public int Height
         {
             get { return GetBits(short_NPCheightQM, 0b1111111, 6); }
-            set { short_NPCheightQM = (short) SetBits(short_NPCheightQM, value, 0b1111111, 6); UpdateBuffer();}
+            set
+            {
+                short_NPCheightQM = (short) SetBits(short_NPCheightQM, value, 0b1111111, 6);
+                UpdateBuffer();
+            }
         }
 
         public int YHome
         {
             get { return GetBits(short_NPChome, 0b111111, 4); }
-            set { short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 4); UpdateBuffer();}
+            set
+            {
+                short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 4);
+                UpdateBuffer();
+            }
         }
 
         public int XHome
         {
             get { return GetBits(short_NPChome, 0b111111, 10); }
-            set { short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 10); UpdateBuffer();}
+            set
+            {
+                short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 10);
+                UpdateBuffer();
+            }
         }
 
         public int NPCHeading
         {
             get { return GetBits(byte_NPCheading, 0b1111, 0); }
-            set { byte_NPCheading = (byte) SetBits(byte_NPCheading, value, 0b1111, 0); UpdateBuffer();}
+            set
+            {
+                byte_NPCheading = (byte) SetBits(byte_NPCheading, value, 0b1111, 0);
+                UpdateBuffer();
+            }
         }
 
         public int Hunger
         {
             get { return GetBits(byte_NPCHunger, 0b111111, 0); }
-            set { byte_NPCHunger = (byte) SetBits(byte_NPCHunger, value, 0b111111, 0); UpdateBuffer();}
+            set
+            {
+                byte_NPCHunger = (byte) SetBits(byte_NPCHunger, value, 0b111111, 0);
+                UpdateBuffer();
+            }
         }
 
         public int whoami
         {
             get { return GetBits(byte_NPCwhoami, 0b11111111, 0); }
-            set { byte_NPCwhoami = (byte) SetBits(byte_NPCwhoami, value, 0b11111111, 0); UpdateBuffer();}
+            set
+            {
+                byte_NPCwhoami = (byte) SetBits(byte_NPCwhoami, value, 0b11111111, 0);
+                UpdateBuffer();
+            }
         }
 
         public new void UpdateBuffer()
@@ -171,7 +219,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             byte_NPCHunger = Buffer[offset14];
             byte_NPCwhoami = Buffer[offset15];
         }
-        
+
         public MobileObject(byte[] buffer, short idx)
         {
             // Debug.Assert(buffer.Length == TotalLength);
@@ -181,7 +229,8 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             UpdateEntries();
         }
 
-        public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
+        public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg,
+            short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
             byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
         {
@@ -213,17 +262,19 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             IdxAtObjectArray = idx;
             UpdateEntries();
         }
-        public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
+
+        public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3,
+            short NPCGoalGTarg, short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
             byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
         {
             byte[] baseBuffer = new byte[BaseLength];
-            BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2*0);
-            BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2*1);
-            BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2*2);
-            BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2*3);
+            BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2 * 0);
+            BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2 * 1);
+            BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2 * 2);
+            BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2 * 3);
             base.Buffer = baseBuffer;
-            
+
             byte[] extra = new byte[ExtraLength]
             {
                 byte1_hp,
@@ -250,14 +301,5 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             IdxAtObjectArray = idx;
             UpdateEntries();
         }
-    public override string SaveBuffer(string? basePath = null, string filename = "")
-    {
-        if (basePath is null)
-        {
-            basePath = Settings.DefaultBinaryTestsPath;
-        }
-        return StdSaveBuffer(Buffer, basePath, filename.Length == 0 ? $@"_GameObject_{IdxAtObjectArray}" : filename);
-    }
-        
     }
 }

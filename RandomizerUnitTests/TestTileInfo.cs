@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVDotARK;
 using UWRandomizerEditor.LEVDotARK.GameObjects;
 using UWRandomizerEditor;
+using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
 
@@ -17,19 +19,21 @@ public class TestTileInfo
     private TileInfo tinfo1;
     private TileInfo tinfo2;
     private TileInfo tinfo3;
-    
+    private Configuration config;
+
     [SetUp]
     public void Setup()
     {
-         tinfo1 = new TileInfo(0, 240, 0, 0);
-         tinfo2 = new TileInfo(0, BitConverter.GetBytes(240), 0, 0);
-         tinfo3 = new TileInfo(0, BitConverter.GetBytes(241), 0, 0);
+        tinfo1 = new TileInfo(0, 240, 0, 0);
+        tinfo2 = new TileInfo(0, BitConverter.GetBytes(240), 0, 0);
+        tinfo3 = new TileInfo(0, BitConverter.GetBytes(241), 0, 0);
+        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
     }
 
     [Test]
     public void ComparingConstructors()
     {
-        Assert.True(tinfo1.Equals(tinfo2));   
+        Assert.True(tinfo1.Equals(tinfo2));
         Assert.False(tinfo1.Equals(tinfo3));
         Assert.False(tinfo2.Equals(tinfo3));
     }
@@ -40,16 +44,19 @@ public class TestTileInfo
     public void SavingBufferAndReloading()
     {
         // Compare the buffers as-is
-        Assert.True(tinfo1.TileBuffer.SequenceEqual(tinfo2.TileBuffer));
-        string tinfo1Path = tinfo1.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, filename: "buffer_tinfo1");
-        string tinfo2Path = tinfo2.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, filename: "buffer_tinfo2");
-        string tinfo3Path = tinfo3.SaveBuffer(basePath: Settings.DefaultBinaryTestsPath, filename: "buffer_tinfo3");
-        
+        Assert.True(tinfo1.Buffer.SequenceEqual(tinfo2.Buffer));
+        string tinfo1Path = StdSaveBuffer(tinfo1, config.AppSettings.Settings["BufferTestsPath"].Value,
+            filename: "buffer_tinfo1");
+        string tinfo2Path = StdSaveBuffer(tinfo2, config.AppSettings.Settings["BufferTestsPath"].Value,
+            filename: "buffer_tinfo2");
+        string tinfo3Path = StdSaveBuffer(tinfo3, config.AppSettings.Settings["BufferTestsPath"].Value,
+            filename: "buffer_tinfo3");
+
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();
-        var tinfo1Hash = mySHA256.ComputeHash(tinfo1.TileBuffer);
-        var tinfo2Hash = mySHA256.ComputeHash(tinfo2.TileBuffer);
-        var tinfo3Hash = mySHA256.ComputeHash(tinfo3.TileBuffer);
+        var tinfo1Hash = mySHA256.ComputeHash(tinfo1.Buffer);
+        var tinfo2Hash = mySHA256.ComputeHash(tinfo2.Buffer);
+        var tinfo3Hash = mySHA256.ComputeHash(tinfo3.Buffer);
         Assert.True(tinfo1Hash.SequenceEqual(tinfo2Hash));
         Assert.False(tinfo1Hash.SequenceEqual(tinfo3Hash));
         Assert.False(tinfo2Hash.SequenceEqual(tinfo3Hash));
@@ -58,7 +65,7 @@ public class TestTileInfo
         var tinfo1RelBuffer = LoadTileData(tinfo1Path);
         var tinfo2RelBuffer = LoadTileData(tinfo2Path);
         var tinfo3RelBuffer = LoadTileData(tinfo3Path);
-        
+
         // Compare the hashes again
         var rectinfo1Hash = mySHA256.ComputeHash(tinfo1RelBuffer);
         var rectinfo2Hash = mySHA256.ComputeHash(tinfo2RelBuffer);
@@ -66,29 +73,29 @@ public class TestTileInfo
         Assert.True(rectinfo1Hash.SequenceEqual(rectinfo2Hash));
         Assert.False(rectinfo2Hash.SequenceEqual(rectinfo3Hash));
         Assert.False(rectinfo2Hash.SequenceEqual(rectinfo3Hash));
-        
+
         // Compare the buffers
         Assert.True(tinfo1RelBuffer.SequenceEqual(tinfo2RelBuffer));
         Assert.False(tinfo1RelBuffer.SequenceEqual(tinfo3RelBuffer));
         Assert.False(tinfo2RelBuffer.SequenceEqual(tinfo3RelBuffer));
-        
+
         // Rebuild the objects
         var rebuiltTinfo1 = new TileInfo(0, tinfo1RelBuffer, 0, 0);
         var rebuiltTinfo2 = new TileInfo(0, tinfo2RelBuffer, 0, 0);
         var rebuiltTinfo3 = new TileInfo(0, tinfo3RelBuffer, 0, 0);
-        
+
         // Compare their buffers
-        Assert.True(rebuiltTinfo1.TileBuffer.SequenceEqual(rebuiltTinfo2.TileBuffer));
-        Assert.True(rebuiltTinfo1.TileBuffer.SequenceEqual(tinfo1.TileBuffer));
-        Assert.True(rebuiltTinfo2.TileBuffer.SequenceEqual(tinfo2.TileBuffer));
-        Assert.True(rebuiltTinfo1.TileBuffer.SequenceEqual(tinfo2.TileBuffer));
-        Assert.True(rebuiltTinfo2.TileBuffer.SequenceEqual(tinfo1.TileBuffer));
-        Assert.True(rebuiltTinfo3.TileBuffer.SequenceEqual(tinfo3.TileBuffer));
-        
-        Assert.False(rebuiltTinfo1.TileBuffer.SequenceEqual(rebuiltTinfo3.TileBuffer));
-        Assert.False(rebuiltTinfo2.TileBuffer.SequenceEqual(tinfo3.TileBuffer));
-        Assert.False(rebuiltTinfo1.TileBuffer.SequenceEqual(tinfo3.TileBuffer));
-        Assert.False(rebuiltTinfo2.TileBuffer.SequenceEqual(tinfo3.TileBuffer));
+        Assert.True(rebuiltTinfo1.Buffer.SequenceEqual(rebuiltTinfo2.Buffer));
+        Assert.True(rebuiltTinfo1.Buffer.SequenceEqual(tinfo1.Buffer));
+        Assert.True(rebuiltTinfo2.Buffer.SequenceEqual(tinfo2.Buffer));
+        Assert.True(rebuiltTinfo1.Buffer.SequenceEqual(tinfo2.Buffer));
+        Assert.True(rebuiltTinfo2.Buffer.SequenceEqual(tinfo1.Buffer));
+        Assert.True(rebuiltTinfo3.Buffer.SequenceEqual(tinfo3.Buffer));
+
+        Assert.False(rebuiltTinfo1.Buffer.SequenceEqual(rebuiltTinfo3.Buffer));
+        Assert.False(rebuiltTinfo2.Buffer.SequenceEqual(tinfo3.Buffer));
+        Assert.False(rebuiltTinfo1.Buffer.SequenceEqual(tinfo3.Buffer));
+        Assert.False(rebuiltTinfo2.Buffer.SequenceEqual(tinfo3.Buffer));
 
         Assert.True(rebuiltTinfo1.Equals(tinfo1));
         Assert.True(rebuiltTinfo1.Equals(tinfo2));
@@ -102,5 +109,4 @@ public class TestTileInfo
     {
         return System.IO.File.ReadAllBytes(path);
     }
-    
 }

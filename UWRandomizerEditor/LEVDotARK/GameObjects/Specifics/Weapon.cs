@@ -2,7 +2,6 @@
 
 public class EnchantedWeapon : SpecialLinkGameObject
 {
-        
     public new readonly int EnchantFlag = 1;
 
     public int Enchantment
@@ -14,21 +13,16 @@ public class EnchantedWeapon : SpecialLinkGameObject
     // Oh boy. This is more complicated. Need to have logic to differentiate between Acc/Dam/Prot/Tough and other spells
     public int Spell
     {
-        get
-        {
-            return Enchantment + 256;
-        }
-        set
-        {
-            Enchantment = value - 256;
-        } // todo: these will UpdateBuffer too right?
+        get { return Enchantment + 256; }
+        set { Enchantment = value - 256; } // todo: these will ReconstructBuffer too right?
     }
 
     public EnchantedWeapon(byte[] buffer, short idx) : base(buffer, idx)
-    { }
+    {
+    }
 
     public EnchantedWeapon(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
         ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-    { }
-        
+    {
+    }
 }

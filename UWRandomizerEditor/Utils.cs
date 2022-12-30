@@ -1,4 +1,6 @@
-﻿namespace UWRandomizerEditor
+﻿using UWRandomizerEditor.Interfaces;
+
+namespace UWRandomizerEditor
 {
     /// <summary>
     /// Class containing useful small functions to set bits in values, save buffers, etc.
@@ -75,9 +77,10 @@
         public static int SetBits(int currvalue, int newvalue, int mask, int shift)
         {
             return (
-                      (currvalue & (~(mask << shift))) // Sets the bits to be changed to 0, preserving others
-                      | ((newvalue & mask) << shift) // Moves only the relevant bits of the new value to the relevant position, replaces the target bits
-                   );  
+                (currvalue & (~(mask << shift))) // Sets the bits to be changed to 0, preserving others
+                | ((newvalue & mask) <<
+                   shift) // Moves only the relevant bits of the new value to the relevant position, replaces the target bits
+            );
         }
 
         /// <summary>
@@ -124,16 +127,18 @@
         /// Saves a specific buffer to a path specified as basepath \ filename.
         /// </summary>
         /// <param name="buffer">Byte array (buffer)</param>
-        /// <param name="basepath">Base path to the file (e.g. folder structure) </param>
-        /// <param name="filename">Extra info to add (e.g. name of file) </param>
+        /// <param name="basepath">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
+        /// <param name="filename">Extra info to add (e.g. name of file). If not provided, gets a random Guid </param>
         /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
-        public static string StdSaveBuffer(byte[] buffer, string basepath, string filename)
+        public static string StdSaveBuffer(IBufferObject obj, string? basepath, string? filename)
         {
+            basepath ??= ".";
+            filename ??= Guid.NewGuid().ToString();
+
             string fullpath = Path.Join(basepath, filename);
-        
-            File.WriteAllBytes(fullpath, buffer);
+
+            File.WriteAllBytes(fullpath, obj.Buffer);
             return fullpath;
         }
-
     }
 }

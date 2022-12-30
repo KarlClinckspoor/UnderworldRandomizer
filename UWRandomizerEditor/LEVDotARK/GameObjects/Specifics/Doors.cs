@@ -1,23 +1,26 @@
 namespace UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+
 using static UWRandomizerEditor.Utils;
 
-public class Door: SpecialLinkGameObject
+public class Door : SpecialLinkGameObject
 {
-    public Door(byte[] buffer, short idxAtObjArray): base(buffer, idxAtObjArray) {}
-    
+    public Door(byte[] buffer, short idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
+
     public override bool ShouldBeMoved { get; set; } = false;
-    
+
     // On doors:
     // Bit 1 of "owner" field is set, door is spiked
     // sp_link field points to a_lock object (010f), door is locked.
-    
+
     /// <summary>
     /// Points the "sp_link" field to 0, removing any reference to a lock.
     /// </summary>
     public void RemoveLock()
     {
         link_specialField = 0;
-        UpdateBuffer();
+        ReconstructBuffer();
     }
 
     // TODO: add verification
@@ -52,9 +55,9 @@ public class Door: SpecialLinkGameObject
     {
         // TODO: add some checks
         link_specialField = lock_idx;
-        UpdateBuffer();
+        ReconstructBuffer();
     }
-    
+
     // TODO: By "bit 1" does it mean 0b10 or 0b01? I'm assuming it's the former.
     public bool IsSpiked()
     {
@@ -69,13 +72,13 @@ public class Door: SpecialLinkGameObject
     public void AddSpike()
     {
         SetBits(Owner_or_special, 0b1, 0b10, 0);
-        UpdateBuffer();
+        ReconstructBuffer();
     }
 
     public void RemoveSpike()
     {
         SetBits(Owner_or_special, 0b0, 0b10, 0);
-        UpdateBuffer();
+        ReconstructBuffer();
     }
 
     public void Unlock(GameObject[] blockGameObjects)
@@ -83,12 +86,11 @@ public class Door: SpecialLinkGameObject
         if (blockGameObjects[link_specialField] is Lock LockObject)
         {
             LockObject.IsLocked = false;
-            LockObject.UpdateBuffer();
+            LockObject.ReconstructBuffer();
         }
         else
         {
             throw new InvalidOperationException("Cannot unlock because door isn't pointing to a lock object");
         }
     }
-    
 }

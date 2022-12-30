@@ -31,14 +31,15 @@ public class EnchantedObject : SpecialLinkGameObject
                 Enchantment = value;
             else
                 Enchantment = value - 144;
-        } // todo: these will UpdateBuffer too right?
+        } // todo: these will ReconstructBuffer too right?
     }
 
     public EnchantedObject(byte[] buffer, short idx) : base(buffer, idx)
-    { }
+    {
+    }
 
     public EnchantedObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
         ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-    { }
-        
+    {
+    }
 }

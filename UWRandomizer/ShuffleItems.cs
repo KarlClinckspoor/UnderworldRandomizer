@@ -15,9 +15,9 @@ public static class ShuffleItems
             block.UpdateBuffer();
         }
 
-        arkFile.ReconstructBufferFromBlocks();
+        arkFile.ReconstructBuffer();
     }
-    
+
     static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();
@@ -33,7 +33,7 @@ public static class ShuffleItems
         {
             int chosenTileIdx = Singletons.RandomInstance.Next(0, block.TileInfos.Length);
             TileInfo chosenTile = block.TileInfos[chosenTileIdx];
-            if (!IsTileValid(chosenTile, block.LevelNumber)) 
+            if (!IsTileValid(chosenTile, block.LevelNumber))
                 continue;
             chosenTile.ObjectChain.Add(objectsInLevel.Pop());
         }
@@ -43,10 +43,10 @@ public static class ShuffleItems
             tile.MoveObjectsToCorrectCorner();
             tile.MoveObjectsToSameZLevel();
         }
-        
+
         block.UpdateBuffer(); // TODO: necessary?
     }
-    
+
     private static IDictionary<int, int> LevelTextureIdxOfWater = new Dictionary<int, int>()
     {
         {0, 8}, // lvl1
@@ -76,14 +76,13 @@ public static class ShuffleItems
 
     private static bool IsTileValid(TileInfo tile, int levelNumber)
     {
-        
         if ((TileInfo.TileTypes) tile.TileType == TileInfo.TileTypes.solid)
         {
             return false;
         }
-        
+
         // Can't place items on water, or else they might vanish. TODO: Need to test though!
-        if ((tile.FloorTextureIdx == LevelTextureIdxOfWater[levelNumber]) | 
+        if ((tile.FloorTextureIdx == LevelTextureIdxOfWater[levelNumber]) |
             tile.FloorTextureIdx == LevelTextureIdxOfLava[levelNumber])
         {
             return false;

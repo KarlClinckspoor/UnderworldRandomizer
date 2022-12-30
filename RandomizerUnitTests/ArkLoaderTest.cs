@@ -1,31 +1,60 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using NUnit.Framework;
 using UWRandomizerEditor;
 using UWRandomizerEditor.LEVDotARK;
+using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
 
 class ArkLoaderTest
 {
+    private Configuration config;
+
+    [SetUp]
+    public void SetUp()
+    {
+        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+    }
+
     [Test]
     [Category("RequiresArk")]
-    public void CompareLoadSerialize() 
+    public void CompareLoadSerializeOriginal()
     {
-        var AL = new ArkLoader(Settings.DefaultArkPath);
+        var AL = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
         Assert.True(AL.CompareCurrentArkWithHash());
-        AL.ReconstructBufferFromBlocks();
-        string savedpath = AL.SaveBuffer(Path.GetDirectoryName(Settings.DefaultArkPath));
+        AL.ReconstructBuffer();
+        string savedpath = StdSaveBuffer(AL, config.AppSettings.Settings["BufferTestsPath"].Value,
+            "reconstructedOriginalArk.bin");
         var AL2 = new ArkLoader(savedpath);
         Assert.True(AL2.CompareCurrentArkWithHash());
 
-        for (int i = 0; i < AL.arkbuffer.Length; i++)
+        for (int i = 0; i < AL.Buffer.Length; i++)
         {
-            if (AL.arkbuffer[i] != AL2.arkbuffer[i])
+            if (AL.Buffer[i] != AL2.Buffer[i])
             {
                 Console.WriteLine($"Failed LEV.ARK comparison at byte {i}");
             }
         }
     }
-    // TODO: Make one here to test the buffer lengths
+
+    [Test]
+    [Category("RequiresArk")]
+    public void CompareLoadSerializeCleaned()
+    {
+        var AL = new ArkLoader(config.AppSettings.Settings["UWArkCleanedPath"].Value);
+        AL.ReconstructBuffer();
+        string savedpath = StdSaveBuffer(AL, config.AppSettings.Settings["BufferTestsPath"].Value,
+            "reconstructedCleanedArk.bin");
+        var AL2 = new ArkLoader(savedpath);
+
+        for (int i = 0; i < AL.Buffer.Length; i++)
+        {
+            if (AL.Buffer[i] != AL2.Buffer[i])
+            {
+                Console.WriteLine($"Failed LEV.ARK comparison at byte {i}");
+            }
+        }
+    }
 }

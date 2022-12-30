@@ -1,12 +1,13 @@
-﻿using UWRandomizerEditor.LEVDotARK.Blocks;
+﻿using UWRandomizerEditor.Interfaces;
+using UWRandomizerEditor.LEVDotARK.Blocks;
 
 namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 
-public class FreeListObjectEntry
+public class FreeListObjectEntry : IBufferObject
 {
     // FreeListMobileObjectEntrySize is also 4 (short).
     public const int EntrySize = TileMapMasterObjectListBlock.FreeListStaticObjectsEntrySize;
-    public byte[] Buffer = new byte[EntrySize];
+    public byte[] Buffer { get; set; } = new byte[EntrySize];
     public short Entry;
     public int EntryNum;
 
@@ -22,15 +23,17 @@ public class FreeListObjectEntry
     {
         this.Entry = Entry;
         this.EntryNum = EntryNum;
-        UpdateBuffer();
+        ReconstructBuffer();
     }
 
     public FreeListObjectEntry() // For non-entries.
-    { }
+    {
+    }
 
-    public void UpdateBuffer()
+    public bool ReconstructBuffer()
     {
         Buffer = BitConverter.GetBytes(Entry);
+        return true;
     }
 
     public void UpdateEntry()
