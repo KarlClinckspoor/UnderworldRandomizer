@@ -32,8 +32,6 @@ public class TestGameObjectProperties
     private List<List<Dictionary<string, int>>> jsonsCleaned = new List<List<Dictionary<string, int>>>(numOfLevels);
     private ArkLoader arkCleaned;
 
-    private Configuration config;
-
     public enum PossibleLevArkToTest
     {
         pristine = 0,
@@ -62,44 +60,21 @@ public class TestGameObjectProperties
     [Category("RequiresArk")]
     public void Setup()
     {
-        // var configMap = new ConfigurationFileMap("./ReSharperTestRunner.dll.config");
-        // string path = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
-        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        // var config = ConfigurationManager.OpenMappedMachineConfiguration(configMap);
-        // var config = ConfigurationManager.OpenMappedMachineConfiguration(configMap);
         for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
         {
             // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader isntances
-            // streamsPristine[blocknum] =
-            //     Assembly.GetExecutingAssembly()
-            //         .GetManifestResourceStream(
-            //             $"RandomizerUnitTests.testdata.PristineUW1.Block{blocknum}_objects.json") ??
-            //     throw new InvalidOperationException();
             streamsPristine[blocknum] =
-                File.ReadAllText(Path.Join(
-                    config.AppSettings.Settings["RUTTestDataPath"].Value,
-                    @$"PristineUW1\Block{blocknum}_objects.json")
-                );
-            // @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\PristineUW1\Block{blocknum}_objects.json");
+                File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
+            arkPristine = new ArkLoader(Paths.UW_ArkOriginalPath);
 
-            // streamsCleaned[blocknum] =
-            //     Assembly.GetExecutingAssembly()
-            //         .GetManifestResourceStream(
-            //             $"RandomizerUnitTests.testdata.CleanedUW1.Block{blocknum}_objects.json") ??
-            //     throw new InvalidOperationException();
             streamsCleaned[blocknum] = File.ReadAllText(
-                Path.Join(config.AppSettings.Settings["RUTTestDataPath"].Value,
-                    $@"CleanedUW1\Block{blocknum}_objects.json"));
-            // @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\CleanedUW1\Block{blocknum}_objects.json");
+                Path.Join(Paths.RUT_TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));
             jsonsCleaned.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(
                 streamsCleaned[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            // TODO: De-hardcode this
-            arkCleaned = new ArkLoader(config.AppSettings.Settings["UWArkCleanedPath"].Value);
-            // arkCleaned = new ArkLoader(ConfigurationManager.AppSettings["UWArkCleanedPath"]);
+            arkCleaned = new ArkLoader(Paths.UW_ArkOriginalPath);
         }
     }
 

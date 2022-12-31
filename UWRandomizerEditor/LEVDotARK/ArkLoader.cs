@@ -31,6 +31,7 @@ namespace UWRandomizerEditor.LEVDotARK
 
         public byte[] Buffer { get; set; }
         public string arkpath;
+
         public byte[] CurrentLevArkSha256Hash = new byte[] { };
 
         public Header header;

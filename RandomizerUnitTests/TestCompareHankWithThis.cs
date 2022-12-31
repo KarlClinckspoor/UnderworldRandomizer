@@ -31,7 +31,6 @@ public class ManualTests
         reference.WallTextureIdx = 30;
         reference.FirstObjIdx = 0;
 
-
         Assert.True(tile.Equals(reference));
     }
 

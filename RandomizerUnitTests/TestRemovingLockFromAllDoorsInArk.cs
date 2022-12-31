@@ -11,12 +11,9 @@ namespace RandomizerUnitTests;
 
 public class TestRemovingLockFromAllDoorsInArk
 {
-    private Configuration config;
-
     [OneTimeSetUp]
     public void SetUp()
     {
-        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
     }
 
     [Test]
@@ -25,9 +22,9 @@ public class TestRemovingLockFromAllDoorsInArk
     {
         // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
         // var ArkEditor = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Doors\DATA\LEV.ARK");
-        var ArkOriginal = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
+        var ArkOriginal = new ArkLoader(Paths.UW_ArkOriginalPath);
         var ArkEditor =
-            new ArkLoader(Path.Join(config.AppSettings.Settings["BasePath"].Value, @"UW - Doors\Data\Lev.ark"));
+            new ArkLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
 
         var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
         var doorUnlockedByEditor = (Door) ArkEditor.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -46,8 +43,7 @@ public class TestRemovingLockFromAllDoorsInArk
         ArkOriginal.ReconstructBuffer();
         // var path = ArkOriginal.SaveBuffer(@"C:\Users\Karl\Desktop\UnderworldStudy\Buffers - Doors study",
         //     "ark_withdoor1012unlocked.bin");
-        var path = StdSaveBuffer(ArkOriginal, config.AppSettings.Settings["BufferTestsPath"].Value,
-            "ark_withdoor1012unlocked.bin");
+        var path = StdSaveBuffer(ArkOriginal, Paths.BufferTestsPath, "ark_withdoor1012unlocked.bin");
 
         var ArkModified = new ArkLoader(path);
         var doorUnlockedHere = (Door) ArkModified.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -89,21 +85,18 @@ public class TestRemovingLockFromAllDoorsInArk
         // I'm testing here both the original and the "cleaned" version from UltimateEditor
         // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
         // var ArkOriginalToModify = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        var ArkOriginal = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
-        var ArkOriginalToModify = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
+        var ArkOriginal = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ArkOriginalToModify = new ArkLoader(Paths.UW_ArkOriginalPath);
 
-        var ArkCleaned = new ArkLoader(config.AppSettings.Settings["UWArkCleanedPath"].Value);
-        var ArkCleanedToModify = new ArkLoader(config.AppSettings.Settings["UWArkCleanedPath"].Value);
+        var ArkCleaned = new ArkLoader(Paths.UW_ArkCleanedPath);
+        var ArkCleanedToModify = new ArkLoader(Paths.UW_ArkCleanedPath);
 
         RandoTools.RemoveAllDoorReferencesToLocks(ArkOriginalToModify);
         RandoTools.RemoveAllDoorReferencesToLocks(ArkCleanedToModify);
 
-        var pathOriginal = StdSaveBuffer(ArkOriginalToModify,
-            // @"C:\Users\Karl\Desktop\UnderworldStudy\BufferTests\RemovingDoors",
-            Path.Join(config.AppSettings.Settings["BufferTestsPath"].Value, "RemovingDoors"),
+        var pathOriginal = StdSaveBuffer(ArkOriginalToModify, Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_nodoors.bin");
-        var pathCleaned = StdSaveBuffer(ArkCleanedToModify,
-            Path.Join(config.AppSettings.Settings["BufferTestsPath"].Value, "RemovingDoors"),
+        var pathCleaned = StdSaveBuffer(ArkCleanedToModify, Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_cleaned_nodoors.bin");
 
         var ArkOriginalModified = new ArkLoader(pathOriginal);

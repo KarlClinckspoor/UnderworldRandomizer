@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
-using UWRandomizerEditor;
 using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
@@ -19,7 +15,6 @@ public class TestTileInfo
     private TileInfo tinfo1;
     private TileInfo tinfo2;
     private TileInfo tinfo3;
-    private Configuration config;
 
     [SetUp]
     public void Setup()
@@ -27,7 +22,6 @@ public class TestTileInfo
         tinfo1 = new TileInfo(0, 240, 0, 0);
         tinfo2 = new TileInfo(0, BitConverter.GetBytes(240), 0, 0);
         tinfo3 = new TileInfo(0, BitConverter.GetBytes(241), 0, 0);
-        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
     }
 
     [Test]
@@ -45,12 +39,9 @@ public class TestTileInfo
     {
         // Compare the buffers as-is
         Assert.True(tinfo1.Buffer.SequenceEqual(tinfo2.Buffer));
-        string tinfo1Path = StdSaveBuffer(tinfo1, config.AppSettings.Settings["BufferTestsPath"].Value,
-            filename: "buffer_tinfo1");
-        string tinfo2Path = StdSaveBuffer(tinfo2, config.AppSettings.Settings["BufferTestsPath"].Value,
-            filename: "buffer_tinfo2");
-        string tinfo3Path = StdSaveBuffer(tinfo3, config.AppSettings.Settings["BufferTestsPath"].Value,
-            filename: "buffer_tinfo3");
+        string tinfo1Path = StdSaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
+        string tinfo2Path = StdSaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
+        string tinfo3Path = StdSaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
 
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();

@@ -10,23 +10,14 @@ namespace RandomizerUnitTests;
 
 class ArkLoaderTest
 {
-    private Configuration config;
-
-    [SetUp]
-    public void SetUp()
-    {
-        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-    }
-
     [Test]
     [Category("RequiresArk")]
     public void CompareLoadSerializeOriginal()
     {
-        var AL = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
+        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
         Assert.True(AL.CompareCurrentArkWithHash());
         AL.ReconstructBuffer();
-        string savedpath = StdSaveBuffer(AL, config.AppSettings.Settings["BufferTestsPath"].Value,
-            "reconstructedOriginalArk.bin");
+        string savedpath = StdSaveBuffer(AL, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
         var AL2 = new ArkLoader(savedpath);
         Assert.True(AL2.CompareCurrentArkWithHash());
 
@@ -43,10 +34,9 @@ class ArkLoaderTest
     [Category("RequiresArk")]
     public void CompareLoadSerializeCleaned()
     {
-        var AL = new ArkLoader(config.AppSettings.Settings["UWArkCleanedPath"].Value);
+        var AL = new ArkLoader(Paths.UW_ArkCleanedPath);
         AL.ReconstructBuffer();
-        string savedpath = StdSaveBuffer(AL, config.AppSettings.Settings["BufferTestsPath"].Value,
-            "reconstructedCleanedArk.bin");
+        string savedpath = StdSaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
         var AL2 = new ArkLoader(savedpath);
 
         for (int i = 0; i < AL.Buffer.Length; i++)

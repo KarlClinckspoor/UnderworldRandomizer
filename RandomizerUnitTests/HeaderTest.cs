@@ -13,13 +13,11 @@ public class HeaderTestUW1
     static int validEntries = 45;
     static int emptyEntries = 90;
     static int totalEntries = validEntries + emptyEntries;
-    private Configuration config;
 
     [SetUp]
     public void SetUp()
     {
-        config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        AL = new ArkLoader(config.AppSettings.Settings["UWArkOriginalPath"].Value);
+        AL = new ArkLoader(Paths.UW_ArkOriginalPath);
         Assert.True(AL.CompareCurrentArkWithHash()); // This is supposed to work with pristine UW1 lev.ark
         header = AL.header;
     }
