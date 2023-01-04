@@ -18,21 +18,13 @@ namespace UWRandomizerEditor.LEVDotARK
     /// * Map Notes block
     /// * Empty blocks
     ///
-    /// A publicly accessible buffer is available and can be saved anytime. Each block can also be updated and,
-    /// in turn, update the ark buffer. This also contains a Sha256 hash of the original lev.ark.
-    ///
     /// </summary>
     public class ArkLoader : IBufferObject
     {
-        public const string PristineLevArkSha256Hash =
-            "87e9a6e5d249df273e1964f48ad910afee6f7e073165c00237dfb9a22ae3a121";
-
         public const int NumOfLevels = 9; // In UW1
 
         public byte[] Buffer { get; set; }
-        public string arkpath;
-
-        public byte[] CurrentLevArkSha256Hash = new byte[] { };
+        public string Path;
 
         public Header header;
         public Block[] blocks;
@@ -69,11 +61,11 @@ namespace UWRandomizerEditor.LEVDotARK
         /// <summary>
         /// Instantiates a new ArkLoader object using a provided path.
         /// </summary>
-        /// <param name="arkpath"></param>
-        public ArkLoader(string arkpath)
+        /// <param name="path"></param>
+        public ArkLoader(string path)
         {
-            this.arkpath = arkpath;
-            Buffer = LoadArkfile(arkpath);
+            Path = path;
+            Buffer = LoadArkfile(path);
             int headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(Buffer);
             header = new Header(Buffer[0..headerSize]);
 
@@ -84,7 +76,6 @@ namespace UWRandomizerEditor.LEVDotARK
             AutomapBlocks = new AutomapInfosBlock[NumOfLevels];
             MapNotesBlocks = new MapNotesBlock[NumOfLevels];
 
-            CheckEqualityToPristineLevDotArk();
             LoadBlocks();
         }
 
@@ -153,42 +144,6 @@ namespace UWRandomizerEditor.LEVDotARK
             return true;
         }
 
-        public void CheckEqualityToPristineLevDotArk()
-        {
-            SHA256 mySHA256 = SHA256.Create();
-            this.CurrentLevArkSha256Hash = mySHA256.ComputeHash(this.Buffer);
-            if (!CompareCurrentArkWithHash())
-            {
-                Debug.WriteLine(
-                    "Warning: Current ark file is different from original. Are you editing a save file? If not, report this.");
-            }
-            else
-            {
-                Debug.WriteLine("Current lev.ark is the same as the original.");
-            }
-        }
-
-        public bool CompareCurrentArkWithHash()
-        {
-            if (PristineLevArkSha256Hash.Length / 2 != CurrentLevArkSha256Hash.Length)
-            {
-                return false;
-            }
-
-            for (int currbyte = 0; currbyte < PristineLevArkSha256Hash.Length / 2; currbyte++)
-            {
-                int currbyteStrPos = currbyte * 2;
-                //byte originalByte = byte.Parse(PristineLevArkSha256Hash[currbyteStrPos..(currbyteStrPos + 2)], );
-                byte originalByte = Convert.ToByte(PristineLevArkSha256Hash[currbyteStrPos..(currbyteStrPos + 2)], 16);
-                byte currentbyte = CurrentLevArkSha256Hash[currbyte];
-                if (originalByte != currentbyte)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         public byte[] GetBlockBuffer(short blockNum, int BlockLength)
         {
