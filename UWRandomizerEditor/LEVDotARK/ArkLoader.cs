@@ -1,8 +1,5 @@
-﻿using System.Diagnostics;
-using System.Security.Cryptography;
-using UWRandomizerEditor.Interfaces;
+﻿using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVDotARK.Blocks;
-using static UWRandomizerEditor.Utils;
 
 namespace UWRandomizerEditor.LEVDotARK
 {
@@ -131,6 +128,7 @@ namespace UWRandomizerEditor.LEVDotARK
         public bool ReconstructBuffer()
         {
             List<byte> templist = new List<byte>();
+            header.ReconstructBuffer();
             templist.AddRange(header.Buffer);
             foreach (var block in blocks)
             {
@@ -213,7 +211,7 @@ namespace UWRandomizerEditor.LEVDotARK
                 throw new FileNotFoundException();
             }
 
-            return System.IO.File.ReadAllBytes(path);
+            return File.ReadAllBytes(path);
         }
     }
 }
