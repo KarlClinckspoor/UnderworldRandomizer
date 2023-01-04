@@ -11,17 +11,17 @@ class TestGameObjectEquality
     public void TwoEqGameObjects()
     {
         var obj1 = new GameObject(
-            objid_flagsField: 0xFFF,
-            positionField: 0xFFF,
-            quality_chainField: 0xFFF,
-            link_specialField: 0xFFF
+            objIdFlags: 0xFFF,
+            position: 0xFFF,
+            qualityChain: 0xFFF,
+            linkSpecial: 0xFFF
         );
 
         var obj1_copy = new GameObject(
-            objid_flagsField: 0xFFF,
-            positionField: 0xFFF,
-            quality_chainField: 0xFFF,
-            link_specialField: 0xFFF
+            objIdFlags: 0xFFF,
+            position: 0xFFF,
+            qualityChain: 0xFFF,
+            linkSpecial: 0xFFF
         );
 
         Assert.True(obj1.Equals(obj1_copy));
@@ -31,19 +31,19 @@ class TestGameObjectEquality
     public void TwoDiffGameObjects()
     {
         var obj1 = new GameObject(
-            objid_flagsField: 0xFFF,
-            positionField: 0xFFF,
-            quality_chainField: 0xFFF,
-            link_specialField: 0xFFF
+            objIdFlags: 0xFFF,
+            position: 0xFFF,
+            qualityChain: 0xFFF,
+            linkSpecial: 0xFFF
         );
 
         var obj2 = new GameObject(
-            objid_flagsField: 0xCCC,
-            positionField: 0xCCC,
-            quality_chainField: 0xCCC,
-            link_specialField: 0xCCC
+            objIdFlags: 0xCCC,
+            position: 0xCCC,
+            qualityChain: 0xCCC,
+            linkSpecial: 0xCCC
         );
-        
+
         Assert.False(obj1.Equals(obj2));
     }
 
@@ -51,17 +51,17 @@ class TestGameObjectEquality
     public void GOAndQtty()
     {
         var obj1 = new GameObject(
-            objid_flagsField: 0xFFF,
-            positionField: 0xFFF,
-            quality_chainField: 0xFFF,
-            link_specialField: 0xFFF
+            objIdFlags: 0xFFF,
+            position: 0xFFF,
+            qualityChain: 0xFFF,
+            linkSpecial: 0xFFF
         );
-        
+
         var obj2 = new QuantityGameObject(
-            objid_flagsField: 0xFFF,
-            positionField: 0xFFF,
-            quality_chainField: 0xFFF,
-            link_specialField: 0xFFF
+            objIdFlags: 0xFFF,
+            position: 0xFFF,
+            qualityChain: 0xFFF,
+            linkSpecial: 0xFFF
         );
 
         Assert.False(obj1.Equals(obj2));
@@ -70,11 +70,11 @@ class TestGameObjectEquality
     [Test]
     public void StaticAndMobileObjects()
     {
-        var staticObj = new GameObject(
-            objid_flagsField: 0xFFF,
-            positionField: 0xFFF,
-            quality_chainField: 0xFFF,
-            link_specialField: 0xFFF
+        var staticObj = new StaticObject(
+            objIdFlags: 0xFFF,
+            position: 0xFFF,
+            qualityChain: 0xFFF,
+            linkSpecial: 0xFFF
         );
 
         var mobileObj = new MobileObject(staticObj.Buffer, 1,
@@ -93,7 +93,7 @@ class TestGameObjectEquality
             14,
             15,
             10);
-        
+
         Assert.False(staticObj.Equals(mobileObj));
     }
 }

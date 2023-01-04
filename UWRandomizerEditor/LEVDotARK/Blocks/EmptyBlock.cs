@@ -1,9 +1,11 @@
 ﻿namespace UWRandomizerEditor.LEVDotARK.Blocks
 {
-    public class EmptyBlock: Block
+    public class EmptyBlock : Block
     {
-        public static new int TotalBlockLength = 0;
-        public new byte[] blockbuffer = Array.Empty<byte>(); // VS suggestion
-        public EmptyBlock() { }
+        public override bool ReconstructBuffer()
+        {
+            Buffer = Array.Empty<byte>();
+            return true;
+        }
     }
 }

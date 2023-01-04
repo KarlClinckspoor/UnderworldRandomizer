@@ -2,7 +2,7 @@
 {
     public class ObjectAnimationOverlayInfoBlock : Block
     {
-        public static new int TotalBlockLength = 0x0180;
+        public new const int FixedBlockLength = 0x0180;
 
         /*
         This block contains entries with length of 6 bytes with infos about
@@ -18,10 +18,22 @@
         list, to the object that should get an animation overlay.
         */
 
+        public override bool ReconstructBuffer()
+        {
+            // Since there's no operations that can change this block, this doesn't do anything.
+            return true;
+        }
+
         public ObjectAnimationOverlayInfoBlock(byte[] buffer, int levelnumber)
         {
-            // Debug.Assert(buffer.Length == TotalBlockLength);
-            Buffer = buffer;
+            if (buffer.Length != FixedBlockLength)
+            {
+                throw new ArgumentException(
+                    $"Length of buffer ({buffer.Length}) is incompatible with expected ObjectAnimationOverlayInfo length ({FixedBlockLength})");
+            }
+
+            Buffer = new byte[FixedBlockLength];
+            buffer.CopyTo(Buffer, 0);
             LevelNumber = levelnumber;
         }
     }

@@ -38,8 +38,7 @@ public class TestRemovingLockFromAllDoorsInArk
         Assert.True(doorToUnlock.Equals(doorUnlockedByEditor));
         Assert.True(doorToUnlock.Equals(new Door(new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0x00, 0x00}, 1012)));
 
-        ArkOriginal.TileMapObjectsBlocks[0].UpdateStaticObjectInfoBuffer();
-        ArkOriginal.TileMapObjectsBlocks[0].UpdateBuffer();
+        ArkOriginal.TileMapObjectsBlocks[0].ReconstructBuffer();
         ArkOriginal.ReconstructBuffer();
         // var path = ArkOriginal.SaveBuffer(@"C:\Users\Karl\Desktop\UnderworldStudy\Buffers - Doors study",
         //     "ark_withdoor1012unlocked.bin");

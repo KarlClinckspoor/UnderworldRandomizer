@@ -17,12 +17,12 @@ public class EnchantedWeapon : SpecialLinkGameObject
         set { Enchantment = value - 256; } // todo: these will ReconstructBuffer too right?
     }
 
-    public EnchantedWeapon(byte[] buffer, short idx) : base(buffer, idx)
+    public EnchantedWeapon(byte[] buffer, ushort idx) : base(buffer, idx)
     {
     }
 
-    public EnchantedWeapon(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
-        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public EnchantedWeapon(ushort objIdFlags, ushort position, ushort qualityChain,
+        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
     {
     }
 }

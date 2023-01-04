@@ -11,7 +11,6 @@ public class SpecialPropertyGameObject : StaticObject
 
     public short SpecialLink
     {
-        // get { return (byte) ((link_specialField >> 6) & 0b1111111111); }
         get { return Convert.ToInt16(QuantityOrSpecialLinkOrSpecialProperty - 512); }
         set
         {
@@ -20,17 +19,17 @@ public class SpecialPropertyGameObject : StaticObject
                 throw new Exception("Cannot have a SpecialLink with value < 512");
             }
 
-            link_specialField = (ushort) Utils.SetBits(link_specialField, value, 0b1111111111, 6);
+            LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
             ReconstructBuffer();
         }
     }
 
-    public SpecialPropertyGameObject(byte[] buffer, short idx) : base(buffer, idx)
+    public SpecialPropertyGameObject(byte[] buffer, ushort idx) : base(buffer, idx)
     {
     }
 
-    public SpecialPropertyGameObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
-        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public SpecialPropertyGameObject(ushort objIdFlags, ushort position, ushort qualityChain,
+        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
     {
     }
 }

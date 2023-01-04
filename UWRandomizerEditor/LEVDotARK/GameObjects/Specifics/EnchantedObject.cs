@@ -34,12 +34,12 @@ public class EnchantedObject : SpecialLinkGameObject
         } // todo: these will ReconstructBuffer too right?
     }
 
-    public EnchantedObject(byte[] buffer, short idx) : base(buffer, idx)
+    public EnchantedObject(byte[] buffer, ushort idx) : base(buffer, idx)
     {
     }
 
-    public EnchantedObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
-        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public EnchantedObject(ushort objIdFlags, ushort position, ushort qualityChain,
+        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
     {
     }
 }

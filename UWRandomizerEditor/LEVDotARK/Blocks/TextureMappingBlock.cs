@@ -1,13 +1,27 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.Blocks
+﻿using System.Diagnostics;
+
+namespace UWRandomizerEditor.LEVDotARK.Blocks
 {
-    public class TextureMappingBlock : Block
+    public sealed class TextureMappingBlock : Block
     {
-        public static new int TotalBlockLength = 0x007a;
+        public new const int FixedBlockLength = 0x007a;
+
+        public override bool ReconstructBuffer()
+        {
+            // Since there's no operations that can change this block, this doesn't do anything.
+            return true;
+        }
 
         public TextureMappingBlock(byte[] buffer, int levelnumber)
         {
-            // Debug.Assert(buffer.Length == TotalBlockLength);
-            Buffer = buffer;
+            if (buffer.Length != FixedBlockLength)
+            {
+                throw new ArgumentException(
+                    $"Length of buffer ({buffer.Length}) is incompatible with expected TextureMappingBlock length ({FixedBlockLength})");
+            }
+
+            Buffer = new byte[FixedBlockLength];
+            buffer.CopyTo(Buffer, 0);
             LevelNumber = levelnumber;
         }
     }

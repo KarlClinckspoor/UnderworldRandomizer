@@ -12,7 +12,7 @@ public static class ShuffleItems
         foreach (var block in arkFile.TileMapObjectsBlocks)
         {
             ShuffleItemsInLevel(block);
-            block.UpdateBuffer();
+            block.ReconstructBuffer();
         }
 
         arkFile.ReconstructBuffer();
@@ -44,7 +44,7 @@ public static class ShuffleItems
             tile.MoveObjectsToSameZLevel();
         }
 
-        block.UpdateBuffer(); // TODO: necessary?
+        block.ReconstructBuffer();
     }
 
     private static IDictionary<int, int> LevelTextureIdxOfWater = new Dictionary<int, int>()

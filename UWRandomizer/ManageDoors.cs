@@ -17,8 +17,7 @@ public static partial class RandoTools
                 }
             }
 
-            block.UpdateStaticObjectInfoBuffer();
-            block.UpdateBuffer();
+            block.ReconstructBuffer();
         }
 
         arkFile.ReconstructBuffer();

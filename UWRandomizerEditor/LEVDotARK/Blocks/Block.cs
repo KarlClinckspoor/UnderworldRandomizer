@@ -5,28 +5,24 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
 {
     public abstract class Block : IBufferObject
     {
-        public byte[] Buffer { get; set; }
+        public byte[] Buffer { get; set; } = Array.Empty<byte>();
 
-        public bool ReconstructBuffer()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract bool ReconstructBuffer();
 
-        public int LevelNumber;
+        public int LevelNumber = -1;
 
-        public int TotalBlockLength
-        {
-            get { return Buffer.Length; }
-        }
+        /// If 0, means the block has no fixed length
+        public const int FixedBlockLength = 0;
 
-        protected Block() : this(new byte[] { }, -1)
+        protected Block()
         {
         }
 
-        public Block(byte[] buffer, int levelNumber)
+        protected Block(byte[] buffer, int levelNumber)
         {
-            this.Buffer = buffer;
-            this.LevelNumber = levelNumber;
+            Buffer = new byte[buffer.Length];
+            buffer.CopyTo(Buffer, 0);
+            LevelNumber = levelNumber;
         }
     }
 }

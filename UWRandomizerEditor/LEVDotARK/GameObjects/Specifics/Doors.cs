@@ -4,7 +4,7 @@ using static UWRandomizerEditor.Utils;
 
 public class Door : SpecialLinkGameObject
 {
-    public Door(byte[] buffer, short idxAtObjArray) : base(buffer, idxAtObjArray)
+    public Door(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
     {
     }
 
@@ -19,27 +19,27 @@ public class Door : SpecialLinkGameObject
     /// </summary>
     public void RemoveLock()
     {
-        link_specialField = 0;
+        LinkSpecial = 0;
         ReconstructBuffer();
     }
 
     // TODO: add verification
     /// <summary>
-    /// Checks if sp_link (link_specialField) points to something other than 0. If so, returns the value, which
+    /// Checks if sp_link (linkSpecial) points to something other than 0. If so, returns the value, which
     /// is the index of the lock.
     /// </summary>
     public bool HasLock(out ushort LockIdx)
     {
-        LockIdx = link_specialField;
+        LockIdx = LinkSpecial;
         return HasLock();
     }
 
     /// <summary>
-    /// Checks if sp_link (link_specialField) points to something other than 0.
+    /// Checks if sp_link (linkSpecial) points to something other than 0.
     /// </summary>
     public bool HasLock()
     {
-        if (link_specialField != 0)
+        if (LinkSpecial != 0)
         {
             return true;
         }
@@ -48,20 +48,20 @@ public class Door : SpecialLinkGameObject
     }
 
     /// <summary>
-    /// Replaces sp_link (link_specialField) with the value provided. Does not check if it really points to a lock object.
+    /// Replaces sp_link (linkSpecial) with the value provided. Does not check if it really points to a lock object.
     /// </summary>
     /// <param name="lock_idx"></param>
     public void AddLock(ushort lock_idx)
     {
         // TODO: add some checks
-        link_specialField = lock_idx;
+        LinkSpecial = lock_idx;
         ReconstructBuffer();
     }
 
     // TODO: By "bit 1" does it mean 0b10 or 0b01? I'm assuming it's the former.
     public bool IsSpiked()
     {
-        if (GetBits(Owner_or_special, 0b10, 0) == 1)
+        if (GetBits(OwnerOrSpecial, 0b10, 0) == 1)
         {
             return true;
         }
@@ -71,19 +71,19 @@ public class Door : SpecialLinkGameObject
 
     public void AddSpike()
     {
-        SetBits(Owner_or_special, 0b1, 0b10, 0);
+        SetBits(OwnerOrSpecial, 0b1, 0b10, 0);
         ReconstructBuffer();
     }
 
     public void RemoveSpike()
     {
-        SetBits(Owner_or_special, 0b0, 0b10, 0);
+        SetBits(OwnerOrSpecial, 0b0, 0b10, 0);
         ReconstructBuffer();
     }
 
     public void Unlock(GameObject[] blockGameObjects)
     {
-        if (blockGameObjects[link_specialField] is Lock LockObject)
+        if (blockGameObjects[LinkSpecial] is Lock LockObject)
         {
             LockObject.IsLocked = false;
             LockObject.ReconstructBuffer();

@@ -2,10 +2,13 @@
 
 namespace UWRandomizerEditor.LEVDotARK.GameObjects
 {
+    /// <summary>
+    /// Class that describes Mobile Objects (e.g. NPCs). Inheritance should use the parameterless constructor because of the virtual methods to update buffer/entries.
+    /// </summary>
     public class MobileObject : GameObject
     {
         public new const int ExtraLength = 19;
-        public new const int TotalLength = BaseLength + ExtraLength;
+        public new const int FixedTotalLength = BaseLength + ExtraLength;
 
         protected const int offset1 = 0x8;
         protected const int offset2 = 0x9;
@@ -39,7 +42,6 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         protected byte byte_NPCHunger; // offset 0019
         protected byte byte_NPCwhoami; // offset 001a
 
-        public new byte[] Buffer = new byte[TotalLength];
         public int ObjectBufferIfx;
 
         public override bool ShouldBeMoved { get; set; } = false;
@@ -50,7 +52,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 byte1_hp = (byte) value;
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -60,7 +62,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b1111, 0);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -70,7 +72,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b11111111, 4);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -80,7 +82,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -90,7 +92,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -100,7 +102,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -110,7 +112,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPCheightQM = (short) SetBits(short_NPCheightQM, value, 0b1111111, 6);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -120,7 +122,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 4);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -130,7 +132,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 10);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -140,7 +142,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 byte_NPCheading = (byte) SetBits(byte_NPCheading, value, 0b1111, 0);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -150,7 +152,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 byte_NPCHunger = (byte) SetBits(byte_NPCHunger, value, 0b111111, 0);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
@@ -160,24 +162,13 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             set
             {
                 byte_NPCwhoami = (byte) SetBits(byte_NPCwhoami, value, 0b11111111, 0);
-                UpdateBuffer();
+                ReconstructBuffer();
             }
         }
 
-        public new void UpdateBuffer()
+        public override bool ReconstructBuffer()
         {
-            // From base
-            byte[] tempbuffer = new byte[TotalLength];
-            byte[] field1 = BitConverter.GetBytes(this.objid_flagsField);
-            byte[] field2 = BitConverter.GetBytes(this.positionField);
-            byte[] field3 = BitConverter.GetBytes(this.quality_chainField);
-            byte[] field4 = BitConverter.GetBytes(this.link_specialField);
-            field1.CopyTo(tempbuffer, 0);
-            field2.CopyTo(tempbuffer, 2);
-            field3.CopyTo(tempbuffer, 4);
-            field4.CopyTo(tempbuffer, 6);
-            tempbuffer.CopyTo(Buffer, 0);
-            // new ones
+            base.ReconstructBuffer();
             Buffer[offset1] = byte1_hp;
             Buffer[offset2] = byte2_unk;
             Buffer[offset3] = byte3_unk;
@@ -193,15 +184,12 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             Buffer[offset13] = byte_NPCheading;
             Buffer[offset14] = byte_NPCHunger;
             Buffer[offset15] = byte_NPCwhoami;
+            return true;
         }
 
-        public new void UpdateEntries()
+        protected override void UpdateEntries()
         {
-            // From base
-            objid_flagsField = BitConverter.ToUInt16(Buffer, 0);
-            positionField = BitConverter.ToUInt16(Buffer, 2);
-            quality_chainField = BitConverter.ToUInt16(Buffer, 4);
-            link_specialField = BitConverter.ToUInt16(Buffer, 6);
+            base.UpdateEntries();
             // New ones
             byte1_hp = Buffer[offset1];
             byte2_unk = Buffer[offset2];
@@ -220,22 +208,22 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             byte_NPCwhoami = Buffer[offset15];
         }
 
-        public MobileObject(byte[] buffer, short idx)
+        public MobileObject(byte[] buffer, ushort idx)
         {
-            // Debug.Assert(buffer.Length == TotalLength);
-            this.Buffer = buffer;
-            base.Buffer = buffer[..8]; // In case this is cast as a GameObject, it'll preserve the base buffer
-            this.IdxAtObjectArray = idx;
+            // Debug.Assert(buffer.Length == FixedTotalLength);
+            Buffer = new byte[FixedTotalLength];
+            buffer.CopyTo(Buffer, 0);
+            IdxAtObjectArray = idx;
             UpdateEntries();
         }
 
         public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg,
             short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
-            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, ushort idx)
         {
+            Buffer = new byte[FixedTotalLength];
             baseBuffer.CopyTo(Buffer, 0);
-            base.Buffer = baseBuffer;
             byte[] extra = new byte[ExtraLength]
             {
                 byte1_hp,
@@ -266,14 +254,14 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3,
             short NPCGoalGTarg, short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
-            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, ushort idx)
         {
             byte[] baseBuffer = new byte[BaseLength];
             BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2 * 0);
             BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2 * 1);
             BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2 * 2);
             BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2 * 3);
-            base.Buffer = baseBuffer;
+            baseBuffer.CopyTo(Buffer, 0);
 
             byte[] extra = new byte[ExtraLength]
             {
@@ -300,6 +288,12 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             extra.CopyTo(Buffer, BaseLength);
             IdxAtObjectArray = idx;
             UpdateEntries();
+        }
+
+        protected MobileObject()
+        {
+            Buffer = Array.Empty<byte>();
+            Invalid = true;
         }
     }
 }

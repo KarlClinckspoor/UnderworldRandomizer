@@ -6,8 +6,8 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 public class FreeListObjectEntry : IBufferObject
 {
     // FreeListMobileObjectEntrySize is also 4 (short).
-    public const int EntrySize = TileMapMasterObjectListBlock.FreeListStaticObjectsEntrySize;
-    public byte[] Buffer { get; set; } = new byte[EntrySize];
+    public const int FixedSize = TileMapMasterObjectListBlock.FreeListStaticObjectsEntrySize;
+    public byte[] Buffer { get; set; } = new byte[FixedSize];
     public short Entry;
     public int EntryNum;
 

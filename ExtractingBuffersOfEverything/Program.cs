@@ -28,7 +28,7 @@ public static class Program
         foreach (var block in Ark.blocks)
         {
             StdSaveBuffer(block, blockPath,
-                $"Block{counter_block}_level{block.LevelNumber}_length{block.TotalBlockLength}.bin");
+                $"Block{counter_block}_level{block.LevelNumber}_length{block.Buffer.Length}.bin");
             counter_block++;
         }
 
@@ -82,7 +82,7 @@ public static class Program
                 int MobileDuplicateCounter = 0;
                 // Save free list Mobile objects buffers
                 counter_objects = 0;
-                foreach (var mobileFreeObject in block.FreeListMobileObject)
+                foreach (var mobileFreeObject in block.FreeListMobileObjects)
                 {
                     sw.WriteLine($"Mobile Free Object entry {counter_objects} has value {mobileFreeObject.Entry}");
                     StdSaveBuffer(mobileFreeObject, nthTileMapBlockPath,
@@ -97,7 +97,7 @@ public static class Program
                 var setStatic = new HashSet<int>();
                 int StaticDuplicateCounter = 0;
                 // Save free list Static objects buffers
-                foreach (var staticFreeObject in block.FreeListStaticObject)
+                foreach (var staticFreeObject in block.FreeListStaticObjects)
                 {
                     sw.WriteLine($"Static Free Object entry {counter_objects} has value {staticFreeObject.Entry}");
                     StdSaveBuffer(staticFreeObject, nthTileMapBlockPath,
@@ -109,7 +109,7 @@ public static class Program
                             : 1; // Reminder: Add returns false if element is already present
                 }
 
-                sw.WriteLine($"Summary: Mobile list contains {block.FreeListMobileObject.Length} entries of which" +
+                sw.WriteLine($"Summary: Mobile list contains {block.FreeListMobileObjects.Length} entries of which" +
                              $" {MobileDuplicateCounter} are duplicates." +
                              $" Indexes present in Mobile List: {string.Join(",", setMobile.OrderBy(x => x))}."
                 );
@@ -117,7 +117,7 @@ public static class Program
                 allMobileIdxs.ExceptWith(setMobile);
                 sw.WriteLine($"Indexes not present: {string.Join(",", allMobileIdxs)}");
 
-                sw.WriteLine($"Summary: Static list contains {block.FreeListStaticObject.Length} entries of which" +
+                sw.WriteLine($"Summary: Static list contains {block.FreeListStaticObjects.Length} entries of which" +
                              $" {StaticDuplicateCounter} are duplicates." +
                              $" Indexes present in Mobile List: {string.Join(",", setStatic.OrderBy(x => x))}");
                 var allStaticIdxs = Enumerable.Range(256, 1024 - 256).ToHashSet();

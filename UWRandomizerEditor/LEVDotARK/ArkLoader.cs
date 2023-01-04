@@ -54,9 +54,9 @@ namespace UWRandomizerEditor.LEVDotARK
 
         IDictionary<Sections, int> BlockLengths = new Dictionary<Sections, int>()
         {
-            {Sections.LevelTilemapObjlist, TileMapMasterObjectListBlock.TotalBlockLength},
-            {Sections.ObjectAnimOverlayInfo, ObjectAnimationOverlayInfoBlock.TotalBlockLength},
-            {Sections.TextureMappings, TextureMappingBlock.TotalBlockLength},
+            {Sections.LevelTilemapObjlist, TileMapMasterObjectListBlock.FixedBlockLength},
+            {Sections.ObjectAnimOverlayInfo, ObjectAnimationOverlayInfoBlock.FixedBlockLength},
+            {Sections.TextureMappings, TextureMappingBlock.FixedBlockLength},
             {Sections.AutomapInfos, 0},
             {Sections.MapNotes, 0},
             {Sections.Unused, 0}
@@ -109,12 +109,6 @@ namespace UWRandomizerEditor.LEVDotARK
                 if (block is TileMapMasterObjectListBlock tilemap)
                 {
                     TileMapObjectsBlocks[currblocktypecount] = tilemap;
-                    tilemap.Populate_MobileObjectsFromBuffer();
-                    tilemap.Populate_StaticObjectsFromBuffer();
-                    tilemap.Populate_AllGameObjectsFromBuffer();
-                    tilemap.Populate_FreeListMobileObjectArrFromBuffer();
-                    tilemap.Populate_FreeListStaticObjectArrFromBuffer();
-                    tilemap.ExtractInfoFromTileMapBuffer();
                 }
                 else if (block is ObjectAnimationOverlayInfoBlock obj)
                 {
@@ -150,6 +144,7 @@ namespace UWRandomizerEditor.LEVDotARK
             foreach (var block in blocks)
             {
                 // todo: Perhaps I should have a "ReconstructBuffer" here.
+                block.ReconstructBuffer();
                 templist.AddRange(block.Buffer);
             }
 

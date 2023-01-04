@@ -8,7 +8,7 @@ namespace UWRandomizerEditor.LEVDotARK
 {
     public class TileInfo : IBufferObject, IEquatable<TileInfo>
     {
-        public const int Size = 4;
+        public const int FixedSize = 4;
 
         public enum TileTypes
         {
@@ -53,40 +53,16 @@ namespace UWRandomizerEditor.LEVDotARK
         };
 
         // Defined in the constructor
-        private int _entry;
+        public int Entry { get; set; }
 
-        public int Entry
-        {
-            get
-            {
-                UpdateEntry();
-                return _entry;
-            }
-            set
-            {
-                _entry = value;
-                ReconstructBuffer();
-            }
-        }
-
-        private byte[] _tileBuffer;
-
-        public byte[] Buffer
-        {
-            get
-            {
-                ReconstructBuffer(); // Let's assure the buffer is always updated
-                return _tileBuffer;
-            }
-            set { _tileBuffer = value; }
-        }
+        public byte[] Buffer { get; set; }
 
         public int EntryNum { get; set; }
 
         // TODO: Test this
         public int Offset
         {
-            get { return EntryNum * Size; }
+            get { return EntryNum * FixedSize; }
         }
 
         public int LevelNum { get; set; }
@@ -192,24 +168,25 @@ namespace UWRandomizerEditor.LEVDotARK
             }
         }
 
-        [MemberNotNull(nameof(_tileBuffer))]
+        [MemberNotNull(nameof(Buffer))]
         public bool ReconstructBuffer() // Modified entry, updates buffer
         {
-            _entry = SetBits(_entry, ObjectChain.startingIdx, 0b1111111111, 22);
-            _tileBuffer = BitConverter.GetBytes(_entry);
+            // Sometimes the entry is stale regarding the starting index of the object chain, since that's what tracks this property.
+            Entry = SetBits(Entry, ObjectChain.startingIdx, 0b1111111111, 22);
+            Buffer = BitConverter.GetBytes(Entry);
             return true;
         }
 
         private void UpdateEntry() // Modified buffer, updates entry
         {
-            _entry = BitConverter.ToInt32(_tileBuffer);
+            Entry = BitConverter.ToInt32(Buffer);
         }
 
 
         public TileInfo(int entrynum, int entry, int offset, int levelNumber)
         {
             EntryNum = entrynum;
-            _entry = entry;
+            Entry = entry;
             LevelNum = levelNumber;
             ObjectChain = new UWLinkedList();
             ReconstructBuffer();
@@ -219,7 +196,7 @@ namespace UWRandomizerEditor.LEVDotARK
         {
             EntryNum = entrynum;
             LevelNum = levelNumber;
-            _tileBuffer = buffer;
+            Buffer = buffer;
             ObjectChain = new UWLinkedList();
             UpdateEntry();
         }
@@ -315,7 +292,7 @@ namespace UWRandomizerEditor.LEVDotARK
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(_entry, _tileBuffer, EntryNum, LevelNum, ObjectChain);
+            return HashCode.Combine(Entry, Buffer, EntryNum, LevelNum, ObjectChain);
         }
     }
 }

@@ -17,12 +17,12 @@ public class EnchantedArmor : SpecialLinkGameObject
         set { Enchantment = value - 256 - 16; } // todo: these will ReconstructBuffer too right?
     }
 
-    public EnchantedArmor(byte[] buffer, short idx) : base(buffer, idx)
+    public EnchantedArmor(byte[] buffer, ushort idx) : base(buffer, idx)
     {
     }
 
-    public EnchantedArmor(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
-        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
+    public EnchantedArmor(ushort objIdFlags, ushort position, ushort qualityChain,
+        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
     {
     }
 }

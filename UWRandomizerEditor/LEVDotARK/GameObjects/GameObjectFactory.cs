@@ -6,9 +6,8 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 
 public static class GameObjectFactory
 {
-
     // TODO: I'll likely need to add a reference to "FreeListOfStatic/Mobile objects"
-    public static GameObject CreateFromBuffer(byte[] buffer, short idxAtArray)
+    public static GameObject CreateFromBuffer(byte[] buffer, ushort idxAtArray)
     {
         // Create a StaticObject just to get the ItemID for later.
         var tempObject = new StaticObject(buffer[0..8], 2);
@@ -17,7 +16,7 @@ public static class GameObjectFactory
         // Start is always MobileObjects
         if (idxAtArray < TileMapMasterObjectListBlock.MobileObjectNum)
         {
-            if (buffer.Length != MobileObject.TotalLength)
+            if (buffer.Length != MobileObject.FixedTotalLength)
             {
                 throw new InvalidOperationException(
                     $"Cannot create a Mobile Object with buffer of length {buffer.Length}");
@@ -33,11 +32,11 @@ public static class GameObjectFactory
         }
 
         // End is always StaticObjects
-        if (idxAtArray >= TileMapMasterObjectListBlock.MobileObjectNum & 
+        if (idxAtArray >= TileMapMasterObjectListBlock.MobileObjectNum &
             idxAtArray <
             (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
         {
-            if (buffer.Length != StaticObject.TotalLength)
+            if (buffer.Length != StaticObject.FixedTotalLength)
             {
                 throw new InvalidOperationException(
                     $"Cannot create a Static Object with buffer of length {buffer.Length}");
@@ -90,12 +89,12 @@ public static class GameObjectFactory
                 return new StaticObject(buffer, idxAtArray) {ShouldBeMoved = false};
             if (itemID > 0x1cf & itemID <= 0x1ff) // Not described in the text
                 return new StaticObject(buffer, idxAtArray);
-                
+
             return new StaticObject(buffer, idxAtArray) {Invalid = true};
         }
-        
-        
-        throw new InvalidOperationException($"Object could not be created. Either invalid buffer length ({buffer.Length}) or invalid index {idxAtArray} in GameObjectFactory");
-    }
 
+
+        throw new InvalidOperationException(
+            $"Object could not be created. Either invalid buffer length ({buffer.Length}) or invalid index {idxAtArray} in GameObjectFactory");
+    }
 }
