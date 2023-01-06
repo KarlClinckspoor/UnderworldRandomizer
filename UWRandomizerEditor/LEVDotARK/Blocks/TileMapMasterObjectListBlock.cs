@@ -55,11 +55,11 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
 
         private void ReconstructSubBuffers()
         {
+            ReconstructTileMapBuffer();
             ReconstructMobileObjectInfoBuffer();
             ReconstructStaticObjectInfoBuffer();
             ReconstructFreeListMobileObjectBuffer();
             ReconstructFreeListStaticObjectBuffer();
-            ReconstructTileMapBuffer();
         }
 
         private void ReconstructMobileObjectInfoBuffer()
@@ -188,11 +188,22 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             Buffer = new byte[FixedBlockLength];
             buffer.CopyTo(Buffer, 0);
             LevelNumber = levelNumber;
+
+            TileMapBuffer = buffer[TileMapOffset..(TileMapOffset + TileMapLength)];
+            MobileObjectInfoBuffer = buffer[MobileObjectInfoOffset..(MobileObjectInfoOffset + MobileObjectInfoLength)];
+            StaticObjectInfoBuffer = buffer[StaticObjectInfoOffset..(StaticObjectInfoOffset + StaticObjectInfoLength)];
+            FreeListMobileObjectBuffer =
+                buffer[FreeListMobileObjectsOffset..(FreeListMobileObjectsOffset + FreeListMobileObjectsLength)];
+            FreeListStaticObjectBuffer =
+                buffer[FreeListStaticObjectsOffset..(FreeListStaticObjectsOffset + FreeListStaticObjectsLength)];
+            UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
+            Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
+
+            Populate_TileInfos();
             Populate_MobileObjectsFromBuffer();
             Populate_StaticObjectsFromBuffer();
-            Populate_FreeListStaticObjectArrFromBuffer();
             Populate_FreeListMobileObjectArrFromBuffer();
-            Populate_TileInfos();
+            Populate_FreeListStaticObjectArrFromBuffer();
         }
 
         private void Populate_TileInfos()
@@ -209,9 +220,11 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
         }
 
 
+        private byte[] _tileMapBuffer = new byte[TileMapLength];
+
         public byte[] TileMapBuffer
         {
-            get { return Buffer[TileMapOffset..(TileMapOffset + TileMapLength)]; }
+            get { return _tileMapBuffer; }
             set
             {
                 if (value.Length != TileMapLength)
@@ -219,13 +232,15 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                     throw new ArgumentException($"Invalid length of TileMapBuffer");
                 }
 
-                value.CopyTo(Buffer, TileMapOffset);
+                value.CopyTo(_tileMapBuffer, 0);
             }
         }
 
+        private byte[] _mobileObjectInfoBuffer = new byte[MobileObjectInfoLength];
+
         public byte[] MobileObjectInfoBuffer
         {
-            get { return Buffer[MobileObjectInfoOffset..(MobileObjectInfoOffset + MobileObjectInfoLength)]; }
+            get { return _mobileObjectInfoBuffer; }
             set
             {
                 if (value.Length != MobileObjectInfoLength)
@@ -233,13 +248,15 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                     throw new ArgumentException($"Invalid length of MobileObjectInfoBuffer");
                 }
 
-                value.CopyTo(Buffer, MobileObjectInfoOffset);
+                value.CopyTo(_mobileObjectInfoBuffer, 0);
             }
         }
 
+        private byte[] _staticObjectInfoBuffer = new byte[StaticObjectInfoLength];
+
         public byte[] StaticObjectInfoBuffer
         {
-            get { return Buffer[StaticObjectInfoOffset..(StaticObjectInfoOffset + StaticObjectInfoLength)]; }
+            get { return _staticObjectInfoBuffer; }
             set
             {
                 if (value.Length != StaticObjectInfoLength)
@@ -247,17 +264,15 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                     throw new ArgumentException($"Invalid length of StaticObjectInfoBuffer");
                 }
 
-                value.CopyTo(Buffer, StaticObjectInfoOffset);
+                value.CopyTo(_staticObjectInfoBuffer, 0);
             }
         }
 
+        private byte[] _freeListMobileObjectBuffer = new byte[FreeListMobileObjectsLength];
+
         public byte[] FreeListMobileObjectBuffer
         {
-            get
-            {
-                return Buffer[
-                    FreeListMobileObjectsOffset..(FreeListMobileObjectsOffset + FreeListMobileObjectsLength)];
-            }
+            get { return _freeListMobileObjectBuffer; }
             set
             {
                 if (value.Length != FreeListMobileObjectsLength)
@@ -265,32 +280,31 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                     throw new ArgumentException($"Invalid length of FreeListMobileObjectBuffer");
                 }
 
-                value.CopyTo(Buffer, FreeListMobileObjectsOffset);
+                value.CopyTo(_freeListMobileObjectBuffer, 0);
             }
         }
 
+        private byte[] _freeListStaticObjectBuffer = new byte[FreeListStaticObjectsLength];
+
         public byte[] FreeListStaticObjectBuffer
         {
-            get
-            {
-                return Buffer[
-                    FreeListStaticObjectsOffset..(FreeListStaticObjectsOffset + FreeListStaticObjectsLength)
-                ];
-            }
+            get { return _freeListStaticObjectBuffer; }
             set
             {
-                if (value.Length != FreeListMobileObjectsLength)
+                if (value.Length != FreeListStaticObjectsLength)
                 {
                     throw new ArgumentException($"Invalid length of FreeListStaticObjectBuffer");
                 }
 
-                value.CopyTo(Buffer, FreeListStaticObjectsOffset);
+                value.CopyTo(_freeListStaticObjectBuffer, 0);
             }
         }
 
+        private byte[] _unknownBuffer = new byte[UnknownLength];
+
         protected byte[] UnknownBuffer
         {
-            get { return Buffer[UnknownOffset..(UnknownOffset + UnknownLength)]; }
+            get { return _unknownBuffer; }
             set
             {
                 if (value.Length != UnknownLength)
@@ -298,13 +312,15 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                     throw new ArgumentException($"Invalid length");
                 }
 
-                value.CopyTo(Buffer, UnknownOffset);
+                value.CopyTo(_unknownBuffer, 0);
             }
         }
 
+        private byte[] _unknown2Buffer = new byte[Unknown2Length];
+
         protected byte[] Unknown2Buffer
         {
-            get { return Buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)]; }
+            get { return _unknown2Buffer; }
             set
             {
                 if (value.Length != Unknown2Length)
@@ -312,7 +328,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                     throw new ArgumentException($"Invalid length");
                 }
 
-                value.CopyTo(Buffer, Unknown2Offset);
+                value.CopyTo(_unknown2Buffer, 0);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVDotARK.Blocks;
 using UWRandomizerEditor.LEVDotARK.GameObjects;
@@ -52,14 +53,15 @@ namespace UWRandomizerEditor.LEVDotARK
             {9, '<'}
         };
 
-        // Defined in the constructor
-        public int Entry { get; set; }
+        // This is the 4 bytes used to describe a Tile Info. This is useful for bitwise operations that span
+        // the boundary of 1 byte, which would be a bit cumbersome to do with a byte[] buffer. The byte[] Buffer
+        // is to be considered "primary", meaning it should always be kept up to date.
+        private int Entry { get; set; }
 
         public byte[] Buffer { get; set; }
 
         public int EntryNum { get; set; }
 
-        // TODO: Test this
         public int Offset
         {
             get { return EntryNum * FixedSize; }
@@ -70,7 +72,11 @@ namespace UWRandomizerEditor.LEVDotARK
         public int TileType
         {
             get { return GetBits(Entry, 0b1111, 0); }
-            set { Entry = SetBits(Entry, value, 0b1111, 0); }
+            set
+            {
+                Entry = SetBits(Entry, value, 0b1111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public int TileHeight
@@ -146,13 +152,32 @@ namespace UWRandomizerEditor.LEVDotARK
 
         public int FirstObjIdx
         {
-            get { return ObjectChain.startingIdx; }
+            get
+            {
+                if (GetStartingIndex(Buffer) != ObjectChain.startingIdx)
+                {
+                    throw new Exception("Mismatch between TileInfo firstObjectIndex in buffer and UWLinkedList");
+                }
+
+                return ObjectChain.startingIdx;
+            }
             set
             {
                 Entry = SetBits(Entry, value, 0b1111111111, 22);
                 ObjectChain.startingIdx = value;
                 ReconstructBuffer();
             }
+        }
+
+        private int GetStartingIndex(int Entry)
+        {
+            return GetBits(Entry, 0b1111111111, 22);
+        }
+
+        private int GetStartingIndex(byte[] buffer)
+        {
+            int temp = BitConverter.ToInt32(buffer);
+            return GetStartingIndex(temp);
         }
 
         public UWLinkedList ObjectChain { get; }
@@ -171,13 +196,11 @@ namespace UWRandomizerEditor.LEVDotARK
         [MemberNotNull(nameof(Buffer))]
         public bool ReconstructBuffer() // Modified entry, updates buffer
         {
-            // Sometimes the entry is stale regarding the starting index of the object chain, since that's what tracks this property.
-            Entry = SetBits(Entry, ObjectChain.startingIdx, 0b1111111111, 22);
             Buffer = BitConverter.GetBytes(Entry);
             return true;
         }
 
-        private void UpdateEntry() // Modified buffer, updates entry
+        private void UpdateEntry()
         {
             Entry = BitConverter.ToInt32(Buffer);
         }
@@ -188,17 +211,22 @@ namespace UWRandomizerEditor.LEVDotARK
             EntryNum = entrynum;
             Entry = entry;
             LevelNum = levelNumber;
-            ObjectChain = new UWLinkedList();
+            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(entry)};
             ReconstructBuffer();
         }
 
         public TileInfo(int entrynum, byte[] buffer, int offset, int levelNumber)
         {
+            if (buffer.Length != FixedSize)
+            {
+                throw new ArgumentException($"Invalid size of Tile Info Buffer: {buffer.Length}");
+            }
+
             EntryNum = entrynum;
             LevelNum = levelNumber;
             Buffer = buffer;
-            ObjectChain = new UWLinkedList();
             UpdateEntry();
+            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(buffer)};
         }
 
         // TODO: Check if we need that modification in the height value mentioned in the uw-formats.txt
@@ -252,9 +280,6 @@ namespace UWRandomizerEditor.LEVDotARK
                 }
             }
         }
-
-        // TODO: Keeping this because of the filename string interp. Might use this somewhere else
-        //         filename = $@"_TILE_{LevelNum}_{XYPos}_{TileTypeDescriptors[TileType]}";
 
         public bool Equals(TileInfo? other)
         {
