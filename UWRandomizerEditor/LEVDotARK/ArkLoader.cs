@@ -132,7 +132,6 @@ namespace UWRandomizerEditor.LEVDotARK
             templist.AddRange(header.Buffer);
             foreach (var block in blocks)
             {
-                // todo: Perhaps I should have a "ReconstructBuffer" here.
                 block.ReconstructBuffer();
                 templist.AddRange(block.Buffer);
             }
