@@ -44,4 +44,81 @@ public class Utils
         var bufferHash = string.Join("", mySHA256.ComputeHash(Buffer).Select(x => x.ToString("x2")));
         return bufferHash == hashToCompare;
     }
+
+    private class OffsetDescriptor
+    {
+        public int Offset;
+        public string BlockName;
+        public int BlockNum;
+
+        public OffsetDescriptor(string blockName, int offset, int blockNum)
+        {
+            Offset = offset;
+            BlockName = blockName;
+            BlockNum = blockNum;
+        }
+    }
+
+    public static string DetermineBufferObjectFromAbsoluteOffset_OriginalArk(int offset)
+    {
+        // These constants are valid for the original lev.ark of UW1. The offsets come from the header
+        const int numOfLevels = 9;
+
+        // Header
+        const int headerOffset = 0;
+        const int headerBlockPositionsOffset = 4;
+        const int headerSize = 542;
+
+        // Block sizes
+        const int tileMapSize = 31752;
+        const int animInfoSize = 384;
+        const int textMapSize = 122;
+
+        // Block offsets
+        const int tileMapsOffset = headerSize; // 542
+        const int animInfosOffset = tileMapsOffset + numOfLevels * tileMapSize; // 286310
+        const int textMapsOffset = animInfosOffset + numOfLevels * animInfoSize; // 289766
+        const int variableWidthBlocksOffset = textMapsOffset + numOfLevels * textMapSize; // 290864 -- upper bound
+
+        // Populating list of offsets and names
+        List<OffsetDescriptor> blockOffsetsAndNames = new List<OffsetDescriptor>();
+        blockOffsetsAndNames.Add(new OffsetDescriptor("HeaderBlockCount", headerOffset, 0));
+        blockOffsetsAndNames.Add(new OffsetDescriptor("HeaderBlockOffsets", headerBlockPositionsOffset, 0));
+        for (int i = 0; i < numOfLevels; i++)
+        {
+            blockOffsetsAndNames.Add(new OffsetDescriptor($"TileMap", tileMapsOffset + i * tileMapSize, i));
+        }
+
+        for (int i = 0; i < numOfLevels; i++)
+        {
+            blockOffsetsAndNames.Add(new OffsetDescriptor($"animInfo", animInfosOffset + i * animInfoSize, i));
+        }
+
+        for (int i = 0; i < numOfLevels; i++)
+        {
+            blockOffsetsAndNames.Add(new OffsetDescriptor($"textMaps", textMapsOffset + i * textMapSize, i));
+        }
+
+
+        OffsetDescriptor targetBlock = null;
+        // Find which block the input offset is referring to
+        foreach (var descriptor in blockOffsetsAndNames)
+        {
+            if ((offset - descriptor.Offset) > 0) // It's always increasing, so when it's <0, we passed the block
+            {
+                targetBlock = descriptor;
+                continue;
+            }
+
+            break;
+        }
+
+        if (targetBlock is null)
+            throw new ArgumentException("Invalid offset");
+
+        int relativeOffset = offset - targetBlock.Offset;
+
+        // TODO: Make these descriptions a bit better, and calculate where, in each subblock, the byte is (e.g. static weapon 100)
+        return $"{targetBlock.BlockName}_byte{relativeOffset}";
+    }
 }
