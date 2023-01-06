@@ -52,7 +52,7 @@ public class TestGameObjectProperties
         {"ypos", "Ypos"},
         {"quality", "Quality"},
         {"next", "next"},
-        {"owner", "Owner_or_special"},
+        {"owner", "OwnerOrSpecial"},
         {"link", "QuantityOrSpecialLinkOrSpecialProperty"}
     };
 

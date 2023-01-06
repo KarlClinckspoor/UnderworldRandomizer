@@ -28,12 +28,12 @@ public class Header : IBufferObject
         get { return blockOffsetSize * NumEntries + blockNumSize; }
     }
 
-    public static short NumEntriesFromBuffer(byte[] buffer)
+    public static ushort NumEntriesFromBuffer(byte[] buffer)
     {
-        return BitConverter.ToInt16(buffer, 0);
+        return BitConverter.ToUInt16(buffer, 0);
     }
 
-    public short NumEntries
+    public ushort NumEntries
     {
         get { return NumEntriesFromBuffer(Buffer); }
         set
