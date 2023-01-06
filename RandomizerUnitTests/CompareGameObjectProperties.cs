@@ -16,7 +16,7 @@ using System.Configuration;
 namespace RandomizerUnitTests;
 
 [TestFixture]
-public class TestGameObjectProperties
+public class CompareWithHanksEditor
 {
     private const int numOfLevels = 9;
 
@@ -62,7 +62,7 @@ public class TestGameObjectProperties
     {
         for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
         {
-            // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader isntances
+            // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader instances
             streamsPristine[blocknum] =
                 File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
