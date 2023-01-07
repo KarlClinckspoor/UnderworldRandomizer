@@ -40,14 +40,14 @@ public static class ShuffleItems
 
         foreach (var tile in block.TileInfos)
         {
-            tile.MoveObjectsToCorrectCorner();
+            tile.MoveObjectsToCorrectCorner(); // This shouldn't have to do anything for now
             tile.MoveObjectsToSameZLevel();
         }
 
         block.ReconstructBuffer();
     }
 
-    private static IDictionary<int, int> LevelTextureIdxOfWater = new Dictionary<int, int>()
+    private static readonly IDictionary<int, int> LevelTextureIdxOfWater = new Dictionary<int, int>()
     {
         {0, 8}, // lvl1
         {1, 8}, // lvl2
@@ -61,7 +61,7 @@ public static class ShuffleItems
     };
 
     // TODO: Lvl8 appears to have 2 textures that are lava, right below the fire elementals beside the doors
-    private static IDictionary<int, int> LevelTextureIdxOfLava = new Dictionary<int, int>()
+    private static readonly IDictionary<int, int> LevelTextureIdxOfLava = new Dictionary<int, int>()
     {
         {0, -1}, // lvl1
         {1, -1}, // lvl2
@@ -76,7 +76,9 @@ public static class ShuffleItems
 
     private static bool IsTileValid(TileInfo tile, int levelNumber)
     {
-        if ((TileInfo.TileTypes) tile.TileType == TileInfo.TileTypes.solid)
+        // Initially, I'm only putting items in open spaces!
+        // I'll deal with moving them to the appropriate corners later
+        if ((TileInfo.TileTypes) tile.TileType != TileInfo.TileTypes.open)
         {
             return false;
         }

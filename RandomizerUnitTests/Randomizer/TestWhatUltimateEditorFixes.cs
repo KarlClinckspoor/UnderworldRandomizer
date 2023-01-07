@@ -34,6 +34,7 @@ public class TestWhatUWEditorFixes
 
         var (countDiffs, positionDiffs) =
             Utils.CompareTwoBuffers(ArkCleanedNoDoors.Buffer, ArkCleanedNoDoorsFixed.Buffer);
+        Console.WriteLine(string.Join("\n", positionDiffs));
         Assert.True(countDiffs == 0);
     }
 }
