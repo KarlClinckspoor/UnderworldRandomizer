@@ -2,8 +2,6 @@
 
 namespace UWRandomizerEditor.LEVDotARK;
 
-using static Utils;
-
 /// <summary>
 /// A small class that contains the header of a lev.ark file. The header is composed of a short with the number of
 /// entries (blocks) followed by ints with the offsets to the start of each block in lev.ark

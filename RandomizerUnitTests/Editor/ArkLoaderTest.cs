@@ -2,7 +2,6 @@
 using System.IO;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVDotARK;
-using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
 
@@ -19,7 +18,8 @@ class ArkLoaderTest
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         myArkLoader.ReconstructBuffer();
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
-        string savedPath = StdSaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
+        string savedPath =
+            UWRandomizerEditor.Utils.StdSaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
 
         // Reloading and checking if everything was saved correctly.
         var myArkLoader2 = new ArkLoader(savedPath);
@@ -40,7 +40,8 @@ class ArkLoaderTest
         AL.ReconstructBuffer();
         var (diffs, positions) = Utils.CompareTwoBuffers(AL.Buffer, AL_Unreconstructed.Buffer);
         Assert.True(diffs == 0);
-        string savedpath = StdSaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
+        string savedpath =
+            UWRandomizerEditor.Utils.StdSaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
 
         var AL2 = new ArkLoader(savedpath);
         AL2.ReconstructBuffer();

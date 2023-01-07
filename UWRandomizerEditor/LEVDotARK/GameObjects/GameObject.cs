@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using UWRandomizerEditor.Interfaces;
-using static UWRandomizerEditor.Utils;
 
 // TODO: Maybe make a different class of Container objects?
 // TODO: What about empty entries? And the null entry (id = 0)?
@@ -89,10 +88,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
 
         public int ItemID
         {
-            get { return GetBits(ObjIdFlags, 0b111111111, 0); }
+            get { return Utils.GetBits(ObjIdFlags, 0b111111111, 0); }
             set
             {
-                ObjIdFlags = (ushort) SetBits(ObjIdFlags, value, 0b111111111, 0);
+                ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value, 0b111111111, 0);
                 ReconstructBuffer();
             }
         }
@@ -102,51 +101,51 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             get
             {
                 // todo: error in uw-formats.txt? Check hank's. -- He uses a mask with 3 bits, so I changed here.
-                return GetBits(ObjIdFlags, 0b111, 9);
+                return Utils.GetBits(ObjIdFlags, 0b111, 9);
             }
             set
             {
-                ObjIdFlags = (ushort) SetBits(ObjIdFlags, value, 0b1111, 9);
+                ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value, 0b1111, 9);
                 ReconstructBuffer();
             }
         }
 
         public int EnchantFlag
         {
-            get { return GetBits(Flags, 0b1, 0); }
+            get { return Utils.GetBits(Flags, 0b1, 0); }
             set
             {
-                Flags = (short) SetBits(Flags, value, 0b1, 0);
+                Flags = (short) Utils.SetBits(Flags, value, 0b1, 0);
                 ReconstructBuffer();
             }
         }
 
         public int Doordir
         {
-            get { return GetBits(Flags, 0b1, 1); }
+            get { return Utils.GetBits(Flags, 0b1, 1); }
             set
             {
-                Flags = (short) SetBits(Flags, value, 0b1, 1);
+                Flags = (short) Utils.SetBits(Flags, value, 0b1, 1);
                 ReconstructBuffer();
             }
         }
 
         public int Invis
         {
-            get { return GetBits(Flags, 0b1, 2); }
+            get { return Utils.GetBits(Flags, 0b1, 2); }
             set
             {
-                this.Flags = (short) SetBits(Flags, value, 0b1, 2);
+                this.Flags = (short) Utils.SetBits(Flags, value, 0b1, 2);
                 ReconstructBuffer();
             }
         }
 
         public int IsQuant
         {
-            get { return GetBits(Flags, 0b1, 3); }
+            get { return Utils.GetBits(Flags, 0b1, 3); }
             set
             {
-                this.Flags = (short) SetBits(Flags, value, 0b1, 3);
+                this.Flags = (short) Utils.SetBits(Flags, value, 0b1, 3);
                 ReconstructBuffer();
             }
         }
@@ -157,10 +156,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
 
         public byte Zpos
         {
-            get { return (byte) GetBits(Position, 0b1111111, 0); }
+            get { return (byte) Utils.GetBits(Position, 0b1111111, 0); }
             set
             {
-                Position = (ushort) SetBits(Position, value, 0b1111111, 0);
+                Position = (ushort) Utils.SetBits(Position, value, 0b1111111, 0);
                 ReconstructBuffer();
             }
         }
@@ -168,10 +167,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public byte Heading
         {
             // get { return (byte) ((position >> 7) & 0b111); }
-            get { return (byte) GetBits(Position, 0b111, 7); }
+            get { return (byte) Utils.GetBits(Position, 0b111, 7); }
             set
             {
-                Position = (ushort) SetBits(Position, value, 0b111, 7);
+                Position = (ushort) Utils.SetBits(Position, value, 0b111, 7);
                 ReconstructBuffer();
             }
         }
@@ -179,10 +178,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public byte Ypos
         {
             // get { return (byte) ((position >> 10) & 0b111); }
-            get { return (byte) GetBits(Position, 0b111, 10); }
+            get { return (byte) Utils.GetBits(Position, 0b111, 10); }
             set
             {
-                Position = (ushort) SetBits(Position, value, 0b111, 10);
+                Position = (ushort) Utils.SetBits(Position, value, 0b111, 10);
                 ReconstructBuffer();
             }
         }
@@ -190,10 +189,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public byte Xpos
         {
             // get { return (byte) ((position >> 13) & 0b111); }
-            get { return (byte) GetBits(Position, 0b111, 13); }
+            get { return (byte) Utils.GetBits(Position, 0b111, 13); }
             set
             {
-                Position = (ushort) SetBits(Position, value, 0b111, 13);
+                Position = (ushort) Utils.SetBits(Position, value, 0b111, 13);
                 ReconstructBuffer();
             }
         }
@@ -205,10 +204,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public byte Quality
         {
             // get { return (byte) (QualityChain & 0b111111); }
-            get { return (byte) GetBits(QualityChain, 0b111111, 0); }
+            get { return (byte) Utils.GetBits(QualityChain, 0b111111, 0); }
             set
             {
-                QualityChain = (ushort) SetBits(QualityChain, value, 0b111111, 0);
+                QualityChain = (ushort) Utils.SetBits(QualityChain, value, 0b111111, 0);
                 ReconstructBuffer();
             }
         }
@@ -216,10 +215,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public ushort next
         {
             // get { return (byte) ((QualityChain >> 6) & 0b1111111111); }
-            get { return (ushort) GetBits(QualityChain, 0b1111111111, 6); }
+            get { return (ushort) Utils.GetBits(QualityChain, 0b1111111111, 6); }
             set
             {
-                QualityChain = (ushort) SetBits(QualityChain, value, 0b1111111111, 6);
+                QualityChain = (ushort) Utils.SetBits(QualityChain, value, 0b1111111111, 6);
                 ReconstructBuffer();
             }
         }
@@ -237,10 +236,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public byte OwnerOrSpecial
         {
             // get { return (byte) (linkSpecial & 0b111111); }
-            get { return (byte) GetBits(LinkSpecial, 0b111111, 0); }
+            get { return (byte) Utils.GetBits(LinkSpecial, 0b111111, 0); }
             set
             {
-                LinkSpecial = (ushort) SetBits(LinkSpecial, value, 0b111111, 0);
+                LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b111111, 0);
                 ReconstructBuffer();
             }
         }
@@ -248,10 +247,10 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public short QuantityOrSpecialLinkOrSpecialProperty
         {
             // get { return (byte) ((linkSpecial >> 6) & 0b1111111111); }
-            get { return (byte) GetBits(LinkSpecial, 0b1111111111, 6); }
+            get { return (byte) Utils.GetBits(LinkSpecial, 0b1111111111, 6); }
             set
             {
-                LinkSpecial = (ushort) SetBits(LinkSpecial, value, 0b1111111111, 6);
+                LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
                 ReconstructBuffer();
             }
         }

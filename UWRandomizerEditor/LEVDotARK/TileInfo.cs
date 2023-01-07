@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVDotARK.Blocks;
 using UWRandomizerEditor.LEVDotARK.GameObjects;
-using static UWRandomizerEditor.Utils;
 
 namespace UWRandomizerEditor.LEVDotARK
 {
@@ -71,30 +70,30 @@ namespace UWRandomizerEditor.LEVDotARK
 
         public int TileType
         {
-            get { return GetBits(Entry, 0b1111, 0); }
+            get { return Utils.GetBits(Entry, 0b1111, 0); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1111, 0);
+                Entry = Utils.SetBits(Entry, value, 0b1111, 0);
                 ReconstructBuffer();
             }
         }
 
         public int TileHeight
         {
-            get { return GetBits(Entry, 0b1111, 4); }
+            get { return Utils.GetBits(Entry, 0b1111, 4); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1111, 4);
+                Entry = Utils.SetBits(Entry, value, 0b1111, 4);
                 ReconstructBuffer();
             }
         }
 
         public int Light
         {
-            get { return GetBits(Entry, 0b1, 8); }
+            get { return Utils.GetBits(Entry, 0b1, 8); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1, 8);
+                Entry = Utils.SetBits(Entry, value, 0b1, 8);
                 ReconstructBuffer();
             }
         }
@@ -102,50 +101,50 @@ namespace UWRandomizerEditor.LEVDotARK
         // todo: recheck this.
         public int Bit9
         {
-            get { return GetBits(Entry, 0b1, 9); }
+            get { return Utils.GetBits(Entry, 0b1, 9); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1, 9);
+                Entry = Utils.SetBits(Entry, value, 0b1, 9);
                 ReconstructBuffer();
             }
         }
 
         public int FloorTextureIdx
         {
-            get { return GetBits(Entry, 0b1111, 10); }
+            get { return Utils.GetBits(Entry, 0b1111, 10); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1111, 10);
+                Entry = Utils.SetBits(Entry, value, 0b1111, 10);
                 ReconstructBuffer();
             }
         }
 
         public int NoMagic
         {
-            get { return GetBits(Entry, 0b1, 14); }
+            get { return Utils.GetBits(Entry, 0b1, 14); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1, 14);
+                Entry = Utils.SetBits(Entry, value, 0b1, 14);
                 ReconstructBuffer();
             }
         }
 
         public int DoorBit
         {
-            get { return GetBits(Entry, 0b1, 15); }
+            get { return Utils.GetBits(Entry, 0b1, 15); }
             set
             {
-                Entry = SetBits(Entry, value, 0b1, 15);
+                Entry = Utils.SetBits(Entry, value, 0b1, 15);
                 ReconstructBuffer();
             }
         }
 
         public int WallTextureIdx
         {
-            get { return GetBits(Entry, 0b111111, 16); }
+            get { return Utils.GetBits(Entry, 0b111111, 16); }
             set
             {
-                Entry = SetBits(Entry, value, 0b111111, 16);
+                Entry = Utils.SetBits(Entry, value, 0b111111, 16);
                 ReconstructBuffer();
             }
         }
@@ -163,7 +162,7 @@ namespace UWRandomizerEditor.LEVDotARK
             }
             set
             {
-                Entry = SetBits(Entry, value, 0b1111111111, 22);
+                Entry = Utils.SetBits(Entry, value, 0b1111111111, 22);
                 ObjectChain.startingIdx = value;
                 ReconstructBuffer();
             }
@@ -171,7 +170,7 @@ namespace UWRandomizerEditor.LEVDotARK
 
         private int GetStartingIndex(int Entry)
         {
-            return GetBits(Entry, 0b1111111111, 22);
+            return Utils.GetBits(Entry, 0b1111111111, 22);
         }
 
         private int GetStartingIndex(byte[] buffer)

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVDotARK;
-using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
 
@@ -39,9 +38,12 @@ public class TestTileInfo
     {
         // Compare the buffers as-is
         Assert.True(tinfo1.Buffer.SequenceEqual(tinfo2.Buffer));
-        string tinfo1Path = StdSaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
-        string tinfo2Path = StdSaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
-        string tinfo3Path = StdSaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
+        string tinfo1Path =
+            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
+        string tinfo2Path =
+            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
+        string tinfo3Path =
+            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
 
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();

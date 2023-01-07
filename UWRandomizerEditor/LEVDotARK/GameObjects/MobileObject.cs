@@ -1,6 +1,4 @@
-﻿using static UWRandomizerEditor.Utils;
-
-namespace UWRandomizerEditor.LEVDotARK.GameObjects
+﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects
 {
     /// <summary>
     /// Class that describes Mobile Objects (e.g. NPCs). Inheritance should use the parameterless constructor because of the virtual methods to update buffer/entries.
@@ -58,110 +56,111 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
 
         public int Goal
         {
-            get { return GetBits(short_NPCGoalGtarg, 0b1111, 0); }
+            get { return Utils.GetBits(short_NPCGoalGtarg, 0b1111, 0); }
             set
             {
-                short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b1111, 0);
+                short_NPCGoalGtarg = (short) Utils.SetBits(short_NPCGoalGtarg, value, 0b1111, 0);
                 ReconstructBuffer();
             }
         }
 
         public int Gtarg
         {
-            get { return GetBits(short_NPCGoalGtarg, 0b11111111, 4); }
+            get { return Utils.GetBits(short_NPCGoalGtarg, 0b11111111, 4); }
             set
             {
-                short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b11111111, 4);
+                short_NPCGoalGtarg = (short) Utils.SetBits(short_NPCGoalGtarg, value, 0b11111111, 4);
                 ReconstructBuffer();
             }
         }
 
         public int Level
         {
-            get { return GetBits(short_NPCLevelTalkedAttitude, 0b111, 0); }
+            get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b111, 0); }
             set
             {
-                short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0);
+                short_NPCLevelTalkedAttitude = (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0);
                 ReconstructBuffer();
             }
         }
 
         public bool TalkedTo
         {
-            get { return GetBits(short_NPCLevelTalkedAttitude, 0b1, 13) == 1; }
+            get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b1, 13) == 1; }
             set
             {
-                short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
+                short_NPCLevelTalkedAttitude =
+                    (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
                 ReconstructBuffer();
             }
         }
 
         public int Attitude
         {
-            get { return GetBits(short_NPCLevelTalkedAttitude, 0b11, 14); }
+            get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b11, 14); }
             set
             {
-                short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14);
+                short_NPCLevelTalkedAttitude = (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14);
                 ReconstructBuffer();
             }
         }
 
         public int Height
         {
-            get { return GetBits(short_NPCheightQM, 0b1111111, 6); }
+            get { return Utils.GetBits(short_NPCheightQM, 0b1111111, 6); }
             set
             {
-                short_NPCheightQM = (short) SetBits(short_NPCheightQM, value, 0b1111111, 6);
+                short_NPCheightQM = (short) Utils.SetBits(short_NPCheightQM, value, 0b1111111, 6);
                 ReconstructBuffer();
             }
         }
 
         public int YHome
         {
-            get { return GetBits(short_NPChome, 0b111111, 4); }
+            get { return Utils.GetBits(short_NPChome, 0b111111, 4); }
             set
             {
-                short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 4);
+                short_NPChome = (short) Utils.SetBits(short_NPChome, value, 0b111111, 4);
                 ReconstructBuffer();
             }
         }
 
         public int XHome
         {
-            get { return GetBits(short_NPChome, 0b111111, 10); }
+            get { return Utils.GetBits(short_NPChome, 0b111111, 10); }
             set
             {
-                short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 10);
+                short_NPChome = (short) Utils.SetBits(short_NPChome, value, 0b111111, 10);
                 ReconstructBuffer();
             }
         }
 
         public int NPCHeading
         {
-            get { return GetBits(byte_NPCheading, 0b1111, 0); }
+            get { return Utils.GetBits(byte_NPCheading, 0b1111, 0); }
             set
             {
-                byte_NPCheading = (byte) SetBits(byte_NPCheading, value, 0b1111, 0);
+                byte_NPCheading = (byte) Utils.SetBits(byte_NPCheading, value, 0b1111, 0);
                 ReconstructBuffer();
             }
         }
 
         public int Hunger
         {
-            get { return GetBits(byte_NPCHunger, 0b111111, 0); }
+            get { return Utils.GetBits(byte_NPCHunger, 0b111111, 0); }
             set
             {
-                byte_NPCHunger = (byte) SetBits(byte_NPCHunger, value, 0b111111, 0);
+                byte_NPCHunger = (byte) Utils.SetBits(byte_NPCHunger, value, 0b111111, 0);
                 ReconstructBuffer();
             }
         }
 
         public int whoami
         {
-            get { return GetBits(byte_NPCwhoami, 0b11111111, 0); }
+            get { return Utils.GetBits(byte_NPCwhoami, 0b11111111, 0); }
             set
             {
-                byte_NPCwhoami = (byte) SetBits(byte_NPCwhoami, value, 0b11111111, 0);
+                byte_NPCwhoami = (byte) Utils.SetBits(byte_NPCwhoami, value, 0b11111111, 0);
                 ReconstructBuffer();
             }
         }

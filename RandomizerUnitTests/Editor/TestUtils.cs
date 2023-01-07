@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using UWRandomizerEditor.Interfaces;
-using static UWRandomizerEditor.Utils;
 
 namespace RandomizerUnitTests;
 
@@ -21,7 +16,7 @@ internal class TestSetBits
         byte newval = 0b0011;
         byte shift = 1;
         byte expected = 0b0111;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -33,7 +28,7 @@ internal class TestSetBits
         byte newval = 0b0011;
         byte shift = 0;
         byte expected = 0b0011;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -45,7 +40,7 @@ internal class TestSetBits
         byte newval = 0b1100;
         byte shift = 1;
         byte expected = 0b1001;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -57,7 +52,7 @@ internal class TestSetBits
         byte newval = 0b0000;
         byte shift = 0;
         byte expected = 0b1001;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -69,7 +64,7 @@ internal class TestSetBits
         byte newval = 0b0000_0000;
         byte shift = 0;
         byte expected = 0b1100_0011;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -81,7 +76,7 @@ internal class TestSetBits
         byte newval = 0b0000_0000;
         byte shift = 2;
         byte expected = 0b1100_0011;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -93,7 +88,7 @@ internal class TestSetBits
         byte newval = 0b1001_0000;
         byte shift = 0;
         byte expected = 0b1101_0110;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -105,7 +100,7 @@ internal class TestSetBits
         byte newval = 0b0000_1010;
         byte shift = 4;
         byte expected = 0b1010_0000;
-        int calc = SetBits(currval, newval, mask, shift);
+        int calc = UWRandomizerEditor.Utils.SetBits(currval, newval, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 }
@@ -120,7 +115,7 @@ internal class TestGetBits
         int mask = 0b0011;
         int shift = 0;
         int expected = 0b0010;
-        int calc = GetBits(value, mask, shift);
+        int calc = UWRandomizerEditor.Utils.GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -131,7 +126,7 @@ internal class TestGetBits
         int mask = 0b0011;
         int shift = 0;
         int expected = 0b0000;
-        int calc = GetBits(value, mask, shift);
+        int calc = UWRandomizerEditor.Utils.GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -142,7 +137,7 @@ internal class TestGetBits
         int mask = 0b1111;
         int shift = 4;
         int expected = 0b1100;
-        int calc = GetBits(value, mask, shift);
+        int calc = UWRandomizerEditor.Utils.GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 
@@ -153,7 +148,7 @@ internal class TestGetBits
         int mask = 0b1111;
         int shift = 2;
         int expected = 0b1001;
-        int calc = GetBits(value, mask, shift);
+        int calc = UWRandomizerEditor.Utils.GetBits(value, mask, shift);
         Assert.AreEqual(expected, calc, $"{expected:x}!={calc:x}");
     }
 }
@@ -185,7 +180,7 @@ internal class TestSaveBuffer
         string filename = "TestSaveBuffer.bin";
         var mock = new MockBuffer();
 
-        string outputPath = StdSaveBuffer(mock, path, filename);
+        string outputPath = UWRandomizerEditor.Utils.StdSaveBuffer(mock, path, filename);
         byte[] outputBytes = File.ReadAllBytes(outputPath);
 
         for (int i = 0; i < outputBytes.Length; i++)

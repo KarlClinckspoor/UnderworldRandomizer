@@ -13,8 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UWRandomizerEditor.LEVDotARK;
-using static UWRandomizer.RandoTools;
-using static UWRandomizerEditor.Utils;
 
 namespace UWRandomizer;
 
@@ -38,6 +36,7 @@ public partial class MainWindow : Window
     private void Button_Click_1(object sender, RoutedEventArgs e)
     {
         RandoTools.RemoveAllDoorReferencesToLocks(ark);
-        StdSaveBuffer(ark, System.IO.Path.Combine(System.IO.Path.GetDirectoryName(PathToArk.Text)), "LEV.ARK_test");
+        UWRandomizerEditor.Utils.StdSaveBuffer(ark,
+            System.IO.Path.Combine(System.IO.Path.GetDirectoryName(PathToArk.Text)), "LEV.ARK_test");
     }
 }

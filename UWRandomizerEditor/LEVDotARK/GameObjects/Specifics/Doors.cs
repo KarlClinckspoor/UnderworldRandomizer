@@ -1,7 +1,5 @@
 namespace UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
 
-using static UWRandomizerEditor.Utils;
-
 public class Door : SpecialLinkGameObject
 {
     public Door(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
@@ -61,7 +59,7 @@ public class Door : SpecialLinkGameObject
     // TODO: By "bit 1" does it mean 0b10 or 0b01? I'm assuming it's the former.
     public bool IsSpiked()
     {
-        if (GetBits(OwnerOrSpecial, 0b10, 0) == 1)
+        if (Utils.GetBits(OwnerOrSpecial, 0b10, 0) == 1)
         {
             return true;
         }
@@ -71,13 +69,13 @@ public class Door : SpecialLinkGameObject
 
     public void AddSpike()
     {
-        SetBits(OwnerOrSpecial, 0b1, 0b10, 0);
+        Utils.SetBits(OwnerOrSpecial, 0b1, 0b10, 0);
         ReconstructBuffer();
     }
 
     public void RemoveSpike()
     {
-        SetBits(OwnerOrSpecial, 0b0, 0b10, 0);
+        Utils.SetBits(OwnerOrSpecial, 0b0, 0b10, 0);
         ReconstructBuffer();
     }
 

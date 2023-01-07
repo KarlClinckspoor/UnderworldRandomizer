@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
-using static UWRandomizerEditor.Utils;
 
 namespace UWRandomizerEditor;
 
@@ -233,14 +232,14 @@ public class ItemDescriptor
     // TODO is Item ID 9 or 10 bits?
     public ushort itemID
     {
-        get { return (ushort) GetBits(entry, 0x3FF, 0); }
-        set { entry = (ushort) SetBits(entry, value, 0x3FF, 0); }
+        get { return (ushort) Utils.GetBits(entry, 0x3FF, 0); }
+        set { entry = (ushort) Utils.SetBits(entry, value, 0x3FF, 0); }
     }
 
     public bool IsDestroyed
     {
         get { return entry >> 15 == 1; }
-        set { entry = (ushort) SetBits(entry, value ? 1 : 0, 0b1, 15); }
+        set { entry = (ushort) Utils.SetBits(entry, value ? 1 : 0, 0b1, 15); }
     }
 
     [JsonConstructor]
