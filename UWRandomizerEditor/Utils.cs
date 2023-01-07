@@ -126,18 +126,30 @@ namespace UWRandomizerEditor
         /// <summary>
         /// Saves a specific buffer to a path specified as basepath \ filename.
         /// </summary>
-        /// <param name="buffer">Byte array (buffer)</param>
+        /// <param name="obj">Object that has a "Buffer" property</param>
         /// <param name="basepath">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
         /// <param name="filename">Extra info to add (e.g. name of file). If not provided, gets a random Guid </param>
         /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
         public static string StdSaveBuffer(IBufferObject obj, string? basepath, string? filename)
+        {
+            return StdSaveBuffer(obj.Buffer, basepath, filename);
+        }
+
+        /// <summary>
+        /// Saves a specific buffer to a path specified as basepath \ filename.
+        /// </summary>
+        /// <param name="buffer">byte array</param>
+        /// <param name="basepath">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
+        /// <param name="filename">Extra info to add (e.g. name of file). If not provided, gets a random Guid </param>
+        /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
+        public static string StdSaveBuffer(byte[] buffer, string? basepath, string? filename)
         {
             basepath ??= ".";
             filename ??= Guid.NewGuid().ToString();
 
             string fullpath = Path.Join(basepath, filename);
 
-            File.WriteAllBytes(fullpath, obj.Buffer);
+            File.WriteAllBytes(fullpath, buffer);
             return fullpath;
         }
     }

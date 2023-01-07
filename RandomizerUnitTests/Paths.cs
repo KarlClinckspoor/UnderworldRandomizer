@@ -12,4 +12,7 @@ public static class Paths
     public static string UW_ArkOriginalPath = config.AppSettings.Settings["UWArkOriginalPath"].Value;
     public static string UW_ArkCleanedPath = config.AppSettings.Settings["UWArkCleanedPath"].Value;
     public static string RUT_TestDataPath = config.AppSettings.Settings["RUTTestDataPath"].Value;
+
+    public static string UWArkCleanedNoDoorsPath_Fixed =
+        config.AppSettings.Settings["UWArkCleanedNoDoorsPath_Fixed"].Value;
 }
