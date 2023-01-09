@@ -199,11 +199,11 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
             Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
 
-            Populate_TileInfos();
             Populate_MobileObjectsFromBuffer();
             Populate_StaticObjectsFromBuffer();
             Populate_FreeListMobileObjectArrFromBuffer();
             Populate_FreeListStaticObjectArrFromBuffer();
+            Populate_TileInfos(); // This requires a complete array of game objects, so it comes last
         }
 
         private void Populate_TileInfos()
@@ -216,6 +216,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
                 TileInfo currInfo = new TileInfo(i, entry, offset, LevelNumber);
 
                 TileInfos[i] = currInfo;
+                currInfo.ObjectChain.PopulateObjectList(AllGameObjects);
             }
         }
 
