@@ -5,9 +5,9 @@ using UWRandomizerEditor.LEVDotARK.GameObjects;
 
 namespace UWRandomizer;
 
-public static class ShuffleItems
+public class ShuffleItems
 {
-    static void ShuffleAllLevels(ArkLoader arkFile)
+    public static void ShuffleAllLevels(ArkLoader arkFile)
     {
         foreach (var block in arkFile.TileMapObjectsBlocks)
         {
@@ -82,6 +82,7 @@ public static class ShuffleItems
         {
             return false;
         }
+        // TODO: Don't put items in the central shaft area
 
         // Can't place items on water, or else they might vanish. TODO: Need to test though!
         if ((tile.FloorTextureIdx == LevelTextureIdxOfWater[levelNumber]) |
