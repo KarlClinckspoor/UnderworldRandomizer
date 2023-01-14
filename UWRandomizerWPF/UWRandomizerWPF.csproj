@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <PackageVersion>0.1.0</PackageVersion>
+        <RootNamespace>UWRandomizer</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

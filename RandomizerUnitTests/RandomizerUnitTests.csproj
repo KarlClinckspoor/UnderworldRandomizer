@@ -16,7 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\UWRandomizerEditor\UWRandomizerEditor.csproj" />
-      <ProjectReference Include="..\UWRandomizer\UWRandomizer.csproj" />
+      <ProjectReference Include="..\UWRandomizerWPF\UWRandomizerWPF.csproj" />
     </ItemGroup>
 
     <ItemGroup>
