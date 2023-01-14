@@ -6,7 +6,6 @@ public class Door : SpecialLinkGameObject
     {
     }
 
-    public override bool ShouldBeMoved { get; set; } = false;
 
     // On doors:
     // Bit 1 of "owner" field is set, door is spiked

@@ -85,7 +85,7 @@ public static class GameObjectFactory
             if (itemID >= 0x1a0 & itemID <= 0x1bf) // Triggers
                 return new Trigger(buffer, idxAtArray);
             if (itemID >= 0x1c0 & itemID <= 0x1cf) // Explosions, splats, fountain, silver tree
-                return new StaticObject(buffer, idxAtArray) {ShouldBeMoved = false};
+                return new StaticObject(buffer, idxAtArray);
             if (itemID > 0x1cf & itemID <= 0x1ff) // Not described in the text
                 return new StaticObject(buffer, idxAtArray);
 

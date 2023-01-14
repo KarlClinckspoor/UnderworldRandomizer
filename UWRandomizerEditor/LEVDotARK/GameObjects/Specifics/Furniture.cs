@@ -7,5 +7,4 @@ public class Furniture : StaticObject
     {
     }
 
-    public override bool ShouldBeMoved { get; set; } = false;
 }

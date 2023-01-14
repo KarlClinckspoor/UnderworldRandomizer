@@ -25,10 +25,12 @@ public partial class MainWindow : Window
 {
     ArkLoader ark;
     int seed = 42;
+    private ItemRandomizationSettings _itemSettings;
 
     public MainWindow()
     {
         Singletons.SeedRandomAndReset(seed);
+        _itemSettings = new ItemRandomizationSettings();
         InitializeComponent();
     }
 
@@ -64,7 +66,7 @@ public partial class MainWindow : Window
 
     private void Btn_ShuffleItems_Click(object sender, RoutedEventArgs e)
     {
-        ShuffleItems.ShuffleAllLevels(ark, Singletons.RandomInstance);
+        ShuffleItems.ShuffleAllLevels(ark, Singletons.RandomInstance, _itemSettings);
     }
 
     private void Btn_RemoveAllLocks_Click(object sender, RoutedEventArgs e)

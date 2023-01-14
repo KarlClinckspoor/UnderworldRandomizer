@@ -6,7 +6,7 @@ using UWRandomizerEditor.Interfaces;
 // TODO: Add checks that prevent modification if id=0.
 namespace UWRandomizerEditor.LEVDotARK.GameObjects
 {
-    public class GameObject : IEquatable<GameObject>, IShouldIMove, IBufferObject
+    public class GameObject : IEquatable<GameObject>, IBufferObject
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;
@@ -14,8 +14,6 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         public const int ExtraLength = 0;
         public const int FixedTotalLength = BaseLength + ExtraLength;
         public ushort IdxAtObjectArray;
-
-        public virtual bool ShouldBeMoved { get; set; } = true;
 
         public byte[] Buffer { get; set; }
         // public short[] GeneralInfo = new short[InfoNum] {0, 0, 0, 0};

@@ -9,8 +9,6 @@ public class TexturedGameObject : StaticObject
     public new readonly int? Invis = null;
     public new readonly int? IsQuant = null;
 
-    public override bool ShouldBeMoved { get; set; } = false;
-
     public int TextureNumber
     {
         get { return Utils.GetBits(ObjIdFlags, 0b1111111, 9); }

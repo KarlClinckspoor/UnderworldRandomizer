@@ -7,23 +7,23 @@ namespace UWRandomizerTools;
 
 public class ShuffleItems
 {
-    public static void ShuffleAllLevels(ArkLoader arkFile, Random RandomInstance)
+    public static void ShuffleAllLevels(ArkLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
     {
         foreach (var block in arkFile.TileMapObjectsBlocks)
         {
-            ShuffleItemsInLevel(block, RandomInstance);
+            ShuffleItemsInLevel(block, RandomInstance, settings);
             block.ReconstructBuffer();
         }
 
         arkFile.ReconstructBuffer();
     }
 
-    public static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block, Random RandomInstance)
+    public static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block, Random RandomInstance, ItemRandomizationSettings settings)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();
         foreach (var tile in block.TileInfos)
         {
-            foreach (var obj in tile.ObjectChain.PopObjectsThatShouldBeMoved())
+            foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
             {
                 objectsInLevel.Push(obj);
             }

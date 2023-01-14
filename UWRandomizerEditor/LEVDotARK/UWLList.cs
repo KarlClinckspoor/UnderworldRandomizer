@@ -397,24 +397,6 @@ public class UWLinkedList: IList<GameObject>
         }
     }
 
-    public List<GameObject> PopObjectsThatShouldBeMoved()
-    {
-        var tempList = new List<GameObject>();
-        foreach (var obj in objects)
-        {
-            if (obj.ShouldBeMoved)
-            {
-                tempList.Add(obj);
-            }
-        }
-
-        foreach (var removedObject in tempList)
-        {
-            Remove(removedObject);
-        }
-        // FixIntegrity();
-        return tempList;
-    }
     
     /// <summary>
     /// Fills in the list of objects given a list of all GameObjects present in a level.

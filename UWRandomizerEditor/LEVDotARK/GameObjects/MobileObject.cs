@@ -42,8 +42,6 @@
 
         public int ObjectBufferIfx;
 
-        public override bool ShouldBeMoved { get; set; } = false;
-
         public int HP
         {
             get { return (int) byte1_hp; }
