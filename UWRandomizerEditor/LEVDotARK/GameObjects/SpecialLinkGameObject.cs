@@ -1,10 +1,9 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects;
+﻿using System.Diagnostics;
+
+namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 
 public class SpecialLinkGameObject : StaticObject
 {
-    // is_quant is false. Enchantments, wands, etc
-    public new readonly int IsQuant = 0;
-
     public short SpecialIdx
     {
         get { return QuantityOrSpecialLinkOrSpecialProperty; }
@@ -17,10 +16,12 @@ public class SpecialLinkGameObject : StaticObject
 
     public SpecialLinkGameObject(byte[] buffer, ushort idx) : base(buffer, idx)
     {
+        Debug.Assert(IsQuant == 0);
     }
 
     public SpecialLinkGameObject(ushort objIdFlags, ushort position, ushort qualityChain,
         ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
     {
+        Debug.Assert(IsQuant == 0);
     }
 }

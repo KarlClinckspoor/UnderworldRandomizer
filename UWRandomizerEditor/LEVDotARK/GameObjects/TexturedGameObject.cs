@@ -1,14 +1,9 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects;
+﻿using System.Diagnostics;
+
+namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 
 public class TexturedGameObject : StaticObject
 {
-    public new bool HasTexture = true;
-    public new readonly int? Flags = null;
-    public new readonly int? EnchantFlag = null;
-    public new readonly int? Doordir = null;
-    public new readonly int? Invis = null;
-    public new readonly int? IsQuant = null;
-
     public int TextureNumber
     {
         get { return Utils.GetBits(ObjIdFlags, 0b1111111, 9); }
