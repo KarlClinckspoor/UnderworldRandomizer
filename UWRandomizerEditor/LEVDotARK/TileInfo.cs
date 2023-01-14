@@ -233,7 +233,8 @@ namespace UWRandomizerEditor.LEVDotARK
         {
             foreach (GameObject obj in ObjectChain)
             {
-                obj.Zpos = (byte) TileHeight;
+                obj.Zpos = (byte) (TileHeight * 8);
+                // obj.Zpos = (byte) (TileHeight);
             }
         }
 
