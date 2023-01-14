@@ -3,22 +3,22 @@ using UWRandomizerEditor.LEVDotARK;
 using UWRandomizerEditor.LEVDotARK.Blocks;
 using UWRandomizerEditor.LEVDotARK.GameObjects;
 
-namespace UWRandomizer;
+namespace UWRandomizerTools;
 
 public class ShuffleItems
 {
-    public static void ShuffleAllLevels(ArkLoader arkFile)
+    public static void ShuffleAllLevels(ArkLoader arkFile, Random RandomInstance)
     {
         foreach (var block in arkFile.TileMapObjectsBlocks)
         {
-            ShuffleItemsInLevel(block);
+            ShuffleItemsInLevel(block, RandomInstance);
             block.ReconstructBuffer();
         }
 
         arkFile.ReconstructBuffer();
     }
 
-    static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block)
+    public static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block, Random RandomInstance)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();
         foreach (var tile in block.TileInfos)
@@ -31,18 +31,19 @@ public class ShuffleItems
 
         while (objectsInLevel.Count > 0)
         {
-            int chosenTileIdx = Singletons.RandomInstance.Next(0, block.TileInfos.Length);
+            int chosenTileIdx = RandomInstance.Next(0, block.TileInfos.Length);
             TileInfo chosenTile = block.TileInfos[chosenTileIdx];
             if (!IsTileValid(chosenTile, block.LevelNumber))
                 continue;
             chosenTile.ObjectChain.Add(objectsInLevel.Pop());
+            chosenTile.MoveObjectsToSameZLevel();
         }
 
-        foreach (var tile in block.TileInfos)
-        {
-            tile.MoveObjectsToCorrectCorner(); // This shouldn't have to do anything for now
-            tile.MoveObjectsToSameZLevel();
-        }
+        // foreach (var tile in block.TileInfos)
+        // {
+        //     tile.MoveObjectsToCorrectCorner(); // This shouldn't have to do anything for now
+        //     tile.MoveObjectsToSameZLevel();
+        // }
 
         block.ReconstructBuffer();
     }

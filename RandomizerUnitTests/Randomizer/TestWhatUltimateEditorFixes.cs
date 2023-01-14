@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UWRandomizer;
 using UWRandomizerEditor.LEVDotARK;
 using UWRandomizerEditor.LEVDotARK.Blocks;
+using UWRandomizerTools;
 
 namespace RandomizerUnitTests;
 

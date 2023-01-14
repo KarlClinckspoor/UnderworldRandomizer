@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizer", "UWRandomize
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractingBuffersOfEverything", "ExtractingBuffersOfEverything\ExtractingBuffersOfEverything.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerTools", "UWRandomizerTools\UWRandomizerTools.csproj", "{FA69796F-BDE0-41EE-B602-49C2A537BDA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

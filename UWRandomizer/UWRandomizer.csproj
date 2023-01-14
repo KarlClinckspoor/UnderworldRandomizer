@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\UWRandomizerEditor\UWRandomizerEditor.csproj" />
+      <ProjectReference Include="..\UWRandomizerTools\UWRandomizerTools.csproj" />
     </ItemGroup>
 
 </Project>

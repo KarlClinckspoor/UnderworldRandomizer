@@ -1,7 +1,7 @@
 ﻿using UWRandomizerEditor.LEVDotARK;
 using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
 
-namespace UWRandomizer;
+namespace UWRandomizerTools;
 
 public static partial class RandoTools
 {

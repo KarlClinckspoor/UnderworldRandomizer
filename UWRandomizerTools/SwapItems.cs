@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using UWRandomizerEditor.LEVDotARK;
 
-namespace UWRandomizer;
+namespace UWRandomizerTools;
 
 public static partial class RandoTools
 {
@@ -11,7 +11,7 @@ public static partial class RandoTools
     /// </summary>
     /// <param name="Tile1">First Tile to replace</param>
     /// <param name="Tile2">Second tile to replace</param>
-    static void SwapAllObjectsBetweenTwoTiles(TileInfo Tile1, TileInfo Tile2)
+    public static void SwapAllObjectsBetweenTwoTiles(TileInfo Tile1, TileInfo Tile2)
     {
         var obj1 = Tile1.ObjectChain.PopObjectsThatShouldBeMoved();
         var obj2 = Tile2.ObjectChain.PopObjectsThatShouldBeMoved();

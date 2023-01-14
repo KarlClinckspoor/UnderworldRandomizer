@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerTools;
 
 namespace UWRandomizer;
 
@@ -63,7 +64,7 @@ public partial class MainWindow : Window
 
     private void Btn_ShuffleItems_Click(object sender, RoutedEventArgs e)
     {
-        ShuffleItems.ShuffleAllLevels(ark);
+        ShuffleItems.ShuffleAllLevels(ark, Singletons.RandomInstance);
     }
 
     private void Btn_RemoveAllLocks_Click(object sender, RoutedEventArgs e)
@@ -115,5 +116,16 @@ public partial class MainWindow : Window
         }
 
         return sb.ToString();
+    }
+
+    private void Btn_RestoreLevArk_Click(object sender, RoutedEventArgs e)
+    {
+        string backupPath = System.IO.Path.Join(System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK.BCK");
+        if (File.Exists(backupPath))
+        {
+            File.Delete(ark.Path);
+            File.Copy(backupPath, ark.Path);
+            ark = new ArkLoader(ark.Path);
+        }
     }
 }

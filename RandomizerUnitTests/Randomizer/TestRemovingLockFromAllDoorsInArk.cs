@@ -6,6 +6,7 @@ using UWRandomizer;
 using UWRandomizerEditor.LEVDotARK;
 using UWRandomizerEditor.LEVDotARK.Blocks;
 using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+using UWRandomizerTools;
 
 namespace RandomizerUnitTests;
 
