@@ -7,7 +7,7 @@ public class EnchantedArmor : SpecialLinkGameObject
     public int Enchantment
     {
         get { return SpecialIdx - 512; }
-        set { SpecialIdx = (short) (value + 512); }
+        set { SpecialIdx = (ushort) (value + 512); }
     }
 
     // Oh boy. This is more complicated. Need to have logic to differentiate between Acc/Dam/Prot/Tough and other spells

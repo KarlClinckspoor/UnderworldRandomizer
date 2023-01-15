@@ -7,7 +7,7 @@ public class EnchantedWand : SpecialLinkGameObject
     public int SpellObjectLink
     {
         get { return SpecialIdx; }
-        set { SpecialIdx = (short) value; }
+        set { SpecialIdx = (ushort) value; }
     }
 
     public GameObject SpellObject;

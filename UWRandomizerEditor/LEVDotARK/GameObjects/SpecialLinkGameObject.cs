@@ -4,7 +4,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects;
 
 public class SpecialLinkGameObject : StaticObject
 {
-    public short SpecialIdx
+    public ushort SpecialIdx
     {
         get { return QuantityOrSpecialLinkOrSpecialProperty; }
         set

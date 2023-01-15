@@ -3,7 +3,7 @@
 public class QuantityGameObject : StaticObject
 {
     // is_quant is true, quantity < 512 (coins, etc)
-    public short Quantity
+    public ushort Quantity
     {
         // get { return (byte) ((linkSpecial >> 6) & 0b1111111111); }
         get { return QuantityOrSpecialLinkOrSpecialProperty; }

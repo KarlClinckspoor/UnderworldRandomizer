@@ -9,7 +9,7 @@ public class EnchantedObject : SpecialLinkGameObject
     public int Enchantment
     {
         get { return SpecialIdx - 512; }
-        set { SpecialIdx = (short) (value + 512); }
+        set { SpecialIdx = (ushort) (value + 512); }
     }
 
     public int Spell

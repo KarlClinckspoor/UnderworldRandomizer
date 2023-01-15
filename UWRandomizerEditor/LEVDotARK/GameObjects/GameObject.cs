@@ -120,7 +120,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             }
         }
 
-        public int Doordir
+        public int DoorDir
         {
             get { return Utils.GetBits(Flags, 0b1, 1); }
             set
@@ -244,13 +244,13 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             }
         }
 
-        public short QuantityOrSpecialLinkOrSpecialProperty
+        public ushort QuantityOrSpecialLinkOrSpecialProperty
         {
             // get { return (byte) ((linkSpecial >> 6) & 0b1111111111); }
-            get { return (byte) Utils.GetBits(LinkSpecial, 0b1111111111, 6); }
+            get { return (ushort) Utils.GetBits(LinkSpecial, 0b11_1111_1111, 6); }
             set
             {
-                LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
+                LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b11_1111_1111, 6);
                 ReconstructBuffer();
             }
         }
