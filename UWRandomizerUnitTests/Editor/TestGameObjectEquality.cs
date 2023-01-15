@@ -10,14 +10,14 @@ class TestGameObjectEquality
     [Test]
     public void TwoEqGameObjects()
     {
-        var obj1 = new GameObject(
+        var obj1 = new StaticObject(
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
             linkSpecial: 0xFFF
         );
 
-        var obj1_copy = new GameObject(
+        var obj1_copy = new StaticObject(
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
@@ -30,14 +30,14 @@ class TestGameObjectEquality
     [Test]
     public void TwoDiffGameObjects()
     {
-        var obj1 = new GameObject(
+        var obj1 = new StaticObject(
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
             linkSpecial: 0xFFF
         );
 
-        var obj2 = new GameObject(
+        var obj2 = new StaticObject(
             objIdFlags: 0xCCC,
             position: 0xCCC,
             qualityChain: 0xCCC,
@@ -50,7 +50,7 @@ class TestGameObjectEquality
     [Test]
     public void GOAndQtty()
     {
-        var obj1 = new GameObject(
+        var obj1 = new StaticObject(
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
