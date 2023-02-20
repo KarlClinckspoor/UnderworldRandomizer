@@ -246,7 +246,6 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
 
         public ushort QuantityOrSpecialLinkOrSpecialProperty
         {
-            // get { return (byte) ((linkSpecial >> 6) & 0b1111111111); }
             get { return (ushort) Utils.GetBits(LinkSpecial, 0b11_1111_1111, 6); }
             set
             {

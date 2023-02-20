@@ -17,7 +17,9 @@ public class Container: SpecialLinkGameObject
 
     public override bool ReconstructBuffer()
     {
-        QuantityOrSpecialLinkOrSpecialProperty = (ushort) Contents.startingIdx;
+        // Workaround to avoid infinite loop. TODO: Fix this
+        LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Contents.startingIdx, 0b11_1111_1111, 6);
+        base.ReconstructBuffer();
         return base.ReconstructBuffer();
     }
 }

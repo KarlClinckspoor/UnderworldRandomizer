@@ -167,7 +167,9 @@
 
         public override bool ReconstructBuffer()
         {
-            QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
+            // QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
+            // Avoiding infinite loop. TODO: think of something more intelligent
+            LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Inventory.startingIdx, 0b11_1111_1111, 6);
             base.ReconstructBuffer();
             
             Buffer[offset1] = byte1_hp;
