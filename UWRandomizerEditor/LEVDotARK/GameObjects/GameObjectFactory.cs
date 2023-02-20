@@ -49,7 +49,7 @@ public static class GameObjectFactory
             if (itemID >= 0x40 & itemID <= 0x7f)
                 return new StaticObject(buffer, idxAtArray) {Invalid = true};
             if (itemID >= 0x80 & itemID <= 0x8f) // Containers
-                return new StaticObject(buffer, idxAtArray);
+                return new Container(buffer, idxAtArray);
             if (itemID >= 0x90 & itemID <= 0x97) // Light sources
                 return new StaticObject(buffer, idxAtArray);
             if (itemID >= 0x98 & itemID <= 0x9f) // Wands
