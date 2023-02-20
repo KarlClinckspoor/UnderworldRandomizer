@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics;
 using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
 
 namespace UWRandomizerEditor.LEVDotARK.Blocks
 {
@@ -217,6 +218,22 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
 
                 TileInfos[i] = currInfo;
                 currInfo.ObjectChain.PopulateObjectList(AllGameObjects);
+            }
+        }
+
+        private void Populate_Containers()
+        {
+            foreach (var gameObject in AllGameObjects)
+            {
+                if (gameObject is Container cont)
+                {
+                    cont.Contents.PopulateObjectList(AllGameObjects);
+                }
+
+                if (gameObject is MobileObject mobileObject)
+                {
+                    mobileObject.Inventory.PopulateObjectList(AllGameObjects);
+                }
             }
         }
 

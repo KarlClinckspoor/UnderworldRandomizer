@@ -6,7 +6,7 @@ using UWRandomizerEditor.Interfaces;
 // TODO: Add checks that prevent modification if id=0.
 namespace UWRandomizerEditor.LEVDotARK.GameObjects
 {
-    public abstract class GameObject : IEquatable<GameObject>, IBufferObject, IContainerCheck
+    public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;

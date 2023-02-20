@@ -8,6 +8,7 @@ namespace UWRandomizerEditor.LEVDotARK;
 public class UWLinkedList: IList<GameObject>
 {
     private int _startingIdx = 0;
+    public bool RepresentingContainer = false;
     public int startingIdx
     {
         get
@@ -54,6 +55,7 @@ public class UWLinkedList: IList<GameObject>
             objects[^1].next =  item.IdxAtObjectArray;
         }
         item.next = 0;
+        item.InContainer = RepresentingContainer;
         objects.Add(item);
     }
 
@@ -142,6 +144,7 @@ public class UWLinkedList: IList<GameObject>
         if (index == 0)
         {
             _startingIdx = item.IdxAtObjectArray;
+            item.InContainer = RepresentingContainer;
             item.next = objects[0].IdxAtObjectArray;
             objects.Insert(index, item);
         }
@@ -149,12 +152,14 @@ public class UWLinkedList: IList<GameObject>
         {
             objects[^1].next = item.IdxAtObjectArray;
             item.next = 0;
+            item.InContainer = RepresentingContainer;
             objects.Insert(index, item);
         }
         else
         {
             objects[index - 1].next = item.IdxAtObjectArray;
             item.next = objects[index].IdxAtObjectArray;
+            item.InContainer = RepresentingContainer;
             objects.Insert(index, item);
         }
         

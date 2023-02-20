@@ -210,7 +210,7 @@ namespace UWRandomizerEditor.LEVDotARK
             EntryNum = entrynum;
             Entry = entry;
             LevelNum = levelNumber;
-            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(entry)};
+            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(entry), RepresentingContainer = false};
             ReconstructBuffer();
         }
 
@@ -225,7 +225,7 @@ namespace UWRandomizerEditor.LEVDotARK
             LevelNum = levelNumber;
             Buffer = buffer;
             UpdateEntry();
-            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(buffer)};
+            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(buffer), RepresentingContainer = false};
         }
 
         // TODO: Check if we need that modification in the height value mentioned in the uw-formats.txt

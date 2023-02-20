@@ -163,9 +163,13 @@
             }
         }
 
+        public UWLinkedList Inventory { get; }
+
         public override bool ReconstructBuffer()
         {
+            QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
             base.ReconstructBuffer();
+            
             Buffer[offset1] = byte1_hp;
             Buffer[offset2] = byte2_unk;
             Buffer[offset3] = byte3_unk;
@@ -212,6 +216,7 @@
             buffer.CopyTo(Buffer, 0);
             IdxAtObjectArray = idx;
             UpdateEntries();
+            Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
         }
 
         public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg,
@@ -246,6 +251,7 @@
             extra.CopyTo(Buffer, BaseLength);
             IdxAtObjectArray = idx;
             UpdateEntries();
+            Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty};
         }
 
         public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3,
@@ -285,12 +291,14 @@
             extra.CopyTo(Buffer, BaseLength);
             IdxAtObjectArray = idx;
             UpdateEntries();
+            Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
         }
 
         protected MobileObject()
         {
             Buffer = Array.Empty<byte>();
             Invalid = true;
+            Inventory = new UWLinkedList() {startingIdx = 0, RepresentingContainer = true};
         }
     }
 }
