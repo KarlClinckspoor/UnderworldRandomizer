@@ -32,10 +32,6 @@ public class ItemTools
 
     private static bool ShouldBeMoved(GameObject obj, ItemRandomizationSettings settings)
     {
-        // todo:
-        // if (obj.IsInContainer)
-        //  return false;
-        // 
         bool res;
         try
         {
@@ -43,7 +39,13 @@ public class ItemTools
         }
         catch (KeyNotFoundException)
         {
-            res = settings.DefaultMovableRule;
+            res = ItemRandomizationSettings.DefaultMovableRule;
+        }
+
+        // We have to ignore objects that are in containers, otherwise this messes things up majorly.
+        if (obj.InContainer)
+        {
+            res = false;
         }
 
         return res;
@@ -52,7 +54,7 @@ public class ItemTools
 
 public class ItemRandomizationSettings
 {
-    public Dictionary<Type, bool> MovableRules = new Dictionary<Type, bool>()
+    public readonly Dictionary<Type, bool> MovableRules = new Dictionary<Type, bool>()
     {
         { typeof(Furniture), false },
         { typeof(Door), false },
@@ -71,5 +73,5 @@ public class ItemRandomizationSettings
         { typeof(Key), true },
     };
 
-    public bool DefaultMovableRule = false;
+    public const bool DefaultMovableRule = false;
 }
