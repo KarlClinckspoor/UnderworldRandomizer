@@ -14,18 +14,16 @@ using UWRandomizerTools;
 namespace RandomizerUnitTests;
 
 [TestFixture]
-public partial class TestUWLinkedList
+public class TestUWLinkedList
 {
     private List<GameObject> _gameObjects;
     private UWLinkedList LList1;
     private UWLinkedList LList2;
-    private ItemRandomizationSettings settings;
 
     [SetUp]
     public void Setup()
     {
-        settings = new ItemRandomizationSettings();
-        var fillerBytes = new byte[] {0, 0, 0, 0, 0, 0, 0, 0};
+        var fillerBytes = new byte[8];
         _gameObjects = new List<GameObject>()
         {
             new StaticObject(fillerBytes, 0) {next = 0}, // end TODO: What is the buffer of object 0?

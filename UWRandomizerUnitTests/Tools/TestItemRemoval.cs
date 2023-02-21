@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVDotARK;
@@ -8,11 +9,35 @@ using UWRandomizerTools;
 
 namespace RandomizerUnitTests;
 
-public partial class TestUWLinkedList
+public class TestItemRemoval
 {
+    private List<GameObject> _gameObjects;
+    private UWLinkedList LList1;
+    private UWLinkedList LList2;
+    private ItemRandomizationSettings settings;
+
+    [SetUp]
+    public void Setup()
+    {
+        settings = new ItemRandomizationSettings();
+        var fillerBytes = new byte[8];
+        _gameObjects = new List<GameObject>()
+        {
+            new StaticObject(fillerBytes, 0) {next = 0}, // end TODO: What is the buffer of object 0?
+            new QuantityGameObject(fillerBytes, 1) {next = 2}, // 1.1   movable
+            new Door(fillerBytes, 2) {next = 6}, // 1.2         immovable
+            new Trap(fillerBytes, 3) {next = 4}, // 2.1         immovable
+            new TexturedGameObject(fillerBytes, 4) {next = 5}, // 2.2   immovable
+            new EnchantedArmor(fillerBytes, 5) {next = 0}, // 2.3 (last) movable
+            new EnchantedWeapon(fillerBytes, 6) {next = 0} // 1.3 (last) movable
+        };
+
+        LList1 = new UWLinkedList();
+        LList2 = new UWLinkedList();
+    }
 
     [Test]
-    public void TestObjectsThatShouldBeMoved()
+    public void TestRemoveMovableItems()
     {
         LList1.startingIdx = 1;
         LList2.startingIdx = 3;
@@ -48,7 +73,7 @@ public partial class TestUWLinkedList
     }
 
     [Test]
-    public void TestAppendItems()
+    public void TestSwapMovableItems()
     {
         LList1.startingIdx = 1;
         LList2.startingIdx = 3;
@@ -77,7 +102,7 @@ public partial class TestUWLinkedList
     }
 
     [Test]
-    public void TestAppendItems_OnEmpty()
+    public void TestAppendItems_OnEmptyLList()
     {
         LList1.startingIdx = 1;
         LList2.startingIdx = 0;
@@ -106,7 +131,7 @@ public partial class TestUWLinkedList
     }
 
     [Test]
-    public void TestPrependItems()
+    public void TestSwapItemsByPrepend()
     {
         LList1.startingIdx = 1;
         LList2.startingIdx = 3;
@@ -163,6 +188,24 @@ public partial class TestUWLinkedList
         Assert.True(CheckObjectsAtPositions(LList2.ToList(), new List<short>() {1, 6}));
         Assert.True(LList1.CheckIntegrity());
         Assert.True(LList2.CheckIntegrity());
+    }
+    
+    private bool CheckObjectsAtPositions(List<GameObject> list, List<short> correctIdxs)
+    {
+        if (list.Count != correctIdxs.Count)
+        {
+            throw new InvalidOperationException("Can't compare two lists of unequal counts!");
+        }
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (!_gameObjects[correctIdxs[i]].Equals(list[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     
 }

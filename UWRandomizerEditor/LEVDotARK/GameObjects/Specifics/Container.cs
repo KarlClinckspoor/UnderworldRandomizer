@@ -13,7 +13,7 @@ public class Container: SpecialLinkGameObject
         Contents = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
-    public UWLinkedList Contents { get; }
+    public UWLinkedList Contents { get; set; }
 
     public override bool ReconstructBuffer()
     {

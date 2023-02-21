@@ -163,7 +163,8 @@
             }
         }
 
-        public UWLinkedList Inventory { get; }
+        // TODO: Create interface, standardize this with Container and TileInfo?
+        public UWLinkedList Inventory { get; set; }
 
         public override bool ReconstructBuffer()
         {

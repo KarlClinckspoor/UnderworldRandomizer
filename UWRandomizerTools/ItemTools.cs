@@ -45,7 +45,13 @@ public class ItemTools
         // We have to ignore objects that are in containers, otherwise this messes things up majorly.
         if (obj.InContainer)
         {
-            res = false;
+            return false;
+        }
+
+        // Object at idx 0 is always unused, obj at idx 1 represents the avatar, so can't be moved either.
+        if ((obj.IdxAtObjectArray == 0) | (obj.IdxAtObjectArray == 1))
+        {
+            return false;
         }
 
         return res;
@@ -71,6 +77,7 @@ public class ItemRandomizationSettings
         { typeof(EnchantedWand), true },
         { typeof(EnchantedWeapon), true },
         { typeof(Key), true },
+        { typeof(Container), true},
     };
 
     public const bool DefaultMovableRule = false;
