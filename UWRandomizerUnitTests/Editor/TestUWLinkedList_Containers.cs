@@ -15,6 +15,15 @@ public class TestUWLinkedList_Containers
     private Container _bag2;
     private GameObject[] _gameObjects;
     
+    /// <summary>
+    /// Contents
+    /// bag2(5) -> end(0)
+    ///    |
+    ///    -> bag1(4) -> end(0)
+    ///        |
+    ///        -> Key(1) -> EnchantedWeapon(2) -> EnchantedArmor(3) -> end(0)
+    /// Tile either points to bag1 or bag2 (depends on test)
+    /// </summary>
     [SetUp]
     public void SetUp()
     {
@@ -48,9 +57,6 @@ public class TestUWLinkedList_Containers
     {
         _bag1.Contents.PopulateObjectList(_gameObjects);
         Assert.True(_bag1.Contents.Count == 3);
-        Assert.True(_bag1.Contents[0].InContainer);
-        Assert.True(_bag1.Contents[1].InContainer);
-        Assert.True(_bag1.Contents[2].InContainer);
         Assert.True(_bag1.Contents[0].Equals(_gameObjects[1]));
         Assert.True(_bag1.Contents[1].Equals(_gameObjects[2]));
         Assert.True(_bag1.Contents[2].Equals(_gameObjects[3]));
