@@ -1,7 +1,7 @@
 ﻿using UWRandomizerEditor.Interfaces;
-using UWRandomizerEditor.LEVDotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.Blocks;
 
-namespace UWRandomizerEditor.LEVDotARK.GameObjects;
+namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 
 public class FreeListObjectEntry : IBufferObject
 {

@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.Blocks
+﻿namespace UWRandomizerEditor.LEVdotARK.Blocks
 {
     public class EmptyBlock : Block
     {

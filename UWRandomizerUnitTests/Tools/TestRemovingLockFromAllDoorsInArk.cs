@@ -3,9 +3,9 @@ using System.Configuration;
 using System.IO;
 using NUnit.Framework;
 using UWRandomizer;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.Blocks;
-using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
 namespace RandomizerUnitTests;

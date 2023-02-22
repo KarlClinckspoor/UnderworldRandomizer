@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.Blocks;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerTools;
 

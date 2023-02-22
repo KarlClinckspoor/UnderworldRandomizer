@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerEditor.LEVdotARK;
 
 namespace RandomizerUnitTests;
 

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Data;
 using System.Diagnostics;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
 
-namespace UWRandomizerEditor.LEVDotARK;
+namespace UWRandomizerEditor.LEVdotARK;
 
 public class UWLinkedList: IList<GameObject>
 {

@@ -2,8 +2,8 @@
 using System.IO;
 using NUnit.Framework;
 using UWRandomizer;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerTools;
 
 namespace RandomizerUnitTests;

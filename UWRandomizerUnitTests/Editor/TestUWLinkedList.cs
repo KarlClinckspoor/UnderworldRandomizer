@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
-using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
 namespace RandomizerUnitTests;

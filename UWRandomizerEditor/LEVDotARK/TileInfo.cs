@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
-using UWRandomizerEditor.LEVDotARK.Blocks;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
 
-namespace UWRandomizerEditor.LEVDotARK
+namespace UWRandomizerEditor.LEVdotARK
 {
     public class TileInfo : IBufferObject, IEquatable<TileInfo>
     {

@@ -1,7 +1,7 @@
-﻿using UWRandomizerEditor.LEVDotARK.Blocks;
-using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+﻿using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-namespace UWRandomizerEditor.LEVDotARK.GameObjects;
+namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 
 public static class GameObjectFactory
 {

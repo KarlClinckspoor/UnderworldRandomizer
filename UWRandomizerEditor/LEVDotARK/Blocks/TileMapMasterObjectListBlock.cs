@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using System.Diagnostics;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
-using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-namespace UWRandomizerEditor.LEVDotARK.Blocks
+namespace UWRandomizerEditor.LEVdotARK.Blocks
 {
     // TODO: Separate this into TileMap and Object List...?
     public partial class TileMapMasterObjectListBlock : Block

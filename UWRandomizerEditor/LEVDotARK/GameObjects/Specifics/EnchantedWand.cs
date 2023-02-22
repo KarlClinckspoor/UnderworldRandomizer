@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 public class EnchantedWand : SpecialLinkGameObject
 {

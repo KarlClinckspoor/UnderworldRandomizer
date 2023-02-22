@@ -7,10 +7,10 @@ using System.Text.Json;
 using NUnit.Framework;
 using UWRandomizer;
 using UWRandomizerEditor;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.Blocks;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
-using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using System.Configuration;
 
 namespace RandomizerUnitTests;

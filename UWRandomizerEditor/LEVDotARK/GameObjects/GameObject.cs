@@ -4,7 +4,7 @@ using UWRandomizerEditor.Interfaces;
 // TODO: Maybe make a different class of Container objects?
 // TODO: What about empty entries? And the null entry (id = 0)?
 // TODO: Add checks that prevent modification if id=0.
-namespace UWRandomizerEditor.LEVDotARK.GameObjects
+namespace UWRandomizerEditor.LEVdotARK.GameObjects
 {
     public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     {

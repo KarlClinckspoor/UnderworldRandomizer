@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerEditor.LEVdotARK;
 
 namespace UWRandomizerTools;
 

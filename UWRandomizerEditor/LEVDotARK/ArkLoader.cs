@@ -1,7 +1,7 @@
 ﻿using UWRandomizerEditor.Interfaces;
-using UWRandomizerEditor.LEVDotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.Blocks;
 
-namespace UWRandomizerEditor.LEVDotARK
+namespace UWRandomizerEditor.LEVdotARK
 {
     /// <summary>
     /// This class loads an lev.ark file and subdivides it into 1) a header and 2) a sequence of blocks.

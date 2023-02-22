@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerEditor.LEVdotARK;
 
 namespace ExtractingBuffersOfEverything;
 

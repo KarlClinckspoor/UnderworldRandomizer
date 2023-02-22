@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects;
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 
 public class StaticObject : GameObject
 {

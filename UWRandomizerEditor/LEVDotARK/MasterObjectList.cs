@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVDotARK
+﻿namespace UWRandomizerEditor.LEVdotARK
 {
     public class MasterObjectList
     {

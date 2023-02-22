@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace UWRandomizerEditor.LEVDotARK.Blocks
+namespace UWRandomizerEditor.LEVdotARK.Blocks
 {
     public sealed class TextureMappingBlock : Block
     {

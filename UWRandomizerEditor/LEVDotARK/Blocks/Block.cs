@@ -1,6 +1,6 @@
 ﻿using UWRandomizerEditor.Interfaces;
 
-namespace UWRandomizerEditor.LEVDotARK.Blocks
+namespace UWRandomizerEditor.LEVdotARK.Blocks
 {
     public abstract class Block : IBufferObject
     {
