@@ -17,15 +17,15 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
         public FreeListObjectEntry[] FreeListMobileObjects = new FreeListObjectEntry[FreeListMobileObjectsNum];
         public FreeListObjectEntry[] FreeListStaticObjects = new FreeListObjectEntry[FreeListStaticObjectsNum];
 
-        public short NumEntriesInMobileListMinus1
+        public ushort FirstFreeSlotInMobileList
         {
-            get { return BitConverter.ToInt16(Buffer, NumEntriesMobileFreeListAdjOffset); }
-            set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesInMobileListMinus1); }
+            get { return BitConverter.ToUInt16(Buffer, NumEntriesMobileFreeListAdjOffset); }
+            set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset); }
         }
 
-        public short NumEntriesInStaticListMinus1
+        public ushort FirstFreeSlotInStaticList
         {
-            get { return BitConverter.ToInt16(Buffer, NumEntriesStaticFreeListAdjOffset); }
+            get { return BitConverter.ToUInt16(Buffer, NumEntriesStaticFreeListAdjOffset); }
             set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset); }
         }
 
@@ -48,8 +48,8 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             UnknownBuffer.CopyTo(Buffer, UnknownOffset);
             Unknown2Buffer.CopyTo(Buffer, Unknown2Offset);
             // todo: do I really need these 2? Seems this is always kept updated.
-            BitConverter.GetBytes(NumEntriesInMobileListMinus1).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset);
-            BitConverter.GetBytes(NumEntriesInStaticListMinus1).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset);
+            BitConverter.GetBytes(FirstFreeSlotInMobileList).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset);
+            BitConverter.GetBytes(FirstFreeSlotInStaticList).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset);
             BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(Buffer, EndOfBlockConfirmationOffset);
             return true;
         }
@@ -205,6 +205,7 @@ namespace UWRandomizerEditor.LEVDotARK.Blocks
             Populate_FreeListMobileObjectArrFromBuffer();
             Populate_FreeListStaticObjectArrFromBuffer();
             Populate_TileInfos(); // This requires a complete array of game objects, so it comes last
+            // Populate_Containers();
         }
 
         private void Populate_TileInfos()

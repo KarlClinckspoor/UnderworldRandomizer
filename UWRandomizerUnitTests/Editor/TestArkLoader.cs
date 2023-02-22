@@ -2,13 +2,14 @@
 using System.IO;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVDotARK;
+using UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
 
 namespace RandomizerUnitTests;
 
 class ArkLoaderTest
 {
     /// <summary>
-    /// Loads an original LEV.ARK, checks if it's loaded correctly by its checksum, then reconstructs the buffers
+    /// Tests if the original lev.ark is correctly reconstructed and serialized.
     /// </summary>
     [Test]
     [Category("RequiresArk")]
@@ -31,9 +32,12 @@ class ArkLoaderTest
         File.Delete(savedPath);
     }
 
+    /// <summary>
+    /// Tests if the "cleaned" lev.ark (opened and closed with UWEditor) is correctly reconstructed and serialized.
+    /// </summary>
     [Test]
     [Category("RequiresArk")]
-    public void CompareLoadSerializeCleaned()
+    public void TestReconstructBufferCleaned()
     {
         var AL = new ArkLoader(Paths.UW_ArkCleanedPath);
         var AL_Unreconstructed = new ArkLoader(Paths.UW_ArkCleanedPath);
@@ -48,5 +52,35 @@ class ArkLoaderTest
 
         var (differenceCount, differencePositions) = Utils.CompareTwoBuffers(AL.Buffer, AL2.Buffer);
         Assert.True(differenceCount == 0, "Differences at positions:" + String.Join(",", differencePositions));
+    }
+
+    /// <summary>
+    /// This will test some items to see if they're in the appropriate positions, heights, correct classes, etc
+    /// </summary>
+    [Test]
+    [Category("RequiresArk")]
+    public void TestSpecificObjectProperties()
+    {
+        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
+        // Testing Lvl1 starting bag
+        var lvl1 = AL.TileMapObjectsBlocks[0];
+        // X=33, Y=3
+        // var tile = lvl1.TileInfos[33 * 64 + 3];
+        // Console.WriteLine($"{tile.XYPos[0]}, {tile.XYPos[1]}");
+        // Assert.True(tile.FirstObjIdx == 942);
+        
+        Assert.True(lvl1.AllGameObjects[942] is Container);
+        Assert.False(lvl1.AllGameObjects[942].InContainer);
+        Assert.True(lvl1.AllGameObjects[940].InContainer);
+        Assert.True(lvl1.AllGameObjects[936].InContainer);
+        Assert.True(lvl1.AllGameObjects[941].InContainer);
+        Assert.True(lvl1.AllGameObjects[935].InContainer);
+        Assert.True(lvl1.AllGameObjects[934].InContainer);
+        Assert.True(lvl1.AllGameObjects[959].InContainer);
+
+        Container cont = (Container) lvl1.AllGameObjects[942];
+        Assert.True(cont.Contents.Count == 6);
+        Assert.True(cont.Contents.RepresentingContainer);
+        Assert.True(cont.Contents[^1].next == 0);
     }
 }
