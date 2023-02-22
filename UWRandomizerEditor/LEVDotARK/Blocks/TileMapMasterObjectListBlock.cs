@@ -29,6 +29,9 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
             set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset); }
         }
 
+        public ushort FirstFreeMobileObjectIdx => FreeListMobileObjects[FirstFreeSlotInMobileList].IdxAtArray;
+        public ushort FirstFreeStaticObjectIdx => (ushort) (FreeListStaticObjects[FirstFreeSlotInStaticList].IdxAtArray - 256);
+
         // todo: Recheck and make sure the number of entries is correct.
         public override bool ReconstructBuffer()
         {
@@ -121,8 +124,10 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
                         (i * StaticObject.FixedTotalLength)..((i + 1) * StaticObject.FixedTotalLength)];
                 var currobj =
                     (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (ushort) (i + MobileObjectNum));
+                if (i <= FirstFreeStaticObjectIdx)
+                    currobj.Invalid = true;
 
-                if (currobj.IdxAtObjectArray < MobileObjectNum)
+                if ((currobj.IdxAtObjectArray < MobileObjectNum) & (currobj.Invalid))
                 {
                     throw new Exception(
                         "Attempted to add a static object to the region of mobile objects. Should not happen!");
@@ -142,7 +147,9 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
                     MobileObjectInfoBuffer[
                         (i * MobileObject.FixedTotalLength)..((i + 1) * MobileObject.FixedTotalLength)];
                 var currobj = (MobileObject) GameObjectFactory.CreateFromBuffer(currbuffer, i);
-
+                if (i <= FirstFreeMobileObjectIdx)
+                    currobj.Invalid = true;
+                
                 if (currobj.IdxAtObjectArray >= MobileObjectNum)
                 {
                     throw new Exception(
@@ -200,12 +207,12 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
             UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
             Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
 
-            Populate_MobileObjectsFromBuffer();
-            Populate_StaticObjectsFromBuffer();
             Populate_FreeListMobileObjectArrFromBuffer();
             Populate_FreeListStaticObjectArrFromBuffer();
+            Populate_MobileObjectsFromBuffer();
+            Populate_StaticObjectsFromBuffer();
             Populate_TileInfos(); // This requires a complete array of game objects, so it comes last
-            // Populate_Containers();
+            Populate_Containers();
         }
 
         private void Populate_TileInfos()
@@ -226,6 +233,7 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
         {
             foreach (var gameObject in AllGameObjects)
             {
+                if (gameObject.Invalid) continue;
                 if (gameObject is Container cont)
                 {
                     cont.Contents.PopulateObjectList(AllGameObjects);

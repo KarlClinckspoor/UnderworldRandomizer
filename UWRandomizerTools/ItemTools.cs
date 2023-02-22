@@ -32,6 +32,16 @@ public class ItemTools
 
     private static bool ShouldBeMoved(GameObject obj, ItemRandomizationSettings settings)
     {
+        // If the object is invalid (idx 0, 1 or in "Free" slot, it should be ignored)
+        if (obj.Invalid) return false;
+        
+        // We have to ignore objects that are in containers, otherwise this messes things up majorly.
+        if (obj.InContainer)
+        {
+            return false;
+        }
+        
+        // Then filter by the class
         bool res;
         try
         {
@@ -40,18 +50,6 @@ public class ItemTools
         catch (KeyNotFoundException)
         {
             res = ItemRandomizationSettings.DefaultMovableRule;
-        }
-
-        // We have to ignore objects that are in containers, otherwise this messes things up majorly.
-        if (obj.InContainer)
-        {
-            return false;
-        }
-
-        // Object at idx 0 is always unused, obj at idx 1 represents the avatar, so can't be moved either.
-        if ((obj.IdxAtObjectArray == 0) | (obj.IdxAtObjectArray == 1))
-        {
-            return false;
         }
 
         return res;

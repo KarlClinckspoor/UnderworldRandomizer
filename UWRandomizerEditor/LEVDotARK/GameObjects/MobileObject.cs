@@ -212,6 +212,7 @@
             byte_NPCwhoami = Buffer[offset15];
         }
 
+        // Reminder: don't call base... Need to design this better
         public MobileObject(byte[] buffer, ushort idx)
         {
             // Debug.Assert(buffer.Length == FixedTotalLength);
@@ -222,6 +223,7 @@
             Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
         }
 
+        // Reminder: don't call base... Need to design this better
         public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg,
             short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,

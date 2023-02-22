@@ -8,6 +8,10 @@ public static class GameObjectFactory
     // TODO: I'll likely need to add a reference to "FreeListOfStatic/Mobile objects"
     public static GameObject CreateFromBuffer(byte[] buffer, ushort idxAtArray)
     {
+        if ((idxAtArray == 0) | (idxAtArray == 1)) // These never hold actual object data.
+        {
+            return new MobileObject(buffer, idxAtArray) {Invalid = true};
+        }
         // Create a StaticObject just to get the ItemID for later.
         var tempObject = new StaticObject(buffer[0..8], 2);
         int itemID = tempObject.ItemID;
@@ -22,12 +26,12 @@ public static class GameObjectFactory
             }
 
             // Mobile objects can only have itemIDs in this range
-            if ((itemID < 0x40) | (itemID > 0x7f))
+            if ((itemID >= 0x40) & (itemID <= 0x7f))
             {
-                return new MobileObject(buffer, idxAtArray) {Invalid = true};
+                return new MobileObject(buffer, idxAtArray);
             }
-
-            return new MobileObject(buffer, idxAtArray);
+            // Outside this range, it's not a valid MobileObject
+            return new MobileObject(buffer, idxAtArray) {Invalid = true};
         }
 
         // End is always StaticObjects

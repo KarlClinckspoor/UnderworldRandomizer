@@ -33,7 +33,6 @@ namespace UWRandomizerEditor.LEVdotARK.GameObjects
         protected GameObject()
         {
             Buffer = Array.Empty<byte>();
-            Invalid = true;
         }
 
         public GameObject(byte[] buffer, ushort idxAtObjArray)
