@@ -30,7 +30,7 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
         }
 
         public ushort FirstFreeMobileObjectIdx => FreeListMobileObjects[FirstFreeSlotInMobileList].IdxAtArray;
-        public ushort FirstFreeStaticObjectIdx => (ushort) (FreeListStaticObjects[FirstFreeSlotInStaticList].IdxAtArray - 256);
+        public ushort FirstFreeStaticObjectIdx => FreeListStaticObjects[FirstFreeSlotInStaticList].IdxAtArray; // TODO: Is this +1?
 
         // todo: Recheck and make sure the number of entries is correct.
         public override bool ReconstructBuffer()
@@ -60,6 +60,8 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
         private void ReconstructSubBuffers()
         {
             ReconstructTileMapBuffer();
+            // TODO: These should ideally check the validity of each object and rearrange them so they're ordered
+            // from the end, and the free lists should accomodate that.
             ReconstructMobileObjectInfoBuffer();
             ReconstructStaticObjectInfoBuffer();
             ReconstructFreeListMobileObjectBuffer();
