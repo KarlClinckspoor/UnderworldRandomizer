@@ -35,21 +35,18 @@ public class ItemTools
         // If the object is invalid (idx 0, 1 or in "Free" slot, it should be ignored)
         if (obj.Invalid) return false;
         
-        // We have to ignore objects that are in containers, otherwise this messes things up majorly.
-        if (obj.InContainer)
-        {
-            return false;
-        }
+        // We have to ignore objects that are in containers
+        if (obj.InContainer) return false;
         
         // Then filter by the class
         bool res;
         try
         {
-            res = settings.MovableRules[obj.GetType()];
+            res = settings.MovableRulesByClass[obj.GetType()];
         }
         catch (KeyNotFoundException)
         {
-            res = ItemRandomizationSettings.DefaultMovableRule;
+            res = ItemRandomizationSettings.DefaultMovableRuleByClass;
         }
 
         return res;
@@ -58,7 +55,7 @@ public class ItemTools
 
 public class ItemRandomizationSettings
 {
-    public readonly Dictionary<Type, bool> MovableRules = new Dictionary<Type, bool>()
+    public readonly Dictionary<Type, bool> MovableRulesByClass = new Dictionary<Type, bool>()
     {
         { typeof(Furniture), false },
         { typeof(Door), false },
@@ -78,5 +75,5 @@ public class ItemRandomizationSettings
         { typeof(Container), true},
     };
 
-    public const bool DefaultMovableRule = false;
+    public const bool DefaultMovableRuleByClass = true;
 }
