@@ -55,6 +55,7 @@ namespace UWRandomizerEditor.LEVdotARK
         // This is the 4 bytes used to describe a Tile Info. This is useful for bitwise operations that span
         // the boundary of 1 byte, which would be a bit cumbersome to do with a byte[] buffer. The byte[] Buffer
         // is to be considered "primary", meaning it should always be kept up to date.
+        // TODO: change this to uint
         private int Entry { get; set; }
 
         public byte[] Buffer { get; set; }
