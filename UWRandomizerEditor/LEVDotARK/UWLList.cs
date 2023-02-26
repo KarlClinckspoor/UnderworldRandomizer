@@ -427,7 +427,11 @@ public class UWLinkedList: IList<GameObject>
             }
 
             GameObject obj = AllBlockObjects[currentIdx];
-            // objects.Add(obj);
+            // TODO: Why are some invalid objects being added?
+            // if (obj.Invalid)
+            // {
+            //     throw new Exception("Can't add an invalid object!");
+            // }
             currentIdx = obj.next;
             Add(obj);
         }
