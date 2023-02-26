@@ -109,6 +109,7 @@ public class CompareWithHanksEditor
             if (i < 256)
             {
                 var compare = ark.TileMapObjectsBlocks[blocknum].MobileObjects[i];
+                if (compare.Invalid) continue;
                 var correctProperty = correct[correctLabel];
                 var compareProperty = GetPropertyValue(compare, compareLabel);
                 Assert.True(correctProperty == compareProperty,
@@ -117,6 +118,7 @@ public class CompareWithHanksEditor
             else
             {
                 var compare = ark.TileMapObjectsBlocks[blocknum].StaticObjects[i - 256];
+                if (compare.Invalid) continue;
                 var correctProperty = correct[correctLabel];
                 var compareProperty = GetPropertyValue(compare, compareLabel);
                 Assert.True(correctProperty == compareProperty,
