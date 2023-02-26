@@ -93,7 +93,8 @@ public static class GameObjectFactory
             if (itemID > 0x1cf & itemID <= 0x1ff) // Not described in the text
                 return new StaticObject(buffer, idxAtArray);
 
-            return new StaticObject(buffer, idxAtArray) {Invalid = true};
+            // return new StaticObject(buffer, idxAtArray) {Invalid = true};
+            throw new Exception($"Can't create object with itemID {itemID}");
         }
 
 
