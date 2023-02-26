@@ -4,7 +4,7 @@ public class Container: SpecialLinkGameObject
 {
     public Container(byte[] buffer, ushort idx) : base(buffer, idx)
     {
-        Contents = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty};
+        Contents = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
     public Container(ushort objIdFlags, ushort position, ushort qualityChain,
