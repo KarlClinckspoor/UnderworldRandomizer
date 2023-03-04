@@ -2,7 +2,6 @@
 
 public class EnchantedWand : SpecialLinkGameObject
 {
-    private readonly int EnchantFlag = 1;
 
     public int SpellObjectLink
     {

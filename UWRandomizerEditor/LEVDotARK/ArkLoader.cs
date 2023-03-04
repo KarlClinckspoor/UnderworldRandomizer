@@ -51,10 +51,6 @@ namespace UWRandomizerEditor.LEVdotARK
             {Sections.Unused, 0}
         };
 
-        private ArkLoader()
-        {
-        }
-
         /// <summary>
         /// Instantiates a new ArkLoader object using a provided path.
         /// </summary>

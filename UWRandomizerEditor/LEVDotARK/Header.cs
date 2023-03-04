@@ -1,4 +1,5 @@
-﻿using UWRandomizerEditor.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using UWRandomizerEditor.Interfaces;
 
 namespace UWRandomizerEditor.LEVdotARK;
 
@@ -56,6 +57,7 @@ public class Header : IBufferObject
         return blockOffset;
     }
 
+    [MemberNotNull("BlockOffsets")]
     public void CalculateOffsets()
     {
         BlockOffsets = new int[NumEntries];

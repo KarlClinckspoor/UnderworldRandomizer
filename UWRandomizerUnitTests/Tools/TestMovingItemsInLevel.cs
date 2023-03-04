@@ -24,6 +24,7 @@ public class TestMovingItemsInLevel
         int count = 0;
         foreach (var tile in lvl.TileInfos)
         {
+            // TODO: If the same tile is encountered, using this function on it shouldn't affect anything
             if (tile.XYPos[0] == 31 & tile.XYPos[1] == 2) continue;
             if (count >= 10)
             {
@@ -31,6 +32,7 @@ public class TestMovingItemsInLevel
             }
             foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
             {
+                Console.WriteLine($"Extracted obj {obj.IdxAtObjectArray} from Tile {tile.EntryNum} XY {tile.XYPos[0]}:{tile.XYPos[1]}");
                 objectsInLevel.Push(obj);
                 count++;
             }

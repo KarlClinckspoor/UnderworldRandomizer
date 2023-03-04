@@ -11,7 +11,7 @@ public static partial class RandoTools
     /// </summary>
     /// <param name="Tile1">First Tile to replace</param>
     /// <param name="Tile2">Second tile to replace</param>
-    public static void SwapAllObjectsBetweenTwoTiles(TileInfo Tile1, TileInfo Tile2, ItemRandomizationSettings settings)
+    public static void SwapAllObjectsBetweenTwoTiles(TileInfo Tile1, TileInfo Tile2, ItemRandomizationSettings settings, Random r)
     {
         var obj1 = ItemTools.ExtractMovableItems(Tile1, settings);
         var obj2 = ItemTools.ExtractMovableItems(Tile2, settings);
@@ -19,9 +19,9 @@ public static partial class RandoTools
         Tile1.ObjectChain.AppendItems(obj2);
         Tile2.ObjectChain.AppendItems(obj1);
         
-        Tile1.MoveObjectsToCorrectCorner();
+        Tile1.MoveObjectsToCorrectCorner(r);
         Tile1.MoveObjectsToSameZLevel();
-        Tile2.MoveObjectsToCorrectCorner();
+        Tile2.MoveObjectsToCorrectCorner(r);
         Tile2.MoveObjectsToSameZLevel();
         
         Debug.Assert(Tile1.ObjectChain.CheckIntegrity());
