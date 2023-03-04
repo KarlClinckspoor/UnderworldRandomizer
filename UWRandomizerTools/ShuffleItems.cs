@@ -79,7 +79,7 @@ public class ShuffleItems
     {
         // Initially, I'm only putting items in open spaces!
         // I'll deal with moving them to the appropriate corners later
-        if ((TileInfo.TileTypes) tile.TileType != TileInfo.TileTypes.open)
+        if ((TileInfo.TileTypes) tile.TileType != TileInfo.TileTypes.Open)
         {
             return false;
         }

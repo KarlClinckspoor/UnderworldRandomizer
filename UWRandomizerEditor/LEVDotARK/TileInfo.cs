@@ -12,16 +12,16 @@ namespace UWRandomizerEditor.LEVdotARK
 
         public enum TileTypes
         {
-            solid = 0,
-            open,
-            diag_se,
-            diag_sw,
-            diag_ne,
-            diag_nw,
-            slp_n,
-            slp_s,
-            slp_e,
-            slp_w,
+            Solid = 0,
+            Open,
+            DiagSe,
+            DiagSw,
+            DiagNe,
+            DiagNw,
+            SlpN,
+            SlpS,
+            SlpE,
+            SlpW,
         };
 
         public static readonly IDictionary<int, string> TileTypeDescriptors = new Dictionary<int, string>()
@@ -243,39 +243,38 @@ namespace UWRandomizerEditor.LEVdotARK
         }
 
         // TODO: Make the positions randomized among a set of possible values
-        public void MoveObjectsToCorrectCorner()
+        public void MoveObjectsToCorrectCorner(Random r)
         {
-            Random r = new Random(); // TODO: Make a singleton random instance
             foreach (var obj in ObjectChain)
             {
                 switch (TileType)
                 {
-                    case (int) TileTypes.open:
-                    case (int) TileTypes.slp_n:
-                    case (int) TileTypes.slp_e:
-                    case (int) TileTypes.slp_s:
-                    case (int) TileTypes.slp_w:
-                    case (int) TileTypes.solid:
+                    case (int) TileTypes.Open:
+                    case (int) TileTypes.SlpN:
+                    case (int) TileTypes.SlpE:
+                    case (int) TileTypes.SlpS:
+                    case (int) TileTypes.SlpW:
+                    case (int) TileTypes.Solid:
                         break;
-                    case (int) TileTypes.diag_se:
+                    case (int) TileTypes.DiagSe:
                     {
                         obj.Xpos = 6;
                         obj.Ypos = 1;
                         break;
                     }
-                    case (int) TileTypes.diag_sw:
+                    case (int) TileTypes.DiagSw:
                     {
                         obj.Xpos = 1;
                         obj.Ypos = 1;
                         break;
                     }
-                    case (int) TileTypes.diag_ne:
+                    case (int) TileTypes.DiagNe:
                     {
                         obj.Xpos = 6;
                         obj.Ypos = 6;
                         break;
                     }
-                    case (int) TileTypes.diag_nw:
+                    case (int) TileTypes.DiagNw:
                     {
                         obj.Xpos = 1;
                         obj.Ypos = 6;

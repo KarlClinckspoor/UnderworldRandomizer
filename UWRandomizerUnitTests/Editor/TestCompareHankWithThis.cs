@@ -12,7 +12,7 @@ public class ManualTests
         var tile = new TileInfo(1609, new byte[] {0x11, 0x20, 0x1E, 0x00}, 6436, 0);
         // Some water tile near that island with a lurker nearby
         var reference = new TileInfo(1609, 0, 6436, 0);
-        reference.TileType = (int) TileInfo.TileTypes.open;
+        reference.TileType = (int) TileInfo.TileTypes.Open;
         reference.TileHeight = 1;
         reference.DoorBit = 0;
         reference.NoMagic = 0;
