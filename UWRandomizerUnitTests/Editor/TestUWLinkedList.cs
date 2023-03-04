@@ -319,8 +319,8 @@ public class TestUWLinkedList
         LList1.startingIdx = 1;
         LList1.PopulateObjectList(_gameObjects);
 
-        var LList3 = new UWLinkedList(LList1.ToList(), (short) LList1.startingIdx);
-        var LList4 = new UWLinkedList(LList1.ToArray(), (short) LList1.startingIdx);
+        var LList3 = new UWLinkedList(LList1.ToList(), (ushort) LList1.startingIdx);
+        var LList4 = new UWLinkedList(LList1.ToArray(), (ushort) LList1.startingIdx);
         Assert.True(LList3.CheckIntegrity());
         Assert.True(LList4.CheckIntegrity());
     }

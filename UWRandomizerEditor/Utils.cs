@@ -82,6 +82,10 @@ namespace UWRandomizerEditor
                    shift) // Moves only the relevant bits of the new value to the relevant position, replaces the target bits
             );
         }
+        public static uint SetBits(uint currvalue, uint newvalue, int mask, int shift)
+        {
+            return (uint) SetBits((int) currvalue, (int) newvalue, mask, shift);
+        }
 
         /// <summary>
         /// Gets the bits specified by the mask after shifting "value" to the right by "shift".
@@ -121,6 +125,11 @@ namespace UWRandomizerEditor
         public static int GetBits(int value, int mask, int shift)
         {
             return (value >> shift) & mask;
+        }
+        
+        public static uint GetBits(uint value, int mask, int shift)
+        {
+            return (uint) GetBits((int) value, mask, shift);
         }
 
         /// <summary>

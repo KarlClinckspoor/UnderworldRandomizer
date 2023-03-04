@@ -7,9 +7,9 @@ namespace UWRandomizerEditor.LEVdotARK;
 
 public class UWLinkedList: IList<GameObject>
 {
-    private int _startingIdx = 0;
+    private uint _startingIdx = 0;
     public bool RepresentingContainer = false;
-    public int startingIdx
+    public uint startingIdx
     {
         get
         {
@@ -270,14 +270,14 @@ public class UWLinkedList: IList<GameObject>
     /// Creates a UWLinkedList containing the provided list of objects.
     /// </summary>
     /// <param name="objectsToBeInTheList"></param>
-    public UWLinkedList(List<GameObject> objectsToBeInTheList, short firstObjectIndex)
+    public UWLinkedList(List<GameObject> objectsToBeInTheList, ushort firstObjectIndex)
     {
         _startingIdx = firstObjectIndex;
         objects = objectsToBeInTheList;
         Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
 
-    public UWLinkedList(GameObject[] objectsToBeInTheList, short firstObjectIndex)
+    public UWLinkedList(GameObject[] objectsToBeInTheList, ushort firstObjectIndex)
     {
         _startingIdx = firstObjectIndex;
         this.objects = objectsToBeInTheList.ToList();
@@ -417,7 +417,7 @@ public class UWLinkedList: IList<GameObject>
 
         int safetycounter = 0;
         int maxcounter = 1024;
-        int currentIdx = startingIdx;
+        uint currentIdx = startingIdx;
         while (currentIdx != 0) 
         {
             safetycounter++;

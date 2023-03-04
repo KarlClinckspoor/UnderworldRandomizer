@@ -219,11 +219,11 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
 
         private void Populate_TileInfos()
         {
-            for (int i = 0; i < TileMapLength / TileMapEntrySize; i++)
+            for (uint i = 0; i < TileMapLength / TileMapEntrySize; i++)
             {
-                int offset = i * TileMapEntrySize;
+                var offset = i * TileMapEntrySize;
                 // Todo: Seems a bit weird to convert and de-convert later. Think better.
-                int entry = BitConverter.ToInt32(TileMapBuffer, offset);
+                var entry = BitConverter.ToUInt32(TileMapBuffer, (int) offset);
                 TileInfo currInfo = new TileInfo(i, entry, offset, LevelNumber);
 
                 TileInfos[i] = currInfo;
