@@ -126,7 +126,7 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks
                         (i * StaticObject.FixedTotalLength)..((i + 1) * StaticObject.FixedTotalLength)];
                 var currobj =
                     (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (ushort) (i + MobileObjectNum));
-                if (i <= FirstFreeStaticObjectIdx)
+                if (i < FirstFreeStaticObjectIdx - MobileObjectNum + 2) // +2 because of objs 0 and 1
                     currobj.Invalid = true;
 
                 if ((currobj.IdxAtObjectArray < MobileObjectNum) & (currobj.Invalid))

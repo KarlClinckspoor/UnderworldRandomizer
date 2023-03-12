@@ -31,7 +31,6 @@ public class TestTileInfo
         Assert.False(tinfo2.Equals(tinfo3));
     }
 
-    // todo: break up this massive test. Remove hardcoded paths
     [Category("RequiresSettings")]
     [Test]
     public void SavingBufferAndReloading()
@@ -98,8 +97,64 @@ public class TestTileInfo
         Assert.False(rebuiltTinfo2.Equals(rebuiltTinfo3));
     }
 
-    public byte[] LoadTileData(string path)
+    private byte[] LoadTileData(string path)
     {
         return System.IO.File.ReadAllBytes(path);
+    }
+}
+
+[TestFixture]
+public class TestGettersAndSetters
+{
+    [Test]
+    public void TestingGettersAndSettersThatModifyBuffer()
+    {
+        var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        foreach (var block in ark.TileMapObjectsBlocks)
+        {
+            foreach (var tile in block.TileInfos)
+            {
+                byte[] tempbuffer = new byte[tile.Buffer.Length];
+                tile.Buffer.CopyTo(tempbuffer, 0);
+                
+                tile.TileHeight = tile.TileHeight;
+                tile.TileType = tile.TileType;
+                tile.Bit9 = tile.Bit9;
+                tile.Light = tile.Light;
+                tile.DoorBit = tile.DoorBit;
+                tile.NoMagic = tile.NoMagic;
+                tile.FirstObjIdx = tile.FirstObjIdx;
+                tile.FloorTextureIdx = tile.FloorTextureIdx;
+                tile.WallTextureIdx = tile.WallTextureIdx;
+                
+                Assert.True(tempbuffer.SequenceEqual(tile.Buffer));
+            }
+        }
+    }
+
+    [Test]
+    public void TestCreatingTileFromSetters()
+    {
+        var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        foreach (var block in ark.TileMapObjectsBlocks)
+        {
+            foreach (var tile in block.TileInfos)
+            {
+                var Tile = new TileInfo(0, new byte[4], 0, 0);
+                
+                Tile.TileHeight = tile.TileHeight;
+                Tile.TileType = tile.TileType;
+                Tile.Bit9 = tile.Bit9;
+                Tile.Light = tile.Light;
+                Tile.DoorBit = tile.DoorBit;
+                Tile.NoMagic = tile.NoMagic;
+                Tile.FirstObjIdx = tile.FirstObjIdx;
+                Tile.FloorTextureIdx = tile.FloorTextureIdx;
+                Tile.WallTextureIdx = tile.WallTextureIdx;
+                
+                Assert.True(Tile.Buffer.SequenceEqual(tile.Buffer));
+            }
+        }
+        
     }
 }

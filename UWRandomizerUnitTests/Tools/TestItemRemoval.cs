@@ -189,6 +189,41 @@ public class TestItemRemoval
         Assert.True(LList1.CheckIntegrity());
         Assert.True(LList2.CheckIntegrity());
     }
+
+    [Test]
+    public void TestCyclesOfRemovalAndAppendingOnTile()
+    {
+        var Tile1 = new TileInfo(0, 0, 0, 0);
+        Tile1.FirstObjIdx = 1;
+        
+        // Tile has items in idx 1*,2,6*
+        // * means it should be moved
+        Tile1.ObjectChain.PopulateObjectList(_gameObjects);
+
+        // objs1 should be 1,6
+        var objs = ItemTools.ExtractMovableItems(Tile1, settings);
+
+        foreach (var obj in objs)
+        {
+            Tile1.ObjectChain.Add(obj);
+        }
+        // Tile1 should be 2, 1, 6
+
+        var Tile2 = new TileInfo(0, 0, 0, 0);
+        Tile2.FirstObjIdx = 2;
+        Tile2.ObjectChain.PopulateObjectList(_gameObjects);
+        
+        objs = ItemTools.ExtractMovableItems(Tile2, settings);
+        foreach (var obj in objs)
+        {
+            Tile2.ObjectChain.Add(obj);
+        }
+
+        Tile1.ReconstructBuffer();
+        Tile2.ReconstructBuffer();
+        Assert.True(Tile1.Equals(Tile2));
+        
+    }
     
     private bool CheckObjectsAtPositions(List<GameObject> list, List<short> correctIdxs)
     {
