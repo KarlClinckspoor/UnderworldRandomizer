@@ -43,6 +43,8 @@ public class TestMovingItemsInLevel
             leftTile.ObjectChain.Add(objectsInLevel.Pop());
         }
         
+        leftTile.MoveObjectsToSameZLevel();
+        
         leftTile.ReconstructBuffer();
         return leftTile;
     }
