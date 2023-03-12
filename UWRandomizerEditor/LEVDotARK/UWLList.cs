@@ -25,8 +25,11 @@ public class UWLinkedList: IList<GameObject>
         {
             if (objects.Count > 0)
             {
-                Debug.WriteLine("Attempting to change the starting index of an initialized UWLinkedList. This will clear the list");
-                Clear();
+                if (value != _startingIdx)
+                {
+                    Debug.WriteLine("Attempting to change the starting index of an initialized UWLinkedList. This will clear the list");
+                    Clear();
+                } // Else, don't do anything meaningful.
             }
             _startingIdx = value;
         }
