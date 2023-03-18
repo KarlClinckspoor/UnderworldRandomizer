@@ -4,6 +4,7 @@ using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 namespace RandomizerUnitTests;
 
+[TestFixture]
 public class ManualTests
 {
     [Test]

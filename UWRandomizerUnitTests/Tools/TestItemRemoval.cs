@@ -9,6 +9,7 @@ using UWRandomizerTools;
 
 namespace RandomizerUnitTests;
 
+[Category("RequiresSettings")]
 public class TestItemRemoval
 {
     private List<GameObject> _gameObjects;

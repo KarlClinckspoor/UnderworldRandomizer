@@ -11,7 +11,8 @@ namespace RandomizerUnitTests;
 public class TestWhatUWEditorFixes
 {
     [Test]
-    [Category("RequiresArk")]
+    [Category("RequiresSettings")]
+    [Category("FishyTests")]
     public void DetectDifferencesAfterLoadingInUltimateEditor()
     {
         var ArkCleaned = new ArkLoader(Paths.UW_ArkCleanedPath);

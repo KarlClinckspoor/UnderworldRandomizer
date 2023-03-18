@@ -5,6 +5,7 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace RandomizerUnitTests;
 
+[TestFixture]
 class TestGameObjectEquality
 {
     [Test]

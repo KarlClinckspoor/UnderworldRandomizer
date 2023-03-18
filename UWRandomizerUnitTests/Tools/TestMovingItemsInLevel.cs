@@ -103,7 +103,7 @@ public class TestMovingItemsInLevel
         return leftTile;
     }
     
-    [Category("RequiresArk")]
+    [Category("RequiresSettings")]
     [Test]
     public void TestMovingItemsNearSpawn()
     {
@@ -135,7 +135,7 @@ public class TestMovingItemsInLevel
         
     }
 
-    [Category("RequiresArk")]
+    [Category("RequiresSettings")]
     [Test]
     public void TestMoving10ItemsNearSpawn()
     {

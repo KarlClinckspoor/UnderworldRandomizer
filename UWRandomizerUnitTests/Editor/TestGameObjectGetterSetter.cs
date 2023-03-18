@@ -9,6 +9,7 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 namespace RandomizerUnitTests;
 
 [TestFixture]
+[Category("RequiresSettings")]
 public class TestObjectGetterSetter
 {
     private ArkLoader ark;

@@ -107,6 +107,7 @@ public class TestTileInfo
 public class TestGettersAndSetters
 {
     [Test]
+    [Category("RequiresSettings")]
     public void TestingGettersAndSettersThatModifyBuffer()
     {
         var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
@@ -133,6 +134,7 @@ public class TestGettersAndSetters
     }
 
     [Test]
+    [Category("RequiresSettings")]
     public void TestCreatingTileFromSetters()
     {
         var ark = new ArkLoader(Paths.UW_ArkOriginalPath);

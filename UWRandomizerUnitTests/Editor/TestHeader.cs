@@ -3,7 +3,7 @@ using UWRandomizerEditor.LEVdotARK;
 
 namespace RandomizerUnitTests;
 
-[Category("RequiresArk")]
+[Category("RequiresSettings")]
 // ReSharper disable once InconsistentNaming
 public class HeaderTestUW1
 {

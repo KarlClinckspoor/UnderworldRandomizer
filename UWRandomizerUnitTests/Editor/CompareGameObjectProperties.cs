@@ -16,6 +16,8 @@ using System.Configuration;
 namespace RandomizerUnitTests;
 
 [TestFixture]
+[Category("PropertyComparisons")]
+[Category("FishyTests")]
 public class CompareWithHanksEditor
 {
     private const int numOfLevels = 9;
@@ -57,7 +59,6 @@ public class CompareWithHanksEditor
     };
 
     [OneTimeSetUp]
-    [Category("RequiresArk")]
     public void Setup()
     {
         for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
@@ -80,7 +81,6 @@ public class CompareWithHanksEditor
 
 
     [Test]
-    [Category("RequiresArk")]
     public void TestStaticObjectProperties(
         [Range(0, numOfLevels - 1, 1)] int blocknum, // Reminder: Range is [from, to], not [from, to[
         [Values(PossibleLevArkToTest.pristine, PossibleLevArkToTest.cleaned)]

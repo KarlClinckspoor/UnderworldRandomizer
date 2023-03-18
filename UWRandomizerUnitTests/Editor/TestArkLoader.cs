@@ -6,13 +6,14 @@ using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 namespace RandomizerUnitTests;
 
+[TestFixture]
+[Category("RequiresSettings")]
 class ArkLoaderTest
 {
     /// <summary>
     /// Tests if the original lev.ark is correctly reconstructed and serialized.
     /// </summary>
     [Test]
-    [Category("RequiresArk")]
     public void CompareLoadSerializeOriginal()
     {
         var myArkLoader = new ArkLoader(Paths.UW_ArkOriginalPath);
@@ -36,7 +37,6 @@ class ArkLoaderTest
     /// Tests if the "cleaned" lev.ark (opened and closed with UWEditor) is correctly reconstructed and serialized.
     /// </summary>
     [Test]
-    [Category("RequiresArk")]
     public void TestReconstructBufferCleaned()
     {
         var AL = new ArkLoader(Paths.UW_ArkCleanedPath);
@@ -58,7 +58,6 @@ class ArkLoaderTest
     /// This will test some items to see if they're in the appropriate positions, heights, correct classes, etc
     /// </summary>
     [Test]
-    [Category("RequiresArk")]
     public void TestSpecificObjectProperties()
     {
         var AL = new ArkLoader(Paths.UW_ArkOriginalPath);

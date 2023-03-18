@@ -12,13 +12,8 @@ namespace RandomizerUnitTests;
 
 public class TestRemovingLockFromAllDoorsInArk
 {
-    [OneTimeSetUp]
-    public void SetUp()
-    {
-    }
-
     [Test]
-    [Category("RequiresArk")]
+    [Category("RequiresSettings")]
     public void TestManualLockRemoval()
     {
         // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
@@ -53,7 +48,7 @@ public class TestRemovingLockFromAllDoorsInArk
 
     // This test isn't working ATM because somehow an object isn't updating its buffer. But checking with UE and UWE, it's fine
     [Test]
-    [Category("RequiresArk")]
+    [Category("RequiresSettings")]
     public void TestRemovingAllLocks()
     {
         // I'm testing here both the original and the "cleaned" version from UltimateEditor
