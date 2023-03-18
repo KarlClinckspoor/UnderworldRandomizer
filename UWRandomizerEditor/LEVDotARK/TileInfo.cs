@@ -10,7 +10,7 @@ namespace UWRandomizerEditor.LEVdotARK
     {
         public const int FixedSize = 4;
 
-        public enum TileTypes
+        public enum TileTypes: uint
         {
             Solid = 0,
             Open,

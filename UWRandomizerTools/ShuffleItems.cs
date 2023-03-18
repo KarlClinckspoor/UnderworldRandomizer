@@ -75,7 +75,7 @@ public class ShuffleItems
         {8, 4}, // lvl9, void
     };
 
-    private static bool IsTileValid(TileInfo tile)
+    public static bool IsTileValid(TileInfo tile)
     {
         // Initially, I'm only putting items in open spaces!
         // I'll deal with moving them to the appropriate corners later
@@ -93,12 +93,12 @@ public class ShuffleItems
         else if (tile.LevelNum == 6) // Lvl 7. Has a weird shape. Divided into rectangles...
         {
             if (
-                InRectangle(tile, 28, 32, 35, 32) &
-                InRectangle(tile, 28, 33, 35, 33) &
-                InRectangle(tile, 28, 31, 35, 31) &
-                InRectangle(tile, 29, 30, 34, 30) &
-                InRectangle(tile, 30, 29, 33, 29) &
-                InRectangle(tile, 29, 34, 34, 34) &
+                InRectangle(tile, 28, 32, 35, 32) |
+                InRectangle(tile, 28, 33, 35, 33) |
+                InRectangle(tile, 28, 31, 35, 31) |
+                InRectangle(tile, 29, 30, 34, 30) |
+                InRectangle(tile, 30, 29, 33, 29) |
+                InRectangle(tile, 29, 34, 34, 34) |
                 InRectangle(tile, 30, 35, 33, 35)
             )
                 return false;
@@ -106,15 +106,15 @@ public class ShuffleItems
         else if (tile.LevelNum == 7) // Lvl 8. Rectangle + Strip
         {
             if (
-                InRectangle(tile, 29, 35, 35, 35) &
+                InRectangle(tile, 29, 35, 35, 30) |
                 InRectangle(tile, 31, 29, 33, 29)
             )
                 return false;
         }
 
         // Can't place items on water, or else they might vanish. TODO: Need to test though!
-        if ((tile.FloorTextureIdx == LevelTextureIdxOfWater[levelNumber]) |
-            tile.FloorTextureIdx == LevelTextureIdxOfLava[levelNumber])
+        if ((tile.FloorTextureIdx == LevelTextureIdxOfWater[tile.LevelNum]) |
+            tile.FloorTextureIdx == LevelTextureIdxOfLava[tile.LevelNum])
         {
             return false;
         }
