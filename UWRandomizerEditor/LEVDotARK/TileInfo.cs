@@ -192,6 +192,9 @@ namespace UWRandomizerEditor.LEVdotARK
             }
         }
 
+        public uint XPos => XYPos[0];
+        public uint YPos => XYPos[1];
+
         // TODO: I could add more checks here
         public bool ReconstructBuffer()
         {

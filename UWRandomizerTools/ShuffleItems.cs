@@ -33,7 +33,7 @@ public class ShuffleItems
         {
             int chosenTileIdx = RandomInstance.Next(0, block.TileInfos.Length);
             TileInfo chosenTile = block.TileInfos[chosenTileIdx];
-            if (!IsTileValid(chosenTile, block.LevelNumber))
+            if (!IsTileValid(chosenTile))
                 continue;
             chosenTile.ObjectChain.Add(objectsInLevel.Pop());
             chosenTile.MoveObjectsToSameZLevel();
@@ -75,7 +75,7 @@ public class ShuffleItems
         {8, 4}, // lvl9, void
     };
 
-    private static bool IsTileValid(TileInfo tile, int levelNumber)
+    private static bool IsTileValid(TileInfo tile)
     {
         // Initially, I'm only putting items in open spaces!
         // I'll deal with moving them to the appropriate corners later
@@ -83,7 +83,34 @@ public class ShuffleItems
         {
             return false;
         }
-        // TODO: Don't put items in the central shaft area
+        
+        // Preventing items from being placed in the central shaft area
+        if (tile.LevelNum < 6) // Lvls 1-4 have the shaft aligned in the middle. Lvl 5,6 don't have a shaft
+        {
+            if (InRectangle(tile, 30, 33, 33, 30))
+                return false;
+        }
+        else if (tile.LevelNum == 6) // Lvl 7. Has a weird shape. Divided into rectangles...
+        {
+            if (
+                InRectangle(tile, 28, 32, 35, 32) &
+                InRectangle(tile, 28, 33, 35, 33) &
+                InRectangle(tile, 28, 31, 35, 31) &
+                InRectangle(tile, 29, 30, 34, 30) &
+                InRectangle(tile, 30, 29, 33, 29) &
+                InRectangle(tile, 29, 34, 34, 34) &
+                InRectangle(tile, 30, 35, 33, 35)
+            )
+                return false;
+        }
+        else if (tile.LevelNum == 7) // Lvl 8. Rectangle + Strip
+        {
+            if (
+                InRectangle(tile, 29, 35, 35, 35) &
+                InRectangle(tile, 31, 29, 33, 29)
+            )
+                return false;
+        }
 
         // Can't place items on water, or else they might vanish. TODO: Need to test though!
         if ((tile.FloorTextureIdx == LevelTextureIdxOfWater[levelNumber]) |
@@ -94,4 +121,20 @@ public class ShuffleItems
 
         return true;
     }
+
+    private static bool InRectangle(TileInfo tile,
+        uint topLeftX, uint topLeftY,
+        uint topRightX, uint bottomLeftY)
+    {
+        if (
+            (tile.XPos >= topLeftX & tile.XPos <= topRightX) &
+            (tile.YPos >= bottomLeftY & tile.YPos <= topLeftY)
+        )
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
 }

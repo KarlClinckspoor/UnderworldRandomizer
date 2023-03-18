@@ -31,6 +31,7 @@ public class TestMovingItemsInLevel
             }
             foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
             {
+                // TODO: Change XYPos[0] to XPos
                 Console.WriteLine($"Extracted obj {obj.IdxAtObjectArray} from Tile {tile.EntryNum} XY {tile.XYPos[0]}:{tile.XYPos[1]}");
                 objectsInLevel.Push(obj);
                 count++;
