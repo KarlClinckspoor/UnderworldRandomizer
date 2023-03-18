@@ -1,36 +1,27 @@
 ﻿using UWRandomizerEditor.Interfaces;
-using static UWRandomizerEditor.Utils;
 
-namespace UWRandomizerEditor.LEVDotARK.Blocks
+namespace UWRandomizerEditor.LEVdotARK.Blocks
 {
-    public abstract class Block: ISaveBinary
+    public abstract class Block : IBufferObject
     {
-        public byte[] blockbuffer;
-        public int LevelNumber;
+        public byte[] Buffer { get; set; } = Array.Empty<byte>();
 
-        public int TotalBlockLength
+        public abstract bool ReconstructBuffer();
+
+        public int LevelNumber = -1;
+
+        /// If 0, means the block has no fixed length
+        public const int FixedBlockLength = 0;
+
+        protected Block()
         {
-            get
-            {
-                return blockbuffer.Length;
-            }
         }
 
-        protected Block(): this(new byte[] { }, -1){ }
-
-        public Block(byte[] blockbuffer, int levelNumber)
+        protected Block(byte[] buffer, int levelNumber)
         {
-            this.blockbuffer = blockbuffer;
-            this.LevelNumber = levelNumber;
-        }
-
-        public virtual string SaveBuffer(string? basePath = null, string filename = "")
-        {
-            if (basePath is null)
-            {
-                basePath = Settings.DefaultBinaryTestsPath;
-            }
-            return StdSaveBuffer(blockbuffer, basePath, filename);
+            Buffer = new byte[buffer.Length];
+            buffer.CopyTo(Buffer, 0);
+            LevelNumber = levelNumber;
         }
     }
 }

@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>RandomizerUnitTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +18,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\UWRandomizerEditor\UWRandomizerEditor.csproj" />
+      <ProjectReference Include="..\UWRandomizerWPF\UWRandomizerWPF.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="ReSharperTestRunner.dll.config">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

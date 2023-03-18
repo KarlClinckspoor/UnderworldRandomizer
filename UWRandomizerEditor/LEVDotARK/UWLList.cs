@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Data;
 using System.Diagnostics;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
 
-namespace UWRandomizerEditor.LEVDotARK;
+namespace UWRandomizerEditor.LEVdotARK;
 
 public class UWLinkedList: IList<GameObject>
 {
-    private int _startingIdx = 0;
-    public int startingIdx
+    private uint _startingIdx = 0;
+    public bool RepresentingContainer = false;
+    public uint startingIdx
     {
         get
         {
@@ -24,8 +25,11 @@ public class UWLinkedList: IList<GameObject>
         {
             if (objects.Count > 0)
             {
-                Debug.WriteLine("Attempting to change the starting index of an initialized UWLinkedList. This will clear the list");
-                Clear();
+                if (value != _startingIdx)
+                {
+                    Debug.WriteLine("Attempting to change the starting index of an initialized UWLinkedList. This will clear the list");
+                    Clear();
+                } // Else, don't do anything meaningful.
             }
             _startingIdx = value;
         }
@@ -54,6 +58,7 @@ public class UWLinkedList: IList<GameObject>
             objects[^1].next =  item.IdxAtObjectArray;
         }
         item.next = 0;
+        item.InContainer = RepresentingContainer;
         objects.Add(item);
     }
 
@@ -142,6 +147,7 @@ public class UWLinkedList: IList<GameObject>
         if (index == 0)
         {
             _startingIdx = item.IdxAtObjectArray;
+            item.InContainer = RepresentingContainer;
             item.next = objects[0].IdxAtObjectArray;
             objects.Insert(index, item);
         }
@@ -149,12 +155,14 @@ public class UWLinkedList: IList<GameObject>
         {
             objects[^1].next = item.IdxAtObjectArray;
             item.next = 0;
+            item.InContainer = RepresentingContainer;
             objects.Insert(index, item);
         }
         else
         {
             objects[index - 1].next = item.IdxAtObjectArray;
             item.next = objects[index].IdxAtObjectArray;
+            item.InContainer = RepresentingContainer;
             objects.Insert(index, item);
         }
         
@@ -265,14 +273,14 @@ public class UWLinkedList: IList<GameObject>
     /// Creates a UWLinkedList containing the provided list of objects.
     /// </summary>
     /// <param name="objectsToBeInTheList"></param>
-    public UWLinkedList(List<GameObject> objectsToBeInTheList, short firstObjectIndex)
+    public UWLinkedList(List<GameObject> objectsToBeInTheList, ushort firstObjectIndex)
     {
         _startingIdx = firstObjectIndex;
         objects = objectsToBeInTheList;
         Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
 
-    public UWLinkedList(GameObject[] objectsToBeInTheList, short firstObjectIndex)
+    public UWLinkedList(GameObject[] objectsToBeInTheList, ushort firstObjectIndex)
     {
         _startingIdx = firstObjectIndex;
         this.objects = objectsToBeInTheList.ToList();
@@ -397,24 +405,6 @@ public class UWLinkedList: IList<GameObject>
         }
     }
 
-    public List<GameObject> PopObjectsThatShouldBeMoved()
-    {
-        var tempList = new List<GameObject>();
-        foreach (var obj in objects)
-        {
-            if (obj.ShouldBeMoved)
-            {
-                tempList.Add(obj);
-            }
-        }
-
-        foreach (var removedObject in tempList)
-        {
-            Remove(removedObject);
-        }
-        // FixIntegrity();
-        return tempList;
-    }
     
     /// <summary>
     /// Fills in the list of objects given a list of all GameObjects present in a level.
@@ -430,7 +420,7 @@ public class UWLinkedList: IList<GameObject>
 
         int safetycounter = 0;
         int maxcounter = 1024;
-        int currentIdx = startingIdx;
+        uint currentIdx = startingIdx;
         while (currentIdx != 0) 
         {
             safetycounter++;
@@ -440,7 +430,11 @@ public class UWLinkedList: IList<GameObject>
             }
 
             GameObject obj = AllBlockObjects[currentIdx];
-            // objects.Add(obj);
+            // TODO: Why are some invalid objects being added?
+            // if (obj.Invalid)
+            // {
+            //     throw new Exception("Can't add an invalid object!");
+            // }
             currentIdx = obj.next;
             Add(obj);
         }

@@ -1,8 +1,8 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-public class Trap: StaticObject
+public class Trap : StaticObject
 {
-    public override bool ShouldBeMoved { get; set; } = false;
-    public Trap(byte[] buffer, short idxAtObjArray) : base(buffer, idxAtObjArray)
-    { }
+    public Trap(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
 }

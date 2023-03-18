@@ -14,5 +14,11 @@
     <Product>UWRandomizerEditor</Product>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Update="UWRandomizerEditor.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

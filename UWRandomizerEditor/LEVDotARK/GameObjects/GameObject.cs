@@ -1,85 +1,98 @@
+using System.Diagnostics;
 using UWRandomizerEditor.Interfaces;
-using static UWRandomizerEditor.Utils;
 
 // TODO: Maybe make a different class of Container objects?
 // TODO: What about empty entries? And the null entry (id = 0)?
 // TODO: Add checks that prevent modification if id=0.
-namespace UWRandomizerEditor.LEVDotARK.GameObjects
+namespace UWRandomizerEditor.LEVdotARK.GameObjects
 {
-    public class GameObject: IEquatable<GameObject>, IShouldIMove, ISaveBinary
+    public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     {
         public const int InfoSize = 2;
         public const int InfoNum = 4;
         public const int BaseLength = InfoNum * InfoSize;
         public const int ExtraLength = 0;
-        public const int TotalLength = BaseLength + ExtraLength;
-        public short IdxAtObjectArray;
+        public const int FixedTotalLength = BaseLength + ExtraLength;
+        public ushort IdxAtObjectArray;
 
-        public virtual bool ShouldBeMoved { get; set; } = true;
+        public bool InContainer { get; set; } = false;
 
-        public byte[] Buffer = new byte[TotalLength];
-        public short[] GeneralInfo = new short[InfoNum] { 0, 0, 0, 0 };
+        public byte[] Buffer { get; set; }
+        // public short[] GeneralInfo = new short[InfoNum] {0, 0, 0, 0};
 
-        public ushort link_specialField;
-        protected ushort objid_flagsField;
-        protected ushort positionField;
-        protected ushort quality_chainField;
+        protected ushort LinkSpecial;
+        protected ushort ObjIdFlags;
+        protected ushort Position;
+        protected ushort QualityChain;
 
-        protected GameObject() { }
+        /// <summary>
+        /// Tells whether or not an item has matching itemID and buffer size, i.e., can't have a Sword as a Mobile Object
+        /// </summary>
+        public bool Invalid { get; set; } = false;
 
-        // todo: Rider is complaining about the virtual methods. Check if this will be negatively affected here.
-        // If not, then just re-implement the methods in this and the derived classes.
-        public GameObject(byte[] buffer, short idxAtObjArray)
+        protected GameObject()
         {
-            // Debug.Assert(buffer.Length == TotalLength);
-            this.Buffer = buffer;
-            this.IdxAtObjectArray = idxAtObjArray;
+            Buffer = Array.Empty<byte>();
+        }
+
+        public GameObject(byte[] buffer, ushort idxAtObjArray)
+        {
+            if (buffer.Length != FixedTotalLength)
+            {
+                throw new ArgumentException(
+                    $"Length of buffer ({buffer.Length}) is incompatible with GameObject length ({FixedTotalLength})");
+            }
+
+            Buffer = new byte[FixedTotalLength];
+            buffer.CopyTo(Buffer, 0);
+            IdxAtObjectArray = idxAtObjArray;
             UpdateEntries();
-            // this.objid_flagsField = BitConverter.ToInt16(buffer, 0);
-            // this.positionField = BitConverter.ToInt16(buffer, 2);
-            // this.quality_chainField = BitConverter.ToInt16(buffer, 4);
-            // this.link_specialField = BitConverter.ToInt16(buffer, 6);
         }
 
-        public GameObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
-            ushort link_specialField)
+        public GameObject(ushort objIdFlags, ushort position, ushort qualityChain,
+            ushort linkSpecial)
         {
-            this.objid_flagsField = objid_flagsField;
-            this.positionField = positionField;
-            this.quality_chainField = quality_chainField;
-            this.link_specialField = link_specialField;
-            UpdateBuffer();
+            ObjIdFlags = objIdFlags;
+            Position = position;
+            QualityChain = qualityChain;
+            LinkSpecial = linkSpecial;
+
+            Buffer = new byte[FixedTotalLength];
+            ReconstructBuffer();
         }
 
-        public void UpdateEntries()
+        protected virtual void UpdateEntries()
         {
-            this.objid_flagsField = BitConverter.ToUInt16(Buffer, 0);
-            this.positionField = BitConverter.ToUInt16(Buffer, 2);
-            this.quality_chainField = BitConverter.ToUInt16(Buffer, 4);
-            this.link_specialField = BitConverter.ToUInt16(Buffer, 6);
+            ObjIdFlags = BitConverter.ToUInt16(Buffer, 0);
+            Position = BitConverter.ToUInt16(Buffer, 2);
+            QualityChain = BitConverter.ToUInt16(Buffer, 4);
+            LinkSpecial = BitConverter.ToUInt16(Buffer, 6);
         }
-        
-        public void UpdateBuffer()
-        { // todo: this can be made more elegant.
-            byte[] tempbuffer = new byte[TotalLength];
-            byte[] field1 = BitConverter.GetBytes(this.objid_flagsField);
-            byte[] field2 = BitConverter.GetBytes(this.positionField);
-            byte[] field3 = BitConverter.GetBytes(this.quality_chainField);
-            byte[] field4 = BitConverter.GetBytes(this.link_specialField);
 
-            field1.CopyTo(tempbuffer, 0);
-            field2.CopyTo(tempbuffer, 2);
-            field3.CopyTo(tempbuffer, 4);
-            field4.CopyTo(tempbuffer, 6);
+        public virtual bool ReconstructBuffer()
+        {
+            byte[] field1 = BitConverter.GetBytes(ObjIdFlags);
+            byte[] field2 = BitConverter.GetBytes(Position);
+            byte[] field3 = BitConverter.GetBytes(QualityChain);
+            byte[] field4 = BitConverter.GetBytes(LinkSpecial);
 
-            tempbuffer.CopyTo(Buffer, 0);
+            field1.CopyTo(Buffer, 0);
+            field2.CopyTo(Buffer, 2);
+            field3.CopyTo(Buffer, 4);
+            field4.CopyTo(Buffer, 6);
+            return true;
         }
 
         #region First Short
+
         public int ItemID
         {
-            get { return GetBits(objid_flagsField, 0b111111111, 0); }
-            set { objid_flagsField = (ushort)SetBits(objid_flagsField, value, 0b111111111, 0); UpdateBuffer(); }
+            get { return Utils.GetBits(ObjIdFlags, 0b111111111, 0); }
+            set
+            {
+                ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value, 0b111111111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public int Flags
@@ -87,83 +100,126 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             get
             {
                 // todo: error in uw-formats.txt? Check hank's. -- He uses a mask with 3 bits, so I changed here.
-                // return GetBits(objid_flagsField, 0b1111, 9);
-                return GetBits(objid_flagsField, 0b111, 9);
+                return Utils.GetBits(ObjIdFlags, 0b111, 9);
             }
-            set { objid_flagsField = (ushort)SetBits(objid_flagsField, value, 0b1111, 9); UpdateBuffer(); }
+            set
+            {
+                ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value, 0b111, 9);
+                ReconstructBuffer();
+            }
         }
 
         public int EnchantFlag
         {
-            // get { return Flags & 0b1; }
-            get { return GetBits(Flags, 0b1, 0); }
-            set { this.Flags = (short)SetBits(Flags, value, 0b1, 0); }
-        } // These update "Flags", which updates the buffer, so no need to call it every time.
+            get { return Utils.GetBits(Flags, 0b1, 0); }
+            set
+            {
+                Flags = (short) Utils.SetBits(Flags, value, 0b1, 0);
+                ReconstructBuffer();
+            }
+        }
 
-        public int Doordir
+        public int DoorDir
         {
-            // get { return (Flags >> 1) & 0b1; }
-            get { return GetBits(Flags, 0b1, 1); }
-            set { this.Flags = (short)SetBits(Flags, value, 0b1, 1); }
+            get { return Utils.GetBits(Flags, 0b1, 1); }
+            set
+            {
+                Flags = (short) Utils.SetBits(Flags, value, 0b1, 1);
+                ReconstructBuffer();
+            }
         }
 
         public int Invis
         {
-            // get { return (Flags >> 2) & 0b1; }
-            get { return GetBits(Flags, 0b1, 2); }
-            set { this.Flags = (short)SetBits(Flags, value, 0b1, 2); }
+            get { return Utils.GetBits(Flags, 0b1, 2); }
+            set
+            {
+                this.Flags = (short) Utils.SetBits(Flags, value, 0b1, 2);
+                ReconstructBuffer();
+            }
         }
 
         public int IsQuant
         {
-            // get { return (Flags >> 3) & 0b1; }
-            get { return GetBits(Flags, 0b1, 3); }
-            set { this.Flags = (short)SetBits(Flags, value, 0b1, 3); }
+            get { return Utils.GetBits(Flags, 0b1, 3); }
+            set
+            {
+                this.Flags = (short) Utils.SetBits(Flags, value, 0b1, 3);
+                ReconstructBuffer();
+            }
         }
+
         #endregion
 
         #region Second Short
+
         public byte Zpos
         {
-            // get { return (byte) (positionField & 0b1111111); }
-            get { return (byte)GetBits(positionField, 0b1111111, 0); }
-            set { this.positionField = (ushort)SetBits(positionField, value, 0b1111111, 0); UpdateBuffer(); }
+            get { return (byte) Utils.GetBits(Position, 0b1111111, 0); }
+            set
+            {
+                Position = (ushort) Utils.SetBits(Position, value, 0b1111111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public byte Heading
         {
-            // get { return (byte) ((positionField >> 7) & 0b111); }
-            get { return (byte)GetBits(positionField, 0b111, 7); }
-            set { positionField = (ushort)SetBits(positionField, value, 0b111, 7); UpdateBuffer(); }
+            // get { return (byte) ((position >> 7) & 0b111); }
+            get { return (byte) Utils.GetBits(Position, 0b111, 7); }
+            set
+            {
+                Position = (ushort) Utils.SetBits(Position, value, 0b111, 7);
+                ReconstructBuffer();
+            }
         }
 
         public byte Ypos
         {
-            // get { return (byte) ((positionField >> 10) & 0b111); }
-            get { return (byte)GetBits(positionField, 0b111, 10); }
-            set { positionField = (ushort)SetBits(positionField, value, 0b111, 10); UpdateBuffer(); }
+            // get { return (byte) ((position >> 10) & 0b111); }
+            get { return (byte) Utils.GetBits(Position, 0b111, 10); }
+            set
+            {
+                Position = (ushort) Utils.SetBits(Position, value, 0b111, 10);
+                ReconstructBuffer();
+            }
         }
 
         public byte Xpos
         {
-            // get { return (byte) ((positionField >> 13) & 0b111); }
-            get { return (byte)GetBits(positionField, 0b111, 13); }
-            set { positionField = (ushort)SetBits(positionField, value, 0b111, 13); UpdateBuffer(); }
-        }
-        #endregion
-        #region Third Short
-        public byte Quality
-        {
-            // get { return (byte) (quality_chainField & 0b111111); }
-            get { return (byte)GetBits(quality_chainField, 0b111111, 0); }
-            set { quality_chainField = (ushort)SetBits(quality_chainField, value, 0b111111, 0); UpdateBuffer(); }
+            // get { return (byte) ((position >> 13) & 0b111); }
+            get { return (byte) Utils.GetBits(Position, 0b111, 13); }
+            set
+            {
+                Position = (ushort) Utils.SetBits(Position, value, 0b111, 13);
+                ReconstructBuffer();
+            }
         }
 
-        public short next
+        #endregion
+
+        #region Third Short
+
+        public byte Quality
         {
-            // get { return (byte) ((quality_chainField >> 6) & 0b1111111111); }
-            get { return (short)GetBits(quality_chainField, 0b1111111111, 6); }
-            set { quality_chainField = (ushort)SetBits(quality_chainField, value, 0b1111111111, 6); UpdateBuffer(); }
+            // get { return (byte) (QualityChain & 0b111111); }
+            get { return (byte) Utils.GetBits(QualityChain, 0b111111, 0); }
+            set
+            {
+                QualityChain = (ushort) Utils.SetBits(QualityChain, value, 0b111111, 0);
+                ReconstructBuffer();
+            }
+        }
+
+        public ushort next
+        {
+            // get { return (byte) ((QualityChain >> 6) & 0b1111111111); }
+            get { return (ushort) Utils.GetBits(QualityChain, 0b1111111111, 6); }
+            set
+            {
+                QualityChain = (ushort) Utils.SetBits(QualityChain, value, 0b1111111111, 6);
+                ReconstructBuffer();
+            }
         }
 
 
@@ -171,34 +227,45 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         {
             get { return next == 0; }
         }
+
         #endregion
+
         #region Short 4
-        public byte Owner_or_special
+
+        public byte OwnerOrSpecial
         {
-            // get { return (byte) (link_specialField & 0b111111); }
-            get { return (byte)GetBits(link_specialField, 0b111111, 0); }
-            set { link_specialField = (ushort)SetBits(link_specialField, value, 0b111111, 0); UpdateBuffer(); }
+            // get { return (byte) (linkSpecial & 0b111111); }
+            get { return (byte) Utils.GetBits(LinkSpecial, 0b111111, 0); }
+            set
+            {
+                LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b111111, 0);
+                ReconstructBuffer();
+            }
         }
 
-        public short QuantityOrSpecialLinkOrSpecialProperty
+        public ushort QuantityOrSpecialLinkOrSpecialProperty
         {
-            // get { return (byte) ((link_specialField >> 6) & 0b1111111111); }
-            get { return (byte)GetBits(link_specialField, 0b1111111111, 6); }
-            set { link_specialField = (ushort)SetBits(link_specialField, value, 0b1111111111, 6); UpdateBuffer(); }
+            get { return (ushort) Utils.GetBits(LinkSpecial, 0b11_1111_1111, 6); }
+            set
+            {
+                LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b11_1111_1111, 6);
+                ReconstructBuffer();
+            }
         }
+
         #endregion
 
         public bool HasOwner
         {
-            // get { return Owner_or_special == 0; }
+            // get { return OwnerOrSpecial == 0; }
             // todo: which one?
             get { return ItemOwnerStrIdx == 0; }
         }
 
         public int ItemOwnerStrIdx
         {
-            get { return Owner_or_special - 1 + 370; }
-            set { Owner_or_special = (byte) (value + 1 - 370); }
+            get { return OwnerOrSpecial - 1 + 370; }
+            set { OwnerOrSpecial = (byte) (value + 1 - 370); }
         }
 
         // TODO: Revise all these "Is..." functions. Would they be needed by the GameObjectFactory?
@@ -206,7 +273,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         {
             byte firstByte = buffer[0];
             int start = 0x160; // TODO: I haven't checked these indices thoroughly!
-            int end = 0x17f;   // TODO: I haven't checked these indices thoroughly!
+            int end = 0x17f; // TODO: I haven't checked these indices thoroughly!
             if ((firstByte > start) | (firstByte < end))
                 return true;
             return false;
@@ -218,6 +285,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             {
                 return false;
             }
+
             short first2bytes = BitConverter.ToInt16(buffer, 0);
             bool quantitybit = ((first2bytes >> 15) & 1) == 1 ? true : false;
             return quantitybit;
@@ -229,6 +297,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             {
                 return false;
             }
+
             short lastShort = BitConverter.ToInt16(buffer, 6);
             int quantity = (lastShort >> 6) & 0b1111111111;
             if ((quantity > 512) & IsQuantityObject(buffer))
@@ -251,6 +320,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             {
                 return false;
             }
+
             if (!IsQuantityObject(buffer))
             {
                 return true;
@@ -278,7 +348,7 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
                 return false;
             }
 
-            if (this.GetType() != other.GetType())
+            if (GetType() != other.GetType())
             {
                 return false;
             }
@@ -292,15 +362,6 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             }
 
             return true;
-        }
-
-        public virtual string SaveBuffer(string? basePath = null, string filename = "")
-        {
-            if (basePath is null)
-            {
-                basePath = Settings.DefaultBinaryTestsPath;
-            }
-            return StdSaveBuffer(Buffer, basePath, filename.Length == 0 ? $@"_GameObject_{IdxAtObjectArray}" : filename);
         }
     }
 }

@@ -1,18 +1,21 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.Blocks;
-public class AutomapInfosBlock: Block
+﻿using System.Diagnostics;
+
+namespace UWRandomizerEditor.LEVdotARK.Blocks;
+
+public class AutomapInfosBlock : Block
 {
-    public static new int TotalBlockLength = 0x1000;
+    public new const int FixedBlockLength = 0; // found out this can be 0 in a new file
 
-    public AutomapInfosBlock(byte[] buffer, int levelnumber)
-        {
-            // Debug.Assert(buffer.Length == TotalBlockLength);
-            blockbuffer = buffer;
-            LevelNumber = levelnumber;
-        }
-
-    public override string SaveBuffer(string? basePath = null, string filename = "")
+    public override bool ReconstructBuffer()
     {
-        return base.SaveBuffer(basePath, filename.Length == 0 ? $@"_AUTOMAP_{LevelNumber}" : filename);
+        // Since there's no operations at the moment that can change the buffer, this will do nothing.
+        return true;
     }
 
+    public AutomapInfosBlock(byte[] buffer, int levelnumber)
+    {
+        Buffer = new byte[buffer.Length];
+        buffer.CopyTo(Buffer, 0);
+        LevelNumber = levelnumber;
+    }
 }

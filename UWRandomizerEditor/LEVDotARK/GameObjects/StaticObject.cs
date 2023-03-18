@@ -1,14 +1,17 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects;
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 
-public class StaticObject: GameObject
+public class StaticObject : GameObject
 {
-    public StaticObject(byte[] buffer, short idxAtObjArray) : base(buffer, idxAtObjArray) { }
+    public StaticObject(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
 
-    public StaticObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField, ushort link_specialField)
-        : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-    { }
+    public StaticObject(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial)
+        : base(objIdFlags, position, qualityChain, linkSpecial)
+    {
+    }
 
-    public StaticObject() : base()
+    protected StaticObject() : base()
     {
     }
 }

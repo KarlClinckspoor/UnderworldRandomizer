@@ -1,401 +1,364 @@
-﻿using System.Diagnostics;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
+﻿using System.Data;
+using System.Diagnostics;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-namespace UWRandomizerEditor.LEVDotARK.Blocks
+namespace UWRandomizerEditor.LEVdotARK.Blocks
 {
     // TODO: Separate this into TileMap and Object List...?
-    public class TileMapMasterObjectListBlock : Block
+    public partial class TileMapMasterObjectListBlock : Block
     {
-        // From uw-formats.txt
-        // offset  size   description
-        // 0000    4000   tilemap (64 x 64 x 4 bytes)
-        public const int TileMapOffset = 0;
-        public const int TileMapLength = 0x4000;
-        public const int TileWidth = 64;
-        public const int TileHeight = 64;
-
-        public const int TileMapEntrySize = 4;
-
-        // 4000    1b00   mobile object information (objects 0000-00ff, 256 x 27 bytes)
-        public const int MobileObjectInfoOffset = 0x4000;
-        public const int MobileObjectInfoLength = 0x1b00;
-        public const int MobileObjectInfoEntrySize = MobileObject.TotalLength;
-        public const int MobileObjectNum = 256;
-
-        // 5b00    1800   static object information (objects 0100-03ff, 768 x 8 bytes)
-        public const int StaticObjectInfoOffset = 0x5b00;
-        public const int StaticObjectInfoLength = 0x1800;
-        public const int StaticObjectInfoEntrySize = GameObject.TotalLength;
-        public const int StaticObjectNum = 768;
-
-        // 7300    01fc   free list for mobile objects (objects 0002-00ff, 254 x 2 bytes)
-        public const int FreeListMobileObjectsOffset = 0x7300;
-        public const int FreeListMobileObjectsLength = 0x01fc;
-        public const int FreeListMobileObjectsEntrySize = 2;
-        public const int FreeListMobileObjectsNum = 254;
-
-        // 74fc    0600   free list for static objects (objects 0100-03ff, 768 x 2 bytes)
-        public const int FreeListStaticObjectsOffset = 0x74fc;
-        public const int FreeListStaticObjectsLength = 0x0600;
-        public const int FreeListStaticObjectsEntrySize = 2;
-        public const int FreeListStaticObjectsNum = 768;
-
-        // 7afc    0104   unknown(260 bytes)
-        public const int UnknownOffset = 0x7afc;
-        public const int UnknownLength = 0x104;
-        public const int UnknownEntrySize = 1; // irrelevant ATM
-
-        // 7c00    0002
-        public const int Unknown2Offset = 0x7c00;
-        public const int Unknown2Length = 2;
-        public const int Unknown2EntrySize = 2;
-
-        // 7c02    0002   no.entries in mobile free list minus 1
-        public const int NumEntriesMobileFreeListAdjOffset = 0x7c02;
-        public const int NumEntriesMobileFreeListAdjLength = 2;
-        public const int NumEntriesMobileFreeListAdjEntrySize = 2;
-        public short NumEntriesInMobileListMinus1
-        {
-            get { return BitConverter.ToInt16(blockbuffer, NumEntriesMobileFreeListAdjOffset); }
-            set { BitConverter.GetBytes(value).CopyTo(blockbuffer, NumEntriesInMobileListMinus1); }
-        }
-        // 7c04    0002   no. entries in static free list minus 1
-        public const int NumEntriesStaticFreeListAdjOffset = 0x7c04;
-        public const int NumEntriesStaticFreeListAdjLength = 2;
-        public const int NumEntriesStaticFreeListAdjEntrySize = 2;
-        public short NumEntriesInStaticListMinus1
-        {
-            get { return BitConverter.ToInt16(blockbuffer, NumEntriesStaticFreeListAdjOffset); }
-            set { BitConverter.GetBytes(value).CopyTo(blockbuffer, NumEntriesStaticFreeListAdjOffset); }
-        }
-        // 7c06    0002   0x7775 ('uw')
-        public const int EndOfBlockConfirmationOffset = 0x7c06;
-        public const int EndOfBlockConfirmationDataSize = 2;
-        public const short EndOfBlockConfirmationValue = 0x7775; // "uw"
-
-        public static new int TotalBlockLength = 0x7c08;
-        
         public TileInfo[] TileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
 
         public GameObject[] AllGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
         public MobileObject[] MobileObjects = new MobileObject[MobileObjectNum];
         public StaticObject[] StaticObjects = new StaticObject[StaticObjectNum];
-        
-        public FreeListObjectEntry[] FreeListMobileObject = new FreeListObjectEntry[FreeListMobileObjectsNum];
-        public FreeListObjectEntry[] FreeListStaticObject = new FreeListObjectEntry[FreeListStaticObjectsNum];
-        // public int LevelNumber;  // for safekeeping, irrelevant to the buffers.
+
+        public FreeListObjectEntry[] FreeListMobileObjects = new FreeListObjectEntry[FreeListMobileObjectsNum];
+        public FreeListObjectEntry[] FreeListStaticObjects = new FreeListObjectEntry[FreeListStaticObjectsNum];
+
+        public ushort FirstFreeSlotInMobileList
+        {
+            get { return BitConverter.ToUInt16(Buffer, NumEntriesMobileFreeListAdjOffset); }
+            set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset); }
+        }
+
+        public ushort FirstFreeSlotInStaticList
+        {
+            get { return BitConverter.ToUInt16(Buffer, NumEntriesStaticFreeListAdjOffset); }
+            set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset); }
+        }
+
+        public ushort FirstFreeMobileObjectIdx => FreeListMobileObjects[FirstFreeSlotInMobileList].IdxAtArray;
+        public ushort FirstFreeStaticObjectIdx => FreeListStaticObjects[FirstFreeSlotInStaticList].IdxAtArray; // TODO: Is this +1?
 
         // todo: Recheck and make sure the number of entries is correct.
-        public void UpdateBuffer()
+        public override bool ReconstructBuffer()
         {
-            TileMapBuffer.CopyTo(blockbuffer, TileMapOffset);
-            MobileObjectInfoBuffer.CopyTo(blockbuffer, MobileObjectInfoOffset);
-            StaticObjectInfoBuffer.CopyTo(blockbuffer, StaticObjectInfoOffset);
-            FreeListMobileObjectBuffer.CopyTo(blockbuffer, FreeListMobileObjectsOffset);
-            FreeListStaticObjectBuffer.CopyTo(blockbuffer, FreeListStaticObjectsOffset);
-            UnknownBuffer.CopyTo(blockbuffer, UnknownOffset);
-            Unknown2Buffer.CopyTo(blockbuffer, Unknown2Offset);
+            if (Buffer.Length != FixedBlockLength)
+            {
+                throw new ConstraintException(
+                    $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {Buffer.Length}");
+            }
+
+            ReconstructSubBuffers();
+
+            TileMapBuffer.CopyTo(Buffer, TileMapOffset);
+            MobileObjectInfoBuffer.CopyTo(Buffer, MobileObjectInfoOffset);
+            StaticObjectInfoBuffer.CopyTo(Buffer, StaticObjectInfoOffset);
+            FreeListMobileObjectBuffer.CopyTo(Buffer, FreeListMobileObjectsOffset);
+            FreeListStaticObjectBuffer.CopyTo(Buffer, FreeListStaticObjectsOffset);
+            UnknownBuffer.CopyTo(Buffer, UnknownOffset);
+            Unknown2Buffer.CopyTo(Buffer, Unknown2Offset);
             // todo: do I really need these 2? Seems this is always kept updated.
-            BitConverter.GetBytes(NumEntriesInMobileListMinus1).CopyTo(blockbuffer, NumEntriesMobileFreeListAdjOffset);
-            BitConverter.GetBytes(NumEntriesInStaticListMinus1).CopyTo(blockbuffer, NumEntriesStaticFreeListAdjOffset); 
-            BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(blockbuffer, EndOfBlockConfirmationOffset);
-            Debug.Assert(blockbuffer.Length == TotalBlockLength);
+            BitConverter.GetBytes(FirstFreeSlotInMobileList).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset);
+            BitConverter.GetBytes(FirstFreeSlotInStaticList).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset);
+            BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(Buffer, EndOfBlockConfirmationOffset);
+            return true;
         }
 
-        public void UpdateObjectInfoBuffer()
+        private void ReconstructSubBuffers()
         {
-            UpdateMobileObjectInfoBuffer();
-            UpdateStaticObjectInfoBuffer();
-            UpdateFreeListMobileObjectBuffer();
-            UpdateFreeListStaticObjectBuffer();
+            ReconstructTileMapBuffer();
+            // TODO: These should ideally check the validity of each object and rearrange them so they're ordered
+            // from the end, and the free lists should accomodate that.
+            ReconstructMobileObjectInfoBuffer();
+            ReconstructStaticObjectInfoBuffer();
+            ReconstructFreeListMobileObjectBuffer();
+            ReconstructFreeListStaticObjectBuffer();
         }
 
-        public void UpdateMobileObjectInfoBuffer()
+        private void ReconstructMobileObjectInfoBuffer()
         {
-            // Let's use the object's own index to decide where it goes
-            foreach (MobileObject mobj in MobileObjects)
+            // Let's use the object's own index to decide where it goes...
+            foreach (var mobj in MobileObjects)
             {
-                mobj.Buffer.CopyTo(MobileObjectInfoBuffer, mobj.IdxAtObjectArray * MobileObject.TotalLength);
+                mobj.ReconstructBuffer();
+                mobj.Buffer.CopyTo(MobileObjectInfoBuffer, mobj.IdxAtObjectArray * MobileObject.FixedTotalLength);
             }
         }
 
-        public void UpdateStaticObjectInfoBuffer()
+        private void ReconstructStaticObjectInfoBuffer()
         {
-            foreach (GameObject obj in StaticObjects)
+            foreach (var obj in StaticObjects)
             {
-                obj.Buffer.CopyTo(StaticObjectInfoBuffer, obj.IdxAtObjectArray * GameObject.TotalLength);
+                obj.ReconstructBuffer();
+                // obj.Buffer.CopyTo(StaticObjectInfoBuffer, (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedTotalLength);
+                obj.Buffer.CopyTo(StaticObjectInfoBuffer,
+                    (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedTotalLength);
             }
         }
 
-        public void UpdateFreeListStaticObjectBuffer()
+        private void ReconstructFreeListStaticObjectBuffer()
         {
-            throw new NotImplementedException();//todo
-        }
-        
-        public void UpdateFreeListMobileObjectBuffer()
-        {
-            throw new NotImplementedException();//todo
+            foreach (var obj in FreeListStaticObjects)
+            {
+                obj.ReconstructBuffer();
+                obj.Buffer.CopyTo(FreeListStaticObjectBuffer, obj.EntryNum * FreeListObjectEntry.FixedSize);
+            }
         }
 
-        public void Populate_StaticObjectsFromBuffer()
+        private void ReconstructFreeListMobileObjectBuffer()
+        {
+            foreach (var obj in FreeListMobileObjects)
+            {
+                obj.ReconstructBuffer();
+                obj.Buffer.CopyTo(FreeListMobileObjectBuffer, obj.EntryNum * FreeListObjectEntry.FixedSize);
+            }
+        }
+
+        private void ReconstructTileMapBuffer()
+        {
+            // Todo: Check that TileInfos is the required length AND there aren't repeat indices.
+            foreach (TileInfo currInfo in TileInfos)
+            {
+                currInfo.ReconstructBuffer();
+                currInfo.Buffer.CopyTo(TileMapBuffer, currInfo.Offset);
+            }
+        }
+
+        private void Populate_StaticObjectsFromBuffer()
         {
             for (short i = 0; i < StaticObjectNum; i++)
             {
                 byte[] currbuffer =
-                    StaticObjectInfoBuffer[(i * StaticObject.TotalLength)..((i + 1) * StaticObject.TotalLength)];
-                var currobj = (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (short) (i +  MobileObjectNum));
+                    StaticObjectInfoBuffer[
+                        (i * StaticObject.FixedTotalLength)..((i + 1) * StaticObject.FixedTotalLength)];
+                var currobj =
+                    (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (ushort) (i + MobileObjectNum));
+                if (i < FirstFreeStaticObjectIdx - MobileObjectNum + 2) // +2 because of objs 0 and 1
+                    currobj.Invalid = true;
 
-                if (currobj.IdxAtObjectArray < MobileObjectNum)
+                if ((currobj.IdxAtObjectArray < MobileObjectNum) & (currobj.Invalid))
                 {
                     throw new Exception(
                         "Attempted to add a static object to the region of mobile objects. Should not happen!");
                 }
-                
+
                 StaticObjects[i] = currobj;
                 AllGameObjects[currobj.IdxAtObjectArray] = currobj;
             }
         }
-        
+
         // todo: consider also providing an entry number, for safekeeping
-        public void Populate_MobileObjectsFromBuffer()
+        private void Populate_MobileObjectsFromBuffer()
         {
-            for (short i = 0; i < MobileObjectNum; i++)
+            for (ushort i = 0; i < MobileObjectNum; i++)
             {
                 byte[] currbuffer =
-                    MobileObjectInfoBuffer[(i * MobileObject.TotalLength)..((i + 1) * MobileObject.TotalLength)];
+                    MobileObjectInfoBuffer[
+                        (i * MobileObject.FixedTotalLength)..((i + 1) * MobileObject.FixedTotalLength)];
                 var currobj = (MobileObject) GameObjectFactory.CreateFromBuffer(currbuffer, i);
+                if (i <= FirstFreeMobileObjectIdx)
+                    currobj.Invalid = true;
                 
                 if (currobj.IdxAtObjectArray >= MobileObjectNum)
                 {
                     throw new Exception(
                         "Attempted to add a static object to the region of mobile objects. Should not happen!");
                 }
-                
+
                 MobileObjects[i] = currobj;
                 AllGameObjects[currobj.IdxAtObjectArray] = currobj;
             }
         }
 
-        public void Populate_AllGameObjectsFromBuffer()
-        {
-            Populate_MobileObjectsFromBuffer();
-            Populate_StaticObjectsFromBuffer();
-        }
-        
-        public void Populate_FreeListMobileObjectArrFromBuffer()
+        private void Populate_FreeListMobileObjectArrFromBuffer()
         {
             for (int i = 0; i < FreeListMobileObjectsNum; i++)
             {
                 byte[] currbuffer =
-                    FreeListMobileObjectBuffer[(i * FreeListObjectEntry.EntrySize)..((i + 1) * FreeListObjectEntry.EntrySize)];
+                    FreeListMobileObjectBuffer[
+                        (i * FreeListObjectEntry.FixedSize)..((i + 1) * FreeListObjectEntry.FixedSize)];
                 var currobj = new FreeListObjectEntry(currbuffer, i);
-                FreeListMobileObject[i] = currobj;
+                FreeListMobileObjects[i] = currobj;
             }
         }
-        
-        public void Populate_FreeListStaticObjectArrFromBuffer()
+
+        private void Populate_FreeListStaticObjectArrFromBuffer()
         {
             for (int i = 0; i < FreeListStaticObjectsNum; i++)
             {
                 byte[] currbuffer =
-                    FreeListStaticObjectBuffer[(i * FreeListObjectEntry.EntrySize)..((i + 1) * FreeListObjectEntry.EntrySize)];
+                    FreeListStaticObjectBuffer[
+                        (i * FreeListObjectEntry.FixedSize)..((i + 1) * FreeListObjectEntry.FixedSize)];
                 var currobj = new FreeListObjectEntry(currbuffer, i);
-                FreeListStaticObject[i] = currobj;
+                FreeListStaticObjects[i] = currobj;
             }
         }
 
-        public TileMapMasterObjectListBlock(byte[] blockbuffer, int levelNumber)
+        public TileMapMasterObjectListBlock(byte[] buffer, int levelNumber)
         {
-            // Debug.Assert(blockbuffer.Length == TotalBlockLength);
-            this.blockbuffer = blockbuffer;
-            this.LevelNumber = levelNumber;
+            if (buffer.Length != FixedBlockLength)
+            {
+                throw new ArgumentException(
+                    $"Length of buffer ({buffer.Length}) is incompatible with expected TextureMappingBlock length ({FixedBlockLength})");
+            }
+
+            Buffer = new byte[FixedBlockLength];
+            buffer.CopyTo(Buffer, 0);
+            LevelNumber = levelNumber;
+
+            TileMapBuffer = buffer[TileMapOffset..(TileMapOffset + TileMapLength)];
+            MobileObjectInfoBuffer = buffer[MobileObjectInfoOffset..(MobileObjectInfoOffset + MobileObjectInfoLength)];
+            StaticObjectInfoBuffer = buffer[StaticObjectInfoOffset..(StaticObjectInfoOffset + StaticObjectInfoLength)];
+            FreeListMobileObjectBuffer =
+                buffer[FreeListMobileObjectsOffset..(FreeListMobileObjectsOffset + FreeListMobileObjectsLength)];
+            FreeListStaticObjectBuffer =
+                buffer[FreeListStaticObjectsOffset..(FreeListStaticObjectsOffset + FreeListStaticObjectsLength)];
+            UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
+            Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
+
+            Populate_FreeListMobileObjectArrFromBuffer();
+            Populate_FreeListStaticObjectArrFromBuffer();
+            Populate_MobileObjectsFromBuffer();
+            Populate_StaticObjectsFromBuffer();
+            Populate_TileInfos(); // This requires a complete array of game objects, so it comes last
+            Populate_Containers();
         }
 
-        #region information extraction
-
-        public void ExtractInfoFromTileMapBuffer()
+        private void Populate_TileInfos()
         {
-            // TileInfo[] tileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
-
-            for (int i = 0; i < TileMapLength / TileMapEntrySize; i++)
+            for (uint i = 0; i < TileMapLength / TileMapEntrySize; i++)
             {
-                
-                int offset = i * TileMapEntrySize;
+                var offset = i * TileMapEntrySize;
                 // Todo: Seems a bit weird to convert and de-convert later. Think better.
-                int entry = BitConverter.ToInt32(TileMapBuffer, offset);
+                var entry = BitConverter.ToUInt32(TileMapBuffer, (int) offset);
                 TileInfo currInfo = new TileInfo(i, entry, offset, LevelNumber);
 
                 TileInfos[i] = currInfo;
+                currInfo.ObjectChain.PopulateObjectList(AllGameObjects);
             }
         }
 
-        
-        public void UpdateTileMapBuffer()
+        private void Populate_Containers()
         {
-            // Todo: Check that TileInfos is the required length AND there aren't repeat indices.
-            foreach (TileInfo currInfo in TileInfos)
+            foreach (var gameObject in AllGameObjects)
             {
-                currInfo.TileBuffer.CopyTo(TileMapBuffer, currInfo.Offset);
+                if (gameObject.Invalid) continue;
+                if (gameObject is Container cont)
+                {
+                    cont.Contents.PopulateObjectList(AllGameObjects);
+                }
+
+                if (gameObject is MobileObject mobileObject)
+                {
+                    mobileObject.Inventory.PopulateObjectList(AllGameObjects);
+                }
             }
-            // byte[] newbuffer = new byte[TileInfos.Length * TileInfo.Size];
-            
-            // Thinking... which approach is better? I stored the offset for a reason... I think the second method can allow for
-            // more flexibility though.
-
-            //int i = 0;
-            //foreach (TileInfo currInfo in TileInfos)
-            //{
-            //    currInfo.TileBuffer.CopyTo(newbuffer, i * TileInfo.Size);
-            //    i++;
-            //}
-
-            // foreach (TileInfo currInfo in TileInfos)
-            // {
-            //     currInfo.TileBuffer.CopyTo(newbuffer, currInfo.Offset);
-            // }
-            // return newbuffer;
-            // return newbuffer;
         }
 
-        #endregion
 
-
-
-        
-        // #region properties
-        // TODO: Verify this implementation!
-        // public bool IsLengthOfMobileListValid()
-        // {
-        //     int counter = 0;
-        //     foreach (MobileObject mobj in FreeMobileObject)
-        //     {
-        //         if (mobj.ItemID != 0)
-        //         {
-        //             counter += 1;
-        //         }
-        //     }
-        //
-        //     if (counter - 1 != NumEntriesInMobileListMinus1)
-        //     {
-        //         return false;
-        //     }
-        //     else
-        //     {
-        //         return true;
-        //     }
-        // }
-        // // TODO: Verify this implementation!
-        // public bool IsLengthOfStaticListValid()
-        // {
-        //     int counter = 0;
-        //     foreach (GameObject mobj in FreeStaticObject)
-        //     {
-        //         if (mobj.ItemID != 0)
-        //         {
-        //             counter += 1;
-        //         }
-        //     }
-        //
-        //     if (counter - 1 != NumEntriesInStaticListMinus1)
-        //     {
-        //         return false;
-        //     }
-        //     else
-        //     {
-        //         return true;
-        //     }
-        // }
-        // #endregion
-
-        #region buffer definitions
+        private byte[] _tileMapBuffer = new byte[TileMapLength];
 
         public byte[] TileMapBuffer
         {
-            get { return blockbuffer[TileMapOffset..(TileMapOffset + TileMapLength)]; }
+            get { return _tileMapBuffer; }
             set
             {
-                Trace.Assert(value.Length == TileMapLength); // better to throw exception?
-                value.CopyTo(blockbuffer, TileMapOffset);
+                if (value.Length != TileMapLength)
+                {
+                    throw new ArgumentException($"Invalid length of TileMapBuffer");
+                }
+
+                value.CopyTo(_tileMapBuffer, 0);
             }
         }
+
+        private byte[] _mobileObjectInfoBuffer = new byte[MobileObjectInfoLength];
 
         public byte[] MobileObjectInfoBuffer
         {
-            get { return blockbuffer[MobileObjectInfoOffset..(MobileObjectInfoOffset + MobileObjectInfoLength)]; }
+            get { return _mobileObjectInfoBuffer; }
             set
             {
-                Trace.Assert(value.Length == MobileObjectInfoLength); // better to throw exception?
-                value.CopyTo(blockbuffer, MobileObjectInfoOffset);
+                if (value.Length != MobileObjectInfoLength)
+                {
+                    throw new ArgumentException($"Invalid length of MobileObjectInfoBuffer");
+                }
+
+                value.CopyTo(_mobileObjectInfoBuffer, 0);
             }
         }
+
+        private byte[] _staticObjectInfoBuffer = new byte[StaticObjectInfoLength];
 
         public byte[] StaticObjectInfoBuffer
         {
-            get { return blockbuffer[StaticObjectInfoOffset..(StaticObjectInfoOffset + StaticObjectInfoLength)]; }
+            get { return _staticObjectInfoBuffer; }
             set
             {
-                Trace.Assert(value.Length == StaticObjectInfoLength); // better to throw exception?
-                value.CopyTo(blockbuffer, StaticObjectInfoOffset);
+                if (value.Length != StaticObjectInfoLength)
+                {
+                    throw new ArgumentException($"Invalid length of StaticObjectInfoBuffer");
+                }
+
+                value.CopyTo(_staticObjectInfoBuffer, 0);
             }
         }
+
+        private byte[] _freeListMobileObjectBuffer = new byte[FreeListMobileObjectsLength];
 
         public byte[] FreeListMobileObjectBuffer
         {
-            get
-            {
-                return blockbuffer[
-                    FreeListMobileObjectsOffset..(FreeListMobileObjectsOffset + FreeListMobileObjectsLength)];
-            }
+            get { return _freeListMobileObjectBuffer; }
             set
             {
-                Trace.Assert(value.Length == FreeListMobileObjectsLength);
-                value.CopyTo(blockbuffer, FreeListMobileObjectsOffset);
+                if (value.Length != FreeListMobileObjectsLength)
+                {
+                    throw new ArgumentException($"Invalid length of FreeListMobileObjectBuffer");
+                }
+
+                value.CopyTo(_freeListMobileObjectBuffer, 0);
             }
         }
+
+        private byte[] _freeListStaticObjectBuffer = new byte[FreeListStaticObjectsLength];
 
         public byte[] FreeListStaticObjectBuffer
         {
-            get
-            {
-                return blockbuffer[
-                    FreeListStaticObjectsOffset..(FreeListStaticObjectsOffset + FreeListStaticObjectsLength)];
-            }
+            get { return _freeListStaticObjectBuffer; }
             set
             {
-                Trace.Assert(value.Length == FreeListStaticObjectsLength);
-                value.CopyTo(blockbuffer, FreeListStaticObjectsOffset);
+                if (value.Length != FreeListStaticObjectsLength)
+                {
+                    throw new ArgumentException($"Invalid length of FreeListStaticObjectBuffer");
+                }
+
+                value.CopyTo(_freeListStaticObjectBuffer, 0);
             }
         }
+
+        private byte[] _unknownBuffer = new byte[UnknownLength];
 
         protected byte[] UnknownBuffer
         {
-            get { return blockbuffer[UnknownOffset..(UnknownOffset + UnknownLength)]; }
+            get { return _unknownBuffer; }
             set
             {
-                Trace.Assert(value.Length == UnknownLength);
-                value.CopyTo(blockbuffer, UnknownOffset);
+                if (value.Length != UnknownLength)
+                {
+                    throw new ArgumentException($"Invalid length");
+                }
+
+                value.CopyTo(_unknownBuffer, 0);
             }
         }
+
+        private byte[] _unknown2Buffer = new byte[Unknown2Length];
 
         protected byte[] Unknown2Buffer
         {
-            get { return blockbuffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)]; }
+            get { return _unknown2Buffer; }
             set
             {
-                Trace.Assert(value.Length == Unknown2Length);
-                value.CopyTo(blockbuffer, Unknown2Offset);
-            }
-        }
+                if (value.Length != Unknown2Length)
+                {
+                    throw new ArgumentException($"Invalid length");
+                }
 
-        #endregion
-
-        public override string SaveBuffer(string? basePath = null, string filename = "")
-        {
-            if (basePath is null)
-            {
-                basePath = Settings.DefaultBinaryTestsPath;
+                value.CopyTo(_unknown2Buffer, 0);
             }
-            return base.SaveBuffer(basePath, filename.Length == 0 ? $@"_TileMapObjList_{LevelNumber}" : filename);
         }
     }
 }

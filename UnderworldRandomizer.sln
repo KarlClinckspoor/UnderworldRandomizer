@@ -5,13 +5,15 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerEditor", "UWRandomizerEditor\UWRandomizerEditor.csproj", "{6AE36EBC-FB26-41F8-9179-611A7704A10E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomizerUnitTests", "RandomizerUnitTests\RandomizerUnitTests.csproj", "{3C8CFAF0-AD93-4542-A88E-7534211314AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerUnitTests", "UWRandomizerUnitTests\UWRandomizerUnitTests.csproj", "{3C8CFAF0-AD93-4542-A88E-7534211314AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCombinations", "ItemCombinations\ItemCombinations.csproj", "{6B880621-0FCE-421D-BEF6-A27696C09B2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizer", "UWRandomizer\UWRandomizer.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerWPF", "UWRandomizerWPF\UWRandomizerWPF.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractingBuffersOfEverything", "ExtractingBuffersOfEverything\ExtractingBuffersOfEverything.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerTools", "UWRandomizerTools\UWRandomizerTools.csproj", "{FA69796F-BDE0-41EE-B602-49C2A537BDA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA69796F-BDE0-41EE-B602-49C2A537BDA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

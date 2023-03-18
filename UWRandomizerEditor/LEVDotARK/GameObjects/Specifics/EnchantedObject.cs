@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVDotARK.GameObjects.Specifics;
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 // Todo: Get enchantment name in strings chunk 5
 // Todo: create an enum or something with spell names, and their indices, to use here.
@@ -9,7 +9,7 @@ public class EnchantedObject : SpecialLinkGameObject
     public int Enchantment
     {
         get { return SpecialIdx - 512; }
-        set { SpecialIdx = (short) (value + 512); }
+        set { SpecialIdx = (ushort) (value + 512); }
     }
 
     public int Spell
@@ -31,14 +31,15 @@ public class EnchantedObject : SpecialLinkGameObject
                 Enchantment = value;
             else
                 Enchantment = value - 144;
-        } // todo: these will UpdateBuffer too right?
+        } // todo: these will ReconstructBuffer too right?
     }
 
-    public EnchantedObject(byte[] buffer, short idx) : base(buffer, idx)
-    { }
+    public EnchantedObject(byte[] buffer, ushort idx) : base(buffer, idx)
+    {
+    }
 
-    public EnchantedObject(ushort objid_flagsField, ushort positionField, ushort quality_chainField,
-        ushort link_specialField) : base(objid_flagsField, positionField, quality_chainField, link_specialField)
-    { }
-        
+    public EnchantedObject(ushort objIdFlags, ushort position, ushort qualityChain,
+        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+    {
+    }
 }

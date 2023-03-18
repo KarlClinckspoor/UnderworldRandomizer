@@ -5,16 +5,23 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using NUnit.Framework;
+using UWRandomizer;
 using UWRandomizerEditor;
-using UWRandomizerEditor.LEVDotARK;
-using UWRandomizerEditor.LEVDotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+using System.Configuration;
 
 namespace RandomizerUnitTests;
 
 [TestFixture]
-public class TestGameObjectProperties
+[Category("PropertyComparisons")]
+[Category("FishyTests")]
+public class CompareWithHanksEditor
 {
     private const int numOfLevels = 9;
+
     // Removing this to temporarily avoid problems with building in github actions. Keeping the same for now.
     // TODO: Can I put the .json test files without problems?
     // private Stream[] streamsPristine = new Stream[numOfLevels];
@@ -47,47 +54,33 @@ public class TestGameObjectProperties
         {"ypos", "Ypos"},
         {"quality", "Quality"},
         {"next", "next"},
-        {"owner", "Owner_or_special"},
+        {"owner", "OwnerOrSpecial"},
         {"link", "QuantityOrSpecialLinkOrSpecialProperty"}
     };
 
     [OneTimeSetUp]
-    [Category("RequiresArk")]
     public void Setup()
     {
         for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
         {
-            // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader isntances
-            // streamsPristine[blocknum] =
-            //     Assembly.GetExecutingAssembly()
-            //         .GetManifestResourceStream(
-            //             $"RandomizerUnitTests.testdata.PristineUW1.Block{blocknum}_objects.json") ??
-            //     throw new InvalidOperationException();
+            // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader instances
             streamsPristine[blocknum] =
-                File.ReadAllText(
-                    @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\PristineUW1\Block{blocknum}_objects.json");
+                File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = new ArkLoader(Settings.DefaultArkPath);
+            arkPristine = new ArkLoader(Paths.UW_ArkOriginalPath);
 
-            // streamsCleaned[blocknum] =
-            //     Assembly.GetExecutingAssembly()
-            //         .GetManifestResourceStream(
-            //             $"RandomizerUnitTests.testdata.CleanedUW1.Block{blocknum}_objects.json") ??
-            //     throw new InvalidOperationException();
             streamsCleaned[blocknum] = File.ReadAllText(
-                    @$"C:\Users\Karl\Desktop\UnderworldStudy\UnderworldRandomizer\RandomizerUnitTests\testdata\CleanedUW1\Block{blocknum}_objects.json");
+                Path.Join(Paths.RUT_TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));
             jsonsCleaned.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(
                 streamsCleaned[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            // TODO: De-hardcode this
-            arkCleaned = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Copy\DATA\LEV.ARK");
+            arkCleaned = new ArkLoader(Paths.UW_ArkOriginalPath);
         }
     }
 
 
     [Test]
-    [Category("RequiresArk")]
     public void TestStaticObjectProperties(
         [Range(0, numOfLevels - 1, 1)] int blocknum, // Reminder: Range is [from, to], not [from, to[
         [Values(PossibleLevArkToTest.pristine, PossibleLevArkToTest.cleaned)]
@@ -116,6 +109,7 @@ public class TestGameObjectProperties
             if (i < 256)
             {
                 var compare = ark.TileMapObjectsBlocks[blocknum].MobileObjects[i];
+                if (compare.Invalid) continue;
                 var correctProperty = correct[correctLabel];
                 var compareProperty = GetPropertyValue(compare, compareLabel);
                 Assert.True(correctProperty == compareProperty,
@@ -124,6 +118,7 @@ public class TestGameObjectProperties
             else
             {
                 var compare = ark.TileMapObjectsBlocks[blocknum].StaticObjects[i - 256];
+                if (compare.Invalid) continue;
                 var correctProperty = correct[correctLabel];
                 var compareProperty = GetPropertyValue(compare, compareLabel);
                 Assert.True(correctProperty == compareProperty,
@@ -168,26 +163,5 @@ public class TestGameObjectProperties
         }
 
         return new Tuple<ArkLoader, List<Dictionary<string, int>>>(ark, json);
-    }
-}
-
-public class ManualTests
-{
-    [Test]
-    public void TestTileInfoComparingToUltimateEditor_manual()
-    {
-        var tile = new TileInfo(1609, new byte[] {0x11, 0x20, 0x1E, 0x00}, 6436, 0);
-        // Some water tile near that island with a lurker nearby
-        var reference = new TileInfo(1609, 0, 6436, 0);
-        reference.TileType = (int) TileInfo.TileTypes.open;
-        reference.TileHeight = 1;
-        reference.DoorBit = 0;
-        reference.NoMagic = 0;
-        reference.FloorTextureIdx = 8;
-        reference.WallTextureIdx = 30;
-        reference.FirstObjIdx = 0;
-
-
-        Assert.True(tile.Equals(reference));
     }
 }

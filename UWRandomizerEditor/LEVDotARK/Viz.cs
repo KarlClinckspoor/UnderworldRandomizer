@@ -1,6 +1,6 @@
-﻿using UWRandomizerEditor.LEVDotARK.Blocks;
+﻿using UWRandomizerEditor.LEVdotARK.Blocks;
 
-namespace UWRandomizerEditor.LEVDotARK
+namespace UWRandomizerEditor.LEVdotARK
 {
     // Help visualization
     /// <summary>

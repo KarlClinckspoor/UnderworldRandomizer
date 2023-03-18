@@ -1,11 +1,12 @@
-﻿using static UWRandomizerEditor.Utils;
-
-namespace UWRandomizerEditor.LEVDotARK.GameObjects
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects
 {
+    /// <summary>
+    /// Class that describes Mobile Objects (e.g. NPCs). Inheritance should use the parameterless constructor because of the virtual methods to update buffer/entries.
+    /// </summary>
     public class MobileObject : GameObject
     {
         public new const int ExtraLength = 19;
-        public new const int TotalLength = BaseLength + ExtraLength;
+        public new const int FixedTotalLength = BaseLength + ExtraLength;
 
         protected const int offset1 = 0x8;
         protected const int offset2 = 0x9;
@@ -39,97 +40,139 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
         protected byte byte_NPCHunger; // offset 0019
         protected byte byte_NPCwhoami; // offset 001a
 
-        public new byte[] Buffer = new byte[TotalLength];
         public int ObjectBufferIfx;
-
-        public override bool ShouldBeMoved { get; set; } = false;
 
         public int HP
         {
             get { return (int) byte1_hp; }
-            set { byte1_hp = (byte) value; UpdateBuffer();}
+            set
+            {
+                byte1_hp = (byte) value;
+                ReconstructBuffer();
+            }
         }
 
         public int Goal
         {
-            get { return GetBits(short_NPCGoalGtarg, 0b1111, 0); }
-            set { short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b1111, 0); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPCGoalGtarg, 0b1111, 0); }
+            set
+            {
+                short_NPCGoalGtarg = (short) Utils.SetBits(short_NPCGoalGtarg, value, 0b1111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public int Gtarg
         {
-            get { return GetBits(short_NPCGoalGtarg, 0b11111111, 4); }
-            set { short_NPCGoalGtarg = (short) SetBits(short_NPCGoalGtarg, value, 0b11111111, 4); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPCGoalGtarg, 0b11111111, 4); }
+            set
+            {
+                short_NPCGoalGtarg = (short) Utils.SetBits(short_NPCGoalGtarg, value, 0b11111111, 4);
+                ReconstructBuffer();
+            }
         }
 
         public int Level
         {
-            get { return GetBits(short_NPCLevelTalkedAttitude, 0b111, 0); }
-            set { short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b111, 0); }
+            set
+            {
+                short_NPCLevelTalkedAttitude = (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public bool TalkedTo
         {
-            get { return GetBits(short_NPCLevelTalkedAttitude, 0b1, 13) == 1; }
-            set { short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value ? 1:0, 0b1, 13); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b1, 13) == 1; }
+            set
+            {
+                short_NPCLevelTalkedAttitude =
+                    (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
+                ReconstructBuffer();
+            }
         }
 
         public int Attitude
         {
-            get { return GetBits(short_NPCLevelTalkedAttitude, 0b11, 14); }
-            set { short_NPCLevelTalkedAttitude = (short) SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b11, 14); }
+            set
+            {
+                short_NPCLevelTalkedAttitude = (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14);
+                ReconstructBuffer();
+            }
         }
 
         public int Height
         {
-            get { return GetBits(short_NPCheightQM, 0b1111111, 6); }
-            set { short_NPCheightQM = (short) SetBits(short_NPCheightQM, value, 0b1111111, 6); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPCheightQM, 0b1111111, 6); }
+            set
+            {
+                short_NPCheightQM = (short) Utils.SetBits(short_NPCheightQM, value, 0b1111111, 6);
+                ReconstructBuffer();
+            }
         }
 
         public int YHome
         {
-            get { return GetBits(short_NPChome, 0b111111, 4); }
-            set { short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 4); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPChome, 0b111111, 4); }
+            set
+            {
+                short_NPChome = (short) Utils.SetBits(short_NPChome, value, 0b111111, 4);
+                ReconstructBuffer();
+            }
         }
 
         public int XHome
         {
-            get { return GetBits(short_NPChome, 0b111111, 10); }
-            set { short_NPChome = (short) SetBits(short_NPChome, value, 0b111111, 10); UpdateBuffer();}
+            get { return Utils.GetBits(short_NPChome, 0b111111, 10); }
+            set
+            {
+                short_NPChome = (short) Utils.SetBits(short_NPChome, value, 0b111111, 10);
+                ReconstructBuffer();
+            }
         }
 
         public int NPCHeading
         {
-            get { return GetBits(byte_NPCheading, 0b1111, 0); }
-            set { byte_NPCheading = (byte) SetBits(byte_NPCheading, value, 0b1111, 0); UpdateBuffer();}
+            get { return Utils.GetBits(byte_NPCheading, 0b1111, 0); }
+            set
+            {
+                byte_NPCheading = (byte) Utils.SetBits(byte_NPCheading, value, 0b1111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public int Hunger
         {
-            get { return GetBits(byte_NPCHunger, 0b111111, 0); }
-            set { byte_NPCHunger = (byte) SetBits(byte_NPCHunger, value, 0b111111, 0); UpdateBuffer();}
+            get { return Utils.GetBits(byte_NPCHunger, 0b111111, 0); }
+            set
+            {
+                byte_NPCHunger = (byte) Utils.SetBits(byte_NPCHunger, value, 0b111111, 0);
+                ReconstructBuffer();
+            }
         }
 
         public int whoami
         {
-            get { return GetBits(byte_NPCwhoami, 0b11111111, 0); }
-            set { byte_NPCwhoami = (byte) SetBits(byte_NPCwhoami, value, 0b11111111, 0); UpdateBuffer();}
+            get { return Utils.GetBits(byte_NPCwhoami, 0b11111111, 0); }
+            set
+            {
+                byte_NPCwhoami = (byte) Utils.SetBits(byte_NPCwhoami, value, 0b11111111, 0);
+                ReconstructBuffer();
+            }
         }
 
-        public new void UpdateBuffer()
+        // TODO: Create interface, standardize this with Container and TileInfo?
+        public UWLinkedList Inventory { get; set; }
+
+        public override bool ReconstructBuffer()
         {
-            // From base
-            byte[] tempbuffer = new byte[TotalLength];
-            byte[] field1 = BitConverter.GetBytes(this.objid_flagsField);
-            byte[] field2 = BitConverter.GetBytes(this.positionField);
-            byte[] field3 = BitConverter.GetBytes(this.quality_chainField);
-            byte[] field4 = BitConverter.GetBytes(this.link_specialField);
-            field1.CopyTo(tempbuffer, 0);
-            field2.CopyTo(tempbuffer, 2);
-            field3.CopyTo(tempbuffer, 4);
-            field4.CopyTo(tempbuffer, 6);
-            tempbuffer.CopyTo(Buffer, 0);
-            // new ones
+            // QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
+            // Avoiding infinite loop. TODO: think of something more intelligent
+            LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Inventory.startingIdx, 0b11_1111_1111, 6);
+            base.ReconstructBuffer();
+            
             Buffer[offset1] = byte1_hp;
             Buffer[offset2] = byte2_unk;
             Buffer[offset3] = byte3_unk;
@@ -145,15 +188,12 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             Buffer[offset13] = byte_NPCheading;
             Buffer[offset14] = byte_NPCHunger;
             Buffer[offset15] = byte_NPCwhoami;
+            return true;
         }
 
-        public new void UpdateEntries()
+        protected override void UpdateEntries()
         {
-            // From base
-            objid_flagsField = BitConverter.ToUInt16(Buffer, 0);
-            positionField = BitConverter.ToUInt16(Buffer, 2);
-            quality_chainField = BitConverter.ToUInt16(Buffer, 4);
-            link_specialField = BitConverter.ToUInt16(Buffer, 6);
+            base.UpdateEntries();
             // New ones
             byte1_hp = Buffer[offset1];
             byte2_unk = Buffer[offset2];
@@ -171,22 +211,26 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             byte_NPCHunger = Buffer[offset14];
             byte_NPCwhoami = Buffer[offset15];
         }
-        
-        public MobileObject(byte[] buffer, short idx)
+
+        // Reminder: don't call base... Need to design this better
+        public MobileObject(byte[] buffer, ushort idx)
         {
-            // Debug.Assert(buffer.Length == TotalLength);
-            this.Buffer = buffer;
-            base.Buffer = buffer[..8]; // In case this is cast as a GameObject, it'll preserve the base buffer
-            this.IdxAtObjectArray = idx;
+            // Debug.Assert(buffer.Length == FixedTotalLength);
+            Buffer = new byte[FixedTotalLength];
+            buffer.CopyTo(Buffer, 0);
+            IdxAtObjectArray = idx;
             UpdateEntries();
+            Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
         }
 
-        public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
+        // Reminder: don't call base... Need to design this better
+        public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg,
+            short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
-            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, ushort idx)
         {
+            Buffer = new byte[FixedTotalLength];
             baseBuffer.CopyTo(Buffer, 0);
-            base.Buffer = baseBuffer;
             byte[] extra = new byte[ExtraLength]
             {
                 byte1_hp,
@@ -212,18 +256,21 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             extra.CopyTo(Buffer, BaseLength);
             IdxAtObjectArray = idx;
             UpdateEntries();
+            Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty};
         }
-        public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg, short NPCLevelTalked,
+
+        public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3,
+            short NPCGoalGTarg, short NPCLevelTalked,
             short NPCheight, byte unk4, byte unk5, byte unk6,
-            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, short idx)
+            byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, ushort idx)
         {
             byte[] baseBuffer = new byte[BaseLength];
-            BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2*0);
-            BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2*1);
-            BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2*2);
-            BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2*3);
-            base.Buffer = baseBuffer;
-            
+            BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2 * 0);
+            BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2 * 1);
+            BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2 * 2);
+            BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2 * 3);
+            baseBuffer.CopyTo(Buffer, 0);
+
             byte[] extra = new byte[ExtraLength]
             {
                 byte1_hp,
@@ -249,15 +296,14 @@ namespace UWRandomizerEditor.LEVDotARK.GameObjects
             extra.CopyTo(Buffer, BaseLength);
             IdxAtObjectArray = idx;
             UpdateEntries();
+            Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
         }
-    public override string SaveBuffer(string? basePath = null, string filename = "")
-    {
-        if (basePath is null)
+
+        protected MobileObject()
         {
-            basePath = Settings.DefaultBinaryTestsPath;
+            Buffer = Array.Empty<byte>();
+            Invalid = true;
+            Inventory = new UWLinkedList() {startingIdx = 0, RepresentingContainer = true};
         }
-        return StdSaveBuffer(Buffer, basePath, filename.Length == 0 ? $@"_GameObject_{IdxAtObjectArray}" : filename);
-    }
-        
     }
 }
