@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using UWRandomizer;
+using UWRandomizerWPF;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerTools;

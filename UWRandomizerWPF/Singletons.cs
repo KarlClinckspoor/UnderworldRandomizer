@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UWRandomizer;
+namespace UWRandomizerWPF;
 
 public static class Singletons
 {

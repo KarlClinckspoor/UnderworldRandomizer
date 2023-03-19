@@ -6,7 +6,10 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <PackageVersion>0.1.0</PackageVersion>
-        <RootNamespace>UWRandomizer</RootNamespace>
+        <LangVersion>10</LangVersion>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
 
     <ItemGroup>
