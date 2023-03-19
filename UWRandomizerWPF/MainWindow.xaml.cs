@@ -77,8 +77,9 @@ public partial class MainWindow : Window
         }
         else
         {
-            File.WriteAllText(log, "./UWspoilerlog.txt");
-            AddMsgToLog($"""Saved spoiler log to {System.IO.Path.Join(Directory.GetCurrentDirectory(), "./UWspoilerlog.txt")}""");
+            var tempname = "UWspoilerlog.txt";
+            File.WriteAllText(log, tempname);
+            AddMsgToLog($"Saved spoiler log to {System.IO.Path.Join(Directory.GetCurrentDirectory(), tempname)}");
         }
     }
 
