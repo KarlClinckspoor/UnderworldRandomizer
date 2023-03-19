@@ -15,8 +15,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerTools;
+using Path = System.Windows.Shapes.Path;
 
-namespace UWRandomizer;
+namespace UWRandomizerWPF;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -36,46 +37,68 @@ public partial class MainWindow : Window
 
     private void Btn_LoadLevArk_Click(object sender, RoutedEventArgs e)
     {
-        ark = new ArkLoader(TxtBox_PathToArk.Text);
-        Stack_Tools.IsEnabled = true;
-        Btn_SaveChanges.IsEnabled = true;
+        AddMsgToLog($"Attempting to load lev.ark");
+        try
+        {
+            ark = new ArkLoader(TxtBoxPathToArk.Text);
+            StackTools.IsEnabled = true;
+            BtnSaveChanges.IsEnabled = true;
+            AddMsgToLog($"Loaded lev.ark");
+        }
+        catch (Exception exp)
+        {
+            AddMsgToLog($"Error when loading lev.ark. Exception: {exp}. Choose another file.");
+        }
     }
 
     private void Btn_SetSeed_Click(object sender, RoutedEventArgs e)
     {
-        int.TryParse(TxtBox_SeedValue.Text, out int newSeed);
-        this.seed = newSeed;
-        Singletons.SeedRandomAndReset(seed);
+        AddMsgToLog($"Attempting to interpret {TxtBoxSeedValue.Text} as an integer to use as seed");
+        if (int.TryParse(TxtBoxSeedValue.Text, out var newSeed))
+        {
+            this.seed = newSeed;
+            Singletons.SeedRandomAndReset(seed);
+            AddMsgToLog($"Done replacing seed");
+            return;
+        }
+        AddMsgToLog($"Couldn't interpret {TxtBoxSeedValue.Text} as an integer");
     }
 
     private void Btn_ExportSpoilerLog_Click(object sender, RoutedEventArgs e)
     {
         string log = CreateSpoilerLog();
-        var openFileDlg = new Microsoft.Win32.OpenFileDialog();
-        bool? result = openFileDlg.ShowDialog();
+        var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+        bool? result = saveFileDialog.ShowDialog();
 
         if (result == true)
         {
-            File.WriteAllText(openFileDlg.FileName, log);
+            File.WriteAllText(saveFileDialog.FileName, log);
+            AddMsgToLog($"Saved spoiler log at {saveFileDialog.FileName}");
         }
         else
         {
             File.WriteAllText(log, "./UWspoilerlog.txt");
+            AddMsgToLog($"""Saved spoiler log to {System.IO.Path.Join(Directory.GetCurrentDirectory(), "./UWspoilerlog.txt")}""");
         }
     }
 
     private void Btn_ShuffleItems_Click(object sender, RoutedEventArgs e)
     {
+        AddMsgToLog("In-level shuffling of items in all levels");
         ShuffleItems.ShuffleAllLevels(ark, Singletons.RandomInstance, _itemSettings);
+        AddMsgToLog("Done. Check either UltimateUnderworldEditor or export the spoiler log if you want.");
     }
 
     private void Btn_RemoveAllLocks_Click(object sender, RoutedEventArgs e)
     {
+        AddMsgToLog("Removing all locks from doors");
         RandoTools.RemoveAllDoorReferencesToLocks(ark);
+        AddMsgToLog("Done");
     }
 
     private void Btn_BackupLevArk_Click(object sender, RoutedEventArgs e)
     {
+        AddMsgToLog($"Saving LEV.ARK as LEV.ARK.BCK.");
         var tempArk = new ArkLoader(ark.Path);
         UWRandomizerEditor.Utils.StdSaveBuffer(tempArk, System.IO.Path.GetDirectoryName(tempArk.Path), "LEV.ARK.BCK");
     }
@@ -86,23 +109,28 @@ public partial class MainWindow : Window
         bool? result = openFileDlg.ShowDialog();
         if (result == true)
         {
-            TxtBox_PathToArk.Text = openFileDlg.FileName;
+            TxtBoxPathToArk.Text = openFileDlg.FileName;
+            AddMsgToLog($"Selected file {openFileDlg.FileName}");
         }
     }
 
     private void Btn_SaveChanges_Click(object sender, RoutedEventArgs e)
     {
+        AddMsgToLog("Attempting to save the current lev.ark over the old one.");
         UWRandomizerEditor.Utils.StdSaveBuffer(ark, System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK");
+        AddMsgToLog("Save successful.");
     }
 
     private string CreateSpoilerLog()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"Spoiler log: lev.ark, seed {seed}");
+        AddMsgToLog("Creating spoiler log, 1-indexed.");
+        sb.AppendLine($"Spoiler log: lev.ark, seed {seed}. Entries are XY pos (starts from bottom left) and the number is the object ID.");
         int level = 0; // 1 indexed
         foreach (var block in ark.TileMapObjectsBlocks)
         {
             level++;
+            AddMsgToLog($"Processing level {level}");
             sb.AppendLine($"Level {level}");
 
             foreach (var tile in block.TileInfos)
@@ -117,6 +145,7 @@ public partial class MainWindow : Window
             }
         }
 
+        AddMsgToLog("Done creating spoiler log string");
         return sb.ToString();
     }
 
@@ -125,9 +154,24 @@ public partial class MainWindow : Window
         string backupPath = System.IO.Path.Join(System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK.BCK");
         if (File.Exists(backupPath))
         {
+            AddMsgToLog($"Found backup file LEV.ARK.BCK at '{backupPath}', deleting current lev.ark");
             File.Delete(ark.Path);
+            AddMsgToLog($"Renaming backup to LEV.ARK");
             File.Copy(backupPath, ark.Path);
+            AddMsgToLog($"Reloading LEV.ARK");
             ark = new ArkLoader(ark.Path);
+            return;
         }
+        AddMsgToLog("Couldn't find backup file LEV.ARK.BCK. Didn't do anything");
+    }
+
+    private void AddMsgToLog(string message)
+    {
+        ListViewLog.Items.Add(new ListViewItem() {Content = message});
+    }
+
+    private void BtnClearLog_OnClick(object sender, RoutedEventArgs e)
+    {
+        ListViewLog.Items.Clear();
     }
 }

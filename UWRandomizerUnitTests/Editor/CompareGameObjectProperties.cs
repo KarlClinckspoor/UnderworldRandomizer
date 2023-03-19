@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using NUnit.Framework;
-using UWRandomizer;
+using UWRandomizerWPF;
 using UWRandomizerEditor;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.Blocks;
