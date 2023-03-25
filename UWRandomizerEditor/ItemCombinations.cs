@@ -1,106 +1,143 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
 
 namespace UWRandomizerEditor;
 
+/// <summary>
+/// This class simulates the sequence of item combinations present in CMB.DAT.
+/// For UW1, the limit of combinations is CombinationsFile.UW1CombinationLimit/>
+/// </summary>
 public class CombinationsFile : IBufferObject
 {
-    public List<ItemCombination> Combinations;
-    private string _path;
-    public byte[] Buffer { get; set; }
+    public const uint UW1CombinationLimit = 10; // Recheck if it's 10 or 11.
 
+    private List<ItemCombination> _combinations;
+    public List<ItemCombination> Combinations
+    {
+        get => _combinations;
+        [MemberNotNull(nameof(_combinations))]
+        [MemberNotNull(nameof(_buffer))]
+        set
+        {
+            _combinations = value;
+            ReconstructBuffer();
+        }
+    }
+    
+    private readonly string _path;
+    private byte[] _buffer;
+    
+    /// <summary>
+    /// <inheritdoc cref="IBufferObject.Buffer"/>
+    /// The getter reconstructs (updates) a private buffer and when setting, the private buffer is replaced and the
+    /// item combinations are redone.
+    /// </summary>
+    public byte[] Buffer
+    {
+        get { ReconstructBuffer(); return _buffer; }
+        set { _buffer = value; ProcessCombinations(); }
+    }
+
+
+    /// <summary>
+    /// Loads the buffer of CMB.DAT
+    /// </summary>
+    /// <exception cref="FileNotFoundException">Thrown if file can't be found.</exception>
+    [MemberNotNull(nameof(_buffer))]
+    private void ReadFileIntoBuffer()
+    {
+        if (!File.Exists(_path))
+            throw new FileNotFoundException("Could not read 'CMB.DAT' or equivalent!");
+
+        _buffer = File.ReadAllBytes(_path);
+    }
+
+    /// <summary>
+    /// Processes the buffer into several ItemCombinations
+    /// </summary>
+    /// <exception cref="ArithmeticException"></exception>
+    [MemberNotNull(nameof(_combinations))]
+    private void ProcessCombinations()
+    {
+        _combinations = new List<ItemCombination>();
+        var correctBufferEndUW1 = new byte[] {0, 0, 0, 0, 0, 0};
+        if (!_buffer[^6..].SequenceEqual(correctBufferEndUW1)) {
+            throw new ArithmeticException("Buffer does not end in six bytes of 0s!");
+        }
+
+        for (int i = 0; i < _buffer.Length - ItemCombination.Size; i += ItemCombination.Size)
+        {
+            _combinations.Add(new ItemCombination(_buffer[i..(i + ItemCombination.Size)]));
+            Debug.WriteLineIf(i >= UW1CombinationLimit, $"Exceeding UW1's item limit of {UW1CombinationLimit}! Anything after this won't be considered");
+        }
+
+        _combinations.Add(new FinalCombination());
+    }
+
+    /// <summary>
+    /// Reconstructs the buffer by joining the individual buffers of each combination.
+    /// </summary>
+    /// <returns></returns>
+    public bool ReconstructBuffer()
+    {
+        var buffer = new byte[Combinations.Count * ItemCombination.Size];
+        int i = 0;
+        foreach (var comb in Combinations)
+        {
+            comb.Buffer.CopyTo(buffer, i * ItemCombination.Size);
+            i++;
+        }
+
+        _buffer = buffer;
+        return true;
+    }
+
+    /// <summary>
+    /// Adds a new combination to the file.
+    /// </summary>
+    /// <param name="comb"></param>
+    public void AddCombination(ItemCombination comb)
+    {
+        Combinations.Insert(Combinations.Count - 1, comb); // Inserts before null
+    }
+
+    /// <summary>
+    /// Removes a combination at a certain index.
+    /// </summary>
+    /// <param name="idx"></param>
+    public void RemoveCombinationAt(int idx)
+    {
+        if (idx == Combinations.Count - 1)
+        {
+            throw new Exception("Can't remove final combination!");
+        }
+
+        if (idx >= Combinations.Count | idx < 0)
+        {
+            throw new IndexOutOfRangeException($"Idx {idx} is out of range");
+        }
+
+        Combinations.RemoveAt(idx);
+    }
+
+    /// <summary>
+    /// Creates a new CombinationsFile given a path.
+    /// </summary>
+    /// <param name="path"></param>
     public CombinationsFile(string path)
     {
         _path = path;
         ReadFileIntoBuffer();
         ProcessCombinations();
     }
-
-    [MemberNotNull(nameof(Buffer))]
-    private void ReadFileIntoBuffer()
-    {
-        if (!File.Exists(_path))
-        {
-            throw new FileNotFoundException("Could not read 'CMB.DAT' or equivalent!");
-        }
-
-        Buffer = File.ReadAllBytes(_path);
-    }
-
-    [MemberNotNull(nameof(Combinations))]
-    private void ProcessCombinations()
-    {
-        Combinations = new List<ItemCombination>();
-        // if (BitConverter.ToInt64(Buffer[^6..]) != 0) // Doesn't end in 0s
-        if (Buffer[^6] != 0 | Buffer[^5] != 0 | Buffer[^4] != 0 | Buffer[^3] != 0 | Buffer[^2] != 0 |
-            Buffer[^1] != 0) // Doesn't end in 0s
-        {
-            throw new ArithmeticException("Buffer does not end in six bytes of 0s!");
-        }
-
-        for (int i = 0; i < Buffer.Length - ItemCombination.Size; i += ItemCombination.Size)
-        {
-            byte[] buf = Buffer[i..(i + ItemCombination.Size)];
-            Combinations.Add(new ItemCombination(Buffer[i..(i + ItemCombination.Size)]));
-        }
-
-        Combinations.Add(new FinalCombination());
-    }
-
-    public string SaveCombinations(string? path)
-    {
-        path ??= _path;
-        if (File.Exists(path))
-            Console.WriteLine("Overwriting file");
-        File.WriteAllBytes(path, Buffer);
-
-        return path;
-    }
-
-    [MemberNotNull(nameof(Buffer))]
-    public bool ReconstructBuffer()
-    {
-        Buffer = new byte[Combinations.Count * ItemCombination.Size];
-        int i = 0;
-        foreach (var comb in Combinations)
-        {
-            comb.Buffer.CopyTo(Buffer, i * ItemCombination.Size);
-            i++; // Oh how I wish for an `enumerate` in C#.
-        }
-
-        return true;
-    }
-
-    public void AddCombination(ItemCombination comb)
-    {
-        Combinations.Insert(Combinations.Count - 1, comb); // Inserts before null
-        ReconstructBuffer();
-    }
-
-    public void RemoveCombination(int idx)
-    {
-        if (idx == Combinations.Count - 1)
-        {
-            Console.WriteLine("Can't remove final combination!");
-            return;
-        }
-
-        if (idx >= Combinations.Count | idx < 0)
-        {
-            Console.WriteLine("Invalid bounds");
-        }
-
-        Combinations.RemoveAt(idx);
-        ReconstructBuffer();
-    }
-
+    
     public CombinationsFile(List<ItemCombination> combinations, string path = "CMB.DAT")
     {
-        this.Combinations = combinations;
-        this._path = path;
-        ReconstructBuffer();
+        Combinations = combinations;
+        _path = path;
     }
 
     /// <summary>
@@ -170,8 +207,7 @@ public class CombinationsFile : IBufferObject
             Console.WriteLine("Done");
         }
 
-        file.Combinations[^1] =
-            new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
+        file.Combinations[^1] = new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
 
         return file;
     }

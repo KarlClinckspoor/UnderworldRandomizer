@@ -209,7 +209,7 @@ class TUICombinations
         string choice = Console.ReadLine() ?? throw new InvalidOperationException();
         if (int.TryParse(choice, out int val))
         {
-            _cmb.RemoveCombination(val);
+            _cmb.RemoveCombinationAt(val);
             Console.WriteLine("Removed!");
         }
         
