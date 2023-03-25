@@ -8,7 +8,7 @@
 public interface IBufferObject
 {
     /// <summary>
-    /// Byte array containing the bytes that, when interpreted, compose the object. Is used both when loading and object
+    /// Byte array containing the bytes that, when interpreted, compose the object. It is used both when loading and object
     /// properties are extracted, and when saving, when member buffers are concatenated to reform the original file buffer.
     /// </summary>
     public byte[] Buffer { get; protected set; }
