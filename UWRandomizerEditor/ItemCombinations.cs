@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
@@ -12,22 +13,30 @@ namespace UWRandomizerEditor;
 /// </summary>
 public class CombinationsFile : IBufferObject
 {
-    public const uint UW1CombinationLimit = 10; // Recheck if it's 10 or 11.
+    public const uint UW1CombinationLimit = 10; // TODO: Recheck if it's 10 or 11.
 
     private List<ItemCombination> _combinations;
     public List<ItemCombination> Combinations
     {
         get => _combinations;
+        
         [MemberNotNull(nameof(_combinations))]
         [MemberNotNull(nameof(_buffer))]
-        set
+        private set
         {
             _combinations = value;
             ReconstructBuffer();
         }
     }
     
-    private readonly string _path;
+    /// <summary>
+    /// Contains the path where the file was read from. If it's created artificially with a list of combinations, this becomes null.
+    /// </summary>
+    private readonly string? _path;
+    
+    /// <summary>
+    /// Private buffer which is accessed only after passing through checks.
+    /// </summary>
     private byte[] _buffer;
     
     /// <summary>
@@ -58,14 +67,14 @@ public class CombinationsFile : IBufferObject
     /// <summary>
     /// Processes the buffer into several ItemCombinations
     /// </summary>
-    /// <exception cref="ArithmeticException"></exception>
+    /// <exception cref="ItemCombinationException"></exception>
     [MemberNotNull(nameof(_combinations))]
     private void ProcessCombinations()
     {
         _combinations = new List<ItemCombination>();
         var correctBufferEndUW1 = new byte[] {0, 0, 0, 0, 0, 0};
         if (!_buffer[^6..].SequenceEqual(correctBufferEndUW1)) {
-            throw new ArithmeticException("Buffer does not end in six bytes of 0s!");
+            throw new ItemCombinationException("Buffer does not end in six bytes of 0s!");
         }
 
         for (int i = 0; i < _buffer.Length - ItemCombination.Size; i += ItemCombination.Size)
@@ -112,7 +121,7 @@ public class CombinationsFile : IBufferObject
     {
         if (idx == Combinations.Count - 1)
         {
-            throw new Exception("Can't remove final combination!");
+            throw new ItemCombinationException("Can't remove final combination!");
         }
 
         if (idx >= Combinations.Count | idx < 0)
@@ -124,7 +133,7 @@ public class CombinationsFile : IBufferObject
     }
 
     /// <summary>
-    /// Creates a new CombinationsFile given a path.
+    /// Creates a new instance given a path.
     /// </summary>
     /// <param name="path"></param>
     public CombinationsFile(string path)
@@ -134,21 +143,24 @@ public class CombinationsFile : IBufferObject
         ProcessCombinations();
     }
     
-    public CombinationsFile(List<ItemCombination> combinations, string path = "CMB.DAT")
+    /// <summary>
+    /// Creates a new instance given a list of combinations and 
+    /// </summary>
+    /// <param name="combinations"></param>
+    /// <param name="path"></param>
+    public CombinationsFile(List<ItemCombination> combinations)
     {
         Combinations = combinations;
-        _path = path;
+        _path = null;
     }
 
     /// <summary>
     /// Checks if the file ends with 3 zeros as combinations
     /// </summary>
     /// <returns></returns>
-    public bool CheckEnding() // TODO: this is a bit redundant with the function above.
+    private bool CheckEnding()
     {
-        return Combinations[^1].FirstItem.itemID == 0 &
-               Combinations[^1].SecondItem.itemID == 0 &
-               Combinations[^1].Product.itemID == 0;
+        return Combinations[^1] is FinalCombination;
     }
 
 
@@ -158,7 +170,6 @@ public class CombinationsFile : IBufferObject
     /// <returns></returns>
     public bool CheckConsistency()
     {
-        // return Combinations.All(cmb => cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed);
         foreach (var cmb in Combinations)
         {
             if (!(cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed) &
@@ -171,6 +182,10 @@ public class CombinationsFile : IBufferObject
         return true;
     }
 
+    /// <summary>
+    /// Exports the object as a JSON file
+    /// </summary>
+    /// <param name="filename"></param>
     public void ExportAsJson(string filename)
     {
         string json = JsonSerializer.Serialize(Combinations,
@@ -182,6 +197,12 @@ public class CombinationsFile : IBufferObject
         File.WriteAllText(filename, json);
     }
 
+    /// <summary>
+    /// From a JSON file, creates a new instance of a CombinationsFile, which can then be replace the original file if desired.
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public static CombinationsFile ImportFromJson(string filename)
     {
         var temp = JsonSerializer.Deserialize<List<ItemCombination>>(File.ReadAllText(filename),
@@ -192,22 +213,19 @@ public class CombinationsFile : IBufferObject
                        }) ??
                    throw new InvalidOperationException();
 
-        var file = new CombinationsFile(temp, "CMB.DAT");
+        var file = new CombinationsFile(temp);
 
         if (!file.CheckConsistency())
         {
-            Console.WriteLine(
-                "One of the combinations has both items preserved. This won't work. Consider editing to remove that combination");
+            throw new ItemCombinationException("One of the combinations has both items preserved. This won't work. Consider editing to remove that combination");
         }
 
         if (!file.CheckEnding())
         {
-            Console.WriteLine("The file doesn't end in zeros. Trying to fix...");
-            file.AddCombination(new FinalCombination());
-            Console.WriteLine("Done");
+            throw new ItemCombinationException("The file doesn't end with a sequence of zeroes (FinalCombination). Please fix.");
         }
 
-        file.Combinations[^1] = new FinalCombination(); // Replacing because the Deserializer made it into ItemCombination
+        file.Combinations[^1] = (FinalCombination) file.Combinations[^1]; // Replacing because the Deserializer made it into ItemCombination
 
         return file;
     }
@@ -316,4 +334,12 @@ public class FinalEntry : ItemDescriptor
     public FinalEntry() : base()
     {
     }
+}
+
+[Serializable]
+public class ItemCombinationException: Exception
+{
+    public ItemCombinationException() { }
+    public ItemCombinationException(string message) : base(message) { }
+    public ItemCombinationException(string message, Exception innerException) : base(message, innerException) { }
 }
