@@ -1,34 +1,111 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
 
 namespace UWRandomizerEditor.CMBdotDAT;
 
+/// <summary>
+/// Represents a 2-item combination that produces another item.
+/// </summary>
 public class ItemCombination : IBufferObject
 {
+    /// <summary>
+    /// First Item, Second Item, Product, totaling 3 items
+    /// </summary>
     [JsonIgnore] public const int NumOfItemsInCombination = 3;
-    [JsonIgnore] public const int Size = NumOfItemsInCombination * ItemDescriptor.size;
-    [JsonIgnore] public byte[] Buffer { get; set; } = new byte[NumOfItemsInCombination * ItemDescriptor.size];
-
-    public bool ReconstructBuffer()
-    {
-        FirstItem.buffer.CopyTo(Buffer, ItemDescriptor.size * 0);
-        SecondItem.buffer.CopyTo(Buffer, ItemDescriptor.size * 1);
-        Product.buffer.CopyTo(Buffer, ItemDescriptor.size * 2);
-        return true;
-    }
-
+    /// <summary>
+    /// Buffer size of this IBufferObject. For 3 items, each 1 short long, totals 6 bytes.
+    /// </summary>
+    [JsonIgnore] public const int FixedBufferSize = NumOfItemsInCombination * ItemDescriptor.size;
+    
     public ItemDescriptor FirstItem;
     public ItemDescriptor SecondItem;
     public ItemDescriptor Product;
 
-    public ItemCombination(byte[] buffer) // 3 shorts = 6 bytes
+    /// <summary>
+    /// Stores the actual buffer.
+    /// </summary>
+    private byte[] _buffer = new byte[FixedBufferSize];
+    
+    /// <summary>
+    /// Interfaces with the Buffer. When getting, updates the actual buffer with the buffers from the items. When setting,
+    /// checks the buffer length and creates new descriptors for each pair of shorts.
+    /// </summary>
+    /// <exception cref="ItemCombinationException">In case the buffer provided is the wrong length.</exception>
+    [JsonIgnore] public byte[] Buffer
     {
-        Buffer = buffer;
-        FirstItem = new ItemDescriptor(buffer[(ItemDescriptor.size * 0)..(ItemDescriptor.size * 1)]);
-        SecondItem = new ItemDescriptor(buffer[(ItemDescriptor.size * 1)..(ItemDescriptor.size * 2)]);
-        Product = new ItemDescriptor(buffer[(ItemDescriptor.size * 2)..(ItemDescriptor.size * 3)]);
+        get {
+            ReconstructBuffer();
+            return _buffer;
+        }
+        set
+        {
+            if (value.Length != FixedBufferSize)
+            {
+                throw new ItemCombinationException(
+                    $"New buffer size of {value.Length} is incompatible with ItemCombination length of {FixedBufferSize}");
+            }
+            _buffer = value;
+            CreateDescriptors();
+        } 
     }
 
+    /// <summary>
+    /// <inheritdoc cref="IBufferObject.Buffer"/>
+    /// </summary>
+    /// <returns></returns>
+    public bool ReconstructBuffer()
+    {
+        FirstItem.buffer.CopyTo(_buffer, ItemDescriptor.size * 0);
+        SecondItem.buffer.CopyTo(_buffer, ItemDescriptor.size * 1);
+        Product.buffer.CopyTo(_buffer, ItemDescriptor.size * 2);
+        return true;
+    }
+
+    /// <summary>
+    /// Instantiates new ItemDescriptors for the current buffer.
+    /// </summary>
+    [MemberNotNull(nameof(FirstItem))]
+    [MemberNotNull(nameof(SecondItem))]
+    [MemberNotNull(nameof(Product))]
+    private void CreateDescriptors()
+    {
+        FirstItem  = new ItemDescriptor(_buffer[(ItemDescriptor.size * 0)..(ItemDescriptor.size * 1)]);
+        SecondItem = new ItemDescriptor(_buffer[(ItemDescriptor.size * 1)..(ItemDescriptor.size * 2)]);
+        Product    = new ItemDescriptor(_buffer[(ItemDescriptor.size * 2)..(ItemDescriptor.size * 3)]);
+    }
+
+    /// <summary>
+    /// Checks if at least one of the items is being destroyed in the combination, and if the product isn't.
+    /// </summary>
+    /// <returns></returns>
+    public virtual bool IsValidItemCombination()
+    {
+        // TODO: If the product is marked to be destroyed, will it affect anything?
+        if ((FirstItem.IsDestroyed | SecondItem.IsDestroyed) & (!Product.IsDestroyed))
+            return true;
+        return false;
+    }
+
+
+    /// <summary>
+    /// Creates a new ItemCombination object given a buffer.
+    /// </summary>
+    /// <param name="buffer"></param>
+    public ItemCombination(byte[] buffer)
+    {
+        Buffer = buffer;
+        CreateDescriptors();
+    }
+
+    /// <summary>
+    /// Creates a new ItemCombination object given the first, second and product ItemDescriptors. Constructs a buffer
+    /// to match the arguments. This is also used as the JsonConstructor for this object, given that storing buffers as
+    /// json is not ideal. 
+    /// </summary>
+    /// <param name="firstItem"></param>
+    /// <param name="secondItem"></param>
+    /// <param name="product"></param>
     [JsonConstructor]
     public ItemCombination(ItemDescriptor firstItem, ItemDescriptor secondItem, ItemDescriptor product)
     {

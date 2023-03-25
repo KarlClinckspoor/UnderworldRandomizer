@@ -86,9 +86,9 @@ public class CombinationsFile : IBufferObject
             throw new ItemCombinationException("Buffer does not end in six bytes of 0s!");
         }
 
-        for (int i = 0; i < _buffer.Length - ItemCombination.Size; i += ItemCombination.Size)
+        for (int i = 0; i < _buffer.Length - ItemCombination.FixedBufferSize; i += ItemCombination.FixedBufferSize)
         {
-            _combinations.Add(new ItemCombination(_buffer[i..(i + ItemCombination.Size)]));
+            _combinations.Add(new ItemCombination(_buffer[i..(i + ItemCombination.FixedBufferSize)]));
             Debug.WriteLineIf(i >= UW1CombinationLimit,
                 $"Exceeding UW1's item limit of {UW1CombinationLimit}! Anything after this won't be considered");
         }
@@ -102,11 +102,11 @@ public class CombinationsFile : IBufferObject
     /// <returns></returns>
     public bool ReconstructBuffer()
     {
-        var buffer = new byte[Combinations.Count * ItemCombination.Size];
+        var buffer = new byte[Combinations.Count * ItemCombination.FixedBufferSize];
         int i = 0;
         foreach (var comb in Combinations)
         {
-            comb.Buffer.CopyTo(buffer, i * ItemCombination.Size);
+            comb.Buffer.CopyTo(buffer, i * ItemCombination.FixedBufferSize);
             i++;
         }
 
@@ -180,16 +180,9 @@ public class CombinationsFile : IBufferObject
     /// <returns></returns>
     public bool CheckConsistency()
     {
-        foreach (var cmb in Combinations)
-        {
-            if (!(cmb.FirstItem.IsDestroyed | cmb.SecondItem.IsDestroyed) &
-                (cmb.FirstItem.itemID != 0 & cmb.SecondItem.itemID != 0 & cmb.Product.itemID != 0))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        if (Combinations.TrueForAll(x=>x.IsValidItemCombination()) & (Combinations[^1] is FinalCombination))
+            return true;
+        return false;
     }
 
     /// <summary>
