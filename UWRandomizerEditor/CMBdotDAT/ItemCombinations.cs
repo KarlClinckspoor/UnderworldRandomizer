@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
 
-namespace UWRandomizerEditor;
+namespace UWRandomizerEditor.CMBdotDAT;
 
 /// <summary>
 /// This class simulates the sequence of item combinations present in CMB.DAT.

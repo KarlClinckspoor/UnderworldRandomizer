@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.Json;
 using UWRandomizerEditor;
+using UWRandomizerEditor.CMBdotDAT;
 
 namespace RandomizerUnitTests;
 
