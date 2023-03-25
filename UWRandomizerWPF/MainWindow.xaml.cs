@@ -101,7 +101,7 @@ public partial class MainWindow : Window
     {
         AddMsgToLog($"Saving LEV.ARK as LEV.ARK.BCK.");
         var tempArk = new ArkLoader(ark.Path);
-        UWRandomizerEditor.Utils.StdSaveBuffer(tempArk, System.IO.Path.GetDirectoryName(tempArk.Path), "LEV.ARK.BCK");
+        UWRandomizerEditor.Utils.SaveBuffer(tempArk, System.IO.Path.GetDirectoryName(tempArk.Path), "LEV.ARK.BCK");
     }
 
     private void Btn_Browse_Click(object sender, RoutedEventArgs e)
@@ -118,7 +118,7 @@ public partial class MainWindow : Window
     private void Btn_SaveChanges_Click(object sender, RoutedEventArgs e)
     {
         AddMsgToLog("Attempting to save the current lev.ark over the old one.");
-        UWRandomizerEditor.Utils.StdSaveBuffer(ark, System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK");
+        UWRandomizerEditor.Utils.SaveBuffer(ark, System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK");
         AddMsgToLog("Save successful.");
     }
 

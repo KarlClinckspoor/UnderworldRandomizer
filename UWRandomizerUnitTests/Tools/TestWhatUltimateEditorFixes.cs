@@ -21,7 +21,7 @@ public class TestWhatUWEditorFixes
             RandoTools.RemoveAllDoorReferencesToLocks(ArkCleanedNoDoors); // Assumes this is working correctly
 
         var cleanedNoDoorsPath =
-            UWRandomizerEditor.Utils.StdSaveBuffer(ArkCleanedNoDoors.Buffer, Paths.BufferTestsPath,
+            UWRandomizerEditor.Utils.SaveBuffer(ArkCleanedNoDoors.Buffer, Paths.BufferTestsPath,
                 "cleaned_nodoors.ark");
 
         // Every time I change the function to remove all locks, this has to be re-generated

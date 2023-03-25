@@ -18,7 +18,7 @@ public static class Program
         var Ark = new ArkLoader(path);
 
         // Header
-        UWRandomizerEditor.Utils.StdSaveBuffer(Ark.header, baseBufferPath, "header.bin");
+        UWRandomizerEditor.Utils.SaveBuffer(Ark.header, baseBufferPath, "header.bin");
 
         // Blocks
         int counter_block = 0;
@@ -26,7 +26,7 @@ public static class Program
         Directory.CreateDirectory(blockPath);
         foreach (var block in Ark.blocks)
         {
-            UWRandomizerEditor.Utils.StdSaveBuffer(block, blockPath,
+            UWRandomizerEditor.Utils.SaveBuffer(block, blockPath,
                 $"Block{counter_block}_level{block.LevelNumber}_length{block.Buffer.Length}.bin");
             counter_block++;
         }
@@ -41,7 +41,7 @@ public static class Program
             var nthTileMapBlockPath = Path.Join(tilemapBlocksPath, $"TileMapBlock{counter_block}");
             Directory.CreateDirectory(nthTileMapBlockPath);
 
-            UWRandomizerEditor.Utils.StdSaveBuffer(block, nthTileMapBlockPath,
+            UWRandomizerEditor.Utils.SaveBuffer(block, nthTileMapBlockPath,
                 $"TileMapBlock{counter_block}_fullbuffer.bin");
             File.WriteAllBytes(Path.Combine(nthTileMapBlockPath, $"TileMapBuffer{counter_block}_fullbuffer.bin"),
                 block.TileMapBuffer);
@@ -61,7 +61,7 @@ public static class Program
             counter_objects = 0;
             foreach (var mobileObject in block.MobileObjects)
             {
-                UWRandomizerEditor.Utils.StdSaveBuffer(mobileObject, nthTileMapBlockPath,
+                UWRandomizerEditor.Utils.SaveBuffer(mobileObject, nthTileMapBlockPath,
                     $"MobileObjectIdx{mobileObject.IdxAtObjectArray}_ctr{counter_objects}.bin");
                 counter_objects++;
             }
@@ -70,7 +70,7 @@ public static class Program
             // Doesn't reset to 0.
             foreach (var staticObject in block.StaticObjects)
             {
-                UWRandomizerEditor.Utils.StdSaveBuffer(staticObject, nthTileMapBlockPath,
+                UWRandomizerEditor.Utils.SaveBuffer(staticObject, nthTileMapBlockPath,
                     $"StaticObjectIdx{staticObject.IdxAtObjectArray}_ctr{counter_objects}.bin");
                 counter_objects++;
             }
@@ -85,7 +85,7 @@ public static class Program
                 foreach (var mobileFreeObject in block.FreeListMobileObjects)
                 {
                     sw.WriteLine($"Mobile Free Object entry {counter_objects} has value {mobileFreeObject.IdxAtArray}");
-                    UWRandomizerEditor.Utils.StdSaveBuffer(mobileFreeObject, nthTileMapBlockPath,
+                    UWRandomizerEditor.Utils.SaveBuffer(mobileFreeObject, nthTileMapBlockPath,
                         $"mobileFreeObjectIdx{mobileFreeObject.EntryNum}_ctr{counter_objects}.bin");
                     counter_objects++;
                     MobileDuplicateCounter +=
@@ -100,7 +100,7 @@ public static class Program
                 foreach (var staticFreeObject in block.FreeListStaticObjects)
                 {
                     sw.WriteLine($"Static Free Object entry {counter_objects} has value {staticFreeObject.IdxAtArray}");
-                    UWRandomizerEditor.Utils.StdSaveBuffer(staticFreeObject, nthTileMapBlockPath,
+                    UWRandomizerEditor.Utils.SaveBuffer(staticFreeObject, nthTileMapBlockPath,
                         $"staticFreeObjectIdx{staticFreeObject.EntryNum}_ctr{counter_objects}.bin");
                     counter_objects++;
                     StaticDuplicateCounter +=
@@ -129,7 +129,7 @@ public static class Program
             counter_objects = 0;
             foreach (var tile in block.TileInfos)
             {
-                UWRandomizerEditor.Utils.StdSaveBuffer(tile, nthTileMapBlockPath,
+                UWRandomizerEditor.Utils.SaveBuffer(tile, nthTileMapBlockPath,
                     $"TileIdx{counter_objects}Offset{tile.Offset},X{tile.XYPos[0]}Y{tile.XYPos[1]}.bin");
                 counter_objects++;
             }
@@ -146,7 +146,7 @@ public static class Program
         Directory.CreateDirectory(TextureMappingBlocksPath);
         foreach (var textMapBlock in Ark.TextMapBlocks)
         {
-            UWRandomizerEditor.Utils.StdSaveBuffer(textMapBlock, TextureMappingBlocksPath,
+            UWRandomizerEditor.Utils.SaveBuffer(textMapBlock, TextureMappingBlocksPath,
                 $"fullbuffer_{counter_block}.bin");
             counter_block++;
         }
@@ -160,7 +160,7 @@ public static class Program
         Directory.CreateDirectory(ObjectAnimationOverlayMapPath);
         foreach (var objAnimBlock in Ark.ObjAnimBlocks)
         {
-            UWRandomizerEditor.Utils.StdSaveBuffer(objAnimBlock, ObjectAnimationOverlayMapPath,
+            UWRandomizerEditor.Utils.SaveBuffer(objAnimBlock, ObjectAnimationOverlayMapPath,
                 $"fullbuffer_{counter_block}.bin");
             counter_block++;
         }
@@ -174,7 +174,7 @@ public static class Program
         Directory.CreateDirectory(MapNotesBlockPath);
         foreach (var mapNotesBlock in Ark.MapNotesBlocks)
         {
-            UWRandomizerEditor.Utils.StdSaveBuffer(mapNotesBlock, MapNotesBlockPath, $"fullbuffer_{counter_block}.bin");
+            UWRandomizerEditor.Utils.SaveBuffer(mapNotesBlock, MapNotesBlockPath, $"fullbuffer_{counter_block}.bin");
             counter_block++;
         }
 
@@ -187,7 +187,7 @@ public static class Program
         Directory.CreateDirectory(AutomapInfosBlockPath);
         foreach (var automapInfosBlock in Ark.AutomapBlocks)
         {
-            UWRandomizerEditor.Utils.StdSaveBuffer(automapInfosBlock, AutomapInfosBlockPath,
+            UWRandomizerEditor.Utils.SaveBuffer(automapInfosBlock, AutomapInfosBlockPath,
                 $"fullbuffer_{counter_block}.bin");
             counter_block++;
         }

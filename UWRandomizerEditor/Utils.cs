@@ -82,6 +82,8 @@ namespace UWRandomizerEditor
                    shift) // Moves only the relevant bits of the new value to the relevant position, replaces the target bits
             );
         }
+        
+        /// <inheritdoc cref="SetBits(int,int,int,int)"/>
         public static uint SetBits(uint currvalue, uint newvalue, int mask, int shift)
         {
             return (uint) SetBits((int) currvalue, (int) newvalue, mask, shift);
@@ -127,39 +129,40 @@ namespace UWRandomizerEditor
             return (value >> shift) & mask;
         }
         
+        /// <inheritdoc cref="GetBits(int,int,int)"/>
         public static uint GetBits(uint value, int mask, int shift)
         {
             return (uint) GetBits((int) value, mask, shift);
         }
 
         /// <summary>
-        /// Saves a specific buffer to a path specified as basepath \ filename.
+        /// Saves a specific buffer to a path specified as baseDirectory \ filename.
         /// </summary>
         /// <param name="obj">Object that has a "Buffer" property</param>
-        /// <param name="basepath">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
+        /// <param name="baseDirectory">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
         /// <param name="filename">Extra info to add (e.g. name of file). If not provided, gets a random Guid </param>
-        /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
-        public static string StdSaveBuffer(IBufferObject obj, string? basepath, string? filename)
+        /// <returns>Path to the saved object.</returns>
+        public static string SaveBuffer(IBufferObject obj, string? baseDirectory, string? filename)
         {
-            return StdSaveBuffer(obj.Buffer, basepath, filename);
+            return SaveBuffer(obj.Buffer, baseDirectory, filename);
         }
 
         /// <summary>
-        /// Saves a specific buffer to a path specified as basepath \ filename.
+        /// Saves a specific buffer to a path specified as baseDirectory \ filename.
         /// </summary>
         /// <param name="buffer">byte array</param>
-        /// <param name="basepath">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
+        /// <param name="baseDirectory">Base path to the file (e.g. folder structure). If not provided, uses the current working directory </param>
         /// <param name="filename">Extra info to add (e.g. name of file). If not provided, gets a random Guid </param>
-        /// <returns>Path to the saved object. If couldn't be saved, returns null</returns>
-        public static string StdSaveBuffer(byte[] buffer, string? basepath, string? filename)
+        /// <returns>Path to the saved object.</returns>
+        public static string SaveBuffer(byte[] buffer, string? baseDirectory, string? filename)
         {
-            basepath ??= ".";
+            baseDirectory ??= ".";
             filename ??= Guid.NewGuid().ToString();
 
-            string fullpath = Path.Join(basepath, filename);
+            var fullPath = Path.Join(baseDirectory, filename);
 
-            File.WriteAllBytes(fullpath, buffer);
-            return fullpath;
+            File.WriteAllBytes(fullPath, buffer);
+            return fullPath;
         }
     }
 }

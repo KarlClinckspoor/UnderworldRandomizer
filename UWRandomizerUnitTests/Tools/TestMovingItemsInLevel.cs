@@ -112,7 +112,7 @@ public class TestMovingItemsInLevel
 
         var leftTile = MoveSpecificItemsNearSpawn(arkFile, settings, true);
         arkFile.ReconstructBuffer();
-        var path = UWRandomizerEditor.Utils.StdSaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
+        var path = UWRandomizerEditor.Utils.SaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
         var newArkFile = new ArkLoader(path);
         
         Assert.True(newArkFile.TileMapObjectsBlocks[0].TileInfos[159].FirstObjIdx == leftTile.FirstObjIdx);
@@ -144,7 +144,7 @@ public class TestMovingItemsInLevel
 
         var leftTile = Move10ItemsNearSpawn(arkFile, settings);
         arkFile.ReconstructBuffer();
-        var path = UWRandomizerEditor.Utils.StdSaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
+        var path = UWRandomizerEditor.Utils.SaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
         var newArkFile = new ArkLoader(path);
         
         Assert.True(newArkFile.TileMapObjectsBlocks[0].TileInfos[159].FirstObjIdx == leftTile.FirstObjIdx);

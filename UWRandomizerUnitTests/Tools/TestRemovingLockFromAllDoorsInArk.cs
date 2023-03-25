@@ -35,7 +35,7 @@ public class TestRemovingLockFromAllDoorsInArk
 
         ArkOriginal.TileMapObjectsBlocks[0].ReconstructBuffer();
         ArkOriginal.ReconstructBuffer();
-        var path = UWRandomizerEditor.Utils.StdSaveBuffer(ArkOriginal, Paths.BufferTestsPath,
+        var path = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginal, Paths.BufferTestsPath,
             "ark_withdoor1012unlocked.bin");
 
         var ArkModified = new ArkLoader(path);
@@ -66,10 +66,10 @@ public class TestRemovingLockFromAllDoorsInArk
         Assert.True(countOfLocksRemovedOriginal > 0);
         Assert.True(countOfLocksRemovedCleaned > 0);
 
-        var pathOriginal = UWRandomizerEditor.Utils.StdSaveBuffer(ArkOriginalToModify,
+        var pathOriginal = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginalToModify,
             Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_nodoors.bin");
-        var pathCleaned = UWRandomizerEditor.Utils.StdSaveBuffer(ArkCleanedToModify,
+        var pathCleaned = UWRandomizerEditor.Utils.SaveBuffer(ArkCleanedToModify,
             Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_cleaned_nodoors.bin");
 

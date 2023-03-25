@@ -38,11 +38,11 @@ public class TestTileInfo
         // Compare the buffers as-is
         Assert.True(tinfo1.Buffer.SequenceEqual(tinfo2.Buffer));
         string tinfo1Path =
-            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
+            UWRandomizerEditor.Utils.SaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
         string tinfo2Path =
-            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
+            UWRandomizerEditor.Utils.SaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
         string tinfo3Path =
-            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
+            UWRandomizerEditor.Utils.SaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
 
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();

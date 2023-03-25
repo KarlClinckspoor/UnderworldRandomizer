@@ -21,7 +21,7 @@ class ArkLoaderTest
         myArkLoader.ReconstructBuffer();
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         string savedPath =
-            UWRandomizerEditor.Utils.StdSaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
+            UWRandomizerEditor.Utils.SaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
 
         // Reloading and checking if everything was saved correctly.
         var myArkLoader2 = new ArkLoader(savedPath);
@@ -45,7 +45,7 @@ class ArkLoaderTest
         var (diffs, positions) = Utils.CompareTwoBuffers(AL.Buffer, AL_Unreconstructed.Buffer);
         Assert.True(diffs == 0);
         string savedpath =
-            UWRandomizerEditor.Utils.StdSaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
+            UWRandomizerEditor.Utils.SaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
 
         var AL2 = new ArkLoader(savedpath);
         AL2.ReconstructBuffer();

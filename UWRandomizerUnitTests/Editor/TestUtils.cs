@@ -180,7 +180,7 @@ internal class TestSaveBuffer
         string filename = "TestSaveBuffer.bin";
         var mock = new MockBuffer();
 
-        string outputPath = UWRandomizerEditor.Utils.StdSaveBuffer(mock, path, filename);
+        string outputPath = UWRandomizerEditor.Utils.SaveBuffer(mock, path, filename);
         byte[] outputBytes = File.ReadAllBytes(outputPath);
 
         for (int i = 0; i < outputBytes.Length; i++)
