@@ -8,7 +8,7 @@ public class FinalCombination : ItemCombination
     /// <returns></returns>
     public override bool IsValidItemCombination() => true;
 
-    public FinalCombination() : base(new FinalEntry(), new FinalEntry(), new FinalEntry())
+    public FinalCombination() : base(new FinalDescriptor(), new FinalDescriptor(), new FinalDescriptor())
     {
     }
 }
