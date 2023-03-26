@@ -61,6 +61,27 @@ public class TestItemDescriptor
     }
 
     [Test]
+    public void TestPropSetters()
+    {
+        var itemDescriptor = new ItemDescriptor(1, false);
+        var itemDescriptor2 = new ItemDescriptor(25, true);
+
+        var manualProperties1 = new ItemDescriptor() {ItemID = 1, IsDestroyed = false};
+        var manualProperties2 = new ItemDescriptor() {ItemID = 25, IsDestroyed = true};
+        
+        Assert.True(itemDescriptor.Buffer.SequenceEqual(manualProperties1.Buffer));
+        Assert.True(itemDescriptor2.Buffer.SequenceEqual(manualProperties2.Buffer));
+    }
+
+    [Test]
+    public void TestLimitsOfItemID()
+    {
+        var itemDescriptor1 = new ItemDescriptor(0b0011_1111_1111_1111, false);
+        var itemDescriptor2 = new ItemDescriptor(0b0000_0001_1111_1111, false);
+        Assert.True(itemDescriptor1.Buffer.SequenceEqual(itemDescriptor2.Buffer));
+    }
+
+    [Test]
     public void TestDescriptorCtorWrongBufferSize()
     {
         Assert.Throws<ItemCombinationException>(()=>new ItemDescriptor(new byte[] {0, 1, 2}));
@@ -68,7 +89,7 @@ public class TestItemDescriptor
     }
 
     [Test]
-    public void TestDescriptorBufferSet()
+    public void TestDescriptorBufferSetter()
     {
         var itemDescriptor = new ItemDescriptor(new byte[] {1, 0x80});
         Assert.Throws<ItemCombinationException>(() => itemDescriptor.Buffer = new byte[] {0});
