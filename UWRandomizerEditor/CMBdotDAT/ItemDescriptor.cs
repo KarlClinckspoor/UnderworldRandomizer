@@ -1,48 +1,105 @@
 ﻿using System.Text.Json.Serialization;
+using UWRandomizerEditor.Interfaces;
 
 namespace UWRandomizerEditor.CMBdotDAT;
 
 /// <summary>
-/// An entry is a short where the first bit is whether it's destroyed or not and the remaining bits are the ItemID
+/// An BufferAsUShort is a short where the first bit is whether it's destroyed or not and the remaining bits are the ItemID
 /// </summary>
-public class ItemDescriptor
+public class ItemDescriptor: IBufferObject
 {
-    [JsonIgnore] public const int size = 2; // In bytes
-    [JsonIgnore] public byte[] buffer;
-    [JsonIgnore] private ushort entry;
+    /// <summary>
+    /// Specifies the size in bytes of this type of entry, which is 2 bytes (ushort)
+    /// </summary>
+    [JsonIgnore] public const int Size = 2;
+    
+    /// <summary>
+    /// Contains the internal buffer representation
+    /// </summary>
+    private byte[] _buffer = new byte[Size];
+    
+    /// <summary>
+    /// <inheritdoc cref="IBufferObject.Buffer"/>
+    /// </summary>
+    /// <exception cref="ItemCombinationException">Thrown if buffer length is incorrect</exception>
+    [JsonIgnore] 
+    public byte[] Buffer {
+        get
+        {
+            ReconstructBuffer();
+            return _buffer;
+        }
+        set
+        {
+            if (value.Length != Size)
+            {
+                throw new ItemCombinationException(
+                    $"Can't create an ItemDescriptor with buffer size {value.Length}. Expected {Size}");
+            }
 
-    // TODO is Item ID 9 or 10 bits?
-    public ushort itemID
-    {
-        get { return (ushort) Utils.GetBits(entry, 0x3FF, 0); }
-        set { entry = (ushort) Utils.SetBits(entry, value, 0x3FF, 0); }
+            _buffer = value;
+        } 
     }
 
+    /// <summary>
+    /// <inheritdoc cref="IBufferObject.ReconstructBuffer"/>
+    /// </summary>
+    /// In this case, won't perform anything because the getters and setters of the two properties already keep them updated.
+    /// <returns></returns>
+    public bool ReconstructBuffer() => true; // The getters and setters for ItemID and IsDestroyed should keep the buffer updated.
+
+    /// <summary>
+    /// Converts the byte array into a number for convenience.
+    /// </summary>
+    [JsonIgnore]
+    private ushort BufferAsUShort
+    {
+        get => BitConverter.ToUInt16(_buffer);
+        set => _buffer = BitConverter.GetBytes(value);
+    }
+
+    /// <summary>
+    /// ItemID, same as GameObject ItemID. Unique for each item, so for different types of debris, you have different ItemIDs!
+    /// </summary>
+    public ushort ItemID
+    {
+        get => (ushort) Utils.GetBits(BufferAsUShort, 0x1FF, 0);
+        set => BufferAsUShort = (ushort) Utils.SetBits(BufferAsUShort, value, 0x1FF, 0);
+    }
+
+    /// <summary>
+    /// Specifies if the object should be destroyed upon combination. Either one, the other, or both items in a combination
+    /// should be destroyed. If neither are, process won't finish.
+    /// </summary>
     public bool IsDestroyed
     {
-        get { return entry >> 15 == 1; }
-        set { entry = (ushort) Utils.SetBits(entry, value ? 1 : 0, 0b1, 15); }
+        get => BufferAsUShort >> 15 == 1;
+        set => BufferAsUShort = (ushort) Utils.SetBits(BufferAsUShort, value ? 1 : 0, 0b1, 15);
     }
 
+    /// <summary>
+    /// Creates a new ItemDescriptor instance based upon itemID and isDestroyed flag
+    /// </summary>
+    /// <param name="itemID"></param>
+    /// <param name="isDestroyed"></param>
     [JsonConstructor]
     public ItemDescriptor(ushort itemID, bool isDestroyed)
     {
-        this.itemID = itemID;
-        this.IsDestroyed = isDestroyed;
-        buffer = BitConverter.GetBytes(entry);
+        ItemID = itemID;
+        IsDestroyed = isDestroyed;
     }
 
+    /// <summary>
+    /// Creates a new ItemDescriptor instance based on a buffer
+    /// </summary>
+    /// <param name="buffer"></param>
     public ItemDescriptor(byte[] buffer)
     {
-        this.buffer = buffer;
-        entry = BitConverter.ToUInt16(buffer);
+        Buffer = buffer;
     }
 
-    public ItemDescriptor()
-    {
-        buffer = new byte[] {0, 0};
-        entry = 0;
-        itemID = 0;
-        IsDestroyed = false;
-    }
+    /// <summary>
+    /// Creates a default ItemDescriptor.
+    /// </summary>
+    public ItemDescriptor() { }
 }

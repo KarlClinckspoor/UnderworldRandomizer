@@ -52,11 +52,11 @@ class TUICombinations
                 return;
             }
             
-            int id1 = combination.FirstItem.itemID;
+            int id1 = combination.FirstItem.ItemID;
             string destroy1 = combination.FirstItem.IsDestroyed ? "*" : "";
-            int id2 = combination.SecondItem.itemID;
+            int id2 = combination.SecondItem.ItemID;
             string destroy2 = combination.SecondItem.IsDestroyed ? "*" : "";
-            int prod = combination.Product.itemID;
+            int prod = combination.Product.ItemID;
             string destroy3 = combination.Product.IsDestroyed ? "*" : "";
             
             Console.WriteLine(

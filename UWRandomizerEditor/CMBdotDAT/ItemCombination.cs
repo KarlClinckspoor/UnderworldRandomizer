@@ -16,7 +16,7 @@ public class ItemCombination : IBufferObject
     /// <summary>
     /// Buffer size of this IBufferObject. For 3 items, each 1 short long, totals 6 bytes.
     /// </summary>
-    [JsonIgnore] public const int FixedBufferSize = NumOfItemsInCombination * ItemDescriptor.size;
+    [JsonIgnore] public const int FixedBufferSize = NumOfItemsInCombination * ItemDescriptor.Size;
     
     public ItemDescriptor FirstItem;
     public ItemDescriptor SecondItem;
@@ -56,9 +56,9 @@ public class ItemCombination : IBufferObject
     /// <returns></returns>
     public bool ReconstructBuffer()
     {
-        FirstItem.buffer.CopyTo(_buffer, ItemDescriptor.size * 0);
-        SecondItem.buffer.CopyTo(_buffer, ItemDescriptor.size * 1);
-        Product.buffer.CopyTo(_buffer, ItemDescriptor.size * 2);
+        FirstItem.Buffer.CopyTo(_buffer, ItemDescriptor.Size * 0);
+        SecondItem.Buffer.CopyTo(_buffer, ItemDescriptor.Size * 1);
+        Product.Buffer.CopyTo(_buffer, ItemDescriptor.Size * 2);
         return true;
     }
 
@@ -70,9 +70,9 @@ public class ItemCombination : IBufferObject
     [MemberNotNull(nameof(Product))]
     private void CreateDescriptors()
     {
-        FirstItem  = new ItemDescriptor(_buffer[(ItemDescriptor.size * 0)..(ItemDescriptor.size * 1)]);
-        SecondItem = new ItemDescriptor(_buffer[(ItemDescriptor.size * 1)..(ItemDescriptor.size * 2)]);
-        Product    = new ItemDescriptor(_buffer[(ItemDescriptor.size * 2)..(ItemDescriptor.size * 3)]);
+        FirstItem  = new ItemDescriptor(_buffer[(ItemDescriptor.Size * 0)..(ItemDescriptor.Size * 1)]);
+        SecondItem = new ItemDescriptor(_buffer[(ItemDescriptor.Size * 1)..(ItemDescriptor.Size * 2)]);
+        Product    = new ItemDescriptor(_buffer[(ItemDescriptor.Size * 2)..(ItemDescriptor.Size * 3)]);
     }
 
     /// <summary>
