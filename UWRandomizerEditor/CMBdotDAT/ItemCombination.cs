@@ -114,4 +114,20 @@ public class ItemCombination : IBufferObject
         Product = product;
         ReconstructBuffer();
     }
+    
+    // TODO: check out how to check for Equality without having to specify the hash.
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((ItemCombination) obj);
+    }
+
+    public bool Equals(ItemCombination? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return FirstItem.Equals(other.FirstItem) && SecondItem.Equals(other.SecondItem) && Product.Equals(other.Product);
+    }
 }

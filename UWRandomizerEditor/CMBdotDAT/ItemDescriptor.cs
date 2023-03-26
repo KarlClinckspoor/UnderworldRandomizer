@@ -6,7 +6,7 @@ namespace UWRandomizerEditor.CMBdotDAT;
 /// <summary>
 /// An BufferAsUShort is a short where the first bit is whether it's destroyed or not and the remaining bits are the ItemID
 /// </summary>
-public class ItemDescriptor: IBufferObject
+public class ItemDescriptor: IBufferObject, IEquatable<ItemDescriptor>
 {
     /// <summary>
     /// Specifies the size in bytes of this type of entry, which is 2 bytes (ushort)
@@ -102,4 +102,20 @@ public class ItemDescriptor: IBufferObject
     /// Creates a default ItemDescriptor.
     /// </summary>
     public ItemDescriptor() { }
+
+
+    public bool Equals(ItemDescriptor? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return _buffer.SequenceEqual(other._buffer);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((ItemDescriptor) obj);
+    }
 }
