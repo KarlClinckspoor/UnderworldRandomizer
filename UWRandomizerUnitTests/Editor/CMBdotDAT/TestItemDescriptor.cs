@@ -66,4 +66,13 @@ public class TestItemDescriptor
         Assert.Throws<ItemCombinationException>(()=>new ItemDescriptor(new byte[] {0, 1, 2}));
         Assert.Throws<ItemCombinationException>(()=>new ItemDescriptor(new byte[] {0}));
     }
+
+    [Test]
+    public void TestDescriptorBufferSet()
+    {
+        var itemDescriptor = new ItemDescriptor(new byte[] {1, 0x80});
+        Assert.Throws<ItemCombinationException>(() => itemDescriptor.Buffer = new byte[] {0});
+        Assert.Throws<ItemCombinationException>(() => itemDescriptor.Buffer = new byte[] {0, 1, 2});
+        Assert.DoesNotThrow(() => itemDescriptor.Buffer = new byte[] {0, 1});
+    }
 }
