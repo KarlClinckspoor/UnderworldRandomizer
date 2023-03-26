@@ -14,6 +14,7 @@ public class TestItemDescriptor
         Assert.True(itemDescriptor.ItemID == 0);
         Assert.True(itemDescriptor.IsDestroyed == false);
         Assert.True(itemDescriptor.Buffer.All(x => x == 0));
+        Assert.False(itemDescriptor is FinalCombination);
     }
 
     [Test]
@@ -28,9 +29,9 @@ public class TestItemDescriptor
         Assert.True(itemDescriptor.Buffer[1] == 0);
 
         Assert.True(itemDescriptor2.ItemID == 1);
-        Assert.True(itemDescriptor2.IsDestroyed == true);
+        Assert.True(itemDescriptor2.IsDestroyed);
         Assert.True(itemDescriptor2.Buffer[0] == 1);
-        Assert.True(itemDescriptor2.Buffer[1] == 0x80);
+        Assert.True(itemDescriptor2.Buffer[1] == 0b1000_0000);
 
         var itemDescriptor3 = new ItemDescriptor(300, false);
         var itemDescriptor4 = new ItemDescriptor(300, true);
@@ -57,5 +58,12 @@ public class TestItemDescriptor
 
         Assert.True(itemDescriptor2.ItemID == 1);
         Assert.True(itemDescriptor2.IsDestroyed == true);
+    }
+
+    [Test]
+    public void TestDescriptorCtorWrongBufferSize()
+    {
+        Assert.Throws<ItemCombinationException>(()=>new ItemDescriptor(new byte[] {0, 1, 2}));
+        Assert.Throws<ItemCombinationException>(()=>new ItemDescriptor(new byte[] {0}));
     }
 }
