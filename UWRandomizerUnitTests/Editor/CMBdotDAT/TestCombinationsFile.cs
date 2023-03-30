@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.CMBdotDAT;
@@ -89,6 +90,48 @@ public class TestCombinationsFile
     }
 
     [Test]
+    public void TestProcessCombinationsEndingException()
+    {
+        var comb = new CombinationsFile(
+            new List<ItemCombination>()
+            {
+                new ItemCombination(new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+            }
+        );
+        Assert.Throws<ItemCombinationException>( () => comb.Buffer = comb.Buffer);
+    }
+
+    [Test]
+    public void TestProcessCombinationsTooManyItems()
+    {
+        var comb = new CombinationsFile(
+            new List<ItemCombination>()
+            {
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new (new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)),
+                new FinalCombination()
+            }
+        );
+        comb.Buffer = comb.Buffer;
+    }
+
+    [Test]
     [Category("RequiresSettings")]
     public void TestCtorBuffer()
     {
@@ -101,6 +144,12 @@ public class TestCombinationsFile
             Assert.True(stdFile.Combinations[i].Equals(combinations.Combinations[i]));
         }
         Assert.True(combinations.CheckConsistency());
+    }
+    
+    [Test]
+    public void TestCtorFileNotFound()
+    {
+        Assert.Throws<FileNotFoundException>(() => new CombinationsFile("./bla"));
     }
 
     [Test]
@@ -148,6 +197,21 @@ public class TestCombinationsFile
         Assert.True(stdFile.CheckConsistency());
         Assert.False(combFileWOEnd.CheckConsistency());
         Assert.False(combFileNoneDestroyed.CheckConsistency());
+    }
+
+    [Test]
+    public void TestAddCombination()
+    {
+        stdFile.AddCombination(new ItemCombination(new ItemDescriptor(1, true), new ItemDescriptor(2, false), new ItemDescriptor(3, false)));
+        Assert.True(stdFile.CheckConsistency());
+    }
+
+    [Test]
+    public void TestAddCombinationException()
+    {
+        var comb = new CombinationsFile(
+            new List<ItemCombination>() { new ItemCombination(new ItemDescriptor(0, true), new ItemDescriptor(1, false), new ItemDescriptor(2, true)) } );
+        Assert.Throws<ItemCombinationException>(() => comb.AddCombination(new FinalCombination()));
     }
     
     

@@ -92,7 +92,7 @@ public class CombinationsFile : IBufferObject
             Debug.WriteLineIf(i >= UW1CombinationLimit,
                 $"Exceeding UW1's item limit of {UW1CombinationLimit}! Anything after this won't be considered");
         }
-
+        // TODO: If there's already a FinalCombination, shouldn't add a new one!
         _combinations.Add(new FinalCombination());
     }
 
@@ -120,7 +120,9 @@ public class CombinationsFile : IBufferObject
     /// <param name="comb"></param>
     public void AddCombination(ItemCombination comb)
     {
-        Combinations.Insert(Combinations.Count - 1, comb); // Inserts before null
+        if (!CheckConsistency())
+            throw new ItemCombinationException("Couldn't add item because CombinationsFile lacks a FinalCombination!");
+        Combinations.Insert(Combinations.Count - 1, comb); // Inserts before FinalCombination
     }
 
     /// <summary>
@@ -180,7 +182,7 @@ public class CombinationsFile : IBufferObject
     /// <returns></returns>
     public bool CheckConsistency()
     {
-        if (Combinations.TrueForAll(x=>x.IsValidItemCombination()) & (Combinations[^1] is FinalCombination))
+        if (Combinations.TrueForAll(x=>x.IsValidItemCombination()) & (CheckEnding()))
             return true;
         return false;
     }

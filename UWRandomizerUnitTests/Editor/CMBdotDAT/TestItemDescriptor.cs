@@ -96,4 +96,23 @@ public class TestItemDescriptor
         Assert.Throws<ItemCombinationException>(() => itemDescriptor.Buffer = new byte[] {0, 1, 2});
         Assert.DoesNotThrow(() => itemDescriptor.Buffer = new byte[] {0, 1});
     }
+
+    [Test]
+    public void TestEquality()
+    {
+        var desc = new ItemDescriptor(1, false);
+        var descEq = new ItemDescriptor(1, false);
+        var descDiff = new ItemDescriptor(2, false);
+        
+        Assert.False(desc.Equals(null));
+        Assert.True(desc.Equals(desc));
+        Assert.True(desc.Equals(descEq));
+        Assert.False(desc.Equals(descDiff));
+        
+        Assert.False(desc.Equals((object) null));
+        Assert.True(desc.Equals((object) desc));
+        Assert.True(desc.Equals((object) descEq));
+        Assert.False(desc.Equals((object) descDiff));
+        Assert.False(desc.Equals( new FinalCombination()));
+    }
 }
