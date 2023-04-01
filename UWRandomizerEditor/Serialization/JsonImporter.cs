@@ -1,6 +1,5 @@
-﻿namespace UWRandomizerEditor.Serialization
+﻿namespace UWRandomizerEditor.Serialization;
+
+public class JsonImporter
 {
-    public class JsonImporter
-    {
-    }
 }

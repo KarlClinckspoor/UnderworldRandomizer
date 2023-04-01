@@ -1,11 +1,10 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.Blocks
+﻿namespace UWRandomizerEditor.LEVdotARK.Blocks;
+
+public class EmptyBlock : Block
 {
-    public class EmptyBlock : Block
+    public override bool ReconstructBuffer()
     {
-        public override bool ReconstructBuffer()
-        {
-            Buffer = Array.Empty<byte>();
-            return true;
-        }
+        Buffer = Array.Empty<byte>();
+        return true;
     }
 }

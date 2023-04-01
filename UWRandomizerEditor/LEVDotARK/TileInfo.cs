@@ -4,326 +4,325 @@ using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 
-namespace UWRandomizerEditor.LEVdotARK
+namespace UWRandomizerEditor.LEVdotARK;
+
+public class TileInfo : IBufferObject, IEquatable<TileInfo>
 {
-    public class TileInfo : IBufferObject, IEquatable<TileInfo>
+    public const int FixedSize = 4;
+
+    public enum TileTypes: uint
     {
-        public const int FixedSize = 4;
+        Solid = 0,
+        Open,
+        DiagSe,
+        DiagSw,
+        DiagNe,
+        DiagNw,
+        SlpN,
+        SlpS,
+        SlpE,
+        SlpW,
+    };
 
-        public enum TileTypes: uint
-        {
-            Solid = 0,
-            Open,
-            DiagSe,
-            DiagSw,
-            DiagNe,
-            DiagNw,
-            SlpN,
-            SlpS,
-            SlpE,
-            SlpW,
-        };
+    public static readonly IDictionary<int, string> TileTypeDescriptors = new Dictionary<int, string>()
+    {
+        {0, "#SOLID"},
+        {1, "#OPEN"},
+        {2, "#DIAG_SE"},
+        {3, "#DIAG_SW"},
+        {4, "#DIAG_NE"},
+        {5, "#DIAG_NW"},
+        {6, "#SLP_N"},
+        {7, "#SLP_S"},
+        {8, "#SLP_E"},
+        {9, "#SLP_W"}
+    };
 
-        public static readonly IDictionary<int, string> TileTypeDescriptors = new Dictionary<int, string>()
-        {
-            {0, "#SOLID"},
-            {1, "#OPEN"},
-            {2, "#DIAG_SE"},
-            {3, "#DIAG_SW"},
-            {4, "#DIAG_NE"},
-            {5, "#DIAG_NW"},
-            {6, "#SLP_N"},
-            {7, "#SLP_S"},
-            {8, "#SLP_E"},
-            {9, "#SLP_W"}
-        };
+    public static readonly IDictionary<int, char> TileCharReplacements = new Dictionary<int, char>()
+    {
+        {0, '#'},
+        {1, '_'},
+        {2, '/'},
+        {3, '\\'},
+        {4, '\\'},
+        {5, '/'},
+        {6, '^'},
+        {7, 'v'},
+        {8, '>'},
+        {9, '<'}
+    };
 
-        public static readonly IDictionary<int, char> TileCharReplacements = new Dictionary<int, char>()
+    // This is the 4 bytes used to describe a Tile Info. This is useful for bitwise operations that span
+    // the boundary of 1 byte, which would be a bit cumbersome to do with a byte[] buffer. The byte[] Buffer
+    // is to be considered "primary", meaning it should always be kept up to date.
+    private uint BufferAsUInt32
+    {
+        get
         {
-            {0, '#'},
-            {1, '_'},
-            {2, '/'},
-            {3, '\\'},
-            {4, '\\'},
-            {5, '/'},
-            {6, '^'},
-            {7, 'v'},
-            {8, '>'},
-            {9, '<'}
-        };
+            return BitConverter.ToUInt32(Buffer);
+        }
+        [MemberNotNull("Buffer")]
+        set
+        {
+            Buffer = BitConverter.GetBytes(value);
+        }
+    }
 
-        // This is the 4 bytes used to describe a Tile Info. This is useful for bitwise operations that span
-        // the boundary of 1 byte, which would be a bit cumbersome to do with a byte[] buffer. The byte[] Buffer
-        // is to be considered "primary", meaning it should always be kept up to date.
-        private uint BufferAsUInt32
+    public byte[] Buffer { get; set; }
+
+    public uint EntryNum { get; set; }
+
+    public int Offset
+    {
+        get { return (int) EntryNum * FixedSize; }
+    }
+
+    public int LevelNum { get; set; }
+
+    public uint TileType
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1111, 0); }
+        set
         {
-            get
-            {
-                return BitConverter.ToUInt32(Buffer);
-            }
-            [MemberNotNull("Buffer")]
-            set
-            {
-                Buffer = BitConverter.GetBytes(value);
-            }
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 0);
+        }
+    }
+
+    public uint TileHeight
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1111, 4); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 4);
+        }
+    }
+
+    public uint Light
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1, 8); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 8);
+        }
+    }
+
+    // todo: recheck this.
+    public uint Bit9
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1, 9); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 9);
+        }
+    }
+
+    public uint FloorTextureIdx
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1111, 10); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 10);
+        }
+    }
+
+    public uint NoMagic
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1, 14); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 14);
+        }
+    }
+
+    public uint DoorBit
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b1, 15); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 15);
+        }
+    }
+
+    public uint WallTextureIdx
+    {
+        get { return Utils.GetBits(BufferAsUInt32, 0b111111, 16); }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b111111, 16);
+        }
+    }
+
+    public uint FirstObjIdx
+    {
+        get
+        {
+            return ObjectChain.startingIdx;
+        }
+        set
+        {
+            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111111111, 22);
+            ObjectChain.startingIdx = value;
+            if (GetStartingIndex(Buffer) != value)
+                throw new Exception("Why isn't the starting index being added correctly?");
+        }
+    }
+
+    private static uint GetStartingIndex(uint bufferAsUInt32)
+    {
+        return Utils.GetBits(bufferAsUInt32, 0b1111111111, 22);
+    }
+
+    private static uint GetStartingIndex(byte[] buffer)
+    {
+        uint temp = BitConverter.ToUInt32(buffer);
+        return GetStartingIndex(temp);
+    }
+
+    public UWLinkedList ObjectChain { get; }
+
+
+    // TODO: Review this
+    public uint[] XYPos
+    {
+        get
+        {
+            var row = EntryNum % TileMapMasterObjectListBlock.TileHeight;
+            var col = EntryNum / TileMapMasterObjectListBlock.TileWidth;
+            return new uint[] {row, col};
+        }
+    }
+
+    public uint XPos => XYPos[0];
+    public uint YPos => XYPos[1];
+
+    // TODO: I could add more checks here
+    public bool ReconstructBuffer()
+    {
+        if (GetStartingIndex(Buffer) != ObjectChain.startingIdx)
+        {
+            Debug.Print("Mismatch between TileInfo firstObjectIndex in buffer and UWLinkedList.");
+            FirstObjIdx = ObjectChain.startingIdx;
+        }
+        return true;
+    }
+
+    public TileInfo(uint entrynum, uint bufferAsUInt32, uint offset, int levelNumber)
+    {
+        EntryNum = entrynum;
+        BufferAsUInt32 = bufferAsUInt32;
+        LevelNum = levelNumber;
+        ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(bufferAsUInt32), RepresentingContainer = false};
+        if (offset != Offset)
+        {
+            throw new Exception("Invalid calculation of offset from EntryNum!");
+        }
+    }
+
+    public TileInfo(uint entrynum, byte[] buffer, uint offset, int levelNumber)
+    {
+        if (buffer.Length != FixedSize)
+        {
+            throw new ArgumentException($"Invalid size of Tile Info Buffer: {buffer.Length}");
         }
 
-        public byte[] Buffer { get; set; }
-
-        public uint EntryNum { get; set; }
-
-        public int Offset
+        EntryNum = entrynum;
+        LevelNum = levelNumber;
+        Buffer = buffer;
+        ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(buffer), RepresentingContainer = false};
+        if (offset != Offset)
         {
-            get { return (int) EntryNum * FixedSize; }
+            throw new Exception("Invalid calculation of offset from EntryNum!");
         }
+    }
 
-        public int LevelNum { get; set; }
-
-        public uint TileType
+    // TODO: Check if we need that modification in the height value mentioned in the uw-formats.txt
+    public void MoveObjectsToSameZLevel()
+    {
+        foreach (GameObject obj in ObjectChain)
         {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1111, 0); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 0);
-            }
+            obj.Zpos = (byte) (TileHeight * 8);
+            // obj.Zpos = (byte) (TileHeight);
         }
+    }
 
-        public uint TileHeight
+    // TODO: Make the positions randomized among a set of possible values
+    public void MoveObjectsToCorrectCorner(Random r)
+    {
+        foreach (var obj in ObjectChain)
         {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1111, 4); }
-            set
+            switch (TileType)
             {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 4);
-            }
-        }
-
-        public uint Light
-        {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1, 8); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 8);
-            }
-        }
-
-        // todo: recheck this.
-        public uint Bit9
-        {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1, 9); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 9);
-            }
-        }
-
-        public uint FloorTextureIdx
-        {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1111, 10); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 10);
-            }
-        }
-
-        public uint NoMagic
-        {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1, 14); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 14);
-            }
-        }
-
-        public uint DoorBit
-        {
-            get { return Utils.GetBits(BufferAsUInt32, 0b1, 15); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1, 15);
-            }
-        }
-
-        public uint WallTextureIdx
-        {
-            get { return Utils.GetBits(BufferAsUInt32, 0b111111, 16); }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b111111, 16);
-            }
-        }
-
-        public uint FirstObjIdx
-        {
-            get
-            {
-                return ObjectChain.startingIdx;
-            }
-            set
-            {
-                BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111111111, 22);
-                ObjectChain.startingIdx = value;
-                if (GetStartingIndex(Buffer) != value)
-                    throw new Exception("Why isn't the starting index being added correctly?");
-            }
-        }
-
-        private static uint GetStartingIndex(uint bufferAsUInt32)
-        {
-            return Utils.GetBits(bufferAsUInt32, 0b1111111111, 22);
-        }
-
-        private static uint GetStartingIndex(byte[] buffer)
-        {
-            uint temp = BitConverter.ToUInt32(buffer);
-            return GetStartingIndex(temp);
-        }
-
-        public UWLinkedList ObjectChain { get; }
-
-
-        // TODO: Review this
-        public uint[] XYPos
-        {
-            get
-            {
-                var row = EntryNum % TileMapMasterObjectListBlock.TileHeight;
-                var col = EntryNum / TileMapMasterObjectListBlock.TileWidth;
-                return new uint[] {row, col};
-            }
-        }
-
-        public uint XPos => XYPos[0];
-        public uint YPos => XYPos[1];
-
-        // TODO: I could add more checks here
-        public bool ReconstructBuffer()
-        {
-            if (GetStartingIndex(Buffer) != ObjectChain.startingIdx)
-            {
-                Debug.Print("Mismatch between TileInfo firstObjectIndex in buffer and UWLinkedList.");
-                FirstObjIdx = ObjectChain.startingIdx;
-            }
-            return true;
-        }
-
-        public TileInfo(uint entrynum, uint bufferAsUInt32, uint offset, int levelNumber)
-        {
-            EntryNum = entrynum;
-            BufferAsUInt32 = bufferAsUInt32;
-            LevelNum = levelNumber;
-            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(bufferAsUInt32), RepresentingContainer = false};
-            if (offset != Offset)
-            {
-                throw new Exception("Invalid calculation of offset from EntryNum!");
-            }
-        }
-
-        public TileInfo(uint entrynum, byte[] buffer, uint offset, int levelNumber)
-        {
-            if (buffer.Length != FixedSize)
-            {
-                throw new ArgumentException($"Invalid size of Tile Info Buffer: {buffer.Length}");
-            }
-
-            EntryNum = entrynum;
-            LevelNum = levelNumber;
-            Buffer = buffer;
-            ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(buffer), RepresentingContainer = false};
-            if (offset != Offset)
-            {
-                throw new Exception("Invalid calculation of offset from EntryNum!");
-            }
-        }
-
-        // TODO: Check if we need that modification in the height value mentioned in the uw-formats.txt
-        public void MoveObjectsToSameZLevel()
-        {
-            foreach (GameObject obj in ObjectChain)
-            {
-                obj.Zpos = (byte) (TileHeight * 8);
-                // obj.Zpos = (byte) (TileHeight);
-            }
-        }
-
-        // TODO: Make the positions randomized among a set of possible values
-        public void MoveObjectsToCorrectCorner(Random r)
-        {
-            foreach (var obj in ObjectChain)
-            {
-                switch (TileType)
+                case (int) TileTypes.Open:
+                case (int) TileTypes.SlpN:
+                case (int) TileTypes.SlpE:
+                case (int) TileTypes.SlpS:
+                case (int) TileTypes.SlpW:
+                case (int) TileTypes.Solid:
+                    break;
+                case (int) TileTypes.DiagSe:
                 {
-                    case (int) TileTypes.Open:
-                    case (int) TileTypes.SlpN:
-                    case (int) TileTypes.SlpE:
-                    case (int) TileTypes.SlpS:
-                    case (int) TileTypes.SlpW:
-                    case (int) TileTypes.Solid:
-                        break;
-                    case (int) TileTypes.DiagSe:
-                    {
-                        obj.Xpos = 6;
-                        obj.Ypos = 1;
-                        break;
-                    }
-                    case (int) TileTypes.DiagSw:
-                    {
-                        obj.Xpos = 1;
-                        obj.Ypos = 1;
-                        break;
-                    }
-                    case (int) TileTypes.DiagNe:
-                    {
-                        obj.Xpos = 6;
-                        obj.Ypos = 6;
-                        break;
-                    }
-                    case (int) TileTypes.DiagNw:
-                    {
-                        obj.Xpos = 1;
-                        obj.Ypos = 6;
-                        break;
-                    }
+                    obj.Xpos = 6;
+                    obj.Ypos = 1;
+                    break;
+                }
+                case (int) TileTypes.DiagSw:
+                {
+                    obj.Xpos = 1;
+                    obj.Ypos = 1;
+                    break;
+                }
+                case (int) TileTypes.DiagNe:
+                {
+                    obj.Xpos = 6;
+                    obj.Ypos = 6;
+                    break;
+                }
+                case (int) TileTypes.DiagNw:
+                {
+                    obj.Xpos = 1;
+                    obj.Ypos = 6;
+                    break;
                 }
             }
         }
+    }
 
-        public bool Equals(TileInfo? other)
+    public bool Equals(TileInfo? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        // I think I shouldn't have to consider the object chain, only the first index and the level num
+        // I've added the other flags for completeness, because comparing only the "BufferAsUInt32" should be enough to cover them
+        if (
+            this.BufferAsUInt32 == other.BufferAsUInt32 &
+            this.Buffer.SequenceEqual(other.Buffer) &
+            this.EntryNum == other.EntryNum &
+            this.LevelNum == other.LevelNum &
+            this.TileType == other.TileType &
+            this.TileHeight == other.TileHeight &
+            this.Light == other.Light &
+            this.FloorTextureIdx == other.FloorTextureIdx &
+            this.NoMagic == other.NoMagic &
+            this.DoorBit == other.DoorBit &
+            this.WallTextureIdx == other.WallTextureIdx
+        )
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            // I think I shouldn't have to consider the object chain, only the first index and the level num
-            // I've added the other flags for completeness, because comparing only the "BufferAsUInt32" should be enough to cover them
-            if (
-                this.BufferAsUInt32 == other.BufferAsUInt32 &
-                this.Buffer.SequenceEqual(other.Buffer) &
-                this.EntryNum == other.EntryNum &
-                this.LevelNum == other.LevelNum &
-                this.TileType == other.TileType &
-                this.TileHeight == other.TileHeight &
-                this.Light == other.Light &
-                this.FloorTextureIdx == other.FloorTextureIdx &
-                this.NoMagic == other.NoMagic &
-                this.DoorBit == other.DoorBit &
-                this.WallTextureIdx == other.WallTextureIdx
-            )
-            {
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
-        public override bool Equals(object? obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((TileInfo) obj);
-        }
+        return false;
+    }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Buffer, EntryNum, LevelNum, ObjectChain);
-        }
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((TileInfo) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Buffer, EntryNum, LevelNum, ObjectChain);
     }
 }
