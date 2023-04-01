@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
 
 namespace UWRandomizerEditor.CMBdotDAT;
@@ -100,6 +99,7 @@ public class CombinationsFile : IBufferObject
     /// Reconstructs the buffer by joining the individual buffers of each combination.
     /// </summary>
     /// <returns></returns>
+    [MemberNotNull(nameof(_buffer))]
     public bool ReconstructBuffer()
     {
         var buffer = new byte[Combinations.Count * ItemCombination.FixedBufferSize];
@@ -159,7 +159,6 @@ public class CombinationsFile : IBufferObject
     /// Creates a new instance given a list of combinations and 
     /// </summary>
     /// <param name="combinations"></param>
-    /// <param name="path"></param>
     public CombinationsFile(List<ItemCombination> combinations)
     {
         Combinations = combinations;
