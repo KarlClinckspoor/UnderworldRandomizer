@@ -2,6 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 using UWRandomizerEditor.Interfaces;
+using System.Linq;
 
 namespace RandomizerUnitTests;
 
@@ -189,5 +190,36 @@ internal class TestSaveBuffer
         }
 
         File.Delete(outputPath);
+    }
+}
+
+[TestFixture]
+public class TestArrayFunctions
+{
+    [Test]
+    public void TestReshapeArrayAndDropDimension()
+    {
+        var arr = new byte[] {0, 1, 2, 3, 4, 5};
+        var correct = new byte[,]
+        {
+            {0, 1, 2},
+            {3, 4, 5}
+        };
+        var test2D = UWRandomizerEditor.Utils.ReshapeArray(arr, 3, 2);
+        Assert.True(correct.GetLength(0) == test2D.GetLength(0));
+        Assert.True(correct.GetLength(1) == test2D.GetLength(1));
+        for (int i = 0; i < test2D.GetLength(0); i++)
+        {
+            for (int j = 0; j < test2D.GetLength(1); j++)
+            {
+                Assert.True(test2D[i,j].Equals(correct[i,j]));
+            }
+        }
+
+        var test2 = UWRandomizerEditor.Utils.ReshapeArray(arr, 6, 1);
+        var testFlat = new byte[arr.Length];
+        Buffer.BlockCopy(test2, 0, testFlat, 0, arr.Length);
+        Assert.True(arr.SequenceEqual(testFlat));
+        Assert.True(UWRandomizerEditor.Utils.DropDimension(test2).SequenceEqual(arr));
     }
 }

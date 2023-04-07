@@ -164,4 +164,37 @@ public static class Utils
         File.WriteAllBytes(fullPath, buffer);
         return fullPath;
     }
+    
+
+    public static T[,] ReshapeArray<T>(T[] flatArray, int width, int height)
+    {
+        var totalItems = width * height;
+        if (totalItems != flatArray.Length)
+        {
+            throw new InvalidDataException(
+                $"The number of items in the output array {totalItems} is different from dimensions of the input array {flatArray.Length}");
+        }
+
+        T[,] outArray = new T[height, width];
+        for (int i = 0; i < totalItems; i++)
+        {
+            int col = i % width;
+            int row = i / width;
+            outArray[row, col] = flatArray[i];
+        }
+
+        return outArray;
+    }
+    
+    public static T[] DropDimension<T>(T[,] array) 
+    {
+        if (array.GetLength(0) > 1)
+        {
+            throw new ArgumentException("This only removes one dimension from the data, can't have it with 2 rows");
+        }
+
+        return Enumerable.Range(0, array.GetLength(1)).Select(x => array[0, x]).ToArray();
+    }
+    
+    
 }

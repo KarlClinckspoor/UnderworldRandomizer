@@ -2,7 +2,6 @@
 
 namespace UWRandomizerEditor.LEVdotARK;
 
-// Help visualization
 /// <summary>
 /// Static class used to reshape, print and translate tile info buffers into more human readable formats.
 /// </summary>
@@ -44,29 +43,8 @@ public static class TileMap
     /// <returns>Reshaped [64,64] array of numbers </returns>
     static int[,] ReshapeTileNumbers(int[] TileNumbers)
     {
-        int[,] array = new int[TileMapMasterObjectListBlock.TileHeight, TileMapMasterObjectListBlock.TileWidth];
-        for (int i = 0; i < TileNumbers.Length; i++)
-        {
-            int col = i % TileMapMasterObjectListBlock.TileWidth;
-            int row = i / TileMapMasterObjectListBlock.TileHeight;
-            array[row, col] = TileNumbers[i];
-        }
-
-        return array;
-    }
-
-    // TODO: Remove this function, get replacements directly. Reduce function number below by half.
-    static char[,] ReshapeReplaceTileNumbers(int[] TileNumbers)
-    {
-        char[,] array = new char[TileMapMasterObjectListBlock.TileHeight, TileMapMasterObjectListBlock.TileWidth];
-        for (int i = 0; i < TileNumbers.Length; i++)
-        {
-            int col = i % TileMapMasterObjectListBlock.TileWidth;
-            int row = i / TileMapMasterObjectListBlock.TileHeight;
-            array[row, col] = TileCharReplacements[TileNumbers[i]];
-        }
-
-        return array;
+        return Utils.ReshapeArray(TileNumbers, TileMapMasterObjectListBlock.TileHeight,
+            TileMapMasterObjectListBlock.TileWidth);
     }
 
     /// <summary>
