@@ -7,7 +7,7 @@ namespace UWRandomizerEditor.LEVdotARK;
 
 public class UWLinkedList: IList<GameObject>
 {
-    private uint _startingIdx = 0;
+    private uint _startingIdx;
     public bool RepresentingContainer = false;
     public uint startingIdx
     {
@@ -265,18 +265,20 @@ public class UWLinkedList: IList<GameObject>
     /// Creates a UWLinkedList containing the provided list of objects.
     /// </summary>
     /// <param name="objectsToBeInTheList"></param>
+    /// <param name="firstObjectIndex"></param>
     public UWLinkedList(List<GameObject> objectsToBeInTheList, ushort firstObjectIndex)
     {
         _startingIdx = firstObjectIndex;
         objects = objectsToBeInTheList;
-        Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
+        Debug.WriteLineIf(!CheckIntegrity(), "Warning, the UWLinkedList instance is invalid!");
     }
 
+    /// <inheritdoc cref="UWLinkedList"/>
     public UWLinkedList(GameObject[] objectsToBeInTheList, ushort firstObjectIndex)
     {
         _startingIdx = firstObjectIndex;
         this.objects = objectsToBeInTheList.ToList();
-        Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
+        Debug.WriteLineIf(!CheckIntegrity(), "Warning, the UWLinkedList instance is invalid!");
     }
     
     /// <summary>
