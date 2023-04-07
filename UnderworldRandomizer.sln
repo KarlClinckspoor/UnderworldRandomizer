@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCombinations", "ItemCom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerWPF", "UWRandomizerWPF\UWRandomizerWPF.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractingBuffersOfEverything", "ExtractingBuffersOfEverything\ExtractingBuffersOfEverything.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualizationHelperPrograms", "VisualizationHelperPrograms\VisualizationHelperPrograms.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerTools", "UWRandomizerTools\UWRandomizerTools.csproj", "{FA69796F-BDE0-41EE-B602-49C2A537BDA4}"
 EndProject

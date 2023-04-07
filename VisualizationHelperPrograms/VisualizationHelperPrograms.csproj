@@ -5,6 +5,8 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyName>VisualizationHelperPrograms</AssemblyName>
+        <RootNamespace>VisualizationHelperPrograms</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

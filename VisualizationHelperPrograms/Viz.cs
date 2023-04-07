@@ -1,6 +1,7 @@
-﻿using UWRandomizerEditor.LEVdotARK.Blocks;
+﻿using UWRandomizerEditor;
+using UWRandomizerEditor.LEVdotARK.Blocks;
 
-namespace UWRandomizerEditor.LEVdotARK;
+namespace VisualizationHelperPrograms;
 
 /// <summary>
 /// Static class used to reshape, print and translate tile info buffers into more human readable formats.

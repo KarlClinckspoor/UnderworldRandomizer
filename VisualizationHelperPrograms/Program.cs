@@ -1,8 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using UWRandomizerEditor.LEVdotARK;
 
-using UWRandomizerEditor.LEVdotARK;
-
-namespace ExtractingBuffersOfEverything;
+namespace VisualizationHelperPrograms;
 
 public static class Program
 {
