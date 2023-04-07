@@ -268,26 +268,26 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     }
 
     // TODO: Revise all these "Is..." functions. Would they be needed by the GameObjectFactory?
-    public static bool IsTexturedObject(byte[] buffer)
+    private static bool IsTexturedObject(byte[] buffer)
     {
-        byte firstByte = buffer[0];
-        int start = 0x160; // TODO: I haven't checked these indices thoroughly!
-        int end = 0x17f; // TODO: I haven't checked these indices thoroughly!
+        var firstByte = buffer[0];
+        var start = 0x160; // TODO: I haven't checked these indices thoroughly!
+        var end = 0x17f; // TODO: I haven't checked these indices thoroughly!
         if ((firstByte > start) | (firstByte < end))
             return true;
         return false;
     }
 
-    public static bool IsQuantityObject(byte[] buffer)
+    private static bool IsQuantityObject(byte[] buffer)
     {
         if (IsTexturedObject(buffer))
         {
             return false;
         }
 
-        short first2bytes = BitConverter.ToInt16(buffer, 0);
-        bool quantitybit = ((first2bytes >> 15) & 1) == 1 ? true : false;
-        return quantitybit;
+        var first2Bytes = BitConverter.ToInt16(buffer, 0);
+        var quantityBit = ((first2Bytes >> 15) & 1) == 1;
+        return quantityBit;
     }
 
     public static bool IsSpecialPropertyObject(byte[] buffer)
