@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using UWRandomizerEditor;
 using UWRandomizerEditor.CMBdotDAT;
 
 namespace ItemCombinations;
@@ -16,7 +15,7 @@ public static class Program
 
 }
 
-class TUICombinations
+internal class TUICombinations
 {
     private CombinationsFile _cmb;
     private string _path;
@@ -242,7 +241,7 @@ class JsonEntry
         {
             this.ID = temp;
         }
-
+        this.ItemID = ItemID;
         this.Name = Name;
     }
 

@@ -8,5 +8,5 @@ namespace UWRandomizerEditor.CMBdotDAT;
 public class FinalDescriptor : ItemDescriptor
 {
     [JsonConstructor]
-    public FinalDescriptor() : base() { }
+    public FinalDescriptor() { }
 }

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 
 public class TexturedGameObject : StaticObject
 {

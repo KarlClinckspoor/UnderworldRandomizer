@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerEditor.LEVdotARK.Blocks;
 
 // TODO: Separate this into TileMap and Object List...?
-public partial class TileMapMasterObjectListBlock : Block
+public partial class TileMapMasterObjectListBlock 
 {
     // From uw-formats.txt
     // offset  size   description

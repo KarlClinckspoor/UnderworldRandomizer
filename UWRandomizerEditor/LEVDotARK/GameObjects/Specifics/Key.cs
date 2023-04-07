@@ -11,7 +11,7 @@ public class Key : StaticObject
     {
     }
 
-    public Key() : base()
+    public Key()
     {
     }
 

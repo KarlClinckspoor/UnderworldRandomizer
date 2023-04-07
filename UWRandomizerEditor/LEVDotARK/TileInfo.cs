@@ -72,29 +72,20 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
 
     public uint EntryNum { get; set; }
 
-    public int Offset
-    {
-        get { return (int) EntryNum * FixedSize; }
-    }
+    public int Offset => (int) EntryNum * FixedSize;
 
     public int LevelNum { get; set; }
 
     public uint TileType
     {
-        get { return Utils.GetBits(BufferAsUInt32, 0b1111, 0); }
-        set
-        {
-            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 0);
-        }
+        get => Utils.GetBits(BufferAsUInt32, 0b1111, 0);
+        set => BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 0);
     }
 
     public uint TileHeight
     {
-        get { return Utils.GetBits(BufferAsUInt32, 0b1111, 4); }
-        set
-        {
-            BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 4);
-        }
+        get => Utils.GetBits(BufferAsUInt32, 0b1111, 4);
+        set => BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111, 4);
     }
 
     public uint Light
@@ -188,7 +179,7 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         {
             var row = EntryNum % TileMapMasterObjectListBlock.TileHeight;
             var col = EntryNum / TileMapMasterObjectListBlock.TileWidth;
-            return new uint[] {row, col};
+            return new [] {row, col};
         }
     }
 
@@ -241,7 +232,6 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         foreach (GameObject obj in ObjectChain)
         {
             obj.Zpos = (byte) (TileHeight * 8);
-            // obj.Zpos = (byte) (TileHeight);
         }
     }
 
@@ -319,10 +309,5 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != this.GetType()) return false;
         return Equals((TileInfo) obj);
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Buffer, EntryNum, LevelNum, ObjectChain);
     }
 }

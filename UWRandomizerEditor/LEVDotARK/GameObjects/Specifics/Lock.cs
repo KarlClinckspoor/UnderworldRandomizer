@@ -11,7 +11,7 @@ public class Lock : StaticObject
     {
     }
 
-    public Lock() : base()
+    public Lock()
     {
     }
 

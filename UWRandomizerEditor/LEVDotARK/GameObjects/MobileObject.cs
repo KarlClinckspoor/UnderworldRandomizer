@@ -44,7 +44,7 @@ public class MobileObject : GameObject
 
     public int HP
     {
-        get { return (int) byte1_hp; }
+        get { return byte1_hp; }
         set
         {
             byte1_hp = (byte) value;

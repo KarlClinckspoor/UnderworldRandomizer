@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace UWRandomizerEditor.LEVdotARK.Blocks;
+﻿namespace UWRandomizerEditor.LEVdotARK.Blocks;
 
 public sealed class TextureMappingBlock : Block
 {

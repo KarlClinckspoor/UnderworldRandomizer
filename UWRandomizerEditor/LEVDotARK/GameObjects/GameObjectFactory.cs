@@ -14,7 +14,7 @@ public static class GameObjectFactory
         }
         // Create a StaticObject just to get the ItemID for later.
         var tempObject = new StaticObject(buffer[0..8], 2);
-        int itemID = tempObject.ItemID;
+        var itemID = tempObject.ItemID;
 
         // Start is always MobileObjects
         if (idxAtArray < TileMapMasterObjectListBlock.MobileObjectNum)
@@ -35,9 +35,7 @@ public static class GameObjectFactory
         }
 
         // End is always StaticObjects
-        if (idxAtArray >= TileMapMasterObjectListBlock.MobileObjectNum &
-            idxAtArray <
-            (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
+        if (idxAtArray < (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
         {
             if (buffer.Length != StaticObject.FixedTotalLength)
             {

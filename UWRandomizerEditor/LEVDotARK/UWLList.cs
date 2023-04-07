@@ -114,18 +114,10 @@ public class UWLinkedList: IList<GameObject>
         return true;
     }
 
-    public int Count
-    {
-        get
-        {
-            return objects.Count;
-        }
-    }
+    public int Count => objects.Count;
 
-    public bool IsReadOnly
-    {
-        get { return false; }
-    }
+    public bool IsReadOnly => false;
+
     public int IndexOf(GameObject item)
     {
         return objects.IndexOf(item);
