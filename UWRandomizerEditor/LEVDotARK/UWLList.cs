@@ -5,9 +5,20 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerEditor.LEVdotARK;
 
+/// <summary>
+/// A UWLinkedList is used to keep items that belong to a tile, container or npc updated as items are added or removed
+/// to those objects. It technically does not have an equivalent in the binary file of LEV.ARK, where these relationships
+/// are all indirect.
+/// Under the hood, it's just a list of GameObjects that updates them when items are added/removed.
+/// </summary>
 public class UWLinkedList: IList<GameObject>
 {
     private uint _startingIdx;
+    
+    /// <summary>
+    /// This variable dictates if this UWLinkedList instance is representing a container, i.e., the items aren't free
+    /// on the ground. A container can be either a bag or similar, or a MobileObject (npc). By default, this is false.
+    /// </summary>
     public bool RepresentingContainer = false;
     
     /// <summary>
@@ -49,11 +60,15 @@ public class UWLinkedList: IList<GameObject>
         return GetEnumerator();
     }
 
+    /// <summary>
+    /// Adds an item to the end of the linked list. Updates the item's "next" field to 0.
+    /// </summary>
+    /// <param name="item"></param>
     public void Add(GameObject item)
     {
         if (objects.Count == 0)
         {
-            startingIdx = item.IdxAtObjectArray;
+            StartingIdx = item.IdxAtObjectArray;
         }
         else
         {
@@ -64,6 +79,9 @@ public class UWLinkedList: IList<GameObject>
         objects.Add(item);
     }
 
+
+    /// <inheritdoc cref="ICollection{T}.Clear"/>
+    /// Also sets the starting index to 0.
     public void Clear()
     {
         _startingIdx = 0;
@@ -80,6 +98,8 @@ public class UWLinkedList: IList<GameObject>
         objects.CopyTo(array, arrayIndex);
     }
 
+    /// <inheritdoc cref="ICollection{T}.Remove"/>
+    /// In addition, updates the indexes of all appropriate GameObjects.
     public bool Remove(GameObject item)
     {
         int idx = objects.IndexOf(item);
@@ -125,17 +145,13 @@ public class UWLinkedList: IList<GameObject>
         return objects.IndexOf(item);
     }
 
-    /// <summary>
-    /// Inserts an object and its new position in the LinkedList is the index provided.
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="item"></param>
-    /// <exception cref="IndexOutOfRangeException"></exception>
+    /// <inheritdoc cref="IList{T}.Insert"/>
+    /// Fixes the indexes of GameObjects around the insertion point.
     public void Insert(int index, GameObject item)
     {
         if (index < 0 | index > Count)
         {
-            throw new IndexOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         if (index == 0)
@@ -162,11 +178,13 @@ public class UWLinkedList: IList<GameObject>
         
     }
 
+    /// <inheritdoc cref="IList{T}.RemoveAt"/>
+    /// Updates the GameObjects surrounding the object.
     public void RemoveAt(int index)
     {
         if (index < 0 | index > Count - 1)
         {
-            throw new IndexOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         if (index == 0 & Count == 1)
@@ -195,9 +213,9 @@ public class UWLinkedList: IList<GameObject>
     }
     
     /// <summary>
-    /// Adds items from list to the start of the object chain
+    /// Instantiates a new internal List of GameObjects, appends the items provided, then appends the original items.
     /// </summary>
-    /// <param name="items"></param>
+    /// <param name="items">List of items that will be prepended.</param>
     public void PrependItems(List<GameObject> items)
     {
         // var toAdd = new UWLinkedList(items);
@@ -208,13 +226,15 @@ public class UWLinkedList: IList<GameObject>
         AppendItems(oldObjectList);
     }
 
+    /// <inheritdoc cref="IList{T}.this"/>
+    /// When setting, adjusts the GameObjects around the insertion point to accomodate it.
     public GameObject this[int index]
     {
         get
         {
             if (index < 0 | index >= Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
             return objects[index];
         }
@@ -222,7 +242,7 @@ public class UWLinkedList: IList<GameObject>
         {
             if (index < 0 | index >= Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             if (index == 0 & Count > 1)
@@ -256,31 +276,31 @@ public class UWLinkedList: IList<GameObject>
     }
 
     /// <summary>
-    /// Constructed a new empty UWLinkedList. To fill it, either set the starting index and provide a
+    /// Constructs a new empty UWLinkedList. To fill it, either set the starting index and provide a
     /// list of GameObjects, or add the objects individually.
     /// </summary>
     public UWLinkedList()
     {
         objects = new List<GameObject>();
     }
+    
     /// <summary>
-    /// Creates a UWLinkedList containing the provided list of objects.
+    /// Creates a UWLinkedList containing the provided sequence of objects. The objects themselves do not need to be
+    /// correctly linked together.
     /// </summary>
-    /// <param name="objectsToBeInTheList"></param>
-    /// <param name="firstObjectIndex"></param>
-    public UWLinkedList(List<GameObject> objectsToBeInTheList, ushort firstObjectIndex)
+    /// <param name="gameObjects">Objects that will be added to the list</param>
+    public UWLinkedList(IEnumerable<GameObject> gameObjects)
     {
-        _startingIdx = firstObjectIndex;
-        objects = objectsToBeInTheList;
-        Debug.WriteLineIf(!CheckIntegrity(), "Warning, the UWLinkedList instance is invalid!");
-    }
-
-    /// <inheritdoc cref="UWLinkedList"/>
-    public UWLinkedList(GameObject[] objectsToBeInTheList, ushort firstObjectIndex)
-    {
-        _startingIdx = firstObjectIndex;
-        this.objects = objectsToBeInTheList.ToList();
-        Debug.WriteLineIf(!CheckIntegrity(), "Warning, the UWLinkedList instance is invalid!");
+        objects = new List<GameObject>();
+        AppendItems(gameObjects.ToList());
+        if (objects.Count == 0)
+        {
+            _startingIdx = 0;
+        }
+        else
+        {
+            _startingIdx = objects[0].IdxAtObjectArray;
+        }
     }
     
     /// <summary>
@@ -293,7 +313,6 @@ public class UWLinkedList: IList<GameObject>
         {
             Add(item);
         }
-
     }
     /// <summary>
     /// Adds items to the end of the object chain
@@ -409,14 +428,14 @@ public class UWLinkedList: IList<GameObject>
     public void PopulateObjectList(GameObject[] AllBlockObjects)
     {
         objects.Clear();
-        if (startingIdx == 0) // Tile empty of objects
+        if (StartingIdx == 0) // Tile empty of objects
         {
             return;
         }
 
         int safetycounter = 0;
         int maxcounter = 1024;
-        uint currentIdx = startingIdx;
+        uint currentIdx = StartingIdx;
         while (currentIdx != 0) 
         {
             safetycounter++;

@@ -98,26 +98,25 @@ public class TestUWLinkedList
         // LList1 has items in idx 1,2,6
         LList1.PopulateObjectList(_gameObjects.ToArray());
 
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(100));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(-100));
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(100));
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(-100));
 
         LList1.RemoveAt(2); // items 1,2
         Assert.True(LList1.Count == 2);
         Assert.True(CheckObjectsAtPositions(LList1.ToList(), new List<short>() {1, 2}));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(2));
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(2));
         Assert.True(LList1.CheckIntegrity());
 
         LList1.RemoveAt(1); // items 1
         Assert.True(LList1.Count == 1);
         Assert.True(CheckObjectsAtPositions(LList1.ToList(), new List<short>() {1}));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(1));
         Assert.True(LList1.CheckIntegrity());
 
         LList1.RemoveAt(0); // no items
         Assert.True(LList1.Count == 0);
         Assert.True(CheckObjectsAtPositions(LList1.ToList(), new List<short>() { }));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(0));
-        Assert.True(LList1.startingIdx == 0);
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(0));
         Assert.True(LList1.CheckIntegrity());
         Assert.True(LList1.StartingIdx == 0);
     }
@@ -132,16 +131,14 @@ public class TestUWLinkedList
         LList1.RemoveAt(0); // items 2,6
         Assert.True(LList1.Count == 2);
         Assert.True(CheckObjectsAtPositions(LList1.ToList(), new List<short>() {2, 6}));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(2));
-        Assert.True(LList1.startingIdx == LList1[0].IdxAtObjectArray);
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(2));
         Assert.True(LList1.CheckIntegrity());
         Assert.True(LList1.StartingIdx == LList1[0].IdxAtObjectArray);
 
         LList1.RemoveAt(0); // items 6
         Assert.True(LList1.Count == 1);
         Assert.True(CheckObjectsAtPositions(LList1.ToList(), new List<short>() {6}));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.RemoveAt(1));
-        Assert.True(LList1.startingIdx == LList1[0].IdxAtObjectArray);
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.RemoveAt(1));
         Assert.True(LList1.CheckIntegrity());
         Assert.True(LList1.StartingIdx == LList1[0].IdxAtObjectArray);
     }
@@ -221,8 +218,8 @@ public class TestUWLinkedList
         Assert.True(LList1.Count == 4);
         Assert.True(LList1.CheckIntegrity());
 
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.Insert(-1, _gameObjects[1]));
-        Assert.Throws<IndexOutOfRangeException>(() => LList1.Insert(1000, _gameObjects[1]));
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.Insert(-1, _gameObjects[1]));
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1.Insert(1000, _gameObjects[1]));
     }
 
     [Test]
@@ -320,8 +317,8 @@ public class TestUWLinkedList
         LList1.StartingIdx = 1;
         LList1.PopulateObjectList(_gameObjects);
 
-        var LList3 = new UWLinkedList(LList1.ToList(), (ushort) LList1.startingIdx);
-        var LList4 = new UWLinkedList(LList1.ToArray(), (ushort) LList1.startingIdx);
+        var LList3 = new UWLinkedList(LList1.ToList());
+        var LList4 = new UWLinkedList(LList1.ToArray());
         Assert.True(LList3.CheckIntegrity());
         Assert.True(LList4.CheckIntegrity());
     }
@@ -339,8 +336,8 @@ public class TestUWLinkedList
         LList1[1] = _gameObjects[5];
         Assert.True(LList1.CheckIntegrity());
 
-        Assert.Throws<IndexOutOfRangeException>(() => LList1[-1] = _gameObjects[2]);
-        Assert.Throws<IndexOutOfRangeException>(() => LList1[100] = _gameObjects[2]);
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1[-1] = _gameObjects[2]);
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1[100] = _gameObjects[2]);
 
         LList1.Clear();
         LList1.Add(_gameObjects[1]);
@@ -358,8 +355,8 @@ public class TestUWLinkedList
         Assert.True(LList1[1].Equals(_gameObjects[2]));
         Assert.True(LList1[2].Equals(_gameObjects[6]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => LList1[-1].ToString());
-        Assert.Throws<IndexOutOfRangeException>(() => LList1[100].ToString());
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1[-1].ToString());
+        Assert.Throws<ArgumentOutOfRangeException>(() => LList1[100].ToString());
     }
 
     [Test]
