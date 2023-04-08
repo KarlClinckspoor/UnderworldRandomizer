@@ -7,15 +7,17 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 [Category("RequiresSettings")]
 public class TestItemRemoval
 {
+#pragma warning disable CS8618
     private List<GameObject> _gameObjects;
     private UWLinkedList LList1;
     private UWLinkedList LList2;
     private ItemRandomizationSettings settings;
+#pragma warning restore CS8618
 
     [SetUp]
     public void Setup()

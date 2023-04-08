@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.CMBdotDAT;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.CMBdotDAT;
+
+// ReSharper disable file ObjectCreationAsStatement
 
 [TestFixture]
 public class TestCombinationsFile
 {
-    private CombinationsFile stdFile;
+    private CombinationsFile stdFile = null!;
 
     [SetUp]
+    [MemberNotNull(nameof(stdFile))]
     public void SetUp()
     {
         // Implements these combinations from UW1
@@ -80,7 +84,7 @@ public class TestCombinationsFile
     /// <summary>
     /// Computed with HxD. Date modified: 1993/06/16
     /// </summary>
-    private string correctSHA256 = "15A97C476F5E6D72FA75F52B321C5FFAA0131BB9117D3D9B08742C77F8A7B098".ToLower();
+    private readonly string correctSHA256 = "15A97C476F5E6D72FA75F52B321C5FFAA0131BB9117D3D9B08742C77F8A7B098".ToLower();
 
     [Test]
     public void TestCtorList()

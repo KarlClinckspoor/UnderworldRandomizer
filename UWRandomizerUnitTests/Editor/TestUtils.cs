@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.Interfaces;
-using System.Linq;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor;
 
 [TestFixture]
 internal class TestSetBits

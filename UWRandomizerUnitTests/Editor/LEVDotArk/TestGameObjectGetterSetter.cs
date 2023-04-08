@@ -1,18 +1,20 @@
 ﻿using System;
-using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 [Category("RequiresSettings")]
 public class TestObjectGetterSetter
 {
+#pragma warning disable CS8618
     private ArkLoader ark;
+#pragma warning restore CS8618
+    
     [OneTimeSetUp]
     public void SetUp()
     {
@@ -45,7 +47,7 @@ public class TestObjectGetterSetter
     [Test]
     public void ItemID()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.ItemID;
             obj.ItemID = cpy;
@@ -55,7 +57,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Flags()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Flags;
             obj.Flags = cpy;
@@ -65,7 +67,7 @@ public class TestObjectGetterSetter
     [Test]
     public void EnchantFlag()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.EnchantFlag;
             obj.EnchantFlag = cpy;
@@ -75,7 +77,7 @@ public class TestObjectGetterSetter
     [Test]
     public void DoorDir()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.DoorDir;
             obj.DoorDir = cpy;
@@ -85,7 +87,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Invis()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Invis;
             obj.Invis = cpy;
@@ -95,7 +97,7 @@ public class TestObjectGetterSetter
     [Test]
     public void IsQuant()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.IsQuant;
             obj.IsQuant = cpy;
@@ -105,7 +107,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Zpos()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Zpos;
             obj.Zpos = cpy;
@@ -114,7 +116,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Heading()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Heading;
             obj.Heading = cpy;
@@ -123,7 +125,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Ypos()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Ypos;
             obj.Ypos = cpy;
@@ -132,7 +134,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Xpos()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Xpos;
             obj.Xpos = cpy;
@@ -142,7 +144,7 @@ public class TestObjectGetterSetter
     [Test]
     public void Quality()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.Quality;
             obj.Quality = cpy;
@@ -152,7 +154,7 @@ public class TestObjectGetterSetter
     [Test]
     public void next()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.next;
             obj.next = cpy;
@@ -161,7 +163,7 @@ public class TestObjectGetterSetter
     [Test]
     public void OwnerOrSpecial()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.OwnerOrSpecial;
             obj.OwnerOrSpecial = cpy;
@@ -170,7 +172,7 @@ public class TestObjectGetterSetter
     [Test]
     public void QuantityOrSpecialLinkOrSpecialProperty()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.QuantityOrSpecialLinkOrSpecialProperty;
             obj.QuantityOrSpecialLinkOrSpecialProperty = cpy;
@@ -179,7 +181,7 @@ public class TestObjectGetterSetter
     [Test]
     public void ItemOwnerStrIdx()
     {
-        IterAllObjectsAndExecuteAction((GameObject obj) =>
+        IterAllObjectsAndExecuteAction(obj =>
         {
             var cpy = obj.ItemOwnerStrIdx;
             obj.ItemOwnerStrIdx = cpy;

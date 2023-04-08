@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 [Category("RequiresSettings")]

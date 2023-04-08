@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+// ReSharper disable AccessToStaticMemberViaDerivedType
 
 namespace UWRandomizerEditor.LEVdotARK.Blocks;
 
@@ -82,7 +83,6 @@ public partial class TileMapMasterObjectListBlock : Block
         foreach (var obj in StaticObjects)
         {
             obj.ReconstructBuffer();
-            // obj.Buffer.CopyTo(StaticObjectInfoBuffer, (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedTotalLength);
             obj.Buffer.CopyTo(StaticObjectInfoBuffer,
                 (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedTotalLength);
         }

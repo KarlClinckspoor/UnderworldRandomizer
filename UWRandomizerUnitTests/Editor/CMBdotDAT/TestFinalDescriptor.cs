@@ -1,10 +1,9 @@
-﻿using NUnit.Framework;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.Json;
-using UWRandomizerEditor;
+using NUnit.Framework;
 using UWRandomizerEditor.CMBdotDAT;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.CMBdotDAT;
 
 [TestFixture]
 public class TestFinalEntry

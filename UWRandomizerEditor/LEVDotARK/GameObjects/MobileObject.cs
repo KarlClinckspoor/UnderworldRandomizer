@@ -224,29 +224,44 @@ public class MobileObject : GameObject
     }
 
     // Reminder: don't call base... Need to design this better
-    public MobileObject(byte[] baseBuffer, byte byte1_hp, byte unk2, byte unk3, short NPCGoalGTarg,
+    public MobileObject(
+        byte[] baseBuffer,
+        byte byte1_hp,
+        byte unk2,
+        byte unk3,
+        short NPCGoalGTarg,
         short NPCLevelTalked,
-        short NPCheight, byte unk4, byte unk5, byte unk6,
-        byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, ushort idx)
+        short NPCheight,
+        byte unk4,
+        byte unk5,
+        byte unk6,
+        byte unk7,
+        byte unk8,
+        short NPChome,
+        byte heading,
+        byte hunger,
+        byte whoami,
+        ushort idx
+    )
     {
         Buffer = new byte[FixedTotalLength];
         baseBuffer.CopyTo(Buffer, 0);
-        byte[] extra = new byte[ExtraLength]
+        var extra = new []
         {
             byte1_hp,
-            byte2_unk,
-            byte3_unk,
+            unk2,
+            unk3,
             BitConverter.GetBytes(NPCGoalGTarg)[0],
             BitConverter.GetBytes(NPCGoalGTarg)[1],
             BitConverter.GetBytes(NPCLevelTalked)[0],
             BitConverter.GetBytes(NPCLevelTalked)[1],
             BitConverter.GetBytes(NPCheight)[0],
             BitConverter.GetBytes(NPCheight)[1],
-            byte4_unk,
-            byte5_unk,
-            byte6_unk,
-            byte7_unk,
-            byte8_unk,
+            unk4,
+            unk5,
+            unk6,
+            unk7,
+            unk8,
             BitConverter.GetBytes(NPChome)[0],
             BitConverter.GetBytes(NPChome)[1],
             heading,
@@ -259,10 +274,28 @@ public class MobileObject : GameObject
         Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty};
     }
 
-    public MobileObject(short short1, short short2, short short3, short short4, byte byte1_hp, byte unk2, byte unk3,
-        short NPCGoalGTarg, short NPCLevelTalked,
-        short NPCheight, byte unk4, byte unk5, byte unk6,
-        byte unk7, byte unk8, short NPChome, byte heading, byte hunger, byte whoami, ushort idx)
+    public MobileObject(
+        short short1,
+        short short2,
+        short short3,
+        short short4,
+        byte byte1_hp,
+        byte unk2,
+        byte unk3,
+        short NPCGoalGTarg,
+        short NPCLevelTalked,
+        short NPCheight,
+        byte unk4,
+        byte unk5,
+        byte unk6,
+        byte unk7,
+        byte unk8,
+        short NPChome,
+        byte heading,
+        byte hunger,
+        byte whoami,
+        ushort idx
+        )
     {
         byte[] baseBuffer = new byte[BaseLength];
         BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2 * 0);
@@ -271,22 +304,22 @@ public class MobileObject : GameObject
         BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2 * 3);
         baseBuffer.CopyTo(Buffer, 0);
 
-        byte[] extra = new byte[ExtraLength]
+        var extra = new []
         {
             byte1_hp,
-            byte2_unk,
-            byte3_unk,
+            unk2,
+            unk3,
             BitConverter.GetBytes(NPCGoalGTarg)[0],
             BitConverter.GetBytes(NPCGoalGTarg)[1],
             BitConverter.GetBytes(NPCLevelTalked)[0],
             BitConverter.GetBytes(NPCLevelTalked)[1],
             BitConverter.GetBytes(NPCheight)[0],
             BitConverter.GetBytes(NPCheight)[1],
-            byte4_unk,
-            byte5_unk,
-            byte6_unk,
-            byte7_unk,
-            byte8_unk,
+            unk4,
+            unk5,
+            unk6,
+            unk7,
+            unk8,
             BitConverter.GetBytes(NPChome)[0],
             BitConverter.GetBytes(NPChome)[1],
             heading,

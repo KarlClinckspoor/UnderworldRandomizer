@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -8,7 +7,7 @@ using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 [TestFixture]
 public class TestMovingItemsInLevel

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 [TestFixture]
 public class TestIsTileValid

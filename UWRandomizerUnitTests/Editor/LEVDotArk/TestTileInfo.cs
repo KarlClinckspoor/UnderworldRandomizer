@@ -4,16 +4,18 @@ using System.Security.Cryptography;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 public class TestTileInfo
 {
     // Let's create one random entry from an int.
     // And another from a buffer
+#pragma warning disable CS8618
     private TileInfo tinfo1;
     private TileInfo tinfo2;
     private TileInfo tinfo3;
+#pragma warning restore CS8618
 
     [SetUp]
     public void Setup()

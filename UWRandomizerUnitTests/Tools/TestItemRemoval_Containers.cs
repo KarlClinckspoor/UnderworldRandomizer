@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
@@ -7,15 +6,17 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 [TestFixture]
 public class TestItemRemoval_Containers
 {
+#pragma warning disable CS8618
     private Container _bag1;
     private TileInfo _tile1;
     private Container _bag2;
     private GameObject[] _gameObjects;
+#pragma warning restore CS8618
     
     
     /// <summary>

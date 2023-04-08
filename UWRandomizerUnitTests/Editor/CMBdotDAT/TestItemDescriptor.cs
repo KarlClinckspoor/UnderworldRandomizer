@@ -2,7 +2,9 @@
 using NUnit.Framework;
 using UWRandomizerEditor.CMBdotDAT;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.CMBdotDAT;
+
+// ReSharper disable file ObjectCreationAsStatement
 
 [TestFixture]
 public class TestItemDescriptor
@@ -109,7 +111,7 @@ public class TestItemDescriptor
         Assert.True(desc.Equals(descEq));
         Assert.False(desc.Equals(descDiff));
         
-        Assert.False(desc.Equals((object) null));
+        Assert.False(desc.Equals(null as object));
         Assert.True(desc.Equals((object) desc));
         Assert.True(desc.Equals((object) descEq));
         Assert.False(desc.Equals((object) descDiff));

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using NUnit.Framework;
-using UWRandomizerWPF;
 using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 public class TestRemovingLockFromAllDoorsInArk
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,16 +6,17 @@ using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
-using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 public class TestUWLinkedList
 {
+#pragma warning disable CS8618
     private List<GameObject> _gameObjects;
     private UWLinkedList LList1;
     private UWLinkedList LList2;
+#pragma warning restore CS8618
 
     [SetUp]
     public void Setup()
@@ -227,9 +227,7 @@ public class TestUWLinkedList
     {
         LList1.startingIdx = 1;
         LList1.PopulateObjectList(_gameObjects);
-        foreach (var foo in LList1)
-        {
-        }
+        foreach (var foo in LList1) {}
         // todo: How do I get to IEnumerator IEnumerable.GetEnumerator?
     }
 

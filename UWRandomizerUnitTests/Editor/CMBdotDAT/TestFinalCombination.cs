@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using UWRandomizerEditor.CMBdotDAT;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.CMBdotDAT;
 
 [TestFixture]
 public class TestFinalCombination

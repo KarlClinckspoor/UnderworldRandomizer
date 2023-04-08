@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.CMBdotDAT;
+// ReSharper disable ObjectCreationAsStatement
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.CMBdotDAT;
 
 [TestFixture]
 public class TestCombinations
@@ -90,8 +91,8 @@ public class TestCombinations
         Assert.True(comb.Equals(combEq));
         Assert.False(comb.Equals(combDiff));
         
-        Assert.False(comb.Equals((object) null));
-        Assert.True(comb.Equals((object) comb));
+        Assert.False(comb.Equals(null as object));
+        Assert.True(comb.Equals(comb as object));
         Assert.False(comb.Equals((object) new FinalCombination()));
         Assert.True(comb.Equals((object) combEq));
         Assert.False(comb.Equals((object) combDiff));

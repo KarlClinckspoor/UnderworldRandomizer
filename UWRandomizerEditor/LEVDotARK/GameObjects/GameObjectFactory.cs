@@ -6,6 +6,7 @@ namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 public static class GameObjectFactory
 {
     // TODO: I'll likely need to add a reference to "FreeListOfStatic/Mobile objects"
+    // ReSharper disable once CognitiveComplexity
     public static GameObject CreateFromBuffer(byte[] buffer, ushort idxAtArray)
     {
         if ((idxAtArray == 0) | (idxAtArray == 1)) // These never hold actual object data.
@@ -37,6 +38,7 @@ public static class GameObjectFactory
         // End is always StaticObjects
         if (idxAtArray < (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
         {
+            // ReSharper disable once AccessToStaticMemberViaDerivedType
             if (buffer.Length != StaticObject.FixedTotalLength)
             {
                 throw new InvalidOperationException(
