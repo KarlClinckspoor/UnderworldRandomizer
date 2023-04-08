@@ -170,7 +170,7 @@ public class MobileObject : GameObject
     {
         // QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
         // Avoiding infinite loop. TODO: think of something more intelligent
-        LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Inventory.startingIdx, 0b11_1111_1111, 6);
+        LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Inventory.StartingIdx, 0b11_1111_1111, 6);
         base.ReconstructBuffer();
             
         Buffer[offset1] = byte1_hp;
@@ -220,7 +220,7 @@ public class MobileObject : GameObject
         buffer.CopyTo(Buffer, 0);
         IdxAtObjectArray = idx;
         UpdateEntries();
-        Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
+        Inventory = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
     // Reminder: don't call base... Need to design this better
@@ -271,7 +271,7 @@ public class MobileObject : GameObject
         extra.CopyTo(Buffer, BaseLength);
         IdxAtObjectArray = idx;
         UpdateEntries();
-        Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty};
+        Inventory = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty};
     }
 
     public MobileObject(
@@ -329,13 +329,13 @@ public class MobileObject : GameObject
         extra.CopyTo(Buffer, BaseLength);
         IdxAtObjectArray = idx;
         UpdateEntries();
-        Inventory = new UWLinkedList() {startingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
+        Inventory = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
     protected MobileObject()
     {
         Buffer = Array.Empty<byte>();
         Invalid = true;
-        Inventory = new UWLinkedList() {startingIdx = 0, RepresentingContainer = true};
+        Inventory = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
     }
 }

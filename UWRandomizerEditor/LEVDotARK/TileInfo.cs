@@ -147,12 +147,12 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
     {
         get
         {
-            return ObjectChain.startingIdx;
+            return ObjectChain.StartingIdx;
         }
         set
         {
             BufferAsUInt32 = Utils.SetBits(BufferAsUInt32, value, 0b1111111111, 22);
-            ObjectChain.startingIdx = value;
+            ObjectChain.StartingIdx = value;
             if (GetStartingIndex(Buffer) != value)
                 throw new Exception("Why isn't the starting index being added correctly?");
         }
@@ -189,10 +189,10 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
     // TODO: I could add more checks here
     public bool ReconstructBuffer()
     {
-        if (GetStartingIndex(Buffer) != ObjectChain.startingIdx)
+        if (GetStartingIndex(Buffer) != ObjectChain.StartingIdx)
         {
             Debug.Print("Mismatch between TileInfo firstObjectIndex in buffer and UWLinkedList.");
-            FirstObjIdx = ObjectChain.startingIdx;
+            FirstObjIdx = ObjectChain.StartingIdx;
         }
         return true;
     }
@@ -202,7 +202,7 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         EntryNum = entrynum;
         BufferAsUInt32 = bufferAsUInt32;
         LevelNum = levelNumber;
-        ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(bufferAsUInt32), RepresentingContainer = false};
+        ObjectChain = new UWLinkedList() {StartingIdx = GetStartingIndex(bufferAsUInt32), RepresentingContainer = false};
         if (offset != Offset)
         {
             throw new Exception("Invalid calculation of offset from EntryNum!");
@@ -219,7 +219,7 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         EntryNum = entrynum;
         LevelNum = levelNumber;
         Buffer = buffer;
-        ObjectChain = new UWLinkedList() {startingIdx = GetStartingIndex(buffer), RepresentingContainer = false};
+        ObjectChain = new UWLinkedList() {StartingIdx = GetStartingIndex(buffer), RepresentingContainer = false};
         if (offset != Offset)
         {
             throw new Exception("Invalid calculation of offset from EntryNum!");

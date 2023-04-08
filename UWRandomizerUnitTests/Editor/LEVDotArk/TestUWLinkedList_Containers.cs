@@ -32,12 +32,12 @@ public class TestUWLinkedList_Containers
         _bag1 = new Container(tempbuffer, 4)
         {
             QuantityOrSpecialLinkOrSpecialProperty = 1,
-            Contents = new UWLinkedList() {startingIdx = 1, RepresentingContainer = true}
+            Contents = new UWLinkedList() {StartingIdx = 1, RepresentingContainer = true}
         };
         _bag2 = new Container(tempbuffer, 5)
         {
             QuantityOrSpecialLinkOrSpecialProperty = 4,
-            Contents = new UWLinkedList() {startingIdx = 4, RepresentingContainer = true}
+            Contents = new UWLinkedList() {StartingIdx = 4, RepresentingContainer = true}
         }; // for bag in bag
 
         _gameObjects = new GameObject[]

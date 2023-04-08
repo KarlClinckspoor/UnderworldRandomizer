@@ -42,8 +42,8 @@ public class TestItemRemoval
     [Test]
     public void TestRemoveMovableItems()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 3;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 3;
 
         LList1.PopulateObjectList(_gameObjects.ToArray());
         LList2.PopulateObjectList(_gameObjects.ToArray());
@@ -78,8 +78,8 @@ public class TestItemRemoval
     [Test]
     public void TestSwapMovableItems()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 3;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 3;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has items in idx 3,4,5*
@@ -107,8 +107,8 @@ public class TestItemRemoval
     [Test]
     public void TestAppendItems_OnEmptyLList()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 0;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 0;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has no items
@@ -136,8 +136,8 @@ public class TestItemRemoval
     [Test]
     public void TestSwapItemsByPrepend()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 3;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 3;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has items in idx 3,4,5*
@@ -167,8 +167,8 @@ public class TestItemRemoval
     [Test]
     public void TestPrependItems_OnEmptyLList()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 0;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 0;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has no items

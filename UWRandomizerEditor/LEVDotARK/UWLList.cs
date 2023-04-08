@@ -9,16 +9,18 @@ public class UWLinkedList: IList<GameObject>
 {
     private uint _startingIdx;
     public bool RepresentingContainer = false;
-    public uint startingIdx
+    
+    /// <summary>
+    /// Represents the index of the first element in the LinkedList, which is important because it's what a TileInfo or
+    /// a container references.
+    /// </summary>
+    public uint StartingIdx
     {
         get
         {
-            if (objects.Count > 0)
-            {
-                // In case this isn't true, the LList is invalid, so it's good to check now
-                Debug.Assert(_startingIdx == objects[0].IdxAtObjectArray);
-                return _startingIdx;
-            }
+            if (objects.Count == 0) return _startingIdx;
+            // In case this isn't true, the LList is invalid, so it's good to check now
+            Debug.Assert(_startingIdx == objects[0].IdxAtObjectArray);
             return _startingIdx;
         }
         set
