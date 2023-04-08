@@ -166,6 +166,15 @@ public static class Utils
     }
     
 
+    /// <summary>
+    /// Reshapes a flat array into a 2D rectangular array.
+    /// </summary>
+    /// <param name="flatArray">Array to be reshaped</param>
+    /// <param name="width">Number of columns in the output array</param>
+    /// <param name="height">Number of rows in the output array</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>A new array of shape width x height</returns>
+    /// <exception cref="InvalidDataException">Thrown if width * height != flatArray.Length</exception>
     public static T[,] ReshapeArray<T>(T[] flatArray, int width, int height)
     {
         var totalItems = width * height;
@@ -175,25 +184,32 @@ public static class Utils
                 $"The number of items in the output array {totalItems} is different from dimensions of the input array {flatArray.Length}");
         }
 
-        T[,] outArray = new T[height, width];
-        for (int i = 0; i < totalItems; i++)
+        var outArray = new T[height, width];
+        for (var i = 0; i < totalItems; i++)
         {
-            int col = i % width;
-            int row = i / width;
+            var col = i % width;
+            var row = i / width;
             outArray[row, col] = flatArray[i];
         }
 
         return outArray;
     }
     
-    public static T[] DropDimension<T>(T[,] array) 
+    /// <summary>
+    /// If a 2D array is reshaped to a 1 row, n column array, this drops the extra dimension returning a 1D n-length array.
+    /// </summary>
+    /// <param name="twoDArray">Array that contains the data. Must have only 1 row</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>1D output array</returns>
+    /// <exception cref="ArgumentException">thrown if the array has more than 1 row</exception>
+    public static T[] DropDimension<T>(T[,] twoDArray) 
     {
-        if (array.GetLength(0) > 1)
+        if (twoDArray.GetLength(0) > 1)
         {
-            throw new ArgumentException("This only removes one dimension from the data, can't have it with 2 rows");
+            throw new ArgumentException("This only removes one dimension from the 2D array, it can't have more than 2 rows.");
         }
 
-        return Enumerable.Range(0, array.GetLength(1)).Select(x => array[0, x]).ToArray();
+        return Enumerable.Range(0, twoDArray.GetLength(1)).Select(x => twoDArray[0, x]).ToArray();
     }
     
     
