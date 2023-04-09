@@ -311,17 +311,6 @@ public class TestUWLinkedList
         Assert.True(LList1.IndexOf(_gameObjects[5]) == -1);
     }
 
-    [Test]
-    public void TestListCtor()
-    {
-        LList1.StartingIdx = 1;
-        LList1.PopulateObjectList(_gameObjects);
-
-        var LList3 = new UWLinkedList(LList1.ToList());
-        var LList4 = new UWLinkedList(LList1.ToArray());
-        Assert.True(LList3.CheckIntegrity());
-        Assert.True(LList4.CheckIntegrity());
-    }
 
     [Test]
     public void TestSet()
@@ -373,6 +362,55 @@ public class TestUWLinkedList
         LList1.Add(_gameObjects[0]);
         Assert.False(LList1.CheckIntegrity());
     }
-    
-    
+
+    [Category("RequiresSettings")]
+    [Test]
+    public void TestReferenceCounts()
+    {
+        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
+        foreach (var block in AL.TileMapObjectsBlocks)
+        {
+            var counter = 0;
+            var lowestObjectWithReference = 10000;
+            
+            foreach (var mobileObject in block.MobileObjects)
+            {
+                Assert.True(mobileObject.ReferenceCount <= 1);
+                if (mobileObject.ReferenceCount == 1)
+                {
+                    counter += 1;
+                }
+
+                if ((mobileObject.IdxAtObjectArray < lowestObjectWithReference)&(mobileObject.ReferenceCount>=1))
+                {
+                    lowestObjectWithReference = mobileObject.IdxAtObjectArray;
+                }
+            }
+            Console.WriteLine($"lvl: {block.LevelNumber} references {counter} MobileObjects with the lowest one being " +
+                              $"{lowestObjectWithReference}. First Obj idx is {block.FirstFreeMobileObjectIdx}; " +
+                              $"slot is {block.FirstFreeSlotInMobileList}");
+            
+            counter = 0;
+            lowestObjectWithReference = 10000;
+            
+            foreach (var staticObject in block.StaticObjects)
+            {
+                Assert.True(staticObject.ReferenceCount <= 1);
+                if (staticObject.ReferenceCount == 1)
+                {
+                    counter += 1;
+                }
+
+                if ((staticObject.IdxAtObjectArray < lowestObjectWithReference) & (staticObject.ReferenceCount>=1))
+                {
+                    lowestObjectWithReference = staticObject.IdxAtObjectArray;
+                }
+            }
+            Console.WriteLine($"lvl: {block.LevelNumber} references {counter} StaticObjects with the lowest one being " +
+                              $"{lowestObjectWithReference}. First Obj idx is {block.FirstFreeStaticObjectIdx}; " +
+                              $"slot is {block.FirstFreeSlotInStaticList+254}");
+            
+        }
+    }
 }
+

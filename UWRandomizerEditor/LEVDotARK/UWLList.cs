@@ -66,6 +66,12 @@ public class UWLinkedList: IList<GameObject>
     /// <param name="item"></param>
     public void Add(GameObject item)
     {
+        if (item.ReferenceCount >= 1)
+        {
+            // throw new UWLinkedListException(
+            //     $"Object {item} has been added elsewhere before (reference count={item.ReferenceCount}");
+            Console.WriteLine($"Object {item} has been added elsewhere before (refcount={item.ReferenceCount})!");
+        }
         if (objects.Count == 0)
         {
             StartingIdx = item.IdxAtObjectArray;
@@ -77,6 +83,7 @@ public class UWLinkedList: IList<GameObject>
         item.next = 0;
         item.InContainer = RepresentingContainer;
         objects.Add(item);
+        item.ReferenceCount += 1;
     }
 
 
@@ -85,6 +92,10 @@ public class UWLinkedList: IList<GameObject>
     public void Clear()
     {
         _startingIdx = 0;
+        foreach (var obj in objects)
+        {
+            obj.ReferenceCount -= 1;
+        }
         objects.Clear();
     }
 
@@ -108,6 +119,8 @@ public class UWLinkedList: IList<GameObject>
         {
             return false; // Couldn't be found
         }
+
+        objects[idx].ReferenceCount -= 1;
 
         if (idx == 0)
         {
@@ -154,6 +167,8 @@ public class UWLinkedList: IList<GameObject>
             throw new ArgumentOutOfRangeException(nameof(index));
         }
 
+        item.ReferenceCount += 1;
+
         if (index == 0)
         {
             _startingIdx = item.IdxAtObjectArray;
@@ -187,6 +202,8 @@ public class UWLinkedList: IList<GameObject>
             throw new ArgumentOutOfRangeException(nameof(index));
         }
 
+        objects[index].ReferenceCount -= 1;
+        
         if (index == 0 & Count == 1)
         {
             objects.RemoveAt(0);
@@ -245,6 +262,9 @@ public class UWLinkedList: IList<GameObject>
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
+            objects[index].ReferenceCount -= 1;
+            value.ReferenceCount += 1;
+
             if (index == 0 & Count > 1)
             {
                 _startingIdx = value.IdxAtObjectArray;
@@ -282,25 +302,6 @@ public class UWLinkedList: IList<GameObject>
     public UWLinkedList()
     {
         objects = new List<GameObject>();
-    }
-    
-    /// <summary>
-    /// Creates a UWLinkedList containing the provided sequence of objects. The objects themselves do not need to be
-    /// correctly linked together.
-    /// </summary>
-    /// <param name="gameObjects">Objects that will be added to the list</param>
-    public UWLinkedList(IEnumerable<GameObject> gameObjects)
-    {
-        objects = new List<GameObject>();
-        AppendItems(gameObjects.ToList());
-        if (objects.Count == 0)
-        {
-            _startingIdx = 0;
-        }
-        else
-        {
-            _startingIdx = objects[0].IdxAtObjectArray;
-        }
     }
     
     /// <summary>
@@ -346,7 +347,8 @@ public class UWLinkedList: IList<GameObject>
     /// 
     ///     <item>
     ///         <description>
-    ///             If any of the objects has index 0 (reserved), then the list is invalid.
+    ///             If any of the objects has index 0 (reserved), or if an object is referenced 0 times (library mistake)
+    ///             or more than 1 time (library or lev.ark mistake), then the list is invalid.
     ///         </description>
     ///     </item>
     /// 
@@ -382,7 +384,7 @@ public class UWLinkedList: IList<GameObject>
     {
         foreach (var obj in objects)
         {
-            if (obj.IdxAtObjectArray == 0)
+            if ((obj.IdxAtObjectArray == 0) | (obj.ReferenceCount != 1))
             {
                 return false;
             }
@@ -488,7 +490,7 @@ public class UWLinkedList: IList<GameObject>
             if (obj.Invalid)
             {
                 // throw new Exception("Can't add an invalid object!");
-                Console.WriteLine($"Object {obj} number {obj.IdxAtObjectArray} is invalid but was added to the list");
+                // Console.WriteLine($"Object {obj} number {obj.IdxAtObjectArray} is invalid but was added to the list");
             }
             currentIdx = obj.next;
             Add(obj);

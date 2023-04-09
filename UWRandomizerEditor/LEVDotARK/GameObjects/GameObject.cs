@@ -13,6 +13,7 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     public const int ExtraLength = 0;
     public const int FixedTotalLength = BaseLength + ExtraLength;
     public ushort IdxAtObjectArray;
+    public uint ReferenceCount = 0;
 
     public bool InContainer { get; set; } = false;
 
