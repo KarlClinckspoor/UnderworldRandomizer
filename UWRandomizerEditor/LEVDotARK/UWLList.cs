@@ -341,25 +341,43 @@ public class UWLinkedList: IList<GameObject>
     }
 
     /// <summary>
-    /// Checks if the sequence of objects is valid.
-    /// <list type="bullet">
-    ///   <item>
-    ///     <description>
-    ///         The starting index is equal to the first GameObject's index (except if there's no objects, then it has to be 0)
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///         The last object's <c>next</c> field should be 0.
-    ///     </description>
-    ///     </item>
+    /// Checks if the the UWLinkedList has a valid sequence of objects according to these rules:
+    /// <list type="number">
+    /// 
     ///     <item>
-    ///         Every intermediate GameObjects <c>next</c> points to the following GameObject's index. If there's duplicates,
-    ///         then this will make the list invalid immediately.
+    ///         <description>
+    ///             If any of the objects has index 0 (reserved), then the list is invalid.
+    ///         </description>
+    ///     </item>
+    /// 
+    ///     <item>
+    ///         <description>
+    ///             If the list is empty, the starting index should be 0. It's invalid otherwise.
+    ///         </description>
+    ///     </item>
+    /// 
+    ///     <item>
+    ///         <description>
+    ///             The starting index is equal to the first GameObject's index (except if there's no objects, then it has to be 0)
+    ///         </description>
+    ///     </item>
+    /// 
+    ///     <item>
+    ///         <description>
+    ///             The last object's <c>next</c> field should be 0.
+    ///         </description>
+    ///     </item>
+    ///
+    ///     <item>
+    ///         <description>
+    ///             Every intermediate GameObjects <c>next</c> points to the following GameObject's index. If there's duplicates,
+    ///             then this will make the list invalid immediately.
+    ///         </description>
     ///     </item>
     /// </list>
     /// </summary>
-    /// <returns></returns>
+    /// 
+    /// <returns>True if list is sound, False if not</returns>
     public bool CheckIntegrity()
     {
         foreach (var obj in objects)
@@ -372,7 +390,7 @@ public class UWLinkedList: IList<GameObject>
         
         if (objects.Count == 0)  // Empty list, so the starting index has to be 0
         {
-            if (_startingIdx != 0) // TODO: _startingIdx or startingIdx?
+            if (_startingIdx != 0)
             {
                 return false;
             }
@@ -401,9 +419,25 @@ public class UWLinkedList: IList<GameObject>
         return true;
     }
     
+    /// <summary>
+    /// This function goes over all the objects and sets the internal state of UWLinkedList to a valid state.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown if any of the objects has index 0 or if the list fails <see cref="CheckIntegrity"/>
+    /// </exception>
     private void ForceFixIntegrity()
     {
+        if(objects.Any(x => x.IdxAtObjectArray == 0))
+            throw new InvalidOperationException("There are objects with IdxAtObjectArray equal to 0. Impossible to fix without altering the list");
+        
         int i = 0;
+
+        if (objects.Count == 0)
+        {
+            _startingIdx = 0;
+            return;
+        }
+        
         foreach (var obj in objects)
         {
             if (i == 0) 
@@ -418,48 +452,47 @@ public class UWLinkedList: IList<GameObject>
             }
             i++;
         }
+
+        if (!CheckIntegrity())
+        {
+            throw new InvalidOperationException("ForceFixIntegrity couldn't fix the integrity!");
+        }
     }
 
     
     /// <summary>
     /// Fills in the list of objects given a list of all GameObjects present in a level.
     /// </summary>
-    /// <param name="AllBlockObjects">All game objects in the level, both static and mobile</param>
-    public void PopulateObjectList(GameObject[] AllBlockObjects)
+    /// <param name="allBlockObjects">All game objects in the level, both static and mobile</param>
+    public void PopulateObjectList(IList<GameObject> allBlockObjects)
     {
         objects.Clear();
-        if (StartingIdx == 0) // Tile empty of objects
+        if (StartingIdx == 0) // Tile or container without any objects.
         {
             return;
         }
 
-        int safetycounter = 0;
-        int maxcounter = 1024;
+        int safetyCounter = 0;
+        int maxCounter = 1024;
         uint currentIdx = StartingIdx;
         while (currentIdx != 0) 
         {
-            safetycounter++;
-            if (safetycounter >= maxcounter)
+            safetyCounter++;
+            if (safetyCounter >= maxCounter)
             {
                 throw new ConstraintException("Encountered potentially infinite loop when populating ObjectList!");
             }
 
-            GameObject obj = AllBlockObjects[currentIdx];
-            // TODO: Why are some invalid objects being added?
-            // if (obj.Invalid)
-            // {
-            //     throw new Exception("Can't add an invalid object!");
-            // }
+            GameObject obj = allBlockObjects[(int) currentIdx];
+            // TODO: What's making these invalid objects? Shouldn't all of them be valid?
+            if (obj.Invalid)
+            {
+                // throw new Exception("Can't add an invalid object!");
+                Console.WriteLine($"Object {obj} number {obj.IdxAtObjectArray} is invalid but was added to the list");
+            }
             currentIdx = obj.next;
             Add(obj);
         }
 
     }
-
-    public void PopulateObjectList(List<GameObject> Objects)
-    {
-        PopulateObjectList(Objects.ToArray());
-    }
-    
-    
 }
