@@ -410,6 +410,20 @@ public class TestUWLinkedList
                               $"{lowestObjectWithReference}. First Obj idx is {block.FirstFreeStaticObjectIdx}; " +
                               $"slot is {block.FirstFreeSlotInStaticList+254}");
             
+            var objectsThatAreInvalidAndAreUsed = block.AllGameObjects
+                .Select(x => x)
+                .Where(x => (x.ReferenceCount == 1) & (x.Invalid)).ToList();
+            
+            if (objectsThatAreInvalidAndAreUsed.Count > 0)
+                Console.WriteLine($"\tlvl: {block.LevelNumber} - The following objects are considered 'invalid' but are referenced by tiles or containers in the level");
+            else
+                Console.WriteLine($"\tlvl: {block.LevelNumber} - Has no objects that are invalid and referenced");
+            
+            foreach (var obj in objectsThatAreInvalidAndAreUsed)
+            {
+                Console.WriteLine($"\t{obj}, index {obj.IdxAtObjectArray}, in container? {obj.InContainer}");
+            }
+            
         }
     }
 }
