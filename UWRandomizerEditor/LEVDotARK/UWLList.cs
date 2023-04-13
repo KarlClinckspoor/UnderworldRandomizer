@@ -235,9 +235,9 @@ public class UWLinkedList: IList<GameObject>
     /// <param name="items">List of items that will be prepended.</param>
     public void PrependItems(List<GameObject> items)
     {
-        // var toAdd = new UWLinkedList(items);
-        var oldObjectList = objects;
-        objects = new List<GameObject>();
+        var oldObjectList = new List<GameObject>();
+        oldObjectList.AddRange(objects);
+        Clear();
 
         AppendItems(items);
         AppendItems(oldObjectList);

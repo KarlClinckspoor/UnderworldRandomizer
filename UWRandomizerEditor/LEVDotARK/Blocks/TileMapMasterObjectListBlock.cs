@@ -42,14 +42,14 @@ public partial class TileMapMasterObjectListBlock : Block
 
     public ushort FirstFreeSlotInMobileList
     {
-        get => BitConverter.ToUInt16(Buffer, NumEntriesMobileFreeListAdjOffset);
-        set => BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset);
+        get => BitConverter.ToUInt16(_buffer, NumEntriesMobileFreeListAdjOffset);
+        set => BitConverter.GetBytes(value).CopyTo(_buffer, NumEntriesMobileFreeListAdjOffset);
     }
 
     public ushort FirstFreeSlotInStaticList
     {
-        get { return BitConverter.ToUInt16(Buffer, NumEntriesStaticFreeListAdjOffset); }
-        set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset); }
+        get { return BitConverter.ToUInt16(_buffer, NumEntriesStaticFreeListAdjOffset); }
+        set { BitConverter.GetBytes(value).CopyTo(_buffer, NumEntriesStaticFreeListAdjOffset); }
     }
 
     public ushort FirstFreeMobileObjectIdx => FreeListMobileObjects[FirstFreeSlotInMobileList].IdxAtArray;
@@ -58,25 +58,25 @@ public partial class TileMapMasterObjectListBlock : Block
     // todo: Recheck and make sure the number of entries is correct.
     public override bool ReconstructBuffer()
     {
-        if (Buffer.Length != FixedBlockLength)
+        if (_buffer.Length != FixedBlockLength)
         {
             throw new ConstraintException(
-                $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {Buffer.Length}");
+                $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
 
         ReconstructSubBuffers();
 
-        TileMapBuffer.CopyTo(Buffer, TileMapOffset);
-        MobileObjectInfoBuffer.CopyTo(Buffer, MobileObjectInfoOffset);
-        StaticObjectInfoBuffer.CopyTo(Buffer, StaticObjectInfoOffset);
-        FreeListMobileObjectBuffer.CopyTo(Buffer, FreeListMobileObjectsOffset);
-        FreeListStaticObjectBuffer.CopyTo(Buffer, FreeListStaticObjectsOffset);
-        UnknownBuffer.CopyTo(Buffer, UnknownOffset);
-        Unknown2Buffer.CopyTo(Buffer, Unknown2Offset);
+        TileMapBuffer.CopyTo(_buffer, TileMapOffset);
+        MobileObjectInfoBuffer.CopyTo(_buffer, MobileObjectInfoOffset);
+        StaticObjectInfoBuffer.CopyTo(_buffer, StaticObjectInfoOffset);
+        FreeListMobileObjectBuffer.CopyTo(_buffer, FreeListMobileObjectsOffset);
+        FreeListStaticObjectBuffer.CopyTo(_buffer, FreeListStaticObjectsOffset);
+        UnknownBuffer.CopyTo(_buffer, UnknownOffset);
+        Unknown2Buffer.CopyTo(_buffer, Unknown2Offset);
         // todo: do I really need these 2? Seems this is always kept updated.
-        BitConverter.GetBytes(FirstFreeSlotInMobileList).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset);
-        BitConverter.GetBytes(FirstFreeSlotInStaticList).CopyTo(Buffer, NumEntriesStaticFreeListAdjOffset);
-        BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(Buffer, EndOfBlockConfirmationOffset);
+        BitConverter.GetBytes(FirstFreeSlotInMobileList).CopyTo(_buffer, NumEntriesMobileFreeListAdjOffset);
+        BitConverter.GetBytes(FirstFreeSlotInStaticList).CopyTo(_buffer, NumEntriesStaticFreeListAdjOffset);
+        BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, EndOfBlockConfirmationOffset);
         return true;
     }
 
