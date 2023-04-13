@@ -2,7 +2,19 @@
 
 public class AutomapInfosBlock : Block
 {
-    public new const int FixedBlockLength = 0; // found out this can be 0 in a new file
+    public const int FixedBlockLength = 0; // found out this can be 0 in a new file
+
+    private byte[] _buffer;
+    
+    public override byte[] Buffer
+    {
+        get
+        {
+            ReconstructBuffer(); 
+            return _buffer;
+        }
+        set => _buffer = value;
+    }
 
     public override bool ReconstructBuffer()
     {
@@ -10,10 +22,10 @@ public class AutomapInfosBlock : Block
         return true;
     }
 
-    public AutomapInfosBlock(byte[] buffer, int levelnumber)
+    public AutomapInfosBlock(byte[] buffer, int levelNumber)
     {
-        Buffer = new byte[buffer.Length];
-        buffer.CopyTo(Buffer, 0);
-        LevelNumber = levelnumber;
+        _buffer = new byte[buffer.Length];
+        buffer.CopyTo(_buffer, 0);
+        LevelNumber = levelNumber;
     }
 }

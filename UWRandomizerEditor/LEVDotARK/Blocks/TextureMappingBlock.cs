@@ -4,13 +4,33 @@ public sealed class TextureMappingBlock : Block
 {
     public new const int FixedBlockLength = 0x007a;
 
+    private byte[] _buffer;
+    public override byte[] Buffer 
+    {
+        get
+        {
+            ReconstructBuffer();
+            return _buffer;
+        }
+        set
+        {
+            if (value.Length != FixedBlockLength)
+            {
+                throw new BlockOperationException(
+                    $"New buffer length of {value.Length} is incompatible with required length of {FixedBlockLength}");
+            }
+
+            _buffer = value;
+        } 
+    }
+
     public override bool ReconstructBuffer()
     {
         // Since there's no operations that can change this block, this doesn't do anything.
         return true;
     }
 
-    public TextureMappingBlock(byte[] buffer, int levelnumber)
+    public TextureMappingBlock(byte[] buffer, int levelNumber)
     {
         if (buffer.Length != FixedBlockLength)
         {
@@ -18,8 +38,8 @@ public sealed class TextureMappingBlock : Block
                 $"Length of buffer ({buffer.Length}) is incompatible with expected TextureMappingBlock length ({FixedBlockLength})");
         }
 
-        Buffer = new byte[FixedBlockLength];
-        buffer.CopyTo(Buffer, 0);
-        LevelNumber = levelnumber;
+        _buffer = new byte[FixedBlockLength];
+        buffer.CopyTo(_buffer, 0);
+        LevelNumber = levelNumber;
     }
 }

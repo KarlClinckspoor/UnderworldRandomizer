@@ -18,13 +18,33 @@ public class ObjectAnimationOverlayInfoBlock : Block
     list, to the object that should get an animation overlay.
     */
 
+    private byte[] _buffer = new byte[FixedBlockLength];
+    public override byte[] Buffer 
+    {
+        get
+        {
+            ReconstructBuffer();
+            return _buffer;
+        }
+        set
+        {
+            if (value.Length != FixedBlockLength)
+            {
+                throw new BlockOperationException(
+                    $"New buffer length of {value.Length} is incompatible with required length of {FixedBlockLength}");
+            }
+
+            _buffer = value;
+        } 
+    }
+
     public override bool ReconstructBuffer()
     {
         // Since there's no operations that can change this block, this doesn't do anything.
         return true;
     }
 
-    public ObjectAnimationOverlayInfoBlock(byte[] buffer, int levelnumber)
+    public ObjectAnimationOverlayInfoBlock(byte[] buffer, int levelNumber)
     {
         if (buffer.Length != FixedBlockLength)
         {
@@ -34,6 +54,6 @@ public class ObjectAnimationOverlayInfoBlock : Block
 
         Buffer = new byte[FixedBlockLength];
         buffer.CopyTo(Buffer, 0);
-        LevelNumber = levelnumber;
+        LevelNumber = levelNumber;
     }
 }

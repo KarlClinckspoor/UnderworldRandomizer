@@ -17,10 +17,33 @@ public partial class TileMapMasterObjectListBlock : Block
     public FreeListObjectEntry[] FreeListMobileObjects = new FreeListObjectEntry[FreeListMobileObjectsNum];
     public FreeListObjectEntry[] FreeListStaticObjects = new FreeListObjectEntry[FreeListStaticObjectsNum];
 
+    private byte[] _buffer;
+    /// <summary>
+    /// Controls the byte buffer of the object and keeps it updated with the function ReconstructBuffer.
+    /// </summary>
+    /// <exception cref="BlockOperationException">thrown if the buffer being set has an incorrect length (<see cref="FixedBlockLength"/>)</exception>
+    public override byte[] Buffer
+    {
+        get { 
+            ReconstructBuffer();
+            return _buffer;
+        }
+        set
+        {
+            if (value.Length != FixedBlockLength)
+            {
+                throw new BlockOperationException(
+                    $"New buffer length of {value.Length} is incompatible with required length of {FixedBlockLength}");
+            }
+
+            _buffer = value;
+        }
+    }
+
     public ushort FirstFreeSlotInMobileList
     {
-        get { return BitConverter.ToUInt16(Buffer, NumEntriesMobileFreeListAdjOffset); }
-        set { BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset); }
+        get => BitConverter.ToUInt16(Buffer, NumEntriesMobileFreeListAdjOffset);
+        set => BitConverter.GetBytes(value).CopyTo(Buffer, NumEntriesMobileFreeListAdjOffset);
     }
 
     public ushort FirstFreeSlotInStaticList
@@ -194,8 +217,8 @@ public partial class TileMapMasterObjectListBlock : Block
                 $"Length of buffer ({buffer.Length}) is incompatible with expected TextureMappingBlock length ({FixedBlockLength})");
         }
 
-        Buffer = new byte[FixedBlockLength];
-        buffer.CopyTo(Buffer, 0);
+        _buffer = new byte[FixedBlockLength];
+        buffer.CopyTo(_buffer, 0);
         LevelNumber = levelNumber;
 
         TileMapBuffer = buffer[TileMapOffset..(TileMapOffset + TileMapLength)];

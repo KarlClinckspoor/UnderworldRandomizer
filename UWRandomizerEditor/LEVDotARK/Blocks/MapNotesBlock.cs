@@ -5,12 +5,24 @@
 /// </summary>
 public class MapNotesBlock : Block
 {
+    public new uint FixedBlockLength = 0;
     public MapNotesBlock(byte[] buffer, int levelnumber)
     {
-        Buffer = new byte[buffer
-            .Length]; // This is getting the length from the input buffer because the length of this block is variable
-        buffer.CopyTo(Buffer, 0);
+        _buffer = new byte[buffer.Length];
+        buffer.CopyTo(_buffer, 0);
         LevelNumber = levelnumber;
+    }
+
+    private byte[] _buffer;
+
+    public override byte[] Buffer
+    {
+        get
+        {
+            ReconstructBuffer(); 
+            return _buffer;
+        }
+        set => _buffer = value;
     }
 
     public override bool ReconstructBuffer()
