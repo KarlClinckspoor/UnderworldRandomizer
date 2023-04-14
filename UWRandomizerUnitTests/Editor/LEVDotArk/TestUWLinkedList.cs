@@ -426,5 +426,47 @@ public class TestUWLinkedList
             
         }
     }
+
+    [Category("RequiresSettings")]
+    [Test]
+    public void TestItemsBeforeFirstFreeSlot()
+    {
+        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
+        foreach (var block in AL.TileMapObjectsBlocks)
+        {
+            var originalValidity = new bool[block.AllGameObjects.Length];
+            foreach (var obj in block.AllGameObjects)
+            {
+                originalValidity[obj.IdxAtObjectArray] = obj.Invalid;
+                obj.Invalid = false;
+            }
+
+            block.AllGameObjects[0].Invalid = true;
+            block.AllGameObjects[1].Invalid = true;
+
+            for (int i = 2; i <= block.FirstFreeSlotInMobileList; i++)
+            {
+                var idx = block.FreeListMobileObjects[i].IdxAtArray;
+                block.MobileObjects[idx].Invalid = true;
+            }
+
+            for (int i = 0; i <= block.FirstFreeSlotInStaticList; i++)
+            {
+                var idx = block.FreeListStaticObjects[i].IdxAtArray;
+                block.AllGameObjects[idx].Invalid = true;
+            }
+
+            var objsThatAreBeforeTheFirstFreeSlot = block.AllGameObjects
+                .Select(x => x)
+                .Where(x => x.Invalid).ToList();
+
+            Console.WriteLine($"Block {block.LevelNumber}");
+            for (int i = 0; i < block.AllGameObjects.Length; i++)
+            {
+                if (block.AllGameObjects[i].Invalid != originalValidity[i])
+                    Console.WriteLine($"\t{i}: {block.AllGameObjects[i]} has different validity");
+            }
+        }
+    }
 }
 
