@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 // ReSharper disable AccessToStaticMemberViaDerivedType
@@ -9,7 +10,19 @@ public partial class TileMapMasterObjectListBlock : Block
 {
     public Tile[] Tiles = new Tile[TileMapLength / TileMapEntrySize];
 
-    public GameObject[] AllGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
+    // public GameObject[] AllGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
+    public GameObject[] AllGameObjects
+    {
+        get
+        {
+            var temp = new List<GameObject>();
+            temp.AddRange(MobileObjects);
+            temp.AddRange(StaticObjects);
+            Debug.Assert(temp.Count == StaticObjectNum + MobileObjectNum);
+            return temp.ToArray();
+        }
+    }
+
     public MobileObject[] MobileObjects = new MobileObject[MobileObjectNum];
     public StaticObject[] StaticObjects = new StaticObject[StaticObjectNum];
 
