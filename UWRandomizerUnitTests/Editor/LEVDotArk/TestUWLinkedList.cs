@@ -460,12 +460,24 @@ public class TestUWLinkedList
                 .Select(x => x)
                 .Where(x => x.Invalid).ToList();
 
+            var idxsToExplore = new List<int>();
             Console.WriteLine($"Block {block.LevelNumber}");
             for (int i = 0; i < block.AllGameObjects.Length; i++)
             {
                 if (block.AllGameObjects[i].Invalid != originalValidity[i])
-                    Console.WriteLine($"\t{i}: {block.AllGameObjects[i]} has different validity");
+                {
+                    Console.WriteLine($"\t{i}: {block.AllGameObjects[i]} has different validity. Before: valid? {!originalValidity[i]} after: valid?{!block.AllGameObjects[i].Invalid}");
+                    idxsToExplore.Add(i);
+                }
             }
+            Console.WriteLine("\t Explore idxs: " + string.Join(",", idxsToExplore));
+            
+            Func<TileInfo, List<ushort>> getIdxs = tileInfo => tileInfo.ObjectChain.Select(gameObject => gameObject.IdxAtObjectArray).ToList();
+            
+            var TilesToConsider = block.TileInfos
+                .Where(tileInfo => getIdxs(tileInfo).Any(idx => idxsToExplore.Contains(idx)))
+                .Select(x => $"({x.XPos},{x.YPos})");
+            Console.WriteLine("\tCheck tiles " + String.Join(" ", TilesToConsider));
         }
     }
 }
