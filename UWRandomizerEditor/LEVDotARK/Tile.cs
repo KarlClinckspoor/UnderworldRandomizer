@@ -6,7 +6,7 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerEditor.LEVdotARK;
 
-public class TileInfo : IBufferObject, IEquatable<TileInfo>
+public class Tile : IBufferObject, IEquatable<Tile>
 {
     public const int FixedSize = 4;
 
@@ -191,13 +191,13 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
     {
         if (GetStartingIndex(Buffer) != ObjectChain.StartingIdx)
         {
-            Debug.Print("Mismatch between TileInfo firstObjectIndex in buffer and UWLinkedList.");
+            Debug.Print("Mismatch between Tile firstObjectIndex in buffer and UWLinkedList.");
             FirstObjIdx = ObjectChain.StartingIdx;
         }
         return true;
     }
 
-    public TileInfo(uint entrynum, uint bufferAsUInt32, uint offset, int levelNumber)
+    public Tile(uint entrynum, uint bufferAsUInt32, uint offset, int levelNumber)
     {
         EntryNum = entrynum;
         BufferAsUInt32 = bufferAsUInt32;
@@ -209,7 +209,7 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         }
     }
 
-    public TileInfo(uint entrynum, byte[] buffer, uint offset, int levelNumber)
+    public Tile(uint entrynum, byte[] buffer, uint offset, int levelNumber)
     {
         if (buffer.Length != FixedSize)
         {
@@ -277,7 +277,7 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         }
     }
 
-    public bool Equals(TileInfo? other)
+    public bool Equals(Tile? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -308,6 +308,6 @@ public class TileInfo : IBufferObject, IEquatable<TileInfo>
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != this.GetType()) return false;
-        return Equals((TileInfo) obj);
+        return Equals((Tile) obj);
     }
 }

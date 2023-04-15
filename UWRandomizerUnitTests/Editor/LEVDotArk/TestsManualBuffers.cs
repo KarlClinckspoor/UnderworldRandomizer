@@ -10,10 +10,10 @@ public class ManualTests
     [Test]
     public void TestTileInfoComparingToUltimateEditor_manual()
     {
-        var tile = new TileInfo(1609, new byte[] {0x11, 0x20, 0x1E, 0x00}, 6436, 0);
+        var tile = new Tile(1609, new byte[] {0x11, 0x20, 0x1E, 0x00}, 6436, 0);
         // Some water tile near that island with a lurker nearby
-        var reference = new TileInfo(1609, 0, 6436, 0);
-        reference.TileType = (int) TileInfo.TileTypes.Open;
+        var reference = new Tile(1609, 0, 6436, 0);
+        reference.TileType = (int) Tile.TileTypes.Open;
         reference.TileHeight = 1;
         reference.DoorBit = 0;
         reference.NoMagic = 0;

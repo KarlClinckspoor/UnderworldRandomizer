@@ -196,7 +196,7 @@ public class TestItemRemoval
     [Test]
     public void TestCyclesOfRemovalAndAppendingOnTile()
     {
-        var Tile1 = new TileInfo(0, 0, 0, 0);
+        var Tile1 = new Tile(0, 0, 0, 0);
         Tile1.FirstObjIdx = 1;
         
         // Tile has items in idx 1*,2,6*
@@ -212,7 +212,7 @@ public class TestItemRemoval
         }
         // Tile1 should be 2, 1, 6
 
-        var Tile2 = new TileInfo(0, 0, 0, 0);
+        var Tile2 = new Tile(0, 0, 0, 0);
         Tile2.FirstObjIdx = 2;
         Tile2.ObjectChain.PopulateObjectList(_gameObjects);
         

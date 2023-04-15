@@ -5,10 +5,9 @@ using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 namespace UWRandomizerEditor.LEVdotARK.Blocks;
 
-// TODO: Separate this into TileMap and Object List...?
 public partial class TileMapMasterObjectListBlock : Block
 {
-    public TileInfo[] TileInfos = new TileInfo[TileMapLength / TileMapEntrySize];
+    public Tile[] Tiles = new Tile[TileMapLength / TileMapEntrySize];
 
     public GameObject[] AllGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
     public MobileObject[] MobileObjects = new MobileObject[MobileObjectNum];
@@ -131,8 +130,8 @@ public partial class TileMapMasterObjectListBlock : Block
 
     private void ReconstructTileMapBuffer()
     {
-        // Todo: Check that TileInfos is the required length AND there aren't repeat indices.
-        foreach (TileInfo currInfo in TileInfos)
+        // Todo: Check that Tiles is the required length AND there aren't repeat indices.
+        foreach (Tile currInfo in Tiles)
         {
             currInfo.ReconstructBuffer();
             currInfo.Buffer.CopyTo(TileMapBuffer, currInfo.Offset);
@@ -246,10 +245,10 @@ public partial class TileMapMasterObjectListBlock : Block
             var offset = i * TileMapEntrySize;
             // Todo: Seems a bit weird to convert and de-convert later. Think better.
             var entry = BitConverter.ToUInt32(TileMapBuffer, (int) offset);
-            TileInfo currInfo = new TileInfo(i, entry, offset, LevelNumber);
+            Tile currTile = new Tile(i, entry, offset, LevelNumber);
 
-            TileInfos[i] = currInfo;
-            currInfo.ObjectChain.PopulateObjectList(AllGameObjects);
+            Tiles[i] = currTile;
+            currTile.ObjectChain.PopulateObjectList(AllGameObjects);
         }
     }
 

@@ -63,10 +63,6 @@ class ArkLoaderTest
         var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
         // Testing Lvl1 starting bag
         var lvl1 = AL.TileMapObjectsBlocks[0];
-        // X=33, Y=3
-        // var tile = lvl1.TileInfos[33 * 64 + 3];
-        // Console.WriteLine($"{tile.XYPos[0]}, {tile.XYPos[1]}");
-        // Assert.True(tile.FirstObjIdx == 942);
         
         Assert.True(lvl1.AllGameObjects[942] is Container);
         Assert.False(lvl1.AllGameObjects[942].InContainer);

@@ -22,7 +22,7 @@ public class UWLinkedList: IList<GameObject>
     public bool RepresentingContainer = false;
     
     /// <summary>
-    /// Represents the index of the first element in the LinkedList, which is important because it's what a TileInfo or
+    /// Represents the index of the first element in the LinkedList, which is important because it's what a Tile or
     /// a container references.
     /// </summary>
     public uint StartingIdx

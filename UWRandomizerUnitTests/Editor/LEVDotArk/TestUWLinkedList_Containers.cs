@@ -11,7 +11,7 @@ public class TestUWLinkedList_Containers
 {
 #pragma warning disable CS8618
     private Container _bag1;
-    private TileInfo _tile1;
+    private Tile _tile1;
     private Container _bag2;
     private GameObject[] _gameObjects;
 #pragma warning restore CS8618
@@ -50,7 +50,7 @@ public class TestUWLinkedList_Containers
             _bag2,
             new Door(tempbuffer, 6),
         };
-        _tile1 = new TileInfo(0, 0, 0, 0) {FirstObjIdx = 4};
+        _tile1 = new Tile(0, 0, 0, 0) {FirstObjIdx = 4};
     }
 
     [Test]

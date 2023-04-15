@@ -13,7 +13,7 @@ public static partial class RandoTools
     /// <param name="tile2">Second tile to replace</param>
     /// <param name="settings">Configuration item that controls what is considered a movable item</param>
     /// <param name="r">random instance that's passed to the functions that move objects to the correct corner of tiles</param>
-    public static void SwapAllObjectsBetweenTwoTiles(TileInfo tile1, TileInfo tile2, ItemRandomizationSettings settings, Random r)
+    public static void SwapAllObjectsBetweenTwoTiles(Tile tile1, Tile tile2, ItemRandomizationSettings settings, Random r)
     {
         var obj1 = ItemTools.ExtractMovableItems(tile1, settings);
         var obj2 = ItemTools.ExtractMovableItems(tile2, settings);

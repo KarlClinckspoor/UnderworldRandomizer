@@ -163,7 +163,7 @@ public class MobileObject : GameObject
         }
     }
 
-    // TODO: Create interface, standardize this with Container and TileInfo?
+    // TODO: Create interface, standardize this with Container and Tile?
     public UWLinkedList Inventory { get; set; }
 
     public override bool ReconstructBuffer()

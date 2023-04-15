@@ -124,7 +124,7 @@ public static class Program
 
             // Iterate through tiles
             counterObjects = 0;
-            foreach (var tile in block.TileInfos)
+            foreach (var tile in block.Tiles)
             {
                 UWRandomizerEditor.Utils.SaveBuffer(tile, nthTileMapBlockPath,
                     $"TileIdx{counterObjects}Offset{tile.Offset},X{tile.XYPos[0]}Y{tile.XYPos[1]}.bin");

@@ -123,7 +123,7 @@ public partial class MainWindow : Window
             AddMsgToLog($"Processing level {level}");
             sb.AppendLine($"Level {level}");
 
-            foreach (var tile in block.TileInfos)
+            foreach (var tile in block.Tiles)
             {
                 sb.Append($"\tTile: ({tile.XYPos[0]},{tile.XYPos[1]}): ");
                 foreach (var obj in tile.ObjectChain)
