@@ -32,8 +32,25 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
-    public MobileObject[] MobileObjects = new MobileObject[MobileObjectNum];
-    public StaticObject[] StaticObjects = new StaticObject[StaticObjectNum];
+    private MobileObject[] _mobileObjects = new MobileObject[MobileObjectNum];
+    public MobileObject[] MobileObjects
+    {
+        get => _mobileObjects;
+        private set
+        {
+            if (value.Length != MobileObjectNum) throw new ArgumentException($"Length of MobileObjects must be {MobileObjectNum}");
+        }
+    }
+
+    private StaticObject[] _staticObjects = new StaticObject[StaticObjectNum];
+    public StaticObject[] StaticObjects
+    {
+        get => _staticObjects;
+        private set
+        {
+            if (value.Length != StaticObjectNum) throw new ArgumentException($"Length of StaticObjects must be {StaticObjectNum}");
+        }
+    }
 
     public FreeListObjectEntry[] FreeListMobileObjects = new FreeListObjectEntry[FreeListMobileObjectsNum];
     public FreeListObjectEntry[] FreeListStaticObjects = new FreeListObjectEntry[FreeListStaticObjectsNum];
