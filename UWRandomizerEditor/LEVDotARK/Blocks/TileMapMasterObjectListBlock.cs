@@ -8,9 +8,19 @@ namespace UWRandomizerEditor.LEVdotARK.Blocks;
 
 public partial class TileMapMasterObjectListBlock : Block
 {
+    /// <summary>
+    /// Contains all tiles in a continuous array
+    /// </summary>
     public Tile[] Tiles = new Tile[TileMapLength / TileMapEntrySize];
+    
+    /// <summary>
+    /// Reshapes <see cref="Tiles"/> into a <see cref="TileWidth"/> by <see cref="TileHeight"/> array on the fly, for convenience.
+    /// </summary>
+    public Tile[,] Tiles2D => Utils.ReshapeArray(Tiles, TileWidth, TileHeight);
 
-    // public GameObject[] AllGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
+    /// <summary>
+    /// This conveniently joins the Mobile Object and Static Object arrays into one, from 0 to <see cref="MobileObjectNum"/>+<see cref="StaticObjectNum"/>
+    /// </summary>
     public GameObject[] AllGameObjects
     {
         get
@@ -18,7 +28,6 @@ public partial class TileMapMasterObjectListBlock : Block
             var temp = new List<GameObject>();
             temp.AddRange(MobileObjects);
             temp.AddRange(StaticObjects);
-            Debug.Assert(temp.Count == StaticObjectNum + MobileObjectNum);
             return temp.ToArray();
         }
     }
