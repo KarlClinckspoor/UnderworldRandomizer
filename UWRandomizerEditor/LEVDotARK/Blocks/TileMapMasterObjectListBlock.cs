@@ -39,6 +39,7 @@ public partial class TileMapMasterObjectListBlock : Block
         private set
         {
             if (value.Length != MobileObjectNum) throw new ArgumentException($"Length of MobileObjects must be {MobileObjectNum}");
+            _mobileObjects = value;
         }
     }
 
@@ -49,11 +50,55 @@ public partial class TileMapMasterObjectListBlock : Block
         private set
         {
             if (value.Length != StaticObjectNum) throw new ArgumentException($"Length of StaticObjects must be {StaticObjectNum}");
+            _staticObjects = value;
         }
     }
 
-    public FreeListObjectEntry[] FreeListMobileObjects = new FreeListObjectEntry[FreeListMobileObjectsNum];
-    public FreeListObjectEntry[] FreeListStaticObjects = new FreeListObjectEntry[FreeListStaticObjectsNum];
+    private FreeSlotIndexes[] _freeMobileObjectSlots = new FreeSlotIndexes[FreeMobileObjectSlotsNumber];
+    /// <summary>
+    /// Contains a list of objects that point to the slot in MobileObjects that is "free", i.e. unused.
+    /// </summary>
+    /// <exception cref="ArgumentException">If the array length is different from <see cref="FreeMobileObjectSlotsNumber"/></exception>
+    public FreeSlotIndexes[] FreeMobileObjectSlots
+    {
+        get => _freeMobileObjectSlots;
+        private set
+        {
+            if (value.Length != FreeMobileObjectSlotsNumber)
+                throw new ArgumentException($"Length of FreeMobileObjectSlots should be {FreeMobileObjectSlotsNumber}");
+            _freeMobileObjectSlots = value;
+        }
+    }
+    
+    private FreeSlotIndexes[] _freeStaticObjectSlots = new FreeSlotIndexes[FreeStaticObjectSlotsNumber];
+    /// <summary>
+    /// Contains a list of objects that point to the slot in StaticObjects that is "free", i.e. unused.
+    /// </summary>
+    /// <exception cref="ArgumentException">If the array length is different from <see cref="FreeStaticObjectSlotsNumber"/></exception>
+    public FreeSlotIndexes[] FreeStaticObjectSlots
+    {
+        get => _freeStaticObjectSlots;
+        private set
+        {
+            if (value.Length != FreeStaticObjectSlotsNumber)
+                throw new ArgumentException($"Length of FreeStaticObjectSlots should be {FreeStaticObjectSlotsNumber}");
+            _freeStaticObjectSlots = value;
+        }
+        
+    }
+    /// <summary>
+    /// Joins together <see cref="FreeMobileObjectSlots"/> and <see cref="FreeStaticObjectSlots"/> into one array.
+    /// </summary>
+    public FreeSlotIndexes[] AllFreeObjectSlots
+    {
+        get
+        {
+            var temp = new List<FreeSlotIndexes>();
+            temp.AddRange(FreeMobileObjectSlots);
+            temp.AddRange(FreeStaticObjectSlots);
+            return temp.ToArray();
+        }
+    }
 
     private byte[] _buffer;
     /// <summary>
@@ -90,8 +135,8 @@ public partial class TileMapMasterObjectListBlock : Block
         set { BitConverter.GetBytes(value).CopyTo(_buffer, NumEntriesStaticFreeListAdjOffset); }
     }
 
-    public ushort FirstFreeMobileObjectIdx => FreeListMobileObjects[FirstFreeSlotInMobileList].IdxAtArray;
-    public ushort FirstFreeStaticObjectIdx => FreeListStaticObjects[FirstFreeSlotInStaticList].IdxAtArray; // TODO: Is this +1?
+    public ushort FirstFreeMobileObjectIdx => FreeMobileObjectSlots[FirstFreeSlotInMobileList].IdxAtArray;
+    public ushort FirstFreeStaticObjectIdx => FreeStaticObjectSlots[FirstFreeSlotInStaticList].IdxAtArray; // TODO: Is this +1?
 
     // todo: Recheck and make sure the number of entries is correct.
     public override bool ReconstructBuffer()
@@ -151,19 +196,19 @@ public partial class TileMapMasterObjectListBlock : Block
 
     private void ReconstructFreeListStaticObjectBuffer()
     {
-        foreach (var obj in FreeListStaticObjects)
+        foreach (var obj in FreeStaticObjectSlots)
         {
             obj.ReconstructBuffer();
-            obj.Buffer.CopyTo(FreeListStaticObjectBuffer, obj.EntryNum * FreeListObjectEntry.FixedSize);
+            obj.Buffer.CopyTo(FreeListStaticObjectBuffer, obj.EntryNum * FreeSlotIndexes.FixedSize);
         }
     }
 
     private void ReconstructFreeListMobileObjectBuffer()
     {
-        foreach (var obj in FreeListMobileObjects)
+        foreach (var obj in FreeMobileObjectSlots)
         {
             obj.ReconstructBuffer();
-            obj.Buffer.CopyTo(FreeListMobileObjectBuffer, obj.EntryNum * FreeListObjectEntry.FixedSize);
+            obj.Buffer.CopyTo(FreeListMobileObjectBuffer, obj.EntryNum * FreeSlotIndexes.FixedSize);
         }
     }
 
@@ -225,25 +270,25 @@ public partial class TileMapMasterObjectListBlock : Block
 
     private void Populate_FreeListMobileObjectArrFromBuffer()
     {
-        for (int i = 0; i < FreeListMobileObjectsNum; i++)
+        for (int i = 0; i < FreeMobileObjectSlotsNumber; i++)
         {
             byte[] currbuffer =
                 FreeListMobileObjectBuffer[
-                    (i * FreeListObjectEntry.FixedSize)..((i + 1) * FreeListObjectEntry.FixedSize)];
-            var currobj = new FreeListObjectEntry(currbuffer, i);
-            FreeListMobileObjects[i] = currobj;
+                    (i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
+            var currobj = new FreeSlotIndexes(currbuffer, i);
+            FreeMobileObjectSlots[i] = currobj;
         }
     }
 
     private void Populate_FreeListStaticObjectArrFromBuffer()
     {
-        for (int i = 0; i < FreeListStaticObjectsNum; i++)
+        for (int i = 0; i < FreeStaticObjectSlotsNumber; i++)
         {
             byte[] currbuffer =
                 FreeListStaticObjectBuffer[
-                    (i * FreeListObjectEntry.FixedSize)..((i + 1) * FreeListObjectEntry.FixedSize)];
-            var currobj = new FreeListObjectEntry(currbuffer, i);
-            FreeListStaticObjects[i] = currobj;
+                    (i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
+            var currobj = new FreeSlotIndexes(currbuffer, i);
+            FreeStaticObjectSlots[i] = currobj;
         }
     }
 

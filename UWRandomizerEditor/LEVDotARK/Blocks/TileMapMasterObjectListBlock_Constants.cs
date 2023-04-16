@@ -31,13 +31,13 @@ public partial class TileMapMasterObjectListBlock
     public const int FreeListMobileObjectsOffset = 0x7300;
     public const int FreeListMobileObjectsLength = 0x01fc;
     public const int FreeListMobileObjectsEntrySize = 2;
-    public const int FreeListMobileObjectsNum = 254;
+    public const int FreeMobileObjectSlotsNumber = 254;
 
     // 74fc    0600   free list for static objects (objects 0100-03ff, 768 x 2 bytes)
     public const int FreeListStaticObjectsOffset = 0x74fc;
     public const int FreeListStaticObjectsLength = 0x0600;
     public const int FreeListStaticObjectsEntrySize = 2;
-    public const int FreeListStaticObjectsNum = 768;
+    public const int FreeStaticObjectSlotsNumber = 768;
 
     // 7afc    0104   unknown(260 bytes)
     public const int UnknownOffset = 0x7afc;

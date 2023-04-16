@@ -446,13 +446,13 @@ public class TestUWLinkedList
 
             for (int i = 2; i <= block.FirstFreeSlotInMobileList; i++)
             {
-                var idx = block.FreeListMobileObjects[i].IdxAtArray;
+                var idx = block.FreeMobileObjectSlots[i].IdxAtArray;
                 block.MobileObjects[idx].Invalid = true;
             }
 
             for (int i = 0; i <= block.FirstFreeSlotInStaticList; i++)
             {
-                var idx = block.FreeListStaticObjects[i].IdxAtArray;
+                var idx = block.FreeStaticObjectSlots[i].IdxAtArray;
                 block.AllGameObjects[idx].Invalid = true;
             }
 
@@ -472,9 +472,9 @@ public class TestUWLinkedList
             }
             Console.WriteLine("\t Explore idxs: " + string.Join(",", idxsToExplore));
             
-            Func<TileInfo, List<ushort>> getIdxs = tileInfo => tileInfo.ObjectChain.Select(gameObject => gameObject.IdxAtObjectArray).ToList();
+            Func<Tile, List<ushort>> getIdxs = tileInfo => tileInfo.ObjectChain.Select(gameObject => gameObject.IdxAtObjectArray).ToList();
             
-            var TilesToConsider = block.TileInfos
+            var TilesToConsider = block.Tiles
                 .Where(tileInfo => getIdxs(tileInfo).Any(idx => idxsToExplore.Contains(idx)))
                 .Select(x => $"({x.XPos},{x.YPos})");
             Console.WriteLine("\tCheck tiles " + String.Join(" ", TilesToConsider));
