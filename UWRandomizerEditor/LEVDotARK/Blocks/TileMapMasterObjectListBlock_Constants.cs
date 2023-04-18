@@ -50,12 +50,12 @@ public partial class TileMapMasterObjectListBlock
     public const int Unknown2EntrySize = 2;
 
     // 7c02    0002   no.entries in mobile free list minus 1
-    public const int NumEntriesMobileFreeListAdjOffset = 0x7c02;
+    public const int FirstFreeSlotInMobileSlotsOffset = 0x7c02;
     public const int NumEntriesMobileFreeListAdjLength = 2;
     public const int NumEntriesMobileFreeListAdjEntrySize = 2;
 
     // 7c04    0002   no. entries in static free list minus 1
-    public const int NumEntriesStaticFreeListAdjOffset = 0x7c04;
+    public const int FirstFreeSlotInStaticSlotsOffset = 0x7c04;
     public const int NumEntriesStaticFreeListAdjLength = 2;
     public const int NumEntriesStaticFreeListAdjEntrySize = 2;
 

@@ -388,7 +388,7 @@ public class TestUWLinkedList
             }
             Console.WriteLine($"lvl: {block.LevelNumber} references {counter} MobileObjects with the lowest one being " +
                               $"{lowestObjectWithReference}. First Obj idx is {block.FirstFreeMobileObjectIdx}; " +
-                              $"slot is {block.FirstFreeSlotInMobileList}");
+                              $"slot is {block.FirstFreeMobileSlot}");
             
             counter = 0;
             lowestObjectWithReference = 10000;
@@ -408,7 +408,7 @@ public class TestUWLinkedList
             }
             Console.WriteLine($"lvl: {block.LevelNumber} references {counter} StaticObjects with the lowest one being " +
                               $"{lowestObjectWithReference}. First Obj idx is {block.FirstFreeStaticObjectIdx}; " +
-                              $"slot is {block.FirstFreeSlotInStaticList+254}");
+                              $"slot is {block.FirstFreeStaticSlot+254}");
             
             var objectsThatAreInvalidAndAreUsed = block.AllGameObjects
                 .Select(x => x)
@@ -427,6 +427,8 @@ public class TestUWLinkedList
         }
     }
 
+    // TODO: There's an error here. I should ideally get the firstObjIdxs of the ultimate editor and use them to compare with stuff here.
+    // E.g. In this code, Lvl2's tile (36,2) supposedly had an object that was wrongly attributed. But that wasn't the case.
     [Category("RequiresSettings")]
     [Test]
     public void TestItemsBeforeFirstFreeSlot()
@@ -444,13 +446,13 @@ public class TestUWLinkedList
             block.AllGameObjects[0].Invalid = true;
             block.AllGameObjects[1].Invalid = true;
 
-            for (int i = 2; i <= block.FirstFreeSlotInMobileList; i++)
+            for (int i = 2; i <= block.FirstFreeMobileSlot; i++)
             {
                 var idx = block.FreeMobileObjectSlots[i].IdxAtArray;
                 block.MobileObjects[idx].Invalid = true;
             }
 
-            for (int i = 0; i <= block.FirstFreeSlotInStaticList; i++)
+            for (int i = 0; i <= block.FirstFreeStaticSlot; i++)
             {
                 var idx = block.FreeStaticObjectSlots[i].IdxAtArray;
                 block.AllGameObjects[idx].Invalid = true;

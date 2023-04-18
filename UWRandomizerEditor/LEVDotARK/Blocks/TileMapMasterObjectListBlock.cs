@@ -123,20 +123,42 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
-    public ushort FirstFreeSlotInMobileList
+    /// <summary>
+    /// This value represents the index of the first slot that points to a free mobile entry in the <see cref="AllGameObjects"/> array 
+    /// </summary>
+    public ushort FirstFreeMobileSlot
     {
-        get => BitConverter.ToUInt16(_buffer, NumEntriesMobileFreeListAdjOffset);
-        set => BitConverter.GetBytes(value).CopyTo(_buffer, NumEntriesMobileFreeListAdjOffset);
+        get => BitConverter.ToUInt16(_buffer, FirstFreeSlotInMobileSlotsOffset);
+        set => BitConverter.GetBytes(value).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
     }
 
-    public ushort FirstFreeSlotInStaticList
+    /// <summary>
+    /// This value represents the index of the first slot that points to a free static entry in the <see cref="AllGameObjects"/> array 
+    /// </summary>
+    public ushort FirstFreeStaticSlot
     {
-        get { return BitConverter.ToUInt16(_buffer, NumEntriesStaticFreeListAdjOffset); }
-        set { BitConverter.GetBytes(value).CopyTo(_buffer, NumEntriesStaticFreeListAdjOffset); }
+        get => BitConverter.ToUInt16(_buffer, FirstFreeSlotInStaticSlotsOffset);
+        set => BitConverter.GetBytes(value).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
     }
 
-    public ushort FirstFreeMobileObjectIdx => FreeMobileObjectSlots[FirstFreeSlotInMobileList].IdxAtArray;
-    public ushort FirstFreeStaticObjectIdx => FreeStaticObjectSlots[FirstFreeSlotInStaticList].IdxAtArray; // TODO: Is this +1?
+    /// <summary>
+    /// The index in the <see cref="AllGameObjects"/> array (and <see cref="MobileObjects"/> array) that points to an unused <see cref="MobileObject"/> and can be freely modified.
+    /// </summary>
+    public ushort FirstFreeMobileObjectIdx => AllFreeObjectSlots[FirstFreeMobileSlot].IdxAtArray;
+
+    /// <summary>
+    /// The index in the <see cref="AllGameObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
+    /// </summary>
+    public ushort FirstFreeStaticObjectIdx => AllFreeObjectSlots[FirstFreeStaticSlot].IdxAtArray;
+
+    /// <summary>
+    /// The index in the <see cref="StaticObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
+    /// </summary>
+    public ushort FirstFreeStaticObjectIdx2 => (ushort) (FirstFreeMobileObjectIdx - FreeMobileObjectSlotsNumber); // TODO: Should be only this. Check with Unit Test!
+
+    public MobileObject FirstFreeMobileObject => MobileObjects[FirstFreeMobileObjectIdx];
+    public StaticObject FirstFreeStaticObject => (StaticObject) AllGameObjects[FirstFreeStaticObjectIdx];
+    public StaticObject FirstFreeStaticObject2 => StaticObjects[FirstFreeStaticObjectIdx2];
 
     // todo: Recheck and make sure the number of entries is correct.
     public override bool ReconstructBuffer()
@@ -157,8 +179,8 @@ public partial class TileMapMasterObjectListBlock : Block
         UnknownBuffer.CopyTo(_buffer, UnknownOffset);
         Unknown2Buffer.CopyTo(_buffer, Unknown2Offset);
         // todo: do I really need these 2? Seems this is always kept updated.
-        BitConverter.GetBytes(FirstFreeSlotInMobileList).CopyTo(_buffer, NumEntriesMobileFreeListAdjOffset);
-        BitConverter.GetBytes(FirstFreeSlotInStaticList).CopyTo(_buffer, NumEntriesStaticFreeListAdjOffset);
+        BitConverter.GetBytes(FirstFreeMobileSlot).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
+        BitConverter.GetBytes(FirstFreeStaticSlot).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
         BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, EndOfBlockConfirmationOffset);
         return true;
     }
