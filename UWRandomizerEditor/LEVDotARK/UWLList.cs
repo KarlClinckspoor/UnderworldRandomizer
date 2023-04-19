@@ -486,12 +486,6 @@ public class UWLinkedList: IList<GameObject>
             }
 
             GameObject obj = allBlockObjects[(int) currentIdx];
-            // TODO: What's making these invalid objects? Shouldn't all of them be valid?
-            if (obj.Invalid)
-            {
-                // throw new Exception("Can't add an invalid object!");
-                // Console.WriteLine($"Object {obj} number {obj.IdxAtObjectArray} is invalid but was added to the list");
-            }
             currentIdx = obj.next;
             Add(obj);
         }

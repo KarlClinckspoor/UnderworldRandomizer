@@ -411,6 +411,7 @@ public partial class TileMapMasterObjectListBlock : Block
         foreach (var gameObject in AllGameObjects)
         {
             if (gameObject.Invalid) continue;
+            if (gameObject.ReferenceCount < 1) continue;
             if (gameObject is Container cont)
             {
                 cont.Contents.PopulateObjectList(AllGameObjects);
