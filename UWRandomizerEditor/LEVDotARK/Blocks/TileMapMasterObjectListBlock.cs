@@ -156,11 +156,26 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     public ushort FirstFreeStaticObjectIdx2 => (ushort) (FirstFreeMobileObjectIdx - FreeMobileObjectSlotsNumber); // TODO: Should be only this. Check with Unit Test!
 
+    /// <summary>
+    /// The first <see cref="MobileObject"/> that can be freely modified.
+    /// </summary>
     public MobileObject FirstFreeMobileObject => MobileObjects[FirstFreeMobileObjectIdx];
+    /// <summary>
+    /// The first <see cref="StaticObject"/> that can be freely modified.
+    /// </summary>
     public StaticObject FirstFreeStaticObject => (StaticObject) AllGameObjects[FirstFreeStaticObjectIdx];
+    /// <summary>
+    /// The first <see cref="StaticObject"/> that can be freely modified (uses <see cref="FirstFreeStaticObjectIdx2"/>.
+    /// </summary>
     public StaticObject FirstFreeStaticObject2 => StaticObjects[FirstFreeStaticObjectIdx2];
 
     // todo: Recheck and make sure the number of entries is correct.
+    /// <summary>
+    /// Goes through all the sub elements of this block (<see cref="Tile"/>s, <see cref="GameObject"/>s, etc) and
+    /// gets all of their buffers (updated) then joins everything to update this block's buffer.
+    /// </summary>
+    /// <returns>True if the reconstruction was successful</returns>
+    /// <exception cref="ConstraintException">Thrown if the buffer somehow has a different length than <see cref="FixedBlockLength"/></exception>
     public override bool ReconstructBuffer()
     {
         if (_buffer.Length != FixedBlockLength)
@@ -182,20 +197,30 @@ public partial class TileMapMasterObjectListBlock : Block
         BitConverter.GetBytes(FirstFreeMobileSlot).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
         BitConverter.GetBytes(FirstFreeStaticSlot).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
         BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, EndOfBlockConfirmationOffset);
+        if (_buffer.Length != FixedBlockLength)
+        {
+            throw new ConstraintException(
+                $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
+        }
         return true;
     }
 
+    /// <summary>
+    /// Reconstructs the <see cref="TileMapBuffer"/>, <see cref="MobileObjectInfoBuffer"/>, <see cref="StaticObjectInfoBuffer"/>,
+    /// <see cref="FreeListMobileObjectBuffer"/>, <see cref="FreeListStaticObjectBuffer"/>.
+    /// </summary>
     private void ReconstructSubBuffers()
     {
         ReconstructTileMapBuffer();
-        // TODO: These should ideally check the validity of each object and rearrange them so they're ordered
-        // from the end, and the free lists should accomodate that.
         ReconstructMobileObjectInfoBuffer();
         ReconstructStaticObjectInfoBuffer();
         ReconstructFreeListMobileObjectBuffer();
         ReconstructFreeListStaticObjectBuffer();
     }
 
+    /// <summary>
+    /// Reconstructs the <see cref="MobileObjectInfoBuffer"/>.
+    /// </summary>
     private void ReconstructMobileObjectInfoBuffer()
     {
         // Let's use the object's own index to decide where it goes...
@@ -206,6 +231,9 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
+    /// <summary>
+    /// Reconstructs the <see cref="StaticObjectInfoBuffer"/>.
+    /// </summary>
     private void ReconstructStaticObjectInfoBuffer()
     {
         foreach (var obj in StaticObjects)
@@ -216,6 +244,9 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
+    /// <summary>
+    /// Reconstructs the <see cref="FreeListStaticObjectBuffer"/>.
+    /// </summary>
     private void ReconstructFreeListStaticObjectBuffer()
     {
         foreach (var obj in FreeStaticObjectSlots)
@@ -225,6 +256,9 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
+    /// <summary>
+    /// Reconstructs the <see cref="FreeListMobileObjectBuffer"/>.
+    /// </summary>
     private void ReconstructFreeListMobileObjectBuffer()
     {
         foreach (var obj in FreeMobileObjectSlots)
@@ -234,40 +268,55 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
+    /// <summary>
+    /// Reconstructs the <see cref="TileMapBuffer"/>.
+    /// </summary>
     private void ReconstructTileMapBuffer()
     {
         // Todo: Check that Tiles is the required length AND there aren't repeat indices.
-        foreach (Tile currInfo in Tiles)
+        foreach (var currInfo in Tiles)
         {
             currInfo.ReconstructBuffer();
             currInfo.Buffer.CopyTo(TileMapBuffer, currInfo.Offset);
         }
     }
 
+    /// <summary>
+    /// Goes through <see cref="StaticObjectInfoBuffer"/>, separates it into chunks for each object, then
+    /// sends the buffers to the GameObjectFactory to be converted into an object. Finally, stores the object
+    /// in the <see cref="StaticObjects"/> array.
+    /// </summary>
+    /// <exception cref="BlockOperationException">Raised when an error occured in the data and somehow a StaticObject
+    /// got placed in the MobileObjects array</exception>
     private void Populate_StaticObjectsFromBuffer()
     {
         for (short i = 0; i < StaticObjectNum; i++)
         {
-            byte[] currbuffer =
+            var currBuffer =
                 StaticObjectInfoBuffer[
                     (i * StaticObject.FixedTotalLength)..((i + 1) * StaticObject.FixedTotalLength)];
-            var currobj =
-                (StaticObject) GameObjectFactory.CreateFromBuffer(currbuffer, (ushort) (i + MobileObjectNum));
+            var currObj =
+                (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + MobileObjectNum));
             if (i < FirstFreeStaticObjectIdx - MobileObjectNum + 2) // +2 because of objs 0 and 1
-                currobj.Invalid = true;
+                currObj.Invalid = true;
 
-            if ((currobj.IdxAtObjectArray < MobileObjectNum) & (currobj.Invalid))
+            if ((currObj.IdxAtObjectArray < MobileObjectNum) & (currObj.Invalid))
             {
-                throw new Exception(
+                throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
-            StaticObjects[i] = currobj;
-            AllGameObjects[currobj.IdxAtObjectArray] = currobj;
+            StaticObjects[i] = currObj;
         }
     }
 
-    // todo: consider also providing an entry number, for safekeeping
+    /// <summary>
+    /// Goes through <see cref="MobileObjectInfoBuffer"/>, separates it into chunks for each object, then
+    /// sends the buffers to the GameObjectFactory to be converted into an object. Finally, stores the object
+    /// in the <see cref="MobileObjects"/> array.
+    /// </summary>
+    /// <exception cref="BlockOperationException">Raised when an error occured in the data and somehow a MobileObject
+    /// got placed in the StaticObjects array</exception>
     private void Populate_MobileObjectsFromBuffer()
     {
         for (ushort i = 0; i < MobileObjectNum; i++)
@@ -281,12 +330,11 @@ public partial class TileMapMasterObjectListBlock : Block
                 
             if (currobj.IdxAtObjectArray >= MobileObjectNum)
             {
-                throw new Exception(
+                throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
             MobileObjects[i] = currobj;
-            AllGameObjects[currobj.IdxAtObjectArray] = currobj;
         }
     }
 
