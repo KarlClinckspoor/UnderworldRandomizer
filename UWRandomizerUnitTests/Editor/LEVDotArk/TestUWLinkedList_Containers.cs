@@ -63,6 +63,7 @@ public class TestUWLinkedList_Containers
         Assert.True(_bag1.Contents[2].Equals(_gameObjects[3]));
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 3 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 3 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
 
     [Test]
@@ -74,6 +75,7 @@ public class TestUWLinkedList_Containers
         Assert.True(_bag2.Contents[0].Equals(_bag1));
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 4 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 4 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
 
     [Test]
@@ -83,6 +85,7 @@ public class TestUWLinkedList_Containers
         _tile1.ObjectChain.PopulateObjectList(_gameObjects);
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 3 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 3 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
     
     [Test]
@@ -94,6 +97,7 @@ public class TestUWLinkedList_Containers
         _tile1.ObjectChain.PopulateObjectList(_gameObjects);
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 4 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 4 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
     
 }
