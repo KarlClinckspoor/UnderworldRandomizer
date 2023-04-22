@@ -60,7 +60,7 @@ public class CompareWithHanksEditor
                 File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = new ArkLoader(Paths.UW_ArkOriginalPath);
+            arkPristine = Utils.LoadAndAssertOriginalLevArk();
 
             streamsCleaned[blocknum] = File.ReadAllText(
                 Path.Join(Paths.RUT_TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));

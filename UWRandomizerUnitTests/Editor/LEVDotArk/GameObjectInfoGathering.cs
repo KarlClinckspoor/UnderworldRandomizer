@@ -17,7 +17,7 @@ public class GameObjectInfoGathering
     [Test]
     public void MakeCSVFile()
     {
-        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var AL = Utils.LoadAndAssertOriginalLevArk();
         Assert.True(Utils.CheckEqualityOfSha256Hash(AL.Buffer, Utils.OriginalLevArkSha256Hash));
         
         var mainCSVcontent = new StringBuilder();

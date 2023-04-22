@@ -112,7 +112,7 @@ public class TestGettersAndSetters
     [Category("RequiresSettings")]
     public void TestingGettersAndSettersThatModifyBuffer()
     {
-        var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ark = Utils.LoadAndAssertOriginalLevArk();
         foreach (var block in ark.TileMapObjectsBlocks)
         {
             foreach (var tile in block.Tiles)
@@ -139,7 +139,7 @@ public class TestGettersAndSetters
     [Category("RequiresSettings")]
     public void TestCreatingTileFromSetters()
     {
-        var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ark = Utils.LoadAndAssertOriginalLevArk();
         foreach (var block in ark.TileMapObjectsBlocks)
         {
             foreach (var tile in block.Tiles)

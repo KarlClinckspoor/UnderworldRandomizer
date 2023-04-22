@@ -13,9 +13,7 @@ public class TestRemovingLockFromAllDoorsInArk
     [Category("RequiresSettings")]
     public void TestManualLockRemoval()
     {
-        // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        // var ArkEditor = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Doors\DATA\LEV.ARK");
-        var ArkOriginal = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
         var ArkEditor = new ArkLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
 
         var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -49,10 +47,8 @@ public class TestRemovingLockFromAllDoorsInArk
     public void TestRemovingAllLocks()
     {
         // I'm testing here both the original and the "cleaned" version from UltimateEditor
-        // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        // var ArkOriginalToModify = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        var ArkOriginal = new ArkLoader(Paths.UW_ArkOriginalPath);
-        var ArkOriginalToModify = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
+        var ArkOriginalToModify = Utils.LoadAndAssertOriginalLevArk();
 
         var ArkCleaned = new ArkLoader(Paths.UW_ArkCleanedPath);
         var ArkCleanedToModify = new ArkLoader(Paths.UW_ArkCleanedPath);

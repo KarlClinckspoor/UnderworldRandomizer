@@ -106,7 +106,7 @@ public class TestMovingItemsInLevel
     [Test]
     public void TestMovingItemsNearSpawn()
     {
-        var arkFile = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var arkFile = Utils.LoadAndAssertOriginalLevArk();
         var settings = new ItemRandomizationSettings();
 
         var leftTile = MoveSpecificItemsNearSpawn(arkFile, settings, true);
@@ -138,7 +138,7 @@ public class TestMovingItemsInLevel
     [Test]
     public void TestMoving10ItemsNearSpawn()
     {
-        var arkFile = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var arkFile = Utils.LoadAndAssertOriginalLevArk();
         var settings = new ItemRandomizationSettings();
 
         var leftTile = Move10ItemsNearSpawn(arkFile, settings);

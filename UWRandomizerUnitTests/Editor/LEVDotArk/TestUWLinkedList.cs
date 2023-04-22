@@ -367,7 +367,7 @@ public class TestUWLinkedList
     [Test]
     public void TestReferenceCounts()
     {
-        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var AL = Utils.LoadAndAssertOriginalLevArk();
         foreach (var block in AL.TileMapObjectsBlocks)
         {
             var counter = 0;
@@ -433,7 +433,7 @@ public class TestUWLinkedList
     [Test]
     public void TestItemsBeforeFirstFreeSlot()
     {
-        var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var AL = Utils.LoadAndAssertOriginalLevArk();
         foreach (var block in AL.TileMapObjectsBlocks)
         {
             var originalValidity = new bool[block.AllGameObjects.Length];

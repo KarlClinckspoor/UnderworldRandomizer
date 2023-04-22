@@ -18,7 +18,6 @@ public class HeaderTestUW1
     public void SetUp()
     {
         _myArkLoader = new ArkLoader(Paths.UW_ArkOriginalPath);
-        Assert.True(Utils.CheckEqualityOfSha256Hash(_myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         _header = _myArkLoader.header;
     }
 
