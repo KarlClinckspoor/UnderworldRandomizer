@@ -34,21 +34,31 @@ public class GameObjectInfoGathering
             "internalName"
             );
         var extraCSVcontent = new StringBuilder();
+        extraCSVcontent.AppendLine("" +
+                                   "Block;" +
+                                   "FirstFreeMobileSlot;" +
+                                   "FirstFreeStaticSlot;" +
+                                   "FirstFreeMobileSlotEntry;" +
+                                   "FirstFreeStaticSlotEntry;" +
+                                   "FirstFreeMobileIndex;" +
+                                   "FirstFreeStaticIndex;" +
+                                   "FirstFreeMobileObjIdx;" +
+                                   "FirstFreeStaticObjIdx" +
+                                   "");
 
         for (int lvl = 0; lvl < AL.TileMapObjectsBlocks.Length; lvl++)
         {
             var block = AL.TileMapObjectsBlocks[lvl];
             extraCSVcontent.AppendLine(
-                                       $"Block: {block.LevelNumber}," +
-                                       $"First Free Mobile Slot {block.FirstFreeMobileSlot}," +
-                                       $"First Free Static Slot {block.FirstFreeStaticSlot}," +
-                                       $"First Free Mobile Slot entry {block.AllFreeObjectSlots[block.FirstFreeMobileSlot]}," +
-                                       $"First Free Static Slot entry {block.AllFreeObjectSlots[block.FirstFreeStaticSlot]}," +
-                                       $"First Free Mobile Index {block.FirstFreeMobileObjectIdx}," +
-                                       $"First Free Static Index {block.FirstFreeStaticObjectIdx}," +
-                                       // $"First Free Static Index2 {block.FirstFreeStaticObjectIdx2}," +
-                                       $"First Free Mobile ObjIdx {block.FirstFreeMobileObject.IdxAtObjectArray}" +
-                                       $"First Free Static ObjIdx {block.FirstFreeStaticObject.IdxAtObjectArray}"
+                                       $"{block.LevelNumber};" +
+                                       $"{block.FirstFreeMobileSlot};" +
+                                       $"{block.FirstFreeStaticSlot};" +
+                                       $"{block.AllFreeObjectSlots[block.FirstFreeMobileSlot]};" +
+                                       $"{block.AllFreeObjectSlots[block.FirstFreeStaticSlot]};" +
+                                       $"{block.FirstFreeMobileObjectIdx};" +
+                                       $"{block.FirstFreeStaticObjectIdx};" +
+                                       $"{block.FirstFreeMobileObject.IdxAtObjectArray};" +
+                                       $"{block.FirstFreeStaticObject.IdxAtObjectArray}"
                                        );
             
             foreach (var gameObject in block.AllGameObjects)

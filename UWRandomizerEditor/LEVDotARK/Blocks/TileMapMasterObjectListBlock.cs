@@ -149,12 +149,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <summary>
     /// The index in the <see cref="AllGameObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
     /// </summary>
-    public ushort FirstFreeStaticObjectIdx => AllFreeObjectSlots[FirstFreeStaticSlot].IdxAtArray;
-
-    /// <summary>
-    /// The index in the <see cref="StaticObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
-    /// </summary>
-    public ushort FirstFreeStaticObjectIdx2 => (ushort) (FirstFreeMobileObjectIdx - FreeMobileObjectSlotsNumber); // TODO: Should be only this. Check with Unit Test!
+    public ushort FirstFreeStaticObjectIdx => FreeStaticObjectSlots[FirstFreeStaticSlot].IdxAtArray;
 
     /// <summary>
     /// The first <see cref="MobileObject"/> that can be freely modified.
@@ -164,10 +159,6 @@ public partial class TileMapMasterObjectListBlock : Block
     /// The first <see cref="StaticObject"/> that can be freely modified.
     /// </summary>
     public StaticObject FirstFreeStaticObject => (StaticObject) AllGameObjects[FirstFreeStaticObjectIdx];
-    /// <summary>
-    /// The first <see cref="StaticObject"/> that can be freely modified (uses <see cref="FirstFreeStaticObjectIdx2"/>.
-    /// </summary>
-    public StaticObject FirstFreeStaticObject2 => StaticObjects[FirstFreeStaticObjectIdx2];
 
     // todo: Recheck and make sure the number of entries is correct.
     /// <summary>

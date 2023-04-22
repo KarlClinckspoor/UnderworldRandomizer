@@ -40,4 +40,9 @@ public class FreeSlotIndexes : IBufferObject
     {
         return true;
     }
+
+    public override string ToString()
+    {
+        return $"FreeSlotNr{EntryNum}({IdxAtArray})";
+    }
 }
