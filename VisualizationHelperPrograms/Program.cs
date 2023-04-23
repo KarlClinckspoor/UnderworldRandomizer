@@ -81,12 +81,12 @@ public static class Program
                 counterObjects = 0;
                 foreach (var mobileFreeObject in block.FreeMobileObjectSlots)
                 {
-                    sw.WriteLine($"Mobile Free Object entry {counterObjects} has value {mobileFreeObject.IdxAtArray}");
+                    sw.WriteLine($"Mobile Free Object entry {counterObjects} has value {mobileFreeObject.IdxAtFullArray}");
                     UWRandomizerEditor.Utils.SaveBuffer(mobileFreeObject, nthTileMapBlockPath,
                         $"mobileFreeObjectIdx{mobileFreeObject.EntryNum}_ctr{counterObjects}.bin");
                     counterObjects++;
                     mobileDuplicateCounter +=
-                        setMobile.Add(mobileFreeObject.IdxAtArray)
+                        setMobile.Add(mobileFreeObject.IdxAtFullArray)
                             ? 0
                             : 1; // Reminder: Add returns false if element is already present
                 }
@@ -96,12 +96,12 @@ public static class Program
                 // Save free list Static objects buffers
                 foreach (var staticFreeObject in block.FreeStaticObjectSlots)
                 {
-                    sw.WriteLine($"Static Free Object entry {counterObjects} has value {staticFreeObject.IdxAtArray}");
+                    sw.WriteLine($"Static Free Object entry {counterObjects} has value {staticFreeObject.IdxAtFullArray}");
                     UWRandomizerEditor.Utils.SaveBuffer(staticFreeObject, nthTileMapBlockPath,
                         $"staticFreeObjectIdx{staticFreeObject.EntryNum}_ctr{counterObjects}.bin");
                     counterObjects++;
                     staticDuplicateCounter +=
-                        setStatic.Add(staticFreeObject.IdxAtArray)
+                        setStatic.Add(staticFreeObject.IdxAtFullArray)
                             ? 0
                             : 1; // Reminder: Add returns false if element is already present
                 }

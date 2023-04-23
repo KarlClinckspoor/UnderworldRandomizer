@@ -448,13 +448,13 @@ public class TestUWLinkedList
 
             for (int i = 2; i <= block.FirstFreeMobileSlot; i++)
             {
-                var idx = block.FreeMobileObjectSlots[i].IdxAtArray;
+                var idx = block.FreeMobileObjectSlots[i].IdxAtFullArray;
                 block.MobileObjects[idx].Invalid = true;
             }
 
             for (int i = 0; i <= block.FirstFreeStaticSlot; i++)
             {
-                var idx = block.FreeStaticObjectSlots[i].IdxAtArray;
+                var idx = block.FreeStaticObjectSlots[i].IdxAtFullArray;
                 block.AllGameObjects[idx].Invalid = true;
             }
 

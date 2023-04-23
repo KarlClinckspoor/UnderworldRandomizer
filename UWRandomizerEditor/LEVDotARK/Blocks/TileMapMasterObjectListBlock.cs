@@ -144,12 +144,12 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <summary>
     /// The index in the <see cref="AllGameObjects"/> array (and <see cref="MobileObjects"/> array) that points to an unused <see cref="MobileObject"/> and can be freely modified.
     /// </summary>
-    public ushort FirstFreeMobileObjectIdx => AllFreeObjectSlots[FirstFreeMobileSlot].IdxAtArray;
+    public ushort FirstFreeMobileObjectIdx => FreeMobileObjectSlots[FirstFreeMobileSlot].IdxAtFullArray;
 
     /// <summary>
     /// The index in the <see cref="AllGameObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
     /// </summary>
-    public ushort FirstFreeStaticObjectIdx => FreeStaticObjectSlots[FirstFreeStaticSlot].IdxAtArray;
+    public ushort FirstFreeStaticObjectIdx => FreeStaticObjectSlots[FirstFreeStaticSlot].IdxAtFullArray;
 
     /// <summary>
     /// The first <see cref="MobileObject"/> that can be freely modified.

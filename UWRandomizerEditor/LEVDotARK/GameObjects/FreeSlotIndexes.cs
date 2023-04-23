@@ -8,7 +8,11 @@ public class FreeSlotIndexes : IBufferObject
     public const int FixedSize = TileMapMasterObjectListBlock.FreeListStaticObjectsEntrySize;
     public byte[] Buffer { get; set; } = new byte[FixedSize];
 
-    public ushort IdxAtArray
+    /// <summary>
+    /// Index of the GameObject at a TileMapMasterObjectListBlock's AllGameObjects.
+    /// Therefore, it can refer either to a StaticObject or MobileObject.
+    /// </summary>
+    public ushort IdxAtFullArray
     {
         get => BitConverter.ToUInt16(Buffer);
         set
@@ -30,9 +34,9 @@ public class FreeSlotIndexes : IBufferObject
         EntryNum = entryNum;
     }
 
-    public FreeSlotIndexes(ushort idxAtArray, int entryNum)
+    public FreeSlotIndexes(ushort idxAtFullArray, int entryNum)
     {
-        IdxAtArray = idxAtArray;
+        IdxAtFullArray = idxAtFullArray;
         EntryNum = entryNum;
     }
 
@@ -43,6 +47,6 @@ public class FreeSlotIndexes : IBufferObject
 
     public override string ToString()
     {
-        return $"FreeSlotNr{EntryNum}({IdxAtArray})";
+        return $"FreeSlotNr{EntryNum}({IdxAtFullArray})";
     }
 }

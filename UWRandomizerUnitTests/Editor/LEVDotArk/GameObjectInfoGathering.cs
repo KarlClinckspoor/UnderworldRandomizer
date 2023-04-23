@@ -63,7 +63,7 @@ public class GameObjectInfoGathering
             
             foreach (var gameObject in block.AllGameObjects)
             {
-                var isReferencedByFreeSlot = block.AllFreeObjectSlots.Any(x => x.IdxAtArray == gameObject.IdxAtObjectArray);
+                var isReferencedByFreeSlot = block.AllFreeObjectSlots.Any(x => x.IdxAtFullArray == gameObject.IdxAtObjectArray);
                 var whichTileReferencesGameObject =
                     block.Tiles
                         .Where(x => x.ObjectChain.Any(
