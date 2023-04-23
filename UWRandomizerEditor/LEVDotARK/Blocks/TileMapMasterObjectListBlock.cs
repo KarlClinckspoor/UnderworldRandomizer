@@ -171,10 +171,33 @@ public partial class TileMapMasterObjectListBlock : Block
     {
         if (_buffer.Length != FixedBlockLength)
         {
-            throw new ConstraintException(
+            throw new BlockOperationException(
                 $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
-
+        if (StaticObjects.Length != StaticObjectNum)
+        {
+            throw new BlockOperationException($"Somehow there's more static objects ({StaticObjects.Length}) than the max ({StaticObjectNum})");
+        }
+        if (MobileObjects.Length != MobileObjectNum)
+        {
+            throw new BlockOperationException($"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({MobileObjectNum})");
+        }
+        if (Tiles.Length != (TileWidth * TileHeight))
+        {
+            throw new BlockOperationException(
+                $"Somehow there's more tiles ({Tiles.Length}) than the max ({TileWidth * TileHeight}");
+        }
+        if (UnknownBuffer.Length != UnknownLength)
+        {
+            throw new BlockOperationException(
+                $"Somehow UnknownBuffer length ({UnknownBuffer.Length}) is different from {UnknownLength}");
+        }
+        if (Unknown2Buffer.Length != Unknown2Length)
+        {
+            throw new BlockOperationException(
+                $"Somehow Unknown2Buffer length ({Unknown2Buffer.Length}) is different from {Unknown2Length}");
+        }
+        
         ReconstructSubBuffers();
 
         TileMapBuffer.CopyTo(_buffer, TileMapOffset);
