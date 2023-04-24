@@ -1,6 +1,6 @@
 ﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-public class Container: SpecialLinkGameObject
+public class Container: SpecialLinkGameObject, IContainer
 {
     public Container(byte[] buffer, ushort idx) : base(buffer, idx)
     {

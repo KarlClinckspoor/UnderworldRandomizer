@@ -302,7 +302,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     /// <exception cref="BlockOperationException">Raised when an error occured in the data and somehow a StaticObject
     /// got placed in the MobileObjects array</exception>
-    private void Populate_StaticObjectsFromBuffer()
+    private void PopulateStaticObjectsFromBuffer()
     {
         for (short i = 0; i < StaticObjectNum; i++)
         {
@@ -331,7 +331,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     /// <exception cref="BlockOperationException">Raised when an error occured in the data and somehow a MobileObject
     /// got placed in the StaticObjects array</exception>
-    private void Populate_MobileObjectsFromBuffer()
+    private void PopulateMobileObjectsFromBuffer()
     {
         for (ushort i = 0; i < MobileObjectNum; i++)
         {
@@ -352,7 +352,10 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
-    private void Populate_FreeListMobileObjectArrFromBuffer()
+    /// <summary>
+    /// Goes through the buffer and creates the FreeSlotIndexes at the appropriate locations.
+    /// </summary>
+    private void PopulateFreeListMobileObjectArrFromBuffer()
     {
         for (int i = 0; i < FreeMobileObjectSlotsNumber; i++)
         {
@@ -364,7 +367,10 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
-    private void Populate_FreeListStaticObjectArrFromBuffer()
+    /// <summary>
+    /// Goes through the buffer and creates the FreeSlotIndexes at the appropriate locations.
+    /// </summary>
+    private void PopulateFreeListStaticObjectArrFromBuffer()
     {
         for (int i = 0; i < FreeStaticObjectSlotsNumber; i++)
         {
@@ -376,6 +382,12 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
+    /// <summary>
+    /// Instantiates a new TileMapMasterObjectListBlock based upon the buffer and the level number.
+    /// </summary>
+    /// <param name="buffer">Byte buffer containing the data. Must be <see cref="FixedBlockLength"/> bytes long.</param>
+    /// <param name="levelNumber">Level number, for convenience. Isn't required for anything.</param>
+    /// <exception cref="ArgumentException">Thrown in case the length of buffer is different from <see cref="FixedBlockLength"/>.</exception>
     public TileMapMasterObjectListBlock(byte[] buffer, int levelNumber)
     {
         if (buffer.Length != FixedBlockLength)
@@ -398,44 +410,63 @@ public partial class TileMapMasterObjectListBlock : Block
         UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
         Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
 
-        Populate_FreeListMobileObjectArrFromBuffer();
-        Populate_FreeListStaticObjectArrFromBuffer();
-        Populate_MobileObjectsFromBuffer();
-        Populate_StaticObjectsFromBuffer();
-        Populate_TileInfos(); // This requires a complete array of game objects, so it comes last
-        Populate_Containers();
+        PopulateFreeListMobileObjectArrFromBuffer();
+        PopulateFreeListStaticObjectArrFromBuffer();
+        PopulateMobileObjectsFromBuffer();
+        PopulateStaticObjectsFromBuffer();
+        PopulateTiles();
+        AddObjectsToTiles();
+        // Goes through the list of objects until no more changes are made, to safeguard against nested containers.
+        // Highly inefficient...
+        // TODO: Add a test to cover this.
+        const int maxLoops = 5; // == Max container depth?
+        foreach (var _ in Enumerable.Range(0, maxLoops))
+        {
+            AddObjectsToContainers();
+        }
     }
 
-    private void Populate_TileInfos()
+    /// <summary>
+    /// Creates tiles for the buffer
+    /// </summary>
+    private void PopulateTiles()
     {
         for (uint i = 0; i < TileMapLength / TileMapEntrySize; i++)
         {
             var offset = i * TileMapEntrySize;
-            // Todo: Seems a bit weird to convert and de-convert later. Think better.
             var entry = BitConverter.ToUInt32(TileMapBuffer, (int) offset);
-            Tile currTile = new Tile(i, entry, offset, LevelNumber);
-
+            var currTile = new Tile(i, entry, offset, LevelNumber);
             Tiles[i] = currTile;
-            currTile.ObjectChain.PopulateObjectList(AllGameObjects);
         }
     }
 
-    private void Populate_Containers()
+    /// <summary>
+    /// Iterates through all tiles and adds the objects to the tile's internal ObjectChain linked list.
+    /// Should not have any side effects.
+    /// </summary>
+    private void AddObjectsToTiles()
+    {
+        foreach (var tile in Tiles)
+        {
+            tile.ObjectChain.PopulateObjectList(AllGameObjects);
+        }
+    }
+
+    /// <summary>
+    /// Goes through all objects that implement IContainer and adds GameObjects to its internal linked list.
+    /// </summary>
+    private void AddObjectsToContainers()
     {
         foreach (var gameObject in AllGameObjects)
         {
             if (gameObject.Invalid) continue;
             if (gameObject.ReferenceCount < 1) continue; // Only considering containers that were placed in Tiles.
-            if (gameObject is Container cont)
+            if (gameObject is IContainer cont && cont.Contents.Count == 0)
             {
                 cont.Contents.PopulateObjectList(AllGameObjects);
             }
-
-            if (gameObject is MobileObject mobileObject)
-            {
-                mobileObject.Inventory.PopulateObjectList(AllGameObjects);
-            }
         }
+
     }
 
 

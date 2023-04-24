@@ -3,7 +3,7 @@
 /// <summary>
 /// Class that describes Mobile Objects (e.g. NPCs). Inheritance should use the parameterless constructor because of the virtual methods to update buffer/entries.
 /// </summary>
-public class MobileObject : GameObject
+public class MobileObject : GameObject, IContainer
 {
     public new const int ExtraLength = 19;
     public new const int FixedTotalLength = BaseLength + ExtraLength;
@@ -163,14 +163,13 @@ public class MobileObject : GameObject
         }
     }
 
-    // TODO: Create interface, standardize this with Container and Tile?
-    public UWLinkedList Inventory { get; set; }
+    public UWLinkedList Contents { get; set; }
 
     public override bool ReconstructBuffer()
     {
         // QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
         // Avoiding infinite loop. TODO: think of something more intelligent
-        LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Inventory.StartingIdx, 0b11_1111_1111, 6);
+        LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Contents.StartingIdx, 0b11_1111_1111, 6);
         base.ReconstructBuffer();
             
         Buffer[offset1] = byte1_hp;
@@ -220,7 +219,7 @@ public class MobileObject : GameObject
         buffer.CopyTo(Buffer, 0);
         IdxAtObjectArray = idx;
         UpdateEntries();
-        Inventory = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
+        Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
     // Reminder: don't call base... Need to design this better
@@ -271,7 +270,7 @@ public class MobileObject : GameObject
         extra.CopyTo(Buffer, BaseLength);
         IdxAtObjectArray = idx;
         UpdateEntries();
-        Inventory = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty};
+        Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty};
     }
 
     public MobileObject(
@@ -329,13 +328,13 @@ public class MobileObject : GameObject
         extra.CopyTo(Buffer, BaseLength);
         IdxAtObjectArray = idx;
         UpdateEntries();
-        Inventory = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
+        Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
     protected MobileObject()
     {
         Buffer = Array.Empty<byte>();
         Invalid = true;
-        Inventory = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
+        Contents = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
     }
 }
