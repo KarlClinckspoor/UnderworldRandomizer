@@ -416,14 +416,7 @@ public partial class TileMapMasterObjectListBlock : Block
         PopulateStaticObjectsFromBuffer();
         PopulateTiles();
         AddObjectsToTiles();
-        // Goes through the list of objects until no more changes are made, to safeguard against nested containers.
-        // Highly inefficient...
-        // TODO: Add a test to cover this.
-        const int maxLoops = 5; // == Max container depth?
-        foreach (var _ in Enumerable.Range(0, maxLoops))
-        {
-            AddObjectsToContainers();
-        }
+        AddObjectsToContainers();
     }
 
     /// <summary>
@@ -457,21 +450,40 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     private void AddObjectsToContainers()
     {
+        var tempcount1 = 0;
+        var tempcount2 = 0;
+        // Gathering IContainers that were in tiles, populating them, then getting any contents they had that also were containers
+        var objects = new List<IContainer>();
         foreach (var gameObject in AllGameObjects)
         {
             if (gameObject.Invalid) continue;
             if (gameObject.ReferenceCount < 1) continue; // Only considering containers that were placed in Tiles.
-            if (gameObject is IContainer cont && cont.Contents.Count == 0)
+            if (gameObject is IContainer container)
             {
-                cont.Contents.PopulateObjectList(AllGameObjects);
+                container.Contents.PopulateObjectList(AllGameObjects);
+                objects.AddRange(container.Contents.OfType<IContainer>());
+                tempcount1++;
             }
         }
-
+        
+        // Guaranteeing every remaining container will eventually be accounted for
+        while (objects.Count > 0)
+        {
+            var container = objects[0];
+            objects.RemoveAt(0);
+            container.Contents.PopulateObjectList(AllGameObjects);
+            objects.AddRange(container.Contents.OfType<IContainer>());
+            tempcount2++;
+        }
+        Console.WriteLine($"Treated {tempcount1} containers that were in tiles and {tempcount2} containers that were inside them");
     }
 
 
     private byte[] _tileMapBuffer = new byte[TileMapLength];
-
+/// <summary>
+/// 
+/// </summary>
+/// <exception cref="ArgumentException"></exception>
     public byte[] TileMapBuffer
     {
         get { return _tileMapBuffer; }
