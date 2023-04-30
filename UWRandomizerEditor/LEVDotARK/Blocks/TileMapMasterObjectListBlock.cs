@@ -446,36 +446,77 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     /// <summary>
+    /// <para>
     /// Goes through all objects that implement IContainer and adds GameObjects to its internal linked list.
+    /// This function has the following logic.
+    /// </para>
+    /// <list type="number">
+    ///     <item> <description> Goes through all containers that were referenced in tiles</description> </item>
+    ///     <item>
+    ///         <description>
+    ///             Populates the items inside those objects. In case there's containers inside, adds them to a temporary list
+    ///             to be processed later.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <description>
+    ///             Processes all containers that were reserved, and adds any other containers to this list. The list
+    ///             grows and shrinks as it continues processing stuff.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// <para> In essence, instead of iterating recursively, adds all items to this "to-do" list to be processed later.</para>
+    /// <para> Suppose the following two situations. Here, it's object(idx) </para>
+    /// <list type="bullet">
+    ///     <item> <description> container(X) in tile -> container(X-10) in container(X)  </description> </item>
+    ///     <item> <description> container(X) in tile -> container(X+10) in container(X)  </description> </item>
+    /// </list>
+    /// <para>
+    ///     In situation 1, since we're already past the container (X-10), it won't be populated. In situation 2,
+    ///     it'll eventually be populated since it hasn't been reached. By adding containers to this temporary list,
+    ///     and processing them later, we guarantee that we can reach all containers that were potentially in a previous
+    ///     location. However, if we don't remove the containers in the second situation, they'll be populated again, and
+    ///     why there's a check for location, then removal.
+    /// </para>
+    /// <para>
+    ///     Example for situation 1:
+    ///     In lvl 3 (block 2), obj 226 (Lizardman at X17 Y7) has a pouch (603). The pouch points to 599->598->932.
+    ///     When going through this, the pouch is added to objects since it's "inside" the lizardman, but that sets
+    ///     the refcount of the pouch to 1. This makes it accessible to this loop, and so the contents can be added.
+    ///     If the pouch isn't removed from containersToProcessLater, it'll be processed later again.
+    /// </para>
+    /// <para>
+    ///     Potential examples for situation 2: traps that store mobile objects. Traps are always StaticObjects and
+    ///     MobileObjects are always at the start of the array. Not considering this would lead to unpopulated traps.
+    /// </para>
     /// </summary>
     private void AddObjectsToContainers()
     {
-        var tempcount1 = 0;
-        var tempcount2 = 0;
         // Gathering IContainers that were in tiles, populating them, then getting any contents they had that also were containers
-        var objects = new List<IContainer>();
+        var containersToProcessLater = new List<IContainer>();
         foreach (var gameObject in AllGameObjects)
         {
             if (gameObject.Invalid) continue;
-            if (gameObject.ReferenceCount < 1) continue; // Only considering containers that were placed in Tiles.
+            // Only considering containers that were placed in Tiles, which are "relevant". If this isn't checked, objects in unused
+            // slots might be referenced and lead to bugs.
+            if (gameObject.ReferenceCount < 1) continue; 
             if (gameObject is IContainer container)
             {
                 container.Contents.PopulateObjectList(AllGameObjects);
-                objects.AddRange(container.Contents.OfType<IContainer>());
-                tempcount1++;
+                containersToProcessLater.AddRange(container.Contents.OfType<IContainer>());
+                // Removes itself if it was added previously
+                if (containersToProcessLater.Contains(container)) containersToProcessLater.Remove(container); 
             }
         }
         
         // Guaranteeing every remaining container will eventually be accounted for
-        while (objects.Count > 0)
+        while (containersToProcessLater.Count > 0)
         {
-            var container = objects[0];
-            objects.RemoveAt(0);
+            var container = containersToProcessLater[0];
+            containersToProcessLater.RemoveAt(0);
             container.Contents.PopulateObjectList(AllGameObjects);
-            objects.AddRange(container.Contents.OfType<IContainer>());
-            tempcount2++;
+            containersToProcessLater.AddRange(container.Contents.OfType<IContainer>());
         }
-        Console.WriteLine($"Treated {tempcount1} containers that were in tiles and {tempcount2} containers that were inside them");
     }
 
 
