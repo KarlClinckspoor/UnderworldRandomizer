@@ -285,13 +285,19 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <summary>
     /// Reconstructs the <see cref="TileMapBuffer"/>.
     /// </summary>
+    /// <exception cref="BlockOperationException">if the length is different from <see cref="TileHeight"/>*<see cref="TileWidth"/></exception>
     private void ReconstructTileMapBuffer()
     {
-        // Todo: Check that Tiles is the required length AND there aren't repeat indices.
-        foreach (var currInfo in Tiles)
+        if (Tiles.Length != TileHeight * TileWidth)
         {
-            currInfo.ReconstructBuffer();
-            currInfo.Buffer.CopyTo(TileMapBuffer, currInfo.Offset);
+            throw new BlockOperationException(
+                $"Current number of tiles ({Tiles.Length}) is different from required length {TileHeight * TileWidth}");
+        }
+
+        foreach (var tile in Tiles)
+        {
+            tile.ReconstructBuffer();
+            tile.Buffer.CopyTo(_tileMapBuffer, tile.Offset);
         }
     }
 
@@ -521,14 +527,21 @@ public partial class TileMapMasterObjectListBlock : Block
 
 
     private byte[] _tileMapBuffer = new byte[TileMapLength];
-/// <summary>
-/// 
-/// </summary>
-/// <exception cref="ArgumentException"></exception>
-    public byte[] TileMapBuffer
+    /// <summary>
+    /// Controls the buffer to the tile map.
+    /// </summary>
+    /// <exception cref="ArgumentException">In case the length is inappropriate</exception>
+    private byte[] TileMapBuffer
     {
-        get { return _tileMapBuffer; }
-        set
+        // get => _tileMapBuffer;
+        get
+        {
+            // ReconstructTileMapBuffer();
+            return _tileMapBuffer;
+        }
+    
+
+    set
         {
             if (value.Length != TileMapLength)
             {
@@ -540,8 +553,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _mobileObjectInfoBuffer = new byte[MobileObjectInfoLength];
-
-    public byte[] MobileObjectInfoBuffer
+    private byte[] MobileObjectInfoBuffer
     {
         get { return _mobileObjectInfoBuffer; }
         set
