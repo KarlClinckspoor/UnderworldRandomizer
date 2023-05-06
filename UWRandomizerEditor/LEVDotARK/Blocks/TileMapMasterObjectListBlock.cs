@@ -32,6 +32,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private MobileObject[] _mobileObjects = new MobileObject[MobileObjectNum];
+
     /// <summary>
     /// Contains all the <see cref="MobileObject"/>s in the level, including objects 0 and 1, which
     /// should never be accessed.
@@ -49,6 +50,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private StaticObject[] _staticObjects = new StaticObject[StaticObjectNum];
+
     /// <summary>
     /// Contains all the <see cref="StaticObject"/>s in the level.
     /// </summary>
@@ -548,6 +550,7 @@ public partial class TileMapMasterObjectListBlock : Block
 
 
     private byte[] _tileMapBuffer = new byte[TileMapLength];
+
     /// <summary>
     /// Controls the buffer to the tile map.
     /// </summary>
@@ -567,6 +570,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _mobileObjectInfoBuffer = new byte[MobileObjectInfoLength];
+
     /// <summary>
     /// Controls the buffer that contains all the mobile objects.
     /// </summary>
@@ -626,6 +630,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _freeListStaticObjectBuffer = new byte[FreeListStaticObjectsLength];
+
     /// <summary>
     /// Controls the buffer that contains all the slot pointers to static objects.
     /// </summary>
@@ -645,6 +650,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _unknownBuffer = new byte[UnknownLength];
+
     /// <summary>
     /// Controls one of the, for the moment, unknown buffer.
     /// </summary>
@@ -664,6 +670,7 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _unknown2Buffer = new byte[Unknown2Length];
+
     /// <summary>
     /// Controls another of the unknown buffers.
     /// </summary>
