@@ -1,7 +1,6 @@
 ﻿using System.Data;
-using System.Diagnostics;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
-using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+
 // ReSharper disable AccessToStaticMemberViaDerivedType
 
 namespace UWRandomizerEditor.LEVdotARK.Blocks;
@@ -12,7 +11,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// Contains all tiles in a continuous array
     /// </summary>
     public Tile[] Tiles = new Tile[TileMapLength / TileMapEntrySize];
-    
+
     /// <summary>
     /// Reshapes <see cref="Tiles"/> into a <see cref="TileWidth"/> by <see cref="TileHeight"/> array on the fly, for convenience.
     /// </summary>
@@ -33,28 +32,40 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private MobileObject[] _mobileObjects = new MobileObject[MobileObjectNum];
+    /// <summary>
+    /// Contains all the <see cref="MobileObject"/>s in the level, including objects 0 and 1, which
+    /// should never be accessed.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the new array length is different from <see cref="MobileObjectNum"/></exception>
     public MobileObject[] MobileObjects
     {
         get => _mobileObjects;
         private set
         {
-            if (value.Length != MobileObjectNum) throw new ArgumentException($"Length of MobileObjects must be {MobileObjectNum}");
+            if (value.Length != MobileObjectNum)
+                throw new ArgumentException($"Length of MobileObjects must be {MobileObjectNum}");
             _mobileObjects = value;
         }
     }
 
     private StaticObject[] _staticObjects = new StaticObject[StaticObjectNum];
+    /// <summary>
+    /// Contains all the <see cref="StaticObject"/>s in the level.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the new array length is different from <see cref="StaticObjectNum"/></exception>
     public StaticObject[] StaticObjects
     {
         get => _staticObjects;
         private set
         {
-            if (value.Length != StaticObjectNum) throw new ArgumentException($"Length of StaticObjects must be {StaticObjectNum}");
+            if (value.Length != StaticObjectNum)
+                throw new ArgumentException($"Length of StaticObjects must be {StaticObjectNum}");
             _staticObjects = value;
         }
     }
 
     private FreeSlotIndexes[] _freeMobileObjectSlots = new FreeSlotIndexes[FreeMobileObjectSlotsNumber];
+
     /// <summary>
     /// Contains a list of objects that point to the slot in MobileObjects that is "free", i.e. unused.
     /// </summary>
@@ -69,8 +80,9 @@ public partial class TileMapMasterObjectListBlock : Block
             _freeMobileObjectSlots = value;
         }
     }
-    
+
     private FreeSlotIndexes[] _freeStaticObjectSlots = new FreeSlotIndexes[FreeStaticObjectSlotsNumber];
+
     /// <summary>
     /// Contains a list of objects that point to the slot in StaticObjects that is "free", i.e. unused.
     /// </summary>
@@ -84,8 +96,8 @@ public partial class TileMapMasterObjectListBlock : Block
                 throw new ArgumentException($"Length of FreeStaticObjectSlots should be {FreeStaticObjectSlotsNumber}");
             _freeStaticObjectSlots = value;
         }
-        
     }
+
     /// <summary>
     /// Joins together <see cref="FreeMobileObjectSlots"/> and <see cref="FreeStaticObjectSlots"/> into one array.
     /// </summary>
@@ -101,13 +113,15 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _buffer;
+
     /// <summary>
     /// Controls the byte buffer of the object and keeps it updated with the function ReconstructBuffer.
     /// </summary>
     /// <exception cref="BlockOperationException">thrown if the buffer being set has an incorrect length (<see cref="FixedBlockLength"/>)</exception>
     public override byte[] Buffer
     {
-        get { 
+        get
+        {
             ReconstructBuffer();
             return _buffer;
         }
@@ -155,6 +169,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// The first <see cref="MobileObject"/> that can be freely modified.
     /// </summary>
     public MobileObject FirstFreeMobileObject => MobileObjects[FirstFreeMobileObjectIdx];
+
     /// <summary>
     /// The first <see cref="StaticObject"/> that can be freely modified.
     /// </summary>
@@ -174,30 +189,37 @@ public partial class TileMapMasterObjectListBlock : Block
             throw new BlockOperationException(
                 $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
+
         if (StaticObjects.Length != StaticObjectNum)
         {
-            throw new BlockOperationException($"Somehow there's more static objects ({StaticObjects.Length}) than the max ({StaticObjectNum})");
+            throw new BlockOperationException(
+                $"Somehow there's more static objects ({StaticObjects.Length}) than the max ({StaticObjectNum})");
         }
+
         if (MobileObjects.Length != MobileObjectNum)
         {
-            throw new BlockOperationException($"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({MobileObjectNum})");
+            throw new BlockOperationException(
+                $"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({MobileObjectNum})");
         }
+
         if (Tiles.Length != (TileWidth * TileHeight))
         {
             throw new BlockOperationException(
                 $"Somehow there's more tiles ({Tiles.Length}) than the max ({TileWidth * TileHeight}");
         }
+
         if (UnknownBuffer.Length != UnknownLength)
         {
             throw new BlockOperationException(
                 $"Somehow UnknownBuffer length ({UnknownBuffer.Length}) is different from {UnknownLength}");
         }
+
         if (Unknown2Buffer.Length != Unknown2Length)
         {
             throw new BlockOperationException(
                 $"Somehow Unknown2Buffer length ({Unknown2Buffer.Length}) is different from {Unknown2Length}");
         }
-        
+
         ReconstructSubBuffers();
 
         TileMapBuffer.CopyTo(_buffer, TileMapOffset);
@@ -216,6 +238,7 @@ public partial class TileMapMasterObjectListBlock : Block
             throw new ConstraintException(
                 $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
+
         return true;
     }
 
@@ -238,10 +261,10 @@ public partial class TileMapMasterObjectListBlock : Block
     private void ReconstructMobileObjectInfoBuffer()
     {
         // Let's use the object's own index to decide where it goes...
-        foreach (var mobj in MobileObjects)
+        foreach (var obj in MobileObjects)
         {
-            mobj.ReconstructBuffer();
-            mobj.Buffer.CopyTo(MobileObjectInfoBuffer, mobj.IdxAtObjectArray * MobileObject.FixedTotalLength);
+            obj.ReconstructBuffer();
+            obj.Buffer.CopyTo(MobileObjectInfoBuffer, obj.IdxAtObjectArray * MobileObject.FixedTotalLength);
         }
     }
 
@@ -341,20 +364,20 @@ public partial class TileMapMasterObjectListBlock : Block
     {
         for (ushort i = 0; i < MobileObjectNum; i++)
         {
-            byte[] currbuffer =
+            byte[] buffer =
                 MobileObjectInfoBuffer[
                     (i * MobileObject.FixedTotalLength)..((i + 1) * MobileObject.FixedTotalLength)];
-            var currobj = (MobileObject) GameObjectFactory.CreateFromBuffer(currbuffer, i);
+            var obj = (MobileObject) GameObjectFactory.CreateFromBuffer(buffer, i);
             if (i <= FirstFreeMobileObjectIdx)
-                currobj.Invalid = true;
-                
-            if (currobj.IdxAtObjectArray >= MobileObjectNum)
+                obj.Invalid = true;
+
+            if (obj.IdxAtObjectArray >= MobileObjectNum)
             {
                 throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
-            MobileObjects[i] = currobj;
+            MobileObjects[i] = obj;
         }
     }
 
@@ -365,11 +388,10 @@ public partial class TileMapMasterObjectListBlock : Block
     {
         for (int i = 0; i < FreeMobileObjectSlotsNumber; i++)
         {
-            byte[] currbuffer =
-                FreeListMobileObjectBuffer[
-                    (i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
-            var currobj = new FreeSlotIndexes(currbuffer, i);
-            FreeMobileObjectSlots[i] = currobj;
+            var buffer =
+                FreeListMobileObjectBuffer[(i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
+            var obj = new FreeSlotIndexes(buffer, i);
+            FreeMobileObjectSlots[i] = obj;
         }
     }
 
@@ -380,11 +402,10 @@ public partial class TileMapMasterObjectListBlock : Block
     {
         for (int i = 0; i < FreeStaticObjectSlotsNumber; i++)
         {
-            byte[] currbuffer =
-                FreeListStaticObjectBuffer[
-                    (i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
-            var currobj = new FreeSlotIndexes(currbuffer, i);
-            FreeStaticObjectSlots[i] = currobj;
+            var buffer =
+                FreeListStaticObjectBuffer[(i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
+            var obj = new FreeSlotIndexes(buffer, i);
+            FreeStaticObjectSlots[i] = obj;
         }
     }
 
@@ -472,7 +493,7 @@ public partial class TileMapMasterObjectListBlock : Block
     ///     </item>
     /// </list>
     /// <para> In essence, instead of iterating recursively, adds all items to this "to-do" list to be processed later.</para>
-    /// <para> Suppose the following two situations. Here, it's object(idx) </para>
+    /// <para> Suppose the following two situations. Here, the nomenclature is object(idx) </para>
     /// <list type="bullet">
     ///     <item> <description> container(X) in tile -> container(X-10) in container(X)  </description> </item>
     ///     <item> <description> container(X) in tile -> container(X+10) in container(X)  </description> </item>
@@ -505,16 +526,16 @@ public partial class TileMapMasterObjectListBlock : Block
             if (gameObject.Invalid) continue;
             // Only considering containers that were placed in Tiles, which are "relevant". If this isn't checked, objects in unused
             // slots might be referenced and lead to bugs.
-            if (gameObject.ReferenceCount < 1) continue; 
+            if (gameObject.ReferenceCount < 1) continue;
             if (gameObject is IContainer container)
             {
                 container.Contents.PopulateObjectList(AllGameObjects);
                 containersToProcessLater.AddRange(container.Contents.OfType<IContainer>());
-                // Removes itself if it was added previously
-                if (containersToProcessLater.Contains(container)) containersToProcessLater.Remove(container); 
+                // Removes itself from further processing if itself was added previously
+                if (containersToProcessLater.Contains(container)) containersToProcessLater.Remove(container);
             }
         }
-        
+
         // Guaranteeing every remaining container will eventually be accounted for
         while (containersToProcessLater.Count > 0)
         {
@@ -533,15 +554,8 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <exception cref="ArgumentException">In case the length is inappropriate</exception>
     private byte[] TileMapBuffer
     {
-        // get => _tileMapBuffer;
-        get
-        {
-            // ReconstructTileMapBuffer();
-            return _tileMapBuffer;
-        }
-    
-
-    set
+        get => _tileMapBuffer;
+        set
         {
             if (value.Length != TileMapLength)
             {
@@ -553,9 +567,13 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _mobileObjectInfoBuffer = new byte[MobileObjectInfoLength];
+    /// <summary>
+    /// Controls the buffer that contains all the mobile objects.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="MobileObjectInfoLength"/></exception>
     private byte[] MobileObjectInfoBuffer
     {
-        get { return _mobileObjectInfoBuffer; }
+        get => _mobileObjectInfoBuffer;
         set
         {
             if (value.Length != MobileObjectInfoLength)
@@ -569,9 +587,13 @@ public partial class TileMapMasterObjectListBlock : Block
 
     private byte[] _staticObjectInfoBuffer = new byte[StaticObjectInfoLength];
 
-    public byte[] StaticObjectInfoBuffer
+    /// <summary>
+    /// Controls the buffer that contains all the static objects.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="StaticObjectInfoLength"/></exception>
+    private byte[] StaticObjectInfoBuffer
     {
-        get { return _staticObjectInfoBuffer; }
+        get => _staticObjectInfoBuffer;
         set
         {
             if (value.Length != StaticObjectInfoLength)
@@ -585,9 +607,13 @@ public partial class TileMapMasterObjectListBlock : Block
 
     private byte[] _freeListMobileObjectBuffer = new byte[FreeListMobileObjectsLength];
 
-    public byte[] FreeListMobileObjectBuffer
+    /// <summary>
+    /// Controls the buffer that contains all the slot pointers to mobile objects.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="FreeListMobileObjectsLength"/></exception>
+    private byte[] FreeListMobileObjectBuffer
     {
-        get { return _freeListMobileObjectBuffer; }
+        get => _freeListMobileObjectBuffer;
         set
         {
             if (value.Length != FreeListMobileObjectsLength)
@@ -600,10 +626,13 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _freeListStaticObjectBuffer = new byte[FreeListStaticObjectsLength];
-
-    public byte[] FreeListStaticObjectBuffer
+    /// <summary>
+    /// Controls the buffer that contains all the slot pointers to static objects.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="FreeListStaticObjectsLength"/></exception>
+    private byte[] FreeListStaticObjectBuffer
     {
-        get { return _freeListStaticObjectBuffer; }
+        get => _freeListStaticObjectBuffer;
         set
         {
             if (value.Length != FreeListStaticObjectsLength)
@@ -616,10 +645,13 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _unknownBuffer = new byte[UnknownLength];
-
-    protected byte[] UnknownBuffer
+    /// <summary>
+    /// Controls one of the, for the moment, unknown buffer.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="UnknownLength"/></exception>
+    private byte[] UnknownBuffer
     {
-        get { return _unknownBuffer; }
+        get => _unknownBuffer;
         set
         {
             if (value.Length != UnknownLength)
@@ -632,10 +664,13 @@ public partial class TileMapMasterObjectListBlock : Block
     }
 
     private byte[] _unknown2Buffer = new byte[Unknown2Length];
-
-    protected byte[] Unknown2Buffer
+    /// <summary>
+    /// Controls another of the unknown buffers.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="Unknown2Buffer"/></exception>
+    private byte[] Unknown2Buffer
     {
-        get { return _unknown2Buffer; }
+        get => _unknown2Buffer;
         set
         {
             if (value.Length != Unknown2Length)
