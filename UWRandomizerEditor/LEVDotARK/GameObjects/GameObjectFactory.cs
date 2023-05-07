@@ -20,7 +20,7 @@ public static class GameObjectFactory
         // Start is always MobileObjects
         if (idxAtArray < TileMapMasterObjectListBlock.MobileObjectNum)
         {
-            if (buffer.Length != MobileObject.FixedTotalLength)
+            if (buffer.Length != MobileObject.FixedMobileBufferLength)
             {
                 throw new InvalidOperationException(
                     $"Cannot create a Mobile Object with buffer of length {buffer.Length}");
@@ -39,7 +39,7 @@ public static class GameObjectFactory
         if (idxAtArray < (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
         {
             // ReSharper disable once AccessToStaticMemberViaDerivedType
-            if (buffer.Length != StaticObject.FixedTotalLength)
+            if (buffer.Length != StaticObject.FixedBufferLength)
             {
                 throw new InvalidOperationException(
                     $"Cannot create a Static Object with buffer of length {buffer.Length}");

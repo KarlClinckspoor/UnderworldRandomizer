@@ -18,13 +18,13 @@ public partial class TileMapMasterObjectListBlock
     // 4000    1b00   mobile object information (objects 0000-00ff, 256 x 27 bytes)
     public const int MobileObjectInfoOffset = 0x4000;
     public const int MobileObjectInfoLength = 0x1b00;
-    public const int MobileObjectInfoEntrySize = MobileObject.FixedTotalLength;
+    public const int MobileObjectInfoEntrySize = MobileObject.FixedMobileBufferLength;
     public const int MobileObjectNum = 256;
 
     // 5b00    1800   static object information (objects 0100-03ff, 768 x 8 bytes)
     public const int StaticObjectInfoOffset = 0x5b00;
     public const int StaticObjectInfoLength = 0x1800;
-    public const int StaticObjectInfoEntrySize = GameObject.FixedTotalLength;
+    public const int StaticObjectInfoEntrySize = GameObject.FixedBufferLength;
     public const int StaticObjectNum = 768;
 
     // 7300    01fc   free list for mobile objects (objects 0002-00ff, 254 x 2 bytes)
@@ -67,5 +67,5 @@ public partial class TileMapMasterObjectListBlock
     // Has to be this order, because bit converter was inverting this. "uw"
     public const short EndOfBlockConfirmationValue = 0x7577;
 
-    public new const int FixedBlockLength = 0x7c08;
+    public const int FixedBlockLength = 0x7c08;
 }

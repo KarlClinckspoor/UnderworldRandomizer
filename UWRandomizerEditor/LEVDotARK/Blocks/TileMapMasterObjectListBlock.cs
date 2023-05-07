@@ -266,7 +266,7 @@ public partial class TileMapMasterObjectListBlock : Block
         foreach (var obj in MobileObjects)
         {
             obj.ReconstructBuffer();
-            obj.Buffer.CopyTo(MobileObjectInfoBuffer, obj.IdxAtObjectArray * MobileObject.FixedTotalLength);
+            obj.Buffer.CopyTo(MobileObjectInfoBuffer, obj.IdxAtObjectArray * MobileObject.FixedMobileBufferLength);
         }
     }
 
@@ -279,7 +279,7 @@ public partial class TileMapMasterObjectListBlock : Block
         {
             obj.ReconstructBuffer();
             obj.Buffer.CopyTo(StaticObjectInfoBuffer,
-                (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedTotalLength);
+                (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedBufferLength);
         }
     }
 
@@ -339,7 +339,7 @@ public partial class TileMapMasterObjectListBlock : Block
         {
             var currBuffer =
                 StaticObjectInfoBuffer[
-                    (i * StaticObject.FixedTotalLength)..((i + 1) * StaticObject.FixedTotalLength)];
+                    (i * StaticObject.FixedBufferLength)..((i + 1) * StaticObject.FixedBufferLength)];
             var currObj =
                 (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + MobileObjectNum));
             if (i < FirstFreeStaticObjectIdx - MobileObjectNum + 2) // +2 because of objs 0 and 1
@@ -368,7 +368,7 @@ public partial class TileMapMasterObjectListBlock : Block
         {
             byte[] buffer =
                 MobileObjectInfoBuffer[
-                    (i * MobileObject.FixedTotalLength)..((i + 1) * MobileObject.FixedTotalLength)];
+                    (i * MobileObject.FixedMobileBufferLength)..((i + 1) * MobileObject.FixedMobileBufferLength)];
             var obj = (MobileObject) GameObjectFactory.CreateFromBuffer(buffer, i);
             if (i <= FirstFreeMobileObjectIdx)
                 obj.Invalid = true;

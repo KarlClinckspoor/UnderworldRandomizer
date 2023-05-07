@@ -5,42 +5,43 @@
 /// </summary>
 public class MobileObject : GameObject, IContainer
 {
-    public new const int ExtraLength = 19;
-    public new const int FixedTotalLength = BaseLength + ExtraLength;
+    public const int ExtraMobileBufferLength = 19;
+    public const int FixedMobileBufferLength = FixedBufferLength + ExtraMobileBufferLength;
+    
+    private const int offset1 = 0x8;
+    private const int offset2 = 0x9;
+    private const int offset3 = 0xa;
+    private const int offset4 = 0xb;
+    private const int offset5 = 0xd;
+    private const int offset6 = 0xf;
+    private const int offset7 = 0x11;
+    private const int offset8 = 0x12;
+    private const int offset9 = 0x13;
+    private const int offset10 = 0x14;
+    private const int offset11 = 0x15;
+    private const int offset12 = 0x16;
+    private const int offset13 = 0x18;
+    private const int offset14 = 0x19;
+    private const int offset15 = 0x1a;
 
-    protected const int offset1 = 0x8;
-    protected const int offset2 = 0x9;
-    protected const int offset3 = 0xa;
-    protected const int offset4 = 0xb;
-    protected const int offset5 = 0xd;
-    protected const int offset6 = 0xf;
-    protected const int offset7 = 0x11;
-    protected const int offset8 = 0x12;
-    protected const int offset9 = 0x13;
-    protected const int offset10 = 0x14;
-    protected const int offset11 = 0x15;
-    protected const int offset12 = 0x16;
-    protected const int offset13 = 0x18;
-    protected const int offset14 = 0x19;
-    protected const int offset15 = 0x1a;
+    // TODO: Convert these from fields to properties by getting them from Buffer.
+    private byte byte1_hp; // offset 0008
+    private byte byte2_unk; // offset 0009
+    private byte byte3_unk; // offset 000a
+    private short short_NPCGoalGtarg; // offset 000b
+    private short short_NPCLevelTalkedAttitude; // offset 000d
+    private short short_NPCheightQM; // offset 000f
+    private byte byte4_unk; // offset 0011
+    private byte byte5_unk; // offset 0012
+    private byte byte6_unk; // offset 0013
+    private byte byte7_unk; // offset 0014
+    private byte byte8_unk; // offset 0015
+    private short short_NPChome; // offset 0016
+    private byte byte_NPCheading; // offset 0018
+    private byte byte_NPCHunger; // offset 0019
+    private byte byte_NPCwhoami; // offset 001a
 
-    protected byte byte1_hp; // offset 0008
-    protected byte byte2_unk; // offset 0009
-    protected byte byte3_unk; // offset 000a
-    protected short short_NPCGoalGtarg; // offset 000b
-    protected short short_NPCLevelTalkedAttitude; // offset 000d
-    protected short short_NPCheightQM; // offset 000f
-    protected byte byte4_unk; // offset 0011
-    protected byte byte5_unk; // offset 0012
-    protected byte byte6_unk; // offset 0013
-    protected byte byte7_unk; // offset 0014
-    protected byte byte8_unk; // offset 0015
-    protected short short_NPChome; // offset 0016
-    protected byte byte_NPCheading; // offset 0018
-    protected byte byte_NPCHunger; // offset 0019
-    protected byte byte_NPCwhoami; // offset 001a
-
-    public int ObjectBufferIfx;
+    public int ObjectBufferIfx; // TODO: What's this?
 
     public int HP
     {
@@ -190,10 +191,8 @@ public class MobileObject : GameObject, IContainer
         return true;
     }
 
-    protected override void UpdateEntries()
+    protected void UpdateMobileObjectEntries()
     {
-        base.UpdateEntries();
-        // New ones
         byte1_hp = Buffer[offset1];
         byte2_unk = Buffer[offset2];
         byte3_unk = Buffer[offset3];
@@ -214,11 +213,10 @@ public class MobileObject : GameObject, IContainer
     // Reminder: don't call base... Need to design this better
     public MobileObject(byte[] buffer, ushort idx)
     {
-        // Debug.Assert(buffer.Length == FixedTotalLength);
-        Buffer = new byte[FixedTotalLength];
-        buffer.CopyTo(Buffer, 0);
+        ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
+        Buffer = buffer;
         IdxAtObjectArray = idx;
-        UpdateEntries();
+        UpdateMobileObjectEntries();
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
@@ -243,8 +241,8 @@ public class MobileObject : GameObject, IContainer
         ushort idx
     )
     {
-        Buffer = new byte[FixedTotalLength];
-        baseBuffer.CopyTo(Buffer, 0);
+        baseBuffer.CopyTo(BasicInfoBuffer, 0);
+        ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
         var extra = new []
         {
             byte1_hp,
@@ -267,9 +265,9 @@ public class MobileObject : GameObject, IContainer
             hunger,
             whoami
         };
-        extra.CopyTo(Buffer, BaseLength);
+        extra.CopyTo(ExtraInfoBuffer, 0);
         IdxAtObjectArray = idx;
-        UpdateEntries();
+        UpdateMobileObjectEntries();
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty};
     }
 
@@ -296,12 +294,13 @@ public class MobileObject : GameObject, IContainer
         ushort idx
         )
     {
-        byte[] baseBuffer = new byte[BaseLength];
+        byte[] baseBuffer = new byte[FixedBufferLength];
         BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2 * 0);
         BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2 * 1);
         BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2 * 2);
         BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2 * 3);
-        baseBuffer.CopyTo(Buffer, 0);
+        baseBuffer.CopyTo(BasicInfoBuffer, 0);
+        ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
 
         var extra = new []
         {
@@ -325,15 +324,14 @@ public class MobileObject : GameObject, IContainer
             hunger,
             whoami
         };
-        extra.CopyTo(Buffer, BaseLength);
+        extra.CopyTo(ExtraInfoBuffer, 0);
         IdxAtObjectArray = idx;
-        UpdateEntries();
+        UpdateMobileObjectEntries();
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
     protected MobileObject()
     {
-        Buffer = Array.Empty<byte>();
         Invalid = true;
         Contents = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
     }
