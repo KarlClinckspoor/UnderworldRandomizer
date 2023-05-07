@@ -20,7 +20,7 @@ public class SpecialLinkGameObject : StaticObject
     }
 
     public SpecialLinkGameObject(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+        ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
         Debug.Assert(IsQuant == 0);
     }

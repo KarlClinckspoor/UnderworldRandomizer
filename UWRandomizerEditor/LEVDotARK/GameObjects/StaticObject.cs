@@ -9,12 +9,8 @@ public class StaticObject : GameObject
     {
     }
 
-    public StaticObject(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial)
-        : base(objIdFlags, position, qualityChain, linkSpecial)
-    {
-    }
-
-    protected StaticObject()
-    {
-    }
+    public StaticObject(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray)
+        : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray) { }
+    
+    protected StaticObject() { }
 }

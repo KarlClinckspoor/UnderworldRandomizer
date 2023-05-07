@@ -9,7 +9,6 @@ using UWRandomizerTools;
 
 namespace RandomizerUnitTests.Tools;
 
-[Category("RequiresSettings")]
 public class TestItemRemoval
 {
 #pragma warning disable CS8618
@@ -26,7 +25,7 @@ public class TestItemRemoval
         var fillerBytes = new byte[8];
         _gameObjects = new List<GameObject>()
         {
-            new StaticObject(fillerBytes, 0) {next = 0}, // end TODO: What is the buffer of object 0?
+            new StaticObject(fillerBytes, 0) {next = 0}, // end
             new QuantityGameObject(fillerBytes, 1) {next = 2}, // 1.1   movable
             new Door(fillerBytes, 2) {next = 6}, // 1.2         immovable
             new Trap(fillerBytes, 3) {next = 4}, // 2.1         immovable

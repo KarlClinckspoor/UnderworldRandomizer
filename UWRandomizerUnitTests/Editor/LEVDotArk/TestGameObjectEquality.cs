@@ -13,14 +13,16 @@ class TestGameObjectEquality
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
-            linkSpecial: 0xFFF
+            linkSpecial: 0xFFF,
+            idxAtObjectArray: 2
         );
 
         var obj1_copy = new StaticObject(
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
-            linkSpecial: 0xFFF
+            linkSpecial: 0xFFF,
+            idxAtObjectArray: 2
         );
 
         Assert.True(obj1.Equals(obj1_copy));
@@ -33,14 +35,16 @@ class TestGameObjectEquality
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
-            linkSpecial: 0xFFF
+            linkSpecial: 0xFFF,
+            idxAtObjectArray: 1
         );
 
         var obj2 = new StaticObject(
             objIdFlags: 0xCCC,
             position: 0xCCC,
             qualityChain: 0xCCC,
-            linkSpecial: 0xCCC
+            linkSpecial: 0xCCC,
+            idxAtObjectArray: 1
         );
 
         Assert.False(obj1.Equals(obj2));
@@ -53,14 +57,16 @@ class TestGameObjectEquality
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
-            linkSpecial: 0xFFF
+            linkSpecial: 0xFFF,
+            idxAtObjectArray: 2
         );
 
         var obj2 = new QuantityGameObject(
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
-            linkSpecial: 0xFFF
+            linkSpecial: 0xFFF,
+            idxAtObjectArray: 2
         );
 
         Assert.False(obj1.Equals(obj2));
@@ -73,7 +79,8 @@ class TestGameObjectEquality
             objIdFlags: 0xFFF,
             position: 0xFFF,
             qualityChain: 0xFFF,
-            linkSpecial: 0xFFF
+            linkSpecial: 0xFFF,
+            idxAtObjectArray: 2
         );
 
         var mobileObj = new MobileObject(staticObj.Buffer, 1,

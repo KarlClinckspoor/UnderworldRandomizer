@@ -24,8 +24,8 @@ public class QuantityGameObject : StaticObject
     }
 
     public QuantityGameObject(ushort objIdFlags, ushort position,
-        ushort qualityChain, ushort linkSpecial) : base(objIdFlags, position,
-        qualityChain, linkSpecial)
+        ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position,
+        qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 }

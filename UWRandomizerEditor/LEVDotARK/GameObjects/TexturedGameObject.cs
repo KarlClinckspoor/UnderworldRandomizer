@@ -13,7 +13,7 @@ public class TexturedGameObject : StaticObject
     }
 
     public TexturedGameObject(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+        ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 }

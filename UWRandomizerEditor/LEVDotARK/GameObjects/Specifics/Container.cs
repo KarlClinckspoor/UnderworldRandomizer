@@ -8,7 +8,7 @@ public class Container: SpecialLinkGameObject, IContainer
     }
 
     public Container(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+        ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }

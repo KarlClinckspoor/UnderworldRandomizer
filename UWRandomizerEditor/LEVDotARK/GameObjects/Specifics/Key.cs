@@ -6,8 +6,8 @@ public class Key : StaticObject
     {
     }
 
-    public Key(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial)
-        : base(objIdFlags, position, qualityChain, linkSpecial)
+    public Key(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray)
+        : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 

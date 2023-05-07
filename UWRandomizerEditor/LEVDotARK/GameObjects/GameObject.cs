@@ -49,24 +49,14 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
         UpdateEntries();
     }
 
-    public GameObject(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial)
+    protected GameObject(ushort objIdFlags, ushort position, ushort qualityChain,
+        ushort linkSpecial, ushort idxAtObjectArray)
     {
         ObjIdFlags = objIdFlags;
         Position = position;
         QualityChain = qualityChain;
         LinkSpecial = linkSpecial;
-
-        Buffer = new byte[FixedTotalLength];
-        ReconstructBuffer();
-    }
-
-    protected virtual void UpdateEntries()
-    {
-        ObjIdFlags = BitConverter.ToUInt16(Buffer, 0);
-        Position = BitConverter.ToUInt16(Buffer, 2);
-        QualityChain = BitConverter.ToUInt16(Buffer, 4);
-        LinkSpecial = BitConverter.ToUInt16(Buffer, 6);
+        IdxAtObjectArray = idxAtObjectArray;
     }
 
     public virtual bool ReconstructBuffer()

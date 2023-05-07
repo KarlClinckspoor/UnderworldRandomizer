@@ -6,8 +6,8 @@ public class Lock : StaticObject
     {
     }
 
-    public Lock(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial)
-        : base(objIdFlags, position, qualityChain, linkSpecial)
+    public Lock(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray)
+        : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 
