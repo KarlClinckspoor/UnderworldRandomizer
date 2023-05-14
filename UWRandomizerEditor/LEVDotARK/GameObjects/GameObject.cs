@@ -90,11 +90,14 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
         return false;
     }
 
+    /// <summary>
+    /// This property is meant to symbolize if a GameObject shouldn't be considered available for anything, or
+    /// if it shouldn't be moved. 
+    /// </summary>
     public bool Invalid { get; set; }
 
     protected GameObject()
-    {
-    }
+    { }
 
     protected GameObject(byte[] buffer, ushort idxAtObjArray)
     {

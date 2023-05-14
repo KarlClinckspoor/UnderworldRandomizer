@@ -8,162 +8,205 @@ public class MobileObject : GameObject, IContainer
     public const int ExtraMobileBufferLength = 19;
     public const int FixedMobileBufferLength = FixedBufferLength + ExtraMobileBufferLength;
     
-    private const int offset1 = 0x8;
-    private const int offset2 = 0x9;
-    private const int offset3 = 0xa;
-    private const int offset4 = 0xb;
-    private const int offset5 = 0xd;
-    private const int offset6 = 0xf;
-    private const int offset7 = 0x11;
-    private const int offset8 = 0x12;
-    private const int offset9 = 0x13;
-    private const int offset10 = 0x14;
-    private const int offset11 = 0x15;
-    private const int offset12 = 0x16;
-    private const int offset13 = 0x18;
-    private const int offset14 = 0x19;
-    private const int offset15 = 0x1a;
+    // These refer to the full buffer
+    private const int baseoffset_HP = 0x8;
+    private const int baseoffset_unk2 = 0x9;
+    private const int baseoffset_unk3 = 0xa;
+    private const int baseoffset_NPCGoalGTarg = 0xb;
+    private const int baseoffset_NPCLevelTalkedAttitude = 0xd;
+    private const int baseoffset_NPCHeightQM = 0xf;
+    private const int baseoffset_unk4 = 0x11;
+    private const int baseoffset_unk5 = 0x12;
+    private const int baseoffset_unk6 = 0x13;
+    private const int baseoffset_unk7 = 0x14;
+    private const int baseoffset_unk8 = 0x15;
+    private const int baseoffset_NPChome = 0x16;
+    private const int baseoffset_NPCheading = 0x18;
+    private const int baseoffset_NPCHunger = 0x19;
+    private const int baseoffset_NPCwhoami = 0x1a;
+    
+    // These refer to the extra bytes reserved for the Mobile Object
+    private const int offset_HP = 0x8 - FixedBufferLength;
+    private const int offset_unk2 = 0x9 - FixedBufferLength;
+    private const int offset_unk3 = 0xa - FixedBufferLength;
+    private const int offset_NPCGoalGTarg = 0xb - FixedBufferLength;
+    private const int offset_NPCLevelTalkedAttitude = 0xd - FixedBufferLength;
+    private const int offset_NPCHeightQM = 0xf - FixedBufferLength;
+    private const int offset_unk4 = 0x11 - FixedBufferLength;
+    private const int offset_unk5 = 0x12 - FixedBufferLength;
+    private const int offset_unk6 = 0x13 - FixedBufferLength;
+    private const int offset_unk7 = 0x14 - FixedBufferLength;
+    private const int offset_unk8 = 0x15 - FixedBufferLength;
+    private const int offset_NPChome = 0x16 - FixedBufferLength;
+    private const int offset_NPCheading = 0x18 - FixedBufferLength;
+    private const int offset_NPCHunger = 0x19 - FixedBufferLength;
+    private const int offset_NPCwhoami = 0x1a - FixedBufferLength;
+    
 
     // TODO: Convert these from fields to properties by getting them from Buffer.
-    private byte byte1_hp; // offset 0008
-    private byte byte2_unk; // offset 0009
-    private byte byte3_unk; // offset 000a
-    private short short_NPCGoalGtarg; // offset 000b
-    private short short_NPCLevelTalkedAttitude; // offset 000d
-    private short short_NPCheightQM; // offset 000f
-    private byte byte4_unk; // offset 0011
-    private byte byte5_unk; // offset 0012
-    private byte byte6_unk; // offset 0013
-    private byte byte7_unk; // offset 0014
-    private byte byte8_unk; // offset 0015
-    private short short_NPChome; // offset 0016
-    private byte byte_NPCheading; // offset 0018
-    private byte byte_NPCHunger; // offset 0019
-    private byte byte_NPCwhoami; // offset 001a
+    public byte HP
+    {
+        get => ExtraInfoBuffer[offset_HP];
+        set => ExtraInfoBuffer[offset_HP] = value;
+    }
+
+    public byte byte2_unk
+    {
+        get => ExtraInfoBuffer[offset_unk2];
+        set => ExtraInfoBuffer[offset_unk2] = value;
+    }
+
+    public byte byte3_unk
+    {
+        get => ExtraInfoBuffer[offset_unk3];
+        set => ExtraInfoBuffer[offset_unk3] = value;
+    }
+
+    public short NPCGoalGtarg
+    {
+        get => BitConverter.ToInt16(ExtraInfoBuffer, offset_NPCGoalGTarg);
+        set => BitConverter.GetBytes(value).CopyTo(ExtraInfoBuffer, offset_NPCGoalGTarg);
+    }
+
+    public short NPCLevelTalkedAttitude
+    {
+        get => BitConverter.ToInt16(ExtraInfoBuffer, offset_NPCLevelTalkedAttitude);
+        set => BitConverter.GetBytes(value).CopyTo(ExtraInfoBuffer, offset_NPCLevelTalkedAttitude);
+    }
+
+    public short NPCheightQM
+    {
+        get => BitConverter.ToInt16(ExtraInfoBuffer, offset_NPCHeightQM);
+        set => BitConverter.GetBytes(value).CopyTo(ExtraInfoBuffer, offset_NPCHeightQM);
+    }
+
+    public byte byte4_unk
+    {
+        get => ExtraInfoBuffer[offset_unk4];
+        set => ExtraInfoBuffer[offset_unk4] = value;
+    }
+
+    public byte byte5_unk
+    {
+        get => ExtraInfoBuffer[offset_unk5];
+        set => ExtraInfoBuffer[offset_unk5] = value;
+    }
+
+    public byte byte6_unk
+    {
+        get => ExtraInfoBuffer[offset_unk6];
+        set => ExtraInfoBuffer[offset_unk6] = value;
+    }
+
+    public byte byte7_unk
+    {
+        get => ExtraInfoBuffer[offset_unk7];
+        set => ExtraInfoBuffer[offset_unk7] = value;
+    }
+
+    public byte byte8_unk
+    {
+        get => ExtraInfoBuffer[offset_unk8];
+        set => ExtraInfoBuffer[offset_unk8] = value;
+    }
+
+    public short NPChome
+    {
+        get => BitConverter.ToInt16(ExtraInfoBuffer, offset_NPChome);
+        set => BitConverter.GetBytes(value).CopyTo(ExtraInfoBuffer, offset_NPChome);
+    }
+
+    public byte NPCheading
+    {
+        get => ExtraInfoBuffer[offset_NPCheading];
+        set => ExtraInfoBuffer[offset_NPCheading] = value;
+    }
+
+    public byte byte_NPCHunger
+    {
+        get => ExtraInfoBuffer[offset_NPCHunger];
+        set => ExtraInfoBuffer[offset_NPCHunger] = value;
+    }
+
+    public byte NPCwhoami
+    {
+        get => ExtraInfoBuffer[offset_NPCwhoami];
+        set => ExtraInfoBuffer[offset_NPCwhoami] = value;
+    }
 
     public int ObjectBufferIfx; // TODO: What's this?
 
-    public int HP
-    {
-        get { return byte1_hp; }
-        set
-        {
-            byte1_hp = (byte) value;
-            ReconstructBuffer();
-        }
-    }
-
     public int Goal
     {
-        get { return Utils.GetBits(short_NPCGoalGtarg, 0b1111, 0); }
-        set
-        {
-            short_NPCGoalGtarg = (short) Utils.SetBits(short_NPCGoalGtarg, value, 0b1111, 0);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCGoalGtarg, 0b1111, 0);
+        set => NPCGoalGtarg = (short) Utils.SetBits(NPCGoalGtarg, value, 0b1111, 0);
     }
 
     public int Gtarg
     {
-        get { return Utils.GetBits(short_NPCGoalGtarg, 0b11111111, 4); }
-        set
-        {
-            short_NPCGoalGtarg = (short) Utils.SetBits(short_NPCGoalGtarg, value, 0b11111111, 4);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCGoalGtarg, 0b11111111, 4);
+        set => NPCGoalGtarg = (short) Utils.SetBits(NPCGoalGtarg, value, 0b11111111, 4);
     }
 
     public int Level
     {
-        get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b111, 0); }
-        set
-        {
-            short_NPCLevelTalkedAttitude = (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value, 0b111, 0);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCLevelTalkedAttitude, 0b111, 0);
+        set => NPCLevelTalkedAttitude = (short) Utils.SetBits(NPCLevelTalkedAttitude, value, 0b111, 0);
     }
 
     public bool TalkedTo
     {
-        get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b1, 13) == 1; }
-        set
-        {
-            short_NPCLevelTalkedAttitude =
-                (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCLevelTalkedAttitude, 0b1, 13) == 1;
+        set => NPCLevelTalkedAttitude =
+                (short) Utils.SetBits(NPCLevelTalkedAttitude, value ? 1 : 0, 0b1, 13);
     }
 
     public int Attitude
     {
-        get { return Utils.GetBits(short_NPCLevelTalkedAttitude, 0b11, 14); }
-        set
-        {
-            short_NPCLevelTalkedAttitude = (short) Utils.SetBits(short_NPCLevelTalkedAttitude, value, 0b11, 14);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCLevelTalkedAttitude, 0b11, 14);
+        set => NPCLevelTalkedAttitude = (short) Utils.SetBits(NPCLevelTalkedAttitude, value, 0b11, 14);
     }
 
     public int Height
     {
-        get { return Utils.GetBits(short_NPCheightQM, 0b1111111, 6); }
-        set
-        {
-            short_NPCheightQM = (short) Utils.SetBits(short_NPCheightQM, value, 0b1111111, 6);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCheightQM, 0b1111111, 6);
+        set => NPCheightQM = (short) Utils.SetBits(NPCheightQM, value, 0b1111111, 6);
     }
 
     public int YHome
     {
-        get { return Utils.GetBits(short_NPChome, 0b111111, 4); }
-        set
-        {
-            short_NPChome = (short) Utils.SetBits(short_NPChome, value, 0b111111, 4);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPChome, 0b111111, 4);
+        set => NPChome = (short) Utils.SetBits(NPChome, value, 0b111111, 4);
     }
 
     public int XHome
     {
-        get { return Utils.GetBits(short_NPChome, 0b111111, 10); }
-        set
-        {
-            short_NPChome = (short) Utils.SetBits(short_NPChome, value, 0b111111, 10);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPChome, 0b111111, 10);
+        set => NPChome = (short) Utils.SetBits(NPChome, value, 0b111111, 10);
     }
 
     public int NPCHeading
     {
-        get { return Utils.GetBits(byte_NPCheading, 0b1111, 0); }
-        set
-        {
-            byte_NPCheading = (byte) Utils.SetBits(byte_NPCheading, value, 0b1111, 0);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCheading, 0b1111, 0);
+        set => NPCheading = (byte) Utils.SetBits(NPCheading, value, 0b1111, 0);
     }
 
     public int Hunger
     {
-        get { return Utils.GetBits(byte_NPCHunger, 0b111111, 0); }
-        set
-        {
-            byte_NPCHunger = (byte) Utils.SetBits(byte_NPCHunger, value, 0b111111, 0);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(byte_NPCHunger, 0b111111, 0);
+        set => byte_NPCHunger = (byte) Utils.SetBits(byte_NPCHunger, value, 0b111111, 0);
     }
 
+    // TODO: Isn't this basically just returning NPCwhoami?
     public int whoami
     {
-        get { return Utils.GetBits(byte_NPCwhoami, 0b11111111, 0); }
-        set
-        {
-            byte_NPCwhoami = (byte) Utils.SetBits(byte_NPCwhoami, value, 0b11111111, 0);
-            ReconstructBuffer();
-        }
+        get => Utils.GetBits(NPCwhoami, 0b11111111, 0);
+        set => NPCwhoami = (byte) Utils.SetBits(NPCwhoami, value, 0b11111111, 0);
     }
 
+    /// <summary>
+    /// NPC inventory
+    /// </summary>
     public UWLinkedList Contents { get; set; }
 
     public override bool ReconstructBuffer()
@@ -172,61 +215,24 @@ public class MobileObject : GameObject, IContainer
         // Avoiding infinite loop. TODO: think of something more intelligent
         LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Contents.StartingIdx, 0b11_1111_1111, 6);
         base.ReconstructBuffer();
-            
-        Buffer[offset1] = byte1_hp;
-        Buffer[offset2] = byte2_unk;
-        Buffer[offset3] = byte3_unk;
-        BitConverter.GetBytes(short_NPCGoalGtarg).CopyTo(Buffer, offset4);
-        BitConverter.GetBytes(short_NPCLevelTalkedAttitude).CopyTo(Buffer, offset5);
-        BitConverter.GetBytes(short_NPCheightQM).CopyTo(Buffer, offset6);
-        Buffer[offset7] = byte4_unk;
-        Buffer[offset8] = byte5_unk;
-        Buffer[offset9] = byte6_unk;
-        Buffer[offset10] = byte7_unk;
-        Buffer[offset11] = byte8_unk;
-        BitConverter.GetBytes(short_NPChome).CopyTo(Buffer, offset12);
-        Buffer[offset13] = byte_NPCheading;
-        Buffer[offset14] = byte_NPCHunger;
-        Buffer[offset15] = byte_NPCwhoami;
         return true;
     }
 
-    protected void UpdateMobileObjectEntries()
+    public MobileObject(byte[] buffer, ushort idx): base()
     {
-        byte1_hp = Buffer[offset1];
-        byte2_unk = Buffer[offset2];
-        byte3_unk = Buffer[offset3];
-        short_NPCGoalGtarg = BitConverter.ToInt16(Buffer, offset4);
-        short_NPCLevelTalkedAttitude = BitConverter.ToInt16(Buffer, offset5);
-        short_NPCheightQM = BitConverter.ToInt16(Buffer, offset6);
-        byte4_unk = Buffer[offset7];
-        byte5_unk = Buffer[offset8];
-        byte6_unk = Buffer[offset9];
-        byte7_unk = Buffer[offset10];
-        byte8_unk = Buffer[offset11];
-        short_NPChome = BitConverter.ToInt16(Buffer, offset12);
-        byte_NPCheading = Buffer[offset13];
-        byte_NPCHunger = Buffer[offset14];
-        byte_NPCwhoami = Buffer[offset15];
-    }
-
-    // Reminder: don't call base... Need to design this better
-    public MobileObject(byte[] buffer, ushort idx)
-    {
+        // This has to be created here. If I call the base class, then the ExtraInfoBuffer will not have been filled.
         ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
         Buffer = buffer;
         IdxAtObjectArray = idx;
-        UpdateMobileObjectEntries();
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
-    // Reminder: don't call base... Need to design this better
     public MobileObject(
         byte[] baseBuffer,
         byte byte1_hp,
         byte unk2,
         byte unk3,
-        short NPCGoalGTarg,
+        short NPCGoalGtarg,
         short NPCLevelTalked,
         short NPCheight,
         byte unk4,
@@ -243,39 +249,29 @@ public class MobileObject : GameObject, IContainer
     {
         baseBuffer.CopyTo(BasicInfoBuffer, 0);
         ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
-        var extra = new []
-        {
-            byte1_hp,
-            unk2,
-            unk3,
-            BitConverter.GetBytes(NPCGoalGTarg)[0],
-            BitConverter.GetBytes(NPCGoalGTarg)[1],
-            BitConverter.GetBytes(NPCLevelTalked)[0],
-            BitConverter.GetBytes(NPCLevelTalked)[1],
-            BitConverter.GetBytes(NPCheight)[0],
-            BitConverter.GetBytes(NPCheight)[1],
-            unk4,
-            unk5,
-            unk6,
-            unk7,
-            unk8,
-            BitConverter.GetBytes(NPChome)[0],
-            BitConverter.GetBytes(NPChome)[1],
-            heading,
-            hunger,
-            whoami
-        };
-        extra.CopyTo(ExtraInfoBuffer, 0);
+        HP = byte1_hp;
+        byte2_unk = unk2;
+        byte3_unk = unk3;
+        this.NPCGoalGtarg = NPCGoalGtarg;
+        NPCLevelTalkedAttitude = NPCLevelTalked;
+        NPCheightQM = NPCheight;
+        byte4_unk = unk4;
+        byte5_unk = unk5;
+        byte6_unk = unk6;
+        byte7_unk = unk7;
+        byte8_unk = unk8;
+        this.NPChome = NPChome;
+        Heading = heading;
+        Hunger = hunger;
+        NPCwhoami = whoami;
         IdxAtObjectArray = idx;
-        UpdateMobileObjectEntries();
-        Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty};
+        Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
-    public MobileObject(
-        short short1,
-        short short2,
-        short short3,
-        short short4,
+    public MobileObject(ushort short1,
+        ushort short2,
+        ushort short3,
+        ushort short4,
         byte byte1_hp,
         byte unk2,
         byte unk3,
@@ -291,42 +287,32 @@ public class MobileObject : GameObject, IContainer
         byte heading,
         byte hunger,
         byte whoami,
-        ushort idx
-        )
+        ushort idx)
     {
-        byte[] baseBuffer = new byte[FixedBufferLength];
-        BitConverter.GetBytes(short1).CopyTo(baseBuffer, 2 * 0);
-        BitConverter.GetBytes(short2).CopyTo(baseBuffer, 2 * 1);
-        BitConverter.GetBytes(short3).CopyTo(baseBuffer, 2 * 2);
-        BitConverter.GetBytes(short4).CopyTo(baseBuffer, 2 * 3);
-        baseBuffer.CopyTo(BasicInfoBuffer, 0);
-        ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
+        ObjIdFlags = short1;
+        Position = short2;
+        QualityChain = short3;
+        LinkSpecial = short4;
 
-        var extra = new []
-        {
-            byte1_hp,
-            unk2,
-            unk3,
-            BitConverter.GetBytes(NPCGoalGTarg)[0],
-            BitConverter.GetBytes(NPCGoalGTarg)[1],
-            BitConverter.GetBytes(NPCLevelTalked)[0],
-            BitConverter.GetBytes(NPCLevelTalked)[1],
-            BitConverter.GetBytes(NPCheight)[0],
-            BitConverter.GetBytes(NPCheight)[1],
-            unk4,
-            unk5,
-            unk6,
-            unk7,
-            unk8,
-            BitConverter.GetBytes(NPChome)[0],
-            BitConverter.GetBytes(NPChome)[1],
-            heading,
-            hunger,
-            whoami
-        };
-        extra.CopyTo(ExtraInfoBuffer, 0);
+        ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
+        
+        HP = byte1_hp;
+        byte2_unk = unk2;
+        byte3_unk = unk3;
+        NPCGoalGtarg = NPCGoalGTarg;
+        NPCLevelTalkedAttitude = NPCLevelTalked;
+        NPCheightQM = NPCheight;
+        byte4_unk = unk4;
+        byte5_unk = unk5;
+        byte6_unk = unk6;
+        byte7_unk = unk7;
+        byte8_unk = unk8;
+        this.NPChome = NPChome;
+        Heading = heading;
+        Hunger = hunger;
+        NPCwhoami = whoami;
+        
         IdxAtObjectArray = idx;
-        UpdateMobileObjectEntries();
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
