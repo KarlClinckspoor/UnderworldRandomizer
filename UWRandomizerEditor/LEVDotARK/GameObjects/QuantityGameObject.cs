@@ -2,16 +2,14 @@
 
 public class QuantityGameObject : StaticObject
 {
-    // is_quant is true, quantity < 512 (coins, etc)
     public ushort Quantity
     {
-        // get { return (byte) ((linkSpecial >> 6) & 0b1111111111); }
-        get { return QuantityOrSpecialLinkOrSpecialProperty; }
+        get => QuantityOrSpecialLinkOrSpecialProperty;
         set
         {
-            if (value > 512)
+            if (value >= 512)
             {
-                throw new Exception("Cannot have a Quantity Game Object with quantity > 512");
+                throw new Exception("Cannot have a Quantity Game Object with quantity >= 512");
             }
 
             LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);

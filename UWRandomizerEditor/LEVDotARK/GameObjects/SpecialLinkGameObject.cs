@@ -6,7 +6,7 @@ public class SpecialLinkGameObject : StaticObject
 {
     public ushort SpecialIdx
     {
-        get { return QuantityOrSpecialLinkOrSpecialProperty; }
+        get => QuantityOrSpecialLinkOrSpecialProperty;
         set
         {
             LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
