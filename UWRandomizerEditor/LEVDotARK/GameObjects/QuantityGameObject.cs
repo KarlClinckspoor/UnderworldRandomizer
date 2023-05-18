@@ -12,6 +12,7 @@ public class QuantityGameObject : StaticObject
                 throw new Exception("Cannot have a Quantity Game Object with quantity >= 512");
             }
 
+            // TODO: Should 'LinkSpecial' be 'QuantityOrSpecialLinkOrSpecialProperty?
             LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
             ReconstructBuffer();
         }

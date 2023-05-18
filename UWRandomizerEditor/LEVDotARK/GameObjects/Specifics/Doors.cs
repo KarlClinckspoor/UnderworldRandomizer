@@ -6,7 +6,6 @@ public class Door : SpecialLinkGameObject
     {
     }
 
-
     // On doors:
     // Bit 1 of "owner" field is set, door is spiked
     // sp_link field points to a_lock object (010f), door is locked.
@@ -20,7 +19,6 @@ public class Door : SpecialLinkGameObject
         ReconstructBuffer();
     }
 
-    // TODO: add verification
     /// <summary>
     /// Checks if sp_link (linkSpecial) points to something other than 0. If so, returns the value, which
     /// is the index of the lock.
@@ -36,12 +34,7 @@ public class Door : SpecialLinkGameObject
     /// </summary>
     public bool HasLock()
     {
-        if (LinkSpecial != 0)
-        {
-            return true;
-        }
-
-        return false;
+        return LinkSpecial != 0;
     }
 
     /// <summary>

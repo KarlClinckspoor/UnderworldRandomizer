@@ -19,7 +19,6 @@ public class Container: SpecialLinkGameObject, IContainer
     {
         // Workaround to avoid infinite loop. TODO: Fix this
         LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Contents.StartingIdx, 0b11_1111_1111, 6);
-        base.ReconstructBuffer();
         return base.ReconstructBuffer();
     }
 }

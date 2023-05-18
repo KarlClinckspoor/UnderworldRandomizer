@@ -7,11 +7,8 @@ public class SpecialLinkGameObject : StaticObject
     public ushort SpecialIdx
     {
         get => QuantityOrSpecialLinkOrSpecialProperty;
-        set
-        {
-            LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
-            ReconstructBuffer();
-        }
+        // TODO: Should't 'LinkSpecial' be 'QuantityOrSpecialLinkOrSpecialProperty'?
+        set => LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
     }
 
     public SpecialLinkGameObject(byte[] buffer, ushort idx) : base(buffer, idx)

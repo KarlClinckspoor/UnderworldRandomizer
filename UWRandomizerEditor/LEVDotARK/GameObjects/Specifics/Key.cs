@@ -17,7 +17,7 @@ public class Key : StaticObject
 
     public byte KeyID
     {
-        get { return OwnerOrSpecial; }
+        get => OwnerOrSpecial;
         set
         {
             if (value >= 0b1000000) // This should only have 6 bits in length 
@@ -26,13 +26,8 @@ public class Key : StaticObject
         }
     }
 
-    public bool FitsLock(Lock LockObject)
+    public bool FitsLock(Lock lockObject)
     {
-        if (KeyID == LockObject.KeyID)
-        {
-            return true;
-        }
-
-        return false;
+        return KeyID == lockObject.KeyID;
     }
 }

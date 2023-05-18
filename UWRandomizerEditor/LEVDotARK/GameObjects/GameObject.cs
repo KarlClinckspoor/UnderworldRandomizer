@@ -37,6 +37,7 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     {
         get
         {
+            ReconstructBuffer();
             var temp = new List<byte>();
             temp.AddRange(BasicInfoBuffer);
             temp.AddRange(ExtraInfoBuffer);

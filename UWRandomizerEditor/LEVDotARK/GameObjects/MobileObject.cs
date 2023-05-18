@@ -43,7 +43,6 @@ public class MobileObject : GameObject, IContainer
     private const int offset_NPCwhoami = 0x1a - FixedBufferLength;
     
 
-    // TODO: Convert these from fields to properties by getting them from Buffer.
     public byte HP
     {
         get => ExtraInfoBuffer[offset_HP];
@@ -211,8 +210,6 @@ public class MobileObject : GameObject, IContainer
 
     public override bool ReconstructBuffer()
     {
-        // QuantityOrSpecialLinkOrSpecialProperty = (ushort) Inventory.startingIdx;
-        // Avoiding infinite loop. TODO: think of something more intelligent
         LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, Contents.StartingIdx, 0b11_1111_1111, 6);
         base.ReconstructBuffer();
         return true;
