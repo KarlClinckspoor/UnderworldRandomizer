@@ -20,7 +20,32 @@ public class ArkLoader : IBufferObject
 {
     public const int NumOfLevels = 9; // In UW1
 
-    public byte[] Buffer { get; set; }
+    private byte[] _buffer;
+    public byte[] Buffer
+    {
+        get
+        {
+            ReconstructBuffer(); // Currently I've inlined this function here.
+            var tempList = new List<byte>();
+            header.ReconstructBuffer();
+            tempList.AddRange(header.Buffer);
+            foreach (var block in blocks)
+            {
+                block.ReconstructBuffer();
+                tempList.AddRange(block.Buffer);
+            }
+
+            var concatbuffers = tempList.ToArray();
+            concatbuffers.CopyTo(_buffer, 0);
+            return _buffer;
+        }
+        set
+        {
+            _buffer = value;
+            LoadBlocks();
+        }
+    }
+
     public string Path;
 
     public Header header;
@@ -58,9 +83,12 @@ public class ArkLoader : IBufferObject
     public ArkLoader(string path)
     {
         Path = path;
-        Buffer = LoadArkfile(path);
-        int headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(Buffer);
-        header = new Header(Buffer[0..headerSize]);
+        if (!File.Exists(path))
+            throw new FileNotFoundException();
+        _buffer = File.ReadAllBytes(path); 
+        
+        var headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(_buffer);
+        header = new Header(_buffer[0..headerSize]);
 
         blocks = new Block[header.NumEntries];
         TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
@@ -72,68 +100,76 @@ public class ArkLoader : IBufferObject
         LoadBlocks();
     }
 
-    public void LoadBlocks()
+    /// <summary>
+    /// Creates a ArkLoader instance using an already opened buffer.
+    /// </summary>
+    /// <param name="buffer"></param>
+    /// <param name="path"></param>
+    public ArkLoader(byte[] buffer, string path)
     {
-        int currblocktypecount = 0;
-        int currblocktype = 0;
+        Path = path;
+        _buffer = buffer;
+        
+        var headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(_buffer);
+        header = new Header(_buffer[0..headerSize]);
+        blocks = new Block[header.NumEntries];
+        TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
+        ObjAnimBlocks = new ObjectAnimationOverlayInfoBlock[NumOfLevels];
+        TextMapBlocks = new TextureMappingBlock[NumOfLevels];
+        AutomapBlocks = new AutomapInfosBlock[NumOfLevels];
+        MapNotesBlocks = new MapNotesBlock[NumOfLevels];
+
+        LoadBlocks();
+    }
+
+    private void LoadBlocks()
+    {
+        var currBlockTypeCount = 0;
+        var currBlockType = 0;
 
         // Loop through all entries specified in the header
-        for (short blocknum = 0; blocknum < header.NumEntries; blocknum++)
+        for (short blockNum = 0; blockNum < header.NumEntries; blockNum++)
         {
-            if (currblocktype >= 6)
+            if (currBlockType >= 6)
             {
-                currblocktype = 5; // Hack
+                currBlockType = 5; // Hack
             }
 
-            Block block = GetBlock(blocknum, (Sections) currblocktype, currblocktypecount);
+            var block = GetBlock(blockNum, (Sections) currBlockType, currBlockTypeCount);
             // Let's store the blocks this general array
-            blocks[blocknum] = block;
+            blocks[blockNum] = block;
 
-            // And also in its specific array, depending on its type
-            if (block is TileMapMasterObjectListBlock tilemap)
+            switch (block)
             {
-                TileMapObjectsBlocks[currblocktypecount] = tilemap;
-            }
-            else if (block is ObjectAnimationOverlayInfoBlock obj)
-            {
-                ObjAnimBlocks[currblocktypecount] = obj;
-            }
-            else if (block is TextureMappingBlock text)
-            {
-                TextMapBlocks[currblocktypecount] = text;
-            }
-            else if (block is MapNotesBlock map)
-            {
-                MapNotesBlocks[currblocktypecount] = map;
-            }
-            else if (block is AutomapInfosBlock automap)
-            {
-                AutomapBlocks[currblocktypecount] = automap;
+                case TileMapMasterObjectListBlock tilemap:
+                    TileMapObjectsBlocks[currBlockTypeCount] = tilemap;
+                    break;
+                case ObjectAnimationOverlayInfoBlock obj:
+                    ObjAnimBlocks[currBlockTypeCount] = obj;
+                    break;
+                case TextureMappingBlock text:
+                    TextMapBlocks[currBlockTypeCount] = text;
+                    break;
+                case MapNotesBlock map:
+                    MapNotesBlocks[currBlockTypeCount] = map;
+                    break;
+                case AutomapInfosBlock automap:
+                    AutomapBlocks[currBlockTypeCount] = automap;
+                    break;
             }
 
-            currblocktypecount++;
-            // Resets currblocktypecount when going from one block type to another
-            if (currblocktypecount >= NumOfLevels) // TODO: looks like I could do a % here. Think more
+            currBlockTypeCount++;
+            // Resets currBlockTypeCount when going from one block type to another
+            if (currBlockTypeCount >= NumOfLevels)
             {
-                currblocktypecount = 0;
-                currblocktype++;
+                currBlockTypeCount = 0;
+                currBlockType++;
             }
         }
     }
 
     public bool ReconstructBuffer()
     {
-        List<byte> templist = new List<byte>();
-        header.ReconstructBuffer();
-        templist.AddRange(header.Buffer);
-        foreach (var block in blocks)
-        {
-            block.ReconstructBuffer();
-            templist.AddRange(block.Buffer);
-        }
-
-        byte[] concatbuffers = templist.ToArray();
-        concatbuffers.CopyTo(Buffer, 0);
         return true;
     }
 
@@ -146,7 +182,6 @@ public class ArkLoader : IBufferObject
                                            $" number of blocks {header.NumEntries}");
         }
 
-        //int blockOffset = BitConverter.ToInt32(Buffer[(2 + 4 * blockNum)..(6 + 4 * blockNum)]);
         int blockOffset = header.BlockOffsets[blockNum];
 
         if (blockOffset == 0)
@@ -154,7 +189,7 @@ public class ArkLoader : IBufferObject
             return Array.Empty<byte>(); // TODO: figure out why this is better than new byte[] {}
         }
 
-        byte[] blockBuffer = Buffer[blockOffset..(blockOffset + BlockLength)];
+        var blockBuffer = _buffer[blockOffset..(blockOffset + BlockLength)];
         return blockBuffer;
     }
 
@@ -178,7 +213,7 @@ public class ArkLoader : IBufferObject
             BlockLength = BlockLengths[BlockType];
         }
 
-        byte[] buffer = GetBlockBuffer(BlockNum, BlockLength);
+        var buffer = GetBlockBuffer(BlockNum, BlockLength);
         switch (BlockType)
         {
             case Sections.LevelTilemapObjlist:
@@ -197,15 +232,5 @@ public class ArkLoader : IBufferObject
             default:
                 return new EmptyBlock();
         }
-    }
-
-    static byte[] LoadArkfile(string? path = null)
-    {
-        if (path is null)
-        {
-            throw new FileNotFoundException();
-        }
-
-        return File.ReadAllBytes(path);
     }
 }
