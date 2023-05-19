@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
@@ -7,15 +6,17 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 [TestFixture]
 public class TestItemRemoval_Containers
 {
+#pragma warning disable CS8618
     private Container _bag1;
-    private TileInfo _tile1;
+    private Tile _tile1;
     private Container _bag2;
     private GameObject[] _gameObjects;
+#pragma warning restore CS8618
     
     
     /// <summary>
@@ -35,12 +36,12 @@ public class TestItemRemoval_Containers
         _bag1 = new Container(tempbuffer, 4)
         {
             QuantityOrSpecialLinkOrSpecialProperty = 1,
-            Contents = new UWLinkedList() {startingIdx = 1, RepresentingContainer = true}
+            Contents = new UWLinkedList() {StartingIdx = 1, RepresentingContainer = true}
         };
         _bag2 = new Container(tempbuffer, 5)
         {
             QuantityOrSpecialLinkOrSpecialProperty = 4,
-            Contents = new UWLinkedList() {startingIdx = 4, RepresentingContainer = true},
+            Contents = new UWLinkedList() {StartingIdx = 4, RepresentingContainer = true},
             next = 6,
         }; // for bag in bag
 
@@ -63,7 +64,7 @@ public class TestItemRemoval_Containers
     [Test]
     public void TestMovables()
     {
-        _tile1 = new TileInfo(0, 0, 0, 0) {FirstObjIdx = 5};
+        _tile1 = new Tile(0, 0, 0, 0) {FirstObjIdx = 5};
         _tile1.ObjectChain.PopulateObjectList(_gameObjects);
         _bag1.Contents.PopulateObjectList(_gameObjects);
         _bag2.Contents.PopulateObjectList(_gameObjects);

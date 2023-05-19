@@ -4,16 +4,17 @@ using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-namespace RandomizerUnitTests.Editor;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 public class TestUWLinkedList_Containers
 {
+#pragma warning disable CS8618
     private Container _bag1;
-    private TileInfo _tile1;
-    
+    private Tile _tile1;
     private Container _bag2;
     private GameObject[] _gameObjects;
+#pragma warning restore CS8618
     
     /// <summary>
     /// Contents
@@ -31,12 +32,12 @@ public class TestUWLinkedList_Containers
         _bag1 = new Container(tempbuffer, 4)
         {
             QuantityOrSpecialLinkOrSpecialProperty = 1,
-            Contents = new UWLinkedList() {startingIdx = 1, RepresentingContainer = true}
+            Contents = new UWLinkedList() {StartingIdx = 1, RepresentingContainer = true}
         };
         _bag2 = new Container(tempbuffer, 5)
         {
             QuantityOrSpecialLinkOrSpecialProperty = 4,
-            Contents = new UWLinkedList() {startingIdx = 4, RepresentingContainer = true}
+            Contents = new UWLinkedList() {StartingIdx = 4, RepresentingContainer = true}
         }; // for bag in bag
 
         _gameObjects = new GameObject[]
@@ -49,7 +50,7 @@ public class TestUWLinkedList_Containers
             _bag2,
             new Door(tempbuffer, 6),
         };
-        _tile1 = new TileInfo(0, 0, 0, 0) {FirstObjIdx = 4};
+        _tile1 = new Tile(0, 0, 0, 0) {FirstObjIdx = 4};
     }
 
     [Test]
@@ -62,6 +63,7 @@ public class TestUWLinkedList_Containers
         Assert.True(_bag1.Contents[2].Equals(_gameObjects[3]));
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 3 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 3 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
 
     [Test]
@@ -73,6 +75,7 @@ public class TestUWLinkedList_Containers
         Assert.True(_bag2.Contents[0].Equals(_bag1));
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 4 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 4 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
 
     [Test]
@@ -82,6 +85,7 @@ public class TestUWLinkedList_Containers
         _tile1.ObjectChain.PopulateObjectList(_gameObjects);
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 3 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 3 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
     
     [Test]
@@ -93,6 +97,7 @@ public class TestUWLinkedList_Containers
         _tile1.ObjectChain.PopulateObjectList(_gameObjects);
         Assert.False( (from obj in _gameObjects where obj.InContainer select 1).Sum() != 4 );
         Assert.True( (from obj in _gameObjects where obj.InContainer select 1).Sum() == 4 );
+        Assert.True( _gameObjects.Where(x=>x.InContainer).All(x=>x.ReferenceCount == 1));
     }
     
 }

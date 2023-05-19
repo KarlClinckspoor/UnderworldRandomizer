@@ -5,8 +5,8 @@ public class EnchantedWand : SpecialLinkGameObject
 
     public int SpellObjectLink
     {
-        get { return SpecialIdx; }
-        set { SpecialIdx = (ushort) value; }
+        get => SpecialIdx;
+        set => SpecialIdx = (ushort) value;
     }
 
     public GameObject SpellObject;
@@ -17,7 +17,7 @@ public class EnchantedWand : SpecialLinkGameObject
     }
 
     public EnchantedWand(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+        ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
         throw new NotImplementedException();
     }

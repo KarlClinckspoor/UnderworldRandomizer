@@ -4,23 +4,25 @@ using System.Security.Cryptography;
 using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 public class TestTileInfo
 {
     // Let's create one random entry from an int.
     // And another from a buffer
-    private TileInfo tinfo1;
-    private TileInfo tinfo2;
-    private TileInfo tinfo3;
+#pragma warning disable CS8618
+    private Tile tinfo1;
+    private Tile tinfo2;
+    private Tile tinfo3;
+#pragma warning restore CS8618
 
     [SetUp]
     public void Setup()
     {
-        tinfo1 = new TileInfo(0, 240, 0, 0);
-        tinfo2 = new TileInfo(0, BitConverter.GetBytes(240), 0, 0);
-        tinfo3 = new TileInfo(0, BitConverter.GetBytes(241), 0, 0);
+        tinfo1 = new Tile(0, 240, 0, 0);
+        tinfo2 = new Tile(0, BitConverter.GetBytes(240), 0, 0);
+        tinfo3 = new Tile(0, BitConverter.GetBytes(241), 0, 0);
     }
 
     [Test]
@@ -38,11 +40,11 @@ public class TestTileInfo
         // Compare the buffers as-is
         Assert.True(tinfo1.Buffer.SequenceEqual(tinfo2.Buffer));
         string tinfo1Path =
-            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
+            UWRandomizerEditor.Utils.SaveBuffer(tinfo1, Paths.BufferTestsPath, filename: "buffer_tinfo1");
         string tinfo2Path =
-            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
+            UWRandomizerEditor.Utils.SaveBuffer(tinfo2, Paths.BufferTestsPath, filename: "buffer_tinfo2");
         string tinfo3Path =
-            UWRandomizerEditor.Utils.StdSaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
+            UWRandomizerEditor.Utils.SaveBuffer(tinfo3, Paths.BufferTestsPath, filename: "buffer_tinfo3");
 
         // Compare their hashes
         SHA256 mySHA256 = SHA256.Create();
@@ -72,9 +74,9 @@ public class TestTileInfo
         Assert.False(tinfo2RelBuffer.SequenceEqual(tinfo3RelBuffer));
 
         // Rebuild the objects
-        var rebuiltTinfo1 = new TileInfo(0, tinfo1RelBuffer, 0, 0);
-        var rebuiltTinfo2 = new TileInfo(0, tinfo2RelBuffer, 0, 0);
-        var rebuiltTinfo3 = new TileInfo(0, tinfo3RelBuffer, 0, 0);
+        var rebuiltTinfo1 = new Tile(0, tinfo1RelBuffer, 0, 0);
+        var rebuiltTinfo2 = new Tile(0, tinfo2RelBuffer, 0, 0);
+        var rebuiltTinfo3 = new Tile(0, tinfo3RelBuffer, 0, 0);
 
         // Compare their buffers
         Assert.True(rebuiltTinfo1.Buffer.SequenceEqual(rebuiltTinfo2.Buffer));
@@ -110,10 +112,10 @@ public class TestGettersAndSetters
     [Category("RequiresSettings")]
     public void TestingGettersAndSettersThatModifyBuffer()
     {
-        var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ark = Utils.LoadAndAssertOriginalLevArk();
         foreach (var block in ark.TileMapObjectsBlocks)
         {
-            foreach (var tile in block.TileInfos)
+            foreach (var tile in block.Tiles)
             {
                 byte[] tempbuffer = new byte[tile.Buffer.Length];
                 tile.Buffer.CopyTo(tempbuffer, 0);
@@ -137,12 +139,12 @@ public class TestGettersAndSetters
     [Category("RequiresSettings")]
     public void TestCreatingTileFromSetters()
     {
-        var ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ark = Utils.LoadAndAssertOriginalLevArk();
         foreach (var block in ark.TileMapObjectsBlocks)
         {
-            foreach (var tile in block.TileInfos)
+            foreach (var tile in block.Tiles)
             {
-                var Tile = new TileInfo(0, new byte[4], 0, 0);
+                var Tile = new Tile(0, new byte[4], 0, 0);
                 
                 Tile.TileHeight = tile.TileHeight;
                 Tile.TileType = tile.TileType;

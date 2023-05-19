@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UWRandomizerEditor.LEVdotARK;
+﻿using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 
@@ -21,7 +20,7 @@ public class ShuffleItems
     public static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block, Random RandomInstance, ItemRandomizationSettings settings)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();
-        foreach (var tile in block.TileInfos)
+        foreach (var tile in block.Tiles)
         {
             foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
             {
@@ -31,19 +30,13 @@ public class ShuffleItems
 
         while (objectsInLevel.Count > 0)
         {
-            int chosenTileIdx = RandomInstance.Next(0, block.TileInfos.Length);
-            TileInfo chosenTile = block.TileInfos[chosenTileIdx];
+            int chosenTileIdx = RandomInstance.Next(0, block.Tiles.Length);
+            Tile chosenTile = block.Tiles[chosenTileIdx];
             if (!IsTileValid(chosenTile))
                 continue;
             chosenTile.ObjectChain.Add(objectsInLevel.Pop());
             chosenTile.MoveObjectsToSameZLevel();
         }
-
-        // foreach (var tile in block.TileInfos)
-        // {
-        //     tile.MoveObjectsToCorrectCorner(); // This shouldn't have to do anything for now
-        //     tile.MoveObjectsToSameZLevel();
-        // }
 
         block.ReconstructBuffer();
     }
@@ -75,11 +68,11 @@ public class ShuffleItems
         {8, 4}, // lvl9, void
     };
 
-    public static bool IsTileValid(TileInfo tile)
+    public static bool IsTileValid(Tile tile)
     {
         // Initially, I'm only putting items in open spaces!
         // I'll deal with moving them to the appropriate corners later
-        if ((TileInfo.TileTypes) tile.TileType != TileInfo.TileTypes.Open)
+        if ((Tile.TileTypes) tile.TileType != Tile.TileTypes.Open)
         {
             return false;
         }
@@ -122,7 +115,7 @@ public class ShuffleItems
         return true;
     }
 
-    private static bool InRectangle(TileInfo tile,
+    private static bool InRectangle(Tile tile,
         uint topLeftX, uint topLeftY,
         uint topRightX, uint bottomLeftY)
     {

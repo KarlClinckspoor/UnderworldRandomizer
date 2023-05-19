@@ -6,18 +6,18 @@ public class Key : StaticObject
     {
     }
 
-    public Key(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial)
-        : base(objIdFlags, position, qualityChain, linkSpecial)
+    public Key(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray)
+        : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 
-    public Key() : base()
+    public Key()
     {
     }
 
     public byte KeyID
     {
-        get { return OwnerOrSpecial; }
+        get => OwnerOrSpecial;
         set
         {
             if (value >= 0b1000000) // This should only have 6 bits in length 
@@ -26,13 +26,8 @@ public class Key : StaticObject
         }
     }
 
-    public bool FitsLock(Lock LockObject)
+    public bool FitsLock(Lock lockObject)
     {
-        if (KeyID == LockObject.KeyID)
-        {
-            return true;
-        }
-
-        return false;
+        return KeyID == lockObject.KeyID;
     }
 }

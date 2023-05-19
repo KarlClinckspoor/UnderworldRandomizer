@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerTools;
-using Path = System.Windows.Shapes.Path;
 
 namespace UWRandomizerWPF;
 
@@ -24,8 +13,8 @@ namespace UWRandomizerWPF;
 /// </summary>
 public partial class MainWindow : Window
 {
-    ArkLoader ark;
-    int seed = 42;
+    private ArkLoader ark;
+    private int seed = 42;
     private ItemRandomizationSettings _itemSettings;
 
     public MainWindow()
@@ -79,7 +68,7 @@ public partial class MainWindow : Window
         {
             var tempname = "UWspoilerlog.txt";
             File.WriteAllText(log, tempname);
-            AddMsgToLog($"Saved spoiler log to {System.IO.Path.Join(Directory.GetCurrentDirectory(), tempname)}");
+            AddMsgToLog($"Saved spoiler log to {Path.Join(Directory.GetCurrentDirectory(), tempname)}");
         }
     }
 
@@ -101,7 +90,7 @@ public partial class MainWindow : Window
     {
         AddMsgToLog($"Saving LEV.ARK as LEV.ARK.BCK.");
         var tempArk = new ArkLoader(ark.Path);
-        UWRandomizerEditor.Utils.StdSaveBuffer(tempArk, System.IO.Path.GetDirectoryName(tempArk.Path), "LEV.ARK.BCK");
+        UWRandomizerEditor.Utils.SaveBuffer(tempArk, Path.GetDirectoryName(tempArk.Path), "LEV.ARK.BCK");
     }
 
     private void Btn_Browse_Click(object sender, RoutedEventArgs e)
@@ -118,7 +107,7 @@ public partial class MainWindow : Window
     private void Btn_SaveChanges_Click(object sender, RoutedEventArgs e)
     {
         AddMsgToLog("Attempting to save the current lev.ark over the old one.");
-        UWRandomizerEditor.Utils.StdSaveBuffer(ark, System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK");
+        UWRandomizerEditor.Utils.SaveBuffer(ark, Path.GetDirectoryName(ark.Path), "LEV.ARK");
         AddMsgToLog("Save successful.");
     }
 
@@ -134,7 +123,7 @@ public partial class MainWindow : Window
             AddMsgToLog($"Processing level {level}");
             sb.AppendLine($"Level {level}");
 
-            foreach (var tile in block.TileInfos)
+            foreach (var tile in block.Tiles)
             {
                 sb.Append($"\tTile: ({tile.XYPos[0]},{tile.XYPos[1]}): ");
                 foreach (var obj in tile.ObjectChain)
@@ -152,7 +141,7 @@ public partial class MainWindow : Window
 
     private void Btn_RestoreLevArk_Click(object sender, RoutedEventArgs e)
     {
-        string backupPath = System.IO.Path.Join(System.IO.Path.GetDirectoryName(ark.Path), "LEV.ARK.BCK");
+        string backupPath = Path.Join(Path.GetDirectoryName(ark.Path), "LEV.ARK.BCK");
         if (File.Exists(backupPath))
         {
             AddMsgToLog($"Found backup file LEV.ARK.BCK at '{backupPath}', deleting current lev.ark");

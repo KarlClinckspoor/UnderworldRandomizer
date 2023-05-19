@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using NUnit.Framework;
-using UWRandomizerWPF;
 using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 public class TestRemovingLockFromAllDoorsInArk
 {
@@ -16,9 +13,7 @@ public class TestRemovingLockFromAllDoorsInArk
     [Category("RequiresSettings")]
     public void TestManualLockRemoval()
     {
-        // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        // var ArkEditor = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW - Doors\DATA\LEV.ARK");
-        var ArkOriginal = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
         var ArkEditor = new ArkLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
 
         var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -35,7 +30,7 @@ public class TestRemovingLockFromAllDoorsInArk
 
         ArkOriginal.TileMapObjectsBlocks[0].ReconstructBuffer();
         ArkOriginal.ReconstructBuffer();
-        var path = UWRandomizerEditor.Utils.StdSaveBuffer(ArkOriginal, Paths.BufferTestsPath,
+        var path = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginal, Paths.BufferTestsPath,
             "ark_withdoor1012unlocked.bin");
 
         var ArkModified = new ArkLoader(path);
@@ -52,10 +47,8 @@ public class TestRemovingLockFromAllDoorsInArk
     public void TestRemovingAllLocks()
     {
         // I'm testing here both the original and the "cleaned" version from UltimateEditor
-        // var ArkOriginal = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        // var ArkOriginalToModify = new ArkLoader(@"C:\Users\Karl\Desktop\UnderworldStudy\UW\DATA\LEV.ARK");
-        var ArkOriginal = new ArkLoader(Paths.UW_ArkOriginalPath);
-        var ArkOriginalToModify = new ArkLoader(Paths.UW_ArkOriginalPath);
+        var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
+        var ArkOriginalToModify = Utils.LoadAndAssertOriginalLevArk();
 
         var ArkCleaned = new ArkLoader(Paths.UW_ArkCleanedPath);
         var ArkCleanedToModify = new ArkLoader(Paths.UW_ArkCleanedPath);
@@ -66,10 +59,10 @@ public class TestRemovingLockFromAllDoorsInArk
         Assert.True(countOfLocksRemovedOriginal > 0);
         Assert.True(countOfLocksRemovedCleaned > 0);
 
-        var pathOriginal = UWRandomizerEditor.Utils.StdSaveBuffer(ArkOriginalToModify,
+        var pathOriginal = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginalToModify,
             Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_nodoors.bin");
-        var pathCleaned = UWRandomizerEditor.Utils.StdSaveBuffer(ArkCleanedToModify,
+        var pathCleaned = UWRandomizerEditor.Utils.SaveBuffer(ArkCleanedToModify,
             Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_cleaned_nodoors.bin");
 

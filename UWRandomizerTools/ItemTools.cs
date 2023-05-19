@@ -6,7 +6,7 @@ namespace UWRandomizerTools;
 
 public class ItemTools
 {
-    public static List<GameObject> ExtractMovableItems(TileInfo tile, ItemRandomizationSettings settings)
+    public static List<GameObject> ExtractMovableItems(Tile tile, ItemRandomizationSettings settings)
     {
         return ExtractMovableItems(tile.ObjectChain, settings);
     }

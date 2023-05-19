@@ -6,24 +6,24 @@ public class Lock : StaticObject
     {
     }
 
-    public Lock(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial)
-        : base(objIdFlags, position, qualityChain, linkSpecial)
+    public Lock(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray)
+        : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 
-    public Lock() : base()
+    public Lock()
     {
     }
 
     public bool IsLocked
     {
-        get { return Utils.GetBits(ObjIdFlags, 0b1, 9) == 1; }
-        set { ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value ? 1 : 0, 0b1, 9); }
+        get => Utils.GetBits(ObjIdFlags, 0b1, 9) == 1;
+        set => ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value ? 1 : 0, 0b1, 9);
     }
 
     public byte KeyID
     {
-        get { return (byte) Utils.GetBits(LinkSpecial, 0b111111, 0); }
+        get => (byte) Utils.GetBits(LinkSpecial, 0b111111, 0);
         set
         {
             if (value >= 0b1000000) // This should only have 6 bits in length 

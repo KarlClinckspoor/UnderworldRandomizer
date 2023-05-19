@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [TestFixture]
 [Category("RequiresSettings")]
@@ -21,7 +21,7 @@ class ArkLoaderTest
         myArkLoader.ReconstructBuffer();
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         string savedPath =
-            UWRandomizerEditor.Utils.StdSaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
+            UWRandomizerEditor.Utils.SaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
 
         // Reloading and checking if everything was saved correctly.
         var myArkLoader2 = new ArkLoader(savedPath);
@@ -45,7 +45,7 @@ class ArkLoaderTest
         var (diffs, positions) = Utils.CompareTwoBuffers(AL.Buffer, AL_Unreconstructed.Buffer);
         Assert.True(diffs == 0);
         string savedpath =
-            UWRandomizerEditor.Utils.StdSaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
+            UWRandomizerEditor.Utils.SaveBuffer(AL, Paths.BufferTestsPath, "reconstructedCleanedArk.bin");
 
         var AL2 = new ArkLoader(savedpath);
         AL2.ReconstructBuffer();
@@ -63,10 +63,6 @@ class ArkLoaderTest
         var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
         // Testing Lvl1 starting bag
         var lvl1 = AL.TileMapObjectsBlocks[0];
-        // X=33, Y=3
-        // var tile = lvl1.TileInfos[33 * 64 + 3];
-        // Console.WriteLine($"{tile.XYPos[0]}, {tile.XYPos[1]}");
-        // Assert.True(tile.FirstObjIdx == 942);
         
         Assert.True(lvl1.AllGameObjects[942] is Container);
         Assert.False(lvl1.AllGameObjects[942].InContainer);

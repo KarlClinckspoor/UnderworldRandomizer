@@ -6,12 +6,9 @@ public class SpecialLinkGameObject : StaticObject
 {
     public ushort SpecialIdx
     {
-        get { return QuantityOrSpecialLinkOrSpecialProperty; }
-        set
-        {
-            LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
-            ReconstructBuffer();
-        }
+        get => QuantityOrSpecialLinkOrSpecialProperty;
+        // TODO: Should't 'LinkSpecial' be 'QuantityOrSpecialLinkOrSpecialProperty'?
+        set => LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
     }
 
     public SpecialLinkGameObject(byte[] buffer, ushort idx) : base(buffer, idx)
@@ -20,7 +17,7 @@ public class SpecialLinkGameObject : StaticObject
     }
 
     public SpecialLinkGameObject(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+        ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
         Debug.Assert(IsQuant == 0);
     }

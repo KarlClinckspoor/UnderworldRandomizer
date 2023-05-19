@@ -2,18 +2,17 @@
 
 public class QuantityGameObject : StaticObject
 {
-    // is_quant is true, quantity < 512 (coins, etc)
     public ushort Quantity
     {
-        // get { return (byte) ((linkSpecial >> 6) & 0b1111111111); }
-        get { return QuantityOrSpecialLinkOrSpecialProperty; }
+        get => QuantityOrSpecialLinkOrSpecialProperty;
         set
         {
-            if (value > 512)
+            if (value >= 512)
             {
-                throw new Exception("Cannot have a Quantity Game Object with quantity > 512");
+                throw new Exception("Cannot have a Quantity Game Object with quantity >= 512");
             }
 
+            // TODO: Should 'LinkSpecial' be 'QuantityOrSpecialLinkOrSpecialProperty?
             LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
             ReconstructBuffer();
         }
@@ -24,8 +23,8 @@ public class QuantityGameObject : StaticObject
     }
 
     public QuantityGameObject(ushort objIdFlags, ushort position,
-        ushort qualityChain, ushort linkSpecial) : base(objIdFlags, position,
-        qualityChain, linkSpecial)
+        ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position,
+        qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 }

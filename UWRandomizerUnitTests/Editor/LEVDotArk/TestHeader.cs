@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using UWRandomizerEditor.LEVdotARK;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEVDotArk;
 
 [Category("RequiresSettings")]
 // ReSharper disable once InconsistentNaming
@@ -18,7 +18,6 @@ public class HeaderTestUW1
     public void SetUp()
     {
         _myArkLoader = new ArkLoader(Paths.UW_ArkOriginalPath);
-        Assert.True(Utils.CheckEqualityOfSha256Hash(_myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         _header = _myArkLoader.header;
     }
 

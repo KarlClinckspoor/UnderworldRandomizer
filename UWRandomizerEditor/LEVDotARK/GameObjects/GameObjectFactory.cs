@@ -3,23 +3,41 @@ using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 namespace UWRandomizerEditor.LEVdotARK.GameObjects;
 
+/// <summary>
+/// This class controls the creation of game objects based upon their id and a large reference table.
+/// </summary>
 public static class GameObjectFactory
 {
-    // TODO: I'll likely need to add a reference to "FreeListOfStatic/Mobile objects"
+    // ReSharper disable once CognitiveComplexity
+    /// <summary>
+    /// This creates a <see cref="GameObject"/> based on the provided buffer and its index in the array.
+    /// Static or Mobile objects are created based on the itemID, index and buffer length.
+    /// </summary>
+    /// <param name="buffer">byte buffer containing the data. ItemID is extracted from this</param>
+    /// <param name="idxAtArray">index at array to pass along to the object and double-check if the buffer length is adequate</param>
+    /// <returns>
+    ///   A GameObject that can be cast to the appropriate type later. Some will have the flag 'Invalid',
+    ///   which means they have some combination of ItemID and idxAtArray and Buffer length that shouldn't happen, but
+    ///   does happen.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Thrown if the buffer length is inadequate (different from
+    /// <see cref="GameObject.FixedBufferLength"/> or <see cref="MobileObject.FixedMobileBufferLength"/>) </exception>
+    /// <exception cref="Exception">Thrown when the itemID can't be matched to an existing object (greater than 0x1ff)</exception>
     public static GameObject CreateFromBuffer(byte[] buffer, ushort idxAtArray)
     {
         if ((idxAtArray == 0) | (idxAtArray == 1)) // These never hold actual object data.
         {
             return new MobileObject(buffer, idxAtArray) {Invalid = true};
         }
+
         // Create a StaticObject just to get the ItemID for later.
         var tempObject = new StaticObject(buffer[0..8], 2);
-        int itemID = tempObject.ItemID;
+        var itemID = tempObject.ItemID;
 
         // Start is always MobileObjects
         if (idxAtArray < TileMapMasterObjectListBlock.MobileObjectNum)
         {
-            if (buffer.Length != MobileObject.FixedTotalLength)
+            if (buffer.Length != MobileObject.FixedMobileBufferLength)
             {
                 throw new InvalidOperationException(
                     $"Cannot create a Mobile Object with buffer of length {buffer.Length}");
@@ -30,16 +48,16 @@ public static class GameObjectFactory
             {
                 return new MobileObject(buffer, idxAtArray);
             }
+
             // Outside this range, it's not a valid MobileObject
             return new MobileObject(buffer, idxAtArray) {Invalid = true};
         }
 
-        // End is always StaticObjects
-        if (idxAtArray >= TileMapMasterObjectListBlock.MobileObjectNum &
-            idxAtArray <
-            (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
+        // Rest is always StaticObjects
+        if (idxAtArray < (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
         {
-            if (buffer.Length != StaticObject.FixedTotalLength)
+            // ReSharper disable once AccessToStaticMemberViaDerivedType
+            if (buffer.Length != StaticObject.FixedBufferLength)
             {
                 throw new InvalidOperationException(
                     $"Cannot create a Static Object with buffer of length {buffer.Length}");
@@ -93,7 +111,6 @@ public static class GameObjectFactory
             if (itemID > 0x1cf & itemID <= 0x1ff) // Not described in the text
                 return new StaticObject(buffer, idxAtArray);
 
-            // return new StaticObject(buffer, idxAtArray) {Invalid = true};
             throw new Exception($"Can't create object with itemID {itemID}");
         }
 

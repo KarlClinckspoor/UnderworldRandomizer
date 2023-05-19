@@ -5,20 +5,33 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerEditor.LEVdotARK;
 
+/// <summary>
+/// A UWLinkedList is used to keep items that belong to a tile, container or npc updated as items are added or removed
+/// to those objects. It technically does not have an equivalent in the binary file of LEV.ARK, where these relationships
+/// are all indirect.
+/// Under the hood, it's just a list of GameObjects that updates them when items are added/removed.
+/// </summary>
 public class UWLinkedList: IList<GameObject>
 {
-    private uint _startingIdx = 0;
+    private uint _startingIdx;
+    
+    /// <summary>
+    /// This variable dictates if this UWLinkedList instance is representing a container, i.e., the items aren't free
+    /// on the ground. A container can be either a bag or similar, or a MobileObject (npc). By default, this is false.
+    /// </summary>
     public bool RepresentingContainer = false;
-    public uint startingIdx
+    
+    /// <summary>
+    /// Represents the index of the first element in the LinkedList, which is important because it's what a Tile or
+    /// a container references.
+    /// </summary>
+    public uint StartingIdx
     {
         get
         {
-            if (objects.Count > 0)
-            {
-                // In case this isn't true, the LList is invalid, so it's good to check now
-                Debug.Assert(_startingIdx == objects[0].IdxAtObjectArray);
-                return _startingIdx;
-            }
+            if (objects.Count == 0) return _startingIdx;
+            // In case this isn't true, the LList is invalid, so it's good to check now
+            Debug.Assert(_startingIdx == objects[0].IdxAtObjectArray);
             return _startingIdx;
         }
         set
@@ -47,11 +60,21 @@ public class UWLinkedList: IList<GameObject>
         return GetEnumerator();
     }
 
+    /// <summary>
+    /// Adds an item to the end of the linked list. Updates the item's "next" field to 0.
+    /// </summary>
+    /// <param name="item"></param>
     public void Add(GameObject item)
     {
+        if (item.ReferenceCount >= 1)
+        {
+            // throw new UWLinkedListException(
+            //     $"Object {item} has been added elsewhere before (reference count={item.ReferenceCount}");
+            Console.WriteLine($"Object {item} has been added elsewhere before (refcount={item.ReferenceCount})!");
+        }
         if (objects.Count == 0)
         {
-            startingIdx = item.IdxAtObjectArray;
+            StartingIdx = item.IdxAtObjectArray;
         }
         else
         {
@@ -60,11 +83,19 @@ public class UWLinkedList: IList<GameObject>
         item.next = 0;
         item.InContainer = RepresentingContainer;
         objects.Add(item);
+        item.ReferenceCount += 1;
     }
 
+
+    /// <inheritdoc cref="ICollection{T}.Clear"/>
+    /// Also sets the starting index to 0.
     public void Clear()
     {
         _startingIdx = 0;
+        foreach (var obj in objects)
+        {
+            obj.ReferenceCount -= 1;
+        }
         objects.Clear();
     }
 
@@ -78,6 +109,8 @@ public class UWLinkedList: IList<GameObject>
         objects.CopyTo(array, arrayIndex);
     }
 
+    /// <inheritdoc cref="ICollection{T}.Remove"/>
+    /// In addition, updates the indexes of all appropriate GameObjects.
     public bool Remove(GameObject item)
     {
         int idx = objects.IndexOf(item);
@@ -86,6 +119,8 @@ public class UWLinkedList: IList<GameObject>
         {
             return false; // Couldn't be found
         }
+
+        objects[idx].ReferenceCount -= 1;
 
         if (idx == 0)
         {
@@ -114,35 +149,25 @@ public class UWLinkedList: IList<GameObject>
         return true;
     }
 
-    public int Count
-    {
-        get
-        {
-            return objects.Count;
-        }
-    }
+    public int Count => objects.Count;
 
-    public bool IsReadOnly
-    {
-        get { return false; }
-    }
+    public bool IsReadOnly => false;
+
     public int IndexOf(GameObject item)
     {
         return objects.IndexOf(item);
     }
 
-    /// <summary>
-    /// Inserts an object and its new position in the LinkedList is the index provided.
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="item"></param>
-    /// <exception cref="IndexOutOfRangeException"></exception>
+    /// <inheritdoc cref="IList{T}.Insert"/>
+    /// Fixes the indexes of GameObjects around the insertion point.
     public void Insert(int index, GameObject item)
     {
         if (index < 0 | index > Count)
         {
-            throw new IndexOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
+
+        item.ReferenceCount += 1;
 
         if (index == 0)
         {
@@ -168,13 +193,17 @@ public class UWLinkedList: IList<GameObject>
         
     }
 
+    /// <inheritdoc cref="IList{T}.RemoveAt"/>
+    /// Updates the GameObjects surrounding the object.
     public void RemoveAt(int index)
     {
         if (index < 0 | index > Count - 1)
         {
-            throw new IndexOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
+        objects[index].ReferenceCount -= 1;
+        
         if (index == 0 & Count == 1)
         {
             objects.RemoveAt(0);
@@ -201,26 +230,28 @@ public class UWLinkedList: IList<GameObject>
     }
     
     /// <summary>
-    /// Adds items from list to the start of the object chain
+    /// Instantiates a new internal List of GameObjects, appends the items provided, then appends the original items.
     /// </summary>
-    /// <param name="items"></param>
+    /// <param name="items">List of items that will be prepended.</param>
     public void PrependItems(List<GameObject> items)
     {
-        // var toAdd = new UWLinkedList(items);
-        var oldObjectList = objects;
-        objects = new List<GameObject>();
+        var oldObjectList = new List<GameObject>();
+        oldObjectList.AddRange(objects);
+        Clear();
 
         AppendItems(items);
         AppendItems(oldObjectList);
     }
 
+    /// <inheritdoc cref="IList{T}.this"/>
+    /// When setting, adjusts the GameObjects around the insertion point to accomodate it.
     public GameObject this[int index]
     {
         get
         {
             if (index < 0 | index >= Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
             return objects[index];
         }
@@ -228,8 +259,11 @@ public class UWLinkedList: IList<GameObject>
         {
             if (index < 0 | index >= Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
+
+            objects[index].ReferenceCount -= 1;
+            value.ReferenceCount += 1;
 
             if (index == 0 & Count > 1)
             {
@@ -262,29 +296,12 @@ public class UWLinkedList: IList<GameObject>
     }
 
     /// <summary>
-    /// Constructed a new empty UWLinkedList. To fill it, either set the starting index and provide a
+    /// Constructs a new empty UWLinkedList. To fill it, either set the starting index and provide a
     /// list of GameObjects, or add the objects individually.
     /// </summary>
     public UWLinkedList()
     {
         objects = new List<GameObject>();
-    }
-    /// <summary>
-    /// Creates a UWLinkedList containing the provided list of objects.
-    /// </summary>
-    /// <param name="objectsToBeInTheList"></param>
-    public UWLinkedList(List<GameObject> objectsToBeInTheList, ushort firstObjectIndex)
-    {
-        _startingIdx = firstObjectIndex;
-        objects = objectsToBeInTheList;
-        Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
-    }
-
-    public UWLinkedList(GameObject[] objectsToBeInTheList, ushort firstObjectIndex)
-    {
-        _startingIdx = firstObjectIndex;
-        this.objects = objectsToBeInTheList.ToList();
-        Debug.WriteLineIf(!CheckIntegrity(), "Added list of objects isn't valid!");
     }
     
     /// <summary>
@@ -297,7 +314,6 @@ public class UWLinkedList: IList<GameObject>
         {
             Add(item);
         }
-
     }
     /// <summary>
     /// Adds items to the end of the object chain
@@ -326,30 +342,49 @@ public class UWLinkedList: IList<GameObject>
     }
 
     /// <summary>
-    /// Checks if the sequence of objects is valid.
-    /// <list type="bullet">
-    ///   <item>
-    ///     <description>
-    ///         The starting index is equal to the first GameObject's index (except if there's no objects, then it has to be 0)
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///         The last object's <c>next</c> field should be 0.
-    ///     </description>
-    ///     </item>
+    /// Checks if the the UWLinkedList has a valid sequence of objects according to these rules:
+    /// <list type="number">
+    /// 
     ///     <item>
-    ///         Every intermediate GameObjects <c>next</c> points to the following GameObject's index. If there's duplicates,
-    ///         then this will make the list invalid immediately.
+    ///         <description>
+    ///             If any of the objects has index 0 (reserved), or if an object is referenced 0 times (library mistake)
+    ///             or more than 1 time (library or lev.ark mistake), then the list is invalid.
+    ///         </description>
+    ///     </item>
+    /// 
+    ///     <item>
+    ///         <description>
+    ///             If the list is empty, the starting index should be 0. It's invalid otherwise.
+    ///         </description>
+    ///     </item>
+    /// 
+    ///     <item>
+    ///         <description>
+    ///             The starting index is equal to the first GameObject's index (except if there's no objects, then it has to be 0)
+    ///         </description>
+    ///     </item>
+    /// 
+    ///     <item>
+    ///         <description>
+    ///             The last object's <c>next</c> field should be 0.
+    ///         </description>
+    ///     </item>
+    ///
+    ///     <item>
+    ///         <description>
+    ///             Every intermediate GameObjects <c>next</c> points to the following GameObject's index. If there's duplicates,
+    ///             then this will make the list invalid immediately.
+    ///         </description>
     ///     </item>
     /// </list>
     /// </summary>
-    /// <returns></returns>
+    /// 
+    /// <returns>True if list is sound, False if not</returns>
     public bool CheckIntegrity()
     {
         foreach (var obj in objects)
         {
-            if (obj.IdxAtObjectArray == 0)
+            if ((obj.IdxAtObjectArray == 0) | (obj.ReferenceCount != 1))
             {
                 return false;
             }
@@ -357,7 +392,7 @@ public class UWLinkedList: IList<GameObject>
         
         if (objects.Count == 0)  // Empty list, so the starting index has to be 0
         {
-            if (_startingIdx != 0) // TODO: _startingIdx or startingIdx?
+            if (_startingIdx != 0)
             {
                 return false;
             }
@@ -386,9 +421,25 @@ public class UWLinkedList: IList<GameObject>
         return true;
     }
     
+    /// <summary>
+    /// This function goes over all the objects and sets the internal state of UWLinkedList to a valid state.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown if any of the objects has index 0 or if the list fails <see cref="CheckIntegrity"/>
+    /// </exception>
     private void ForceFixIntegrity()
     {
+        if(objects.Any(x => x.IdxAtObjectArray == 0))
+            throw new InvalidOperationException("There are objects with IdxAtObjectArray equal to 0. Impossible to fix without altering the list");
+        
         int i = 0;
+
+        if (objects.Count == 0)
+        {
+            _startingIdx = 0;
+            return;
+        }
+        
         foreach (var obj in objects)
         {
             if (i == 0) 
@@ -403,48 +454,41 @@ public class UWLinkedList: IList<GameObject>
             }
             i++;
         }
+
+        if (!CheckIntegrity())
+        {
+            throw new InvalidOperationException("ForceFixIntegrity couldn't fix the integrity!");
+        }
     }
 
     
     /// <summary>
     /// Fills in the list of objects given a list of all GameObjects present in a level.
     /// </summary>
-    /// <param name="AllBlockObjects">All game objects in the level, both static and mobile</param>
-    public void PopulateObjectList(GameObject[] AllBlockObjects)
+    /// <param name="allBlockObjects">All game objects in the level, both static and mobile</param>
+    public void PopulateObjectList(IList<GameObject> allBlockObjects)
     {
         objects.Clear();
-        if (startingIdx == 0) // Tile empty of objects
+        if (StartingIdx == 0) // Tile or container without any objects.
         {
             return;
         }
 
-        int safetycounter = 0;
-        int maxcounter = 1024;
-        uint currentIdx = startingIdx;
+        int safetyCounter = 0;
+        int maxCounter = 1024;
+        uint currentIdx = StartingIdx;
         while (currentIdx != 0) 
         {
-            safetycounter++;
-            if (safetycounter >= maxcounter)
+            safetyCounter++;
+            if (safetyCounter >= maxCounter)
             {
                 throw new ConstraintException("Encountered potentially infinite loop when populating ObjectList!");
             }
 
-            GameObject obj = AllBlockObjects[currentIdx];
-            // TODO: Why are some invalid objects being added?
-            // if (obj.Invalid)
-            // {
-            //     throw new Exception("Can't add an invalid object!");
-            // }
+            GameObject obj = allBlockObjects[(int) currentIdx];
             currentIdx = obj.next;
             Add(obj);
         }
 
     }
-
-    public void PopulateObjectList(List<GameObject> Objects)
-    {
-        PopulateObjectList(Objects.ToArray());
-    }
-    
-    
 }

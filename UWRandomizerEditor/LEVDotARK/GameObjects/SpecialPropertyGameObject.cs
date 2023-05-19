@@ -5,13 +5,13 @@ public class SpecialPropertyGameObject : StaticObject
 {
     public short RawSpecialLink
     {
-        get { return Convert.ToInt16(SpecialLink + 512); }
-        set { SpecialLink = Convert.ToInt16(value + 512); }
+        get => Convert.ToInt16(SpecialLink + 512);
+        set => SpecialLink = Convert.ToInt16(value + 512);
     }
 
     public short SpecialLink
     {
-        get { return Convert.ToInt16(QuantityOrSpecialLinkOrSpecialProperty - 512); }
+        get => Convert.ToInt16(QuantityOrSpecialLinkOrSpecialProperty - 512);
         set
         {
             if (value < 512)
@@ -29,7 +29,7 @@ public class SpecialPropertyGameObject : StaticObject
     }
 
     public SpecialPropertyGameObject(ushort objIdFlags, ushort position, ushort qualityChain,
-        ushort linkSpecial) : base(objIdFlags, position, qualityChain, linkSpecial)
+        ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 }

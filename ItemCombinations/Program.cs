@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using UWRandomizerEditor;
+using UWRandomizerEditor.CMBdotDAT;
 
 namespace ItemCombinations;
 
@@ -15,7 +15,7 @@ public static class Program
 
 }
 
-class TUICombinations
+internal class TUICombinations
 {
     private CombinationsFile _cmb;
     private string _path;
@@ -51,11 +51,11 @@ class TUICombinations
                 return;
             }
             
-            int id1 = combination.FirstItem.itemID;
+            int id1 = combination.FirstItem.ItemID;
             string destroy1 = combination.FirstItem.IsDestroyed ? "*" : "";
-            int id2 = combination.SecondItem.itemID;
+            int id2 = combination.SecondItem.ItemID;
             string destroy2 = combination.SecondItem.IsDestroyed ? "*" : "";
-            int prod = combination.Product.itemID;
+            int prod = combination.Product.ItemID;
             string destroy3 = combination.Product.IsDestroyed ? "*" : "";
             
             Console.WriteLine(
@@ -209,7 +209,7 @@ class TUICombinations
         string choice = Console.ReadLine() ?? throw new InvalidOperationException();
         if (int.TryParse(choice, out int val))
         {
-            _cmb.RemoveCombination(val);
+            _cmb.RemoveCombinationAt(val);
             Console.WriteLine("Removed!");
         }
         
@@ -241,7 +241,7 @@ class JsonEntry
         {
             this.ID = temp;
         }
-
+        this.ItemID = ItemID;
         this.Name = Name;
     }
 

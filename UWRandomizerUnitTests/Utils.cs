@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using UWRandomizerEditor.LEVdotARK;
 
 namespace RandomizerUnitTests;
 
@@ -120,5 +121,17 @@ public class Utils
 
         // TODO: Make these descriptions a bit better, and calculate where, in each subblock, the byte is (e.g. static weapon 100)
         return $"{targetBlock.BlockName}_byte{relativeOffset}";
+    }
+
+    public static ArkLoader LoadAndAssertOriginalLevArk(string? path = null)
+    {
+        path ??= Paths.UW_ArkOriginalPath;
+        var AL = new ArkLoader(path);
+        if (!CheckEqualityOfSha256Hash(AL.Buffer, OriginalLevArkSha256Hash))
+        {
+            throw new Exception("'Original lev.ark was modified. Please replace it with the original file");
+        }
+
+        return AL;
     }
 }

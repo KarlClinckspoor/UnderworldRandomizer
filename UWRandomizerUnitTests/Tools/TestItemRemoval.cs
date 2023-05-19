@@ -7,15 +7,16 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
-[Category("RequiresSettings")]
 public class TestItemRemoval
 {
+#pragma warning disable CS8618
     private List<GameObject> _gameObjects;
     private UWLinkedList LList1;
     private UWLinkedList LList2;
     private ItemRandomizationSettings settings;
+#pragma warning restore CS8618
 
     [SetUp]
     public void Setup()
@@ -24,7 +25,7 @@ public class TestItemRemoval
         var fillerBytes = new byte[8];
         _gameObjects = new List<GameObject>()
         {
-            new StaticObject(fillerBytes, 0) {next = 0}, // end TODO: What is the buffer of object 0?
+            new StaticObject(fillerBytes, 0) {next = 0}, // end
             new QuantityGameObject(fillerBytes, 1) {next = 2}, // 1.1   movable
             new Door(fillerBytes, 2) {next = 6}, // 1.2         immovable
             new Trap(fillerBytes, 3) {next = 4}, // 2.1         immovable
@@ -40,8 +41,8 @@ public class TestItemRemoval
     [Test]
     public void TestRemoveMovableItems()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 3;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 3;
 
         LList1.PopulateObjectList(_gameObjects.ToArray());
         LList2.PopulateObjectList(_gameObjects.ToArray());
@@ -76,8 +77,8 @@ public class TestItemRemoval
     [Test]
     public void TestSwapMovableItems()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 3;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 3;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has items in idx 3,4,5*
@@ -105,8 +106,8 @@ public class TestItemRemoval
     [Test]
     public void TestAppendItems_OnEmptyLList()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 0;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 0;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has no items
@@ -134,8 +135,8 @@ public class TestItemRemoval
     [Test]
     public void TestSwapItemsByPrepend()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 3;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 3;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has items in idx 3,4,5*
@@ -165,8 +166,8 @@ public class TestItemRemoval
     [Test]
     public void TestPrependItems_OnEmptyLList()
     {
-        LList1.startingIdx = 1;
-        LList2.startingIdx = 0;
+        LList1.StartingIdx = 1;
+        LList2.StartingIdx = 0;
 
         // LList1 has items in idx 1*,2,6*
         // LList2 has no items
@@ -194,7 +195,7 @@ public class TestItemRemoval
     [Test]
     public void TestCyclesOfRemovalAndAppendingOnTile()
     {
-        var Tile1 = new TileInfo(0, 0, 0, 0);
+        var Tile1 = new Tile(0, 0, 0, 0);
         Tile1.FirstObjIdx = 1;
         
         // Tile has items in idx 1*,2,6*
@@ -210,7 +211,7 @@ public class TestItemRemoval
         }
         // Tile1 should be 2, 1, 6
 
-        var Tile2 = new TileInfo(0, 0, 0, 0);
+        var Tile2 = new Tile(0, 0, 0, 0);
         Tile2.FirstObjIdx = 2;
         Tile2.ObjectChain.PopulateObjectList(_gameObjects);
         

@@ -7,25 +7,27 @@ public static partial class RandoTools
 {
     /// <summary>
     /// Swaps items between two tiles by changing their first object indices, then
-    /// places them at the correct Z level. If one tile has a texturedobject, might be disaligned later.
+    /// places them at the correct Z level. If one tile has a texturedObject, might be misaligned later.
     /// </summary>
-    /// <param name="Tile1">First Tile to replace</param>
-    /// <param name="Tile2">Second tile to replace</param>
-    public static void SwapAllObjectsBetweenTwoTiles(TileInfo Tile1, TileInfo Tile2, ItemRandomizationSettings settings, Random r)
+    /// <param name="tile1">First Tile to replace</param>
+    /// <param name="tile2">Second tile to replace</param>
+    /// <param name="settings">Configuration item that controls what is considered a movable item</param>
+    /// <param name="r">random instance that's passed to the functions that move objects to the correct corner of tiles</param>
+    public static void SwapAllObjectsBetweenTwoTiles(Tile tile1, Tile tile2, ItemRandomizationSettings settings, Random r)
     {
-        var obj1 = ItemTools.ExtractMovableItems(Tile1, settings);
-        var obj2 = ItemTools.ExtractMovableItems(Tile2, settings);
+        var obj1 = ItemTools.ExtractMovableItems(tile1, settings);
+        var obj2 = ItemTools.ExtractMovableItems(tile2, settings);
         
-        Tile1.ObjectChain.AppendItems(obj2);
-        Tile2.ObjectChain.AppendItems(obj1);
+        tile1.ObjectChain.AppendItems(obj2);
+        tile2.ObjectChain.AppendItems(obj1);
         
-        Tile1.MoveObjectsToCorrectCorner(r);
-        Tile1.MoveObjectsToSameZLevel();
-        Tile2.MoveObjectsToCorrectCorner(r);
-        Tile2.MoveObjectsToSameZLevel();
+        tile1.MoveObjectsToCorrectCorner(r);
+        tile1.MoveObjectsToSameZLevel();
+        tile2.MoveObjectsToCorrectCorner(r);
+        tile2.MoveObjectsToSameZLevel();
         
-        Debug.Assert(Tile1.ObjectChain.CheckIntegrity());
-        Debug.Assert(Tile2.ObjectChain.CheckIntegrity());
+        Debug.Assert(tile1.ObjectChain.CheckIntegrity());
+        Debug.Assert(tile2.ObjectChain.CheckIntegrity());
     }
 
 }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using UWRandomizerWPF;
 using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerTools;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Tools;
 
 public class TestWhatUWEditorFixes
 {
@@ -21,7 +19,7 @@ public class TestWhatUWEditorFixes
             RandoTools.RemoveAllDoorReferencesToLocks(ArkCleanedNoDoors); // Assumes this is working correctly
 
         var cleanedNoDoorsPath =
-            UWRandomizerEditor.Utils.StdSaveBuffer(ArkCleanedNoDoors.Buffer, Paths.BufferTestsPath,
+            UWRandomizerEditor.Utils.SaveBuffer(ArkCleanedNoDoors.Buffer, Paths.BufferTestsPath,
                 "cleaned_nodoors.ark");
 
         // Every time I change the function to remove all locks, this has to be re-generated
