@@ -10,6 +10,7 @@
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting> 
     </PropertyGroup>
 
     <ItemGroup>
