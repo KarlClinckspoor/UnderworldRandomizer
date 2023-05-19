@@ -9,7 +9,7 @@
         <Authors>Karl Jan clinckspoor</Authors>
         <Description>Small program to edit CMB.DAT of UW1.</Description>
         <RepositoryUrl>https://github.com/KarlClinckspoor/UnderworldRandomizer/</RepositoryUrl>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
