@@ -4,7 +4,7 @@ using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerTools;
 
-public class ShuffleItems
+public static class ShuffleItems
 {
     public static void ShuffleAllLevels(ArkLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
     {
