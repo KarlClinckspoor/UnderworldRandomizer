@@ -75,7 +75,7 @@ public partial class MainWindow : Window
     private void Btn_ShuffleItems_Click(object sender, RoutedEventArgs e)
     {
         AddMsgToLog("In-level shuffling of items in all levels");
-        ShuffleItems.ShuffleAllLevels(ark, Singletons.RandomInstance, _itemSettings);
+        ItemTools.ShuffleItemsInAllLevels(ark, Singletons.RandomInstance, _itemSettings);
         AddMsgToLog("Done. Check either UltimateUnderworldEditor or export the spoiler log if you want.");
     }
 

@@ -6,41 +6,6 @@ namespace UWRandomizerTools;
 
 public static class ShuffleItems
 {
-    public static void ShuffleAllLevels(ArkLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
-    {
-        foreach (var block in arkFile.TileMapObjectsBlocks)
-        {
-            ShuffleItemsInLevel(block, RandomInstance, settings);
-            block.ReconstructBuffer();
-        }
-
-        arkFile.ReconstructBuffer();
-    }
-
-    public static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block, Random RandomInstance, ItemRandomizationSettings settings)
-    {
-        Stack<GameObject> objectsInLevel = new Stack<GameObject>();
-        foreach (var tile in block.Tiles)
-        {
-            foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
-            {
-                objectsInLevel.Push(obj);
-            }
-        }
-
-        while (objectsInLevel.Count > 0)
-        {
-            int chosenTileIdx = RandomInstance.Next(0, block.Tiles.Length);
-            Tile chosenTile = block.Tiles[chosenTileIdx];
-            if (!IsTileValid(chosenTile))
-                continue;
-            chosenTile.ObjectChain.Add(objectsInLevel.Pop());
-            chosenTile.MoveObjectsToSameZLevel();
-        }
-
-        block.ReconstructBuffer();
-    }
-
     private static readonly IDictionary<int, int> LevelTextureIdxOfWater = new Dictionary<int, int>()
     {
         {0, 8}, // lvl1
