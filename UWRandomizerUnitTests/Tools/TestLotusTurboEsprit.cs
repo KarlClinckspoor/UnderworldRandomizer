@@ -10,6 +10,7 @@ namespace RandomizerUnitTests.Tools;
 public class TestLotusTurboEsprit
 {
     [Test]
+    [Category("RequiresSettings")]
     public void TestLotus()
     {
         var AL = new ArkLoader(Paths.UW_ArkOriginalPath);
@@ -22,7 +23,7 @@ public class TestLotusTurboEsprit
             AL.TileMapObjectsBlocks[0].Tiles2D[31, 5].FirstObjIdx = 539;
             AL.TileMapObjectsBlocks[0].AllGameObjects[532].Invis = 0;
             AL.TileMapObjectsBlocks[0].ReconstructBuffer();
-            // File.WriteAllBytes(AL.Path+"2", AL.Buffer);
+            File.WriteAllBytes(AL.Path+"lotus_esprit", AL.Buffer);
         }
 
     }
