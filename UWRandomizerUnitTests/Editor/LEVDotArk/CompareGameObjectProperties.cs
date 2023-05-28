@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using NUnit.Framework;
+using UWRandomizerEditor;
 using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+using System.Configuration;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests;
 
 [TestFixture]
 [Category("PropertyComparisons")]
@@ -19,12 +26,12 @@ public class CompareWithHanksEditor
     // private Stream[] streamsPristine = new Stream[numOfLevels];
     private String[] streamsPristine = new String[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsPristine = new List<List<Dictionary<string, int>>>(numOfLevels);
-    private ArkLoader arkPristine = null!;
+    private ArkLoader arkPristine;
 
     // private Stream[] streamsCleaned = new Stream[numOfLevels];
     private String[] streamsCleaned = new String[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsCleaned = new List<List<Dictionary<string, int>>>(numOfLevels);
-    private ArkLoader arkCleaned = null!;
+    private ArkLoader arkCleaned;
 
     public enum PossibleLevArkToTest
     {
@@ -32,7 +39,7 @@ public class CompareWithHanksEditor
         cleaned = 1
     }
 
-    private static readonly Dictionary<string, string> JsonToUWR = new Dictionary<string, string>()
+    private static readonly Dictionary<string, string> json_to_UWR = new Dictionary<string, string>()
     {
         {"item_id", "ItemID"},
         {"flags", "Flags"},
@@ -60,7 +67,7 @@ public class CompareWithHanksEditor
                 File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = Utils.LoadAndAssertOriginalLevArk();
+            arkPristine = new ArkLoader(Paths.UW_ArkOriginalPath);
 
             streamsCleaned[blocknum] = File.ReadAllText(
                 Path.Join(Paths.RUT_TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));
@@ -88,7 +95,7 @@ public class CompareWithHanksEditor
         // goes up to 1023.
         Assert.True(json.Count - 1 == ark.TileMapObjectsBlocks[blocknum].AllGameObjects.Length);
 
-        IterateAndCompareAttributesStaticObject(json, key, ark, JsonToUWR[key], blocknum);
+        IterateAndCompareAttributesStaticObject(json, key, ark, json_to_UWR[key], blocknum);
     }
 
     private void IterateAndCompareAttributesStaticObject(List<Dictionary<string, int>> json, string correctLabel,

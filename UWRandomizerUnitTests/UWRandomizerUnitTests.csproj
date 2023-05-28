@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
@@ -14,11 +14,13 @@
         <PackageReference Include="NUnit" Version="3.13.2" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
         <PackageReference Include="coverlet.collector" Version="3.1.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\UWRandomizerEditor\UWRandomizerEditor.csproj" />
-      <ProjectReference Include="..\UWRandomizerWPF\UWRandomizerWPF.csproj" />
+      <ProjectReference Include="..\UWRandomizerTools\UWRandomizerTools.csproj" />
+      
     </ItemGroup>
 
     <ItemGroup>
