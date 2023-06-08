@@ -47,6 +47,8 @@
                         VerticalAlignment="Center" Margin="5" Click="Btn_ShuffleItems_Click" />
                 <Button x:Name="BtnExportSpoilerLog" Content="Export spoiler log" Margin="5"
                         HorizontalAlignment="Left" Click="Btn_ExportSpoilerLog_Click" />
+                <Button x:Name="BtnRevealEnchantments" Content="Reveal all enchantments" HorizontalAlignment="Left" 
+                        VerticalAlignment="Center" Margin="5" Click="BtnRevealEnchantments_OnClick" />
                 <GroupBox Header="Seed" Margin="5">
                     <StackPanel>
                         <TextBox x:Name="TxtBoxSeedValue" Text="42" Margin="5" />

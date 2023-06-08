@@ -1,6 +1,7 @@
 ﻿using UWRandomizerEditor.LEVdotARK;
 using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 namespace UWRandomizerTools;
 
@@ -23,7 +24,8 @@ public static class ItemTools
         return tempList;
     }
 
-    public static void ShuffleItemsInAllLevels(ArkLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
+    public static void ShuffleItemsInAllLevels(ArkLoader arkFile, Random RandomInstance,
+        ItemRandomizationSettings settings)
     {
         foreach (var block in arkFile.TileMapObjectsBlocks)
         {
@@ -34,7 +36,8 @@ public static class ItemTools
         arkFile.ReconstructBuffer();
     }
 
-    public static void ShuffleItemsInOneLevel(TileMapMasterObjectListBlock block, Random RandomInstance, ItemRandomizationSettings settings)
+    private static void ShuffleItemsInOneLevel(TileMapMasterObjectListBlock block, Random RandomInstance,
+        ItemRandomizationSettings settings)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();
         foreach (var tile in block.Tiles)
@@ -56,5 +59,32 @@ public static class ItemTools
         }
 
         block.ReconstructBuffer();
+    }
+
+    private static bool RevealEnchantmentOfItem(GameObject obj, bool verbose = false)
+    {
+        if (obj is MobileObject | obj is TexturedGameObject | obj is Furniture | obj is Door | obj is Trigger |
+            obj is Trap | obj is Key | obj is Lock) return false;
+        
+        if (verbose)
+        {
+            Console.WriteLine($"Changed object {{obj}} enchantment reveal status from {obj.Heading} to 2 (identified)");
+        }
+        obj.Heading = 7;
+        return true;
+    }
+
+    public static void RevealEnchantmentOfAllItems(ArkLoader arkFile)
+    {
+        var ctrLevel = 0;
+        var ctrModifications = 0;
+        foreach (var level in arkFile.TileMapObjectsBlocks)
+        {
+            Console.WriteLine($"Evaluating level {ctrLevel}");
+            foreach (var obj in level.StaticObjects)
+            {
+                ctrModifications += RevealEnchantmentOfItem(obj, verbose: true) ? 1 : 0;
+            } 
+        }
     }
 }

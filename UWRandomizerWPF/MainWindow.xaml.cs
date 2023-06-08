@@ -164,4 +164,9 @@ public partial class MainWindow : Window
     {
         ListViewLog.Items.Clear();
     }
+
+    private void BtnRevealEnchantments_OnClick(object sender, RoutedEventArgs e)
+    {
+        ItemTools.RevealEnchantmentOfAllItems(ark);
+    }
 }
