@@ -206,7 +206,20 @@ public class ArkLoader : IBufferObject
         if ((BlockType == Sections.MapNotes) | (BlockType == Sections.AutomapInfos))
         {
             // TODO: When I'm less tired, check if this will go back in the last block.
-            BlockLength = header.BlockOffsets[BlockNum + 1] - header.BlockOffsets[BlockNum];
+            // An empty block (offset 0) can follow a non-empty block, so the offset gets negative if I use this. Let's try to get the next non-zero.
+            // Not only that, but a lower offset block can appear after the next one. Do I really need to sort things?
+            // var nextNonZeroOffset = 0;
+            // for (int i = BlockNum + 1; i < header.BlockOffsets.Length; i++)
+            // {
+            //     if (header.BlockOffsets[i] != 0)
+            //     {
+            //         nextNonZeroOffset = header.BlockOffsets[i];
+            //     }
+            // }
+
+            // BlockLength = nextNonZeroOffset - header.BlockOffsets[BlockNum];
+            // BlockLength = header.BlockOffsets[BlockNum + 1] - header.BlockOffsets[BlockNum];
+            return new EmptyBlock();
         }
         else
         {

@@ -688,4 +688,32 @@ public partial class TileMapMasterObjectListBlock : Block
             value.CopyTo(_unknown2Buffer, 0);
         }
     }
+
+    public ushort[] FreeMobileObjIndexes
+    {
+        // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
+        get => FreeMobileObjectSlots[0..(FirstFreeMobileSlot+1)].Select(x => x.IdxAtFullArray).ToArray();
+    }
+
+    public ushort[] FreeStaticObjIndexes
+    {
+        // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
+        get => FreeStaticObjectSlots[0..(FirstFreeStaticSlot+1)].Select(x => x.IdxAtFullArray).ToArray();
+    }
+
+public bool isObjectInFreeSlot(GameObject obj)
+    {
+        var idx = obj.IdxAtObjectArray;
+        if (idx == 0) return true;
+        if (idx == 1) return false;
+        
+        if (obj is StaticObject)
+        {
+            return FreeStaticObjIndexes.Contains(idx);
+        }
+        else
+        {
+            return FreeMobileObjIndexes.Contains(idx);
+        }
+    }
 }
