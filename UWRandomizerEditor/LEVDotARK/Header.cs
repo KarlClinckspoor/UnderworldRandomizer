@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
+using UWRandomizerEditor.LEVdotARK.Blocks;
 
 namespace UWRandomizerEditor.LEVdotARK;
 
@@ -14,6 +15,7 @@ public class Header : IBufferObject
     public static int blockOffsetSize = 4; // int32
 
     public int[] BlockOffsets;
+    public int[] OrderedBlockOffsets;
 
     public bool ReconstructBuffer()
     {
@@ -57,14 +59,19 @@ public class Header : IBufferObject
         return blockOffset;
     }
 
-    [MemberNotNull("BlockOffsets")]
-    public void CalculateOffsets()
+    [MemberNotNull("BlockOffsets"), MemberNotNull("OrderedBlockOffsets")]
+    private void CalculateOffsets()
     {
         BlockOffsets = new int[NumEntries];
         for (int i = 0; i < NumEntries; i++)
         {
             BlockOffsets[i] = GetOffsetForBlock(i);
         }
+
+        var temp = new List<int>(BlockOffsets);
+        temp.Sort();
+        OrderedBlockOffsets = temp.ToArray();
+
     }
 
     public Header(byte[] buffer)

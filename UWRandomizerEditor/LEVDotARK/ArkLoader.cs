@@ -1,4 +1,5 @@
-﻿using UWRandomizerEditor.Interfaces;
+﻿using System.Diagnostics;
+using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVdotARK.Blocks;
 
 namespace UWRandomizerEditor.LEVdotARK;
@@ -66,7 +67,7 @@ public class ArkLoader : IBufferObject
         Unused = 5,
     }
 
-    IDictionary<Sections, int> BlockLengths = new Dictionary<Sections, int>()
+    IDictionary<Sections, int> MinimumBlockLengths = new Dictionary<Sections, int>()
     {
         {Sections.LevelTilemapObjlist, TileMapMasterObjectListBlock.FixedBlockLength},
         {Sections.ObjectAnimOverlayInfo, ObjectAnimationOverlayInfoBlock.FixedBlockLength},
@@ -202,31 +203,50 @@ public class ArkLoader : IBufferObject
     /// <returns></returns>
     public Block GetBlock(short BlockNum, Sections BlockType, int levelnumber = -1)
     {
-        int BlockLength;
-        if ((BlockType == Sections.MapNotes) | (BlockType == Sections.AutomapInfos))
+        // When the offset is zero, it's an empty block
+        if (header.BlockOffsets[BlockNum] == 0)
         {
-            // TODO: When I'm less tired, check if this will go back in the last block.
-            // An empty block (offset 0) can follow a non-empty block, so the offset gets negative if I use this. Let's try to get the next non-zero.
-            // Not only that, but a lower offset block can appear after the next one. Do I really need to sort things?
-            // var nextNonZeroOffset = 0;
-            // for (int i = BlockNum + 1; i < header.BlockOffsets.Length; i++)
-            // {
-            //     if (header.BlockOffsets[i] != 0)
-            //     {
-            //         nextNonZeroOffset = header.BlockOffsets[i];
-            //     }
-            // }
-
-            // BlockLength = nextNonZeroOffset - header.BlockOffsets[BlockNum];
-            // BlockLength = header.BlockOffsets[BlockNum + 1] - header.BlockOffsets[BlockNum];
             return new EmptyBlock();
         }
-        else
+        
+        // Find block length. Peeked from uwdump in UnderworldAdventures.
+        var blockLength = 0;
+        var orderedOffsets = header.OrderedBlockOffsets;
+        var currentOffset = header.BlockOffsets[BlockNum];
+
+        // Find first positive delta.
+        for (int i = 0; i < orderedOffsets.Length + 1; i++)
         {
-            BlockLength = BlockLengths[BlockType];
+            // At the end, the last offset is the file length
+            int tempOffset;
+            if (i == orderedOffsets.Length)
+            {
+                tempOffset = Buffer.Length;
+            }
+            else
+            {
+                tempOffset = orderedOffsets[i];
+            }
+
+            var delta = tempOffset - currentOffset;
+            if (delta > 0)
+            {
+                blockLength = delta;
+                break;
+            }
+        }
+        if (blockLength == 0) // Couldn't find length somehow
+        {
+            throw new BlockOperationException("Couldn't find the length of the current block. Aborting.");
         }
 
-        var buffer = GetBlockBuffer(BlockNum, BlockLength);
+        // These have fixed size. Double checking.
+        if ((BlockType == Sections.LevelTilemapObjlist) | (BlockType == Sections.ObjectAnimOverlayInfo) | (BlockType == Sections.TextureMappings))
+        {
+            Debug.Assert(blockLength == MinimumBlockLengths[BlockType]);
+        }
+
+        var buffer = GetBlockBuffer(BlockNum, blockLength);
         switch (BlockType)
         {
             case Sections.LevelTilemapObjlist:
