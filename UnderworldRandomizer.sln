@@ -7,13 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerEditor", "UWRan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerUnitTests", "UWRandomizerUnitTests\UWRandomizerUnitTests.csproj", "{3C8CFAF0-AD93-4542-A88E-7534211314AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCombinations", "ItemCombinations\ItemCombinations.csproj", "{6B880621-0FCE-421D-BEF6-A27696C09B2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemCombinations", "ItemCombinations\ItemCombinations.csproj", "{6B880621-0FCE-421D-BEF6-A27696C09B2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerWPF", "UWRandomizerWPF\UWRandomizerWPF.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerWPF", "UWRandomizerWPF\UWRandomizerWPF.csproj", "{B40CA507-E157-47FC-8A79-62EACC44AD3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualizationHelperPrograms", "VisualizationHelperPrograms\VisualizationHelperPrograms.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualizationHelperPrograms", "VisualizationHelperPrograms\VisualizationHelperPrograms.csproj", "{043DB0BB-4A3B-4F00-B89D-516FB6EB6187}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWRandomizerTools", "UWRandomizerTools\UWRandomizerTools.csproj", "{FA69796F-BDE0-41EE-B602-49C2A537BDA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWRandomizerTools", "UWRandomizerTools\UWRandomizerTools.csproj", "{FA69796F-BDE0-41EE-B602-49C2A537BDA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{233A1906-9479-4B04-8753-FF235E6EF52B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		thoughts.md = thoughts.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

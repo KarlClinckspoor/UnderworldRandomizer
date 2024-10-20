@@ -10,7 +10,7 @@ public static partial class RandoTools
     /// </summary>
     /// <param name="arkFile"></param>
     /// <returns>Count of alterations performed</returns>
-    public static int RemoveAllDoorReferencesToLocks(ArkLoader arkFile)
+    public static int RemoveAllDoorReferencesToLocks(LevLoader arkFile)
     {
         int count = 0;
         foreach (var block in arkFile.TileMapObjectsBlocks)

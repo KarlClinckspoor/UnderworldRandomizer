@@ -11,6 +11,7 @@ public static class Paths
     public static string UW_CleanedPath = config.AppSettings.Settings["UWCleanedPath"].Value;
     public static string UW_ArkOriginalPath = config.AppSettings.Settings["UWArkOriginalPath"].Value;
     public static string UW_ArkCleanedPath = config.AppSettings.Settings["UWArkCleanedPath"].Value;
+    public static string UW_ArkDifficultPath = config.AppSettings.Settings["UWArkDifficultPath"].Value;
     public static string RUT_TestDataPath = config.AppSettings.Settings["RUTTestDataPath"].Value;
     public static string UW_CMBPath = config.AppSettings.Settings["UWCMBPath"].Value;
 

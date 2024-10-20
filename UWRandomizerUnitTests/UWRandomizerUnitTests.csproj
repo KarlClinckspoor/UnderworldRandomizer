@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="ReSharperTestRunner.dll.config">
+      <None Update="testhost.dll.config">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

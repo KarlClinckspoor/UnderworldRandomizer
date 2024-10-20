@@ -123,10 +123,10 @@ public class Utils
         return $"{targetBlock.BlockName}_byte{relativeOffset}";
     }
 
-    public static ArkLoader LoadAndAssertOriginalLevArk(string? path = null)
+    public static LevLoader LoadAndAssertOriginalLevArk(string? path = null)
     {
         path ??= Paths.UW_ArkOriginalPath;
-        var AL = new ArkLoader(path);
+        var AL = new LevLoader(path);
         if (!CheckEqualityOfSha256Hash(AL.Buffer, OriginalLevArkSha256Hash))
         {
             throw new Exception("'Original lev.ark was modified. Please replace it with the original file");
