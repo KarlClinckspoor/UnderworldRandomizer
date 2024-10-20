@@ -13,14 +13,13 @@ public class Header : IBufferObject
     public byte[] Buffer { get; set; }
     public static int blockNumSize = 2; // a short
     public static int blockOffsetSize = 4; // int32
+    public int TotalFileSize;
 
     public int[] BlockOffsets;
-    public int[] OrderedBlockOffsets;
+    public int[] sortedValidBlockOffsets;
 
     public bool ReconstructBuffer()
     {
-        // TODO: Ideally, this should get all the blocks... But I'm leaving it like this for now, for simplicity.
-        // It's very unlikely that I'll change the block sizes in the near future.
         return true;
     }
 
@@ -74,9 +73,33 @@ public class Header : IBufferObject
 
     }
 
-    public Header(byte[] buffer)
+    public Header(byte[] buffer, int totalFileSize)
     {
         Buffer = buffer;
         CalculateOffsets();
+        SortBlockOffsets();
+        TotalFileSize = totalFileSize;
+    }
+
+    private void SortBlockOffsets()
+    {
+        List<int> temp = new();
+        foreach (int i in BlockOffsets)
+        {
+            if (i != 0) temp.Add(i);
+        }
+        temp.Sort();
+        sortedValidBlockOffsets = temp.ToArray();
+    }
+
+    public int GetBlockSize(int n)
+    {
+        // TODO: What to do here?
+        if (n + 1 == sortedValidBlockOffsets.Length)
+            return TotalFileSize - sortedValidBlockOffsets[n];
+        if (n + 1 >= sortedValidBlockOffsets.Length + 1)
+            return 0;
+        var diff = sortedValidBlockOffsets[n + 1] - sortedValidBlockOffsets[n];
+        return diff;
     }
 }
