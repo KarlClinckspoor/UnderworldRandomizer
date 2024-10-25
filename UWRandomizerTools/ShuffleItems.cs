@@ -6,7 +6,7 @@ namespace UWRandomizerTools;
 
 public class ShuffleItems
 {
-    public static void ShuffleAllLevels(ArkLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
+    public static void ShuffleAllLevels(LevLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
     {
         foreach (var block in arkFile.TileMapObjectsBlocks)
         {

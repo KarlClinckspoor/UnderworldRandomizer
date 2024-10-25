@@ -1,5 +1,7 @@
 ﻿using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEVdotARK.Blocks;
+using System.Linq;
+using System.Diagnostics;
 
 namespace UWRandomizerEditor.LEVdotARK;
 
@@ -16,7 +18,7 @@ namespace UWRandomizerEditor.LEVdotARK;
 /// * Empty blocks
 ///
 /// </summary>
-public class ArkLoader : IBufferObject
+public class LevLoader : IBufferObject
 {
     public const int NumOfLevels = 9; // In UW1
 
@@ -25,17 +27,66 @@ public class ArkLoader : IBufferObject
     {
         get
         {
-            ReconstructBuffer(); // Currently I've inlined this function here.
-            var tempList = new List<byte>();
-            header.ReconstructBuffer();
-            tempList.AddRange(header.Buffer);
+            // Reconstruct the header by the sizes of the blocks, which *can* be in whatever offsets, from recent studies.
+            var newHeaderBuffer = new List<byte>();
+            var offsetList = new List<int>();
+            int previousOffset = header.Buffer.Length;
+
+            ushort numEntries = (ushort) blocks.Length;
+            byte numEntriesLB = (byte)(numEntries & 0xFF);
+            byte numEntriesUB = (byte)((numEntries >> 8) & 0xFF);
+            newHeaderBuffer.Add(numEntriesLB);
+            newHeaderBuffer.Add(numEntriesUB);
+
+            // Loop through blocks that have some content
+            List<int> validBlockLengths = new();
             foreach (var block in blocks)
             {
-                block.ReconstructBuffer();
-                tempList.AddRange(block.Buffer);
+                if (block.Buffer.Length == 0) continue;
+                validBlockLengths.Add(block.Buffer.Length);
+            }
+            // Cumulative sum of the offsets
+            List<int> validBlockOffsets = new();
+            int acc = header.Buffer.Length;
+            foreach (var length in validBlockLengths)
+            {
+                validBlockOffsets.Add(acc);
+                acc += length;
+            }
+            // Loop through to set the offsets when the block has something
+            int currValidBlockItem = 0;
+            for (int i = 0; i < blocks.Length; i++)
+            {
+                if (blocks[i].Buffer.Length == 0)
+                {
+                    newHeaderBuffer.Add(0);
+                    newHeaderBuffer.Add(0);
+                    newHeaderBuffer.Add(0);
+                    newHeaderBuffer.Add(0);
+                    continue;
+                }
+                var offset = validBlockOffsets[currValidBlockItem];
+                currValidBlockItem++;
+                newHeaderBuffer.Add((byte) ((offset >> (8 * 0)) & 0xFF));
+                newHeaderBuffer.Add((byte) ((offset >> (8 * 1)) & 0xFF));
+                newHeaderBuffer.Add((byte) ((offset >> (8 * 2)) & 0xFF));
+                newHeaderBuffer.Add((byte) ((offset >> (8 * 3)) & 0xFF));
+            }
+            // This still isn't passing the Difficult lev.ark test. I'll have to think this through better.
+
+            var headerBuffer = newHeaderBuffer.ToArray();
+            header.Buffer = headerBuffer;
+
+            // Reconstruct the buffer itself by copying the buffers of the blocks.
+            var tempBufferList = new List<byte>();
+            tempBufferList.AddRange(header.Buffer);
+            foreach (var (offset, block) in System.Linq.Enumerable.Zip<int, Block>(offsetList, blocks))
+            {
+                //Debug.Assert(tempBufferList.Count == offset);
+                tempBufferList.AddRange(block.Buffer);
             }
 
-            var concatbuffers = tempList.ToArray();
+            var concatbuffers = tempBufferList.ToArray();
             concatbuffers.CopyTo(_buffer, 0);
             return _buffer;
         }
@@ -80,7 +131,7 @@ public class ArkLoader : IBufferObject
     /// Instantiates a new ArkLoader object using a provided path.
     /// </summary>
     /// <param name="path"></param>
-    public ArkLoader(string path)
+    public LevLoader(string path)
     {
         Path = path;
         if (!File.Exists(path))
@@ -88,7 +139,7 @@ public class ArkLoader : IBufferObject
         _buffer = File.ReadAllBytes(path); 
         
         var headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(_buffer);
-        header = new Header(_buffer[0..headerSize]);
+        header = new Header(_buffer[0..headerSize], _buffer.Length);
 
         blocks = new Block[header.NumEntries];
         TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
@@ -105,13 +156,13 @@ public class ArkLoader : IBufferObject
     /// </summary>
     /// <param name="buffer"></param>
     /// <param name="path"></param>
-    public ArkLoader(byte[] buffer, string path)
+    public LevLoader(byte[] buffer, string path)
     {
         Path = path;
         _buffer = buffer;
         
         var headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(_buffer);
-        header = new Header(_buffer[0..headerSize]);
+        header = new Header(_buffer[0..headerSize], _buffer.Length);
         blocks = new Block[header.NumEntries];
         TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
         ObjAnimBlocks = new ObjectAnimationOverlayInfoBlock[NumOfLevels];
@@ -183,6 +234,7 @@ public class ArkLoader : IBufferObject
         }
 
         int blockOffset = header.BlockOffsets[blockNum];
+        int otherBlockOffset = header.GetOffsetForBlock(blockNum);
 
         if (blockOffset == 0)
         {
@@ -206,7 +258,13 @@ public class ArkLoader : IBufferObject
         if ((BlockType == Sections.MapNotes) | (BlockType == Sections.AutomapInfos))
         {
             // TODO: When I'm less tired, check if this will go back in the last block.
-            BlockLength = header.BlockOffsets[BlockNum + 1] - header.BlockOffsets[BlockNum];
+            //var BlockLength1 = header.BlockOffsets[BlockNum + 1] - header.BlockOffsets[BlockNum];
+            BlockLength = header.GetBlockSize(BlockNum);
+            //if (BlockLength1 != BlockLength2)
+            //{
+            //    throw new Exception();
+            //}
+
         }
         else
         {

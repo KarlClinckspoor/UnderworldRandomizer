@@ -26,12 +26,12 @@ public class CompareWithHanksEditor
     // private Stream[] streamsPristine = new Stream[numOfLevels];
     private String[] streamsPristine = new String[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsPristine = new List<List<Dictionary<string, int>>>(numOfLevels);
-    private ArkLoader arkPristine;
+    private LevLoader arkPristine;
 
     // private Stream[] streamsCleaned = new Stream[numOfLevels];
     private String[] streamsCleaned = new String[numOfLevels];
     private List<List<Dictionary<string, int>>> jsonsCleaned = new List<List<Dictionary<string, int>>>(numOfLevels);
-    private ArkLoader arkCleaned;
+    private LevLoader arkCleaned;
 
     public enum PossibleLevArkToTest
     {
@@ -67,14 +67,14 @@ public class CompareWithHanksEditor
                 File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = new ArkLoader(Paths.UW_ArkOriginalPath);
+            arkPristine = new LevLoader(Paths.UW_ArkOriginalPath);
 
             streamsCleaned[blocknum] = File.ReadAllText(
                 Path.Join(Paths.RUT_TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));
             jsonsCleaned.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(
                 streamsCleaned[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkCleaned = new ArkLoader(Paths.UW_ArkOriginalPath);
+            arkCleaned = new LevLoader(Paths.UW_ArkOriginalPath);
         }
     }
 
@@ -99,7 +99,7 @@ public class CompareWithHanksEditor
     }
 
     private void IterateAndCompareAttributesStaticObject(List<Dictionary<string, int>> json, string correctLabel,
-        ArkLoader ark, string compareLabel, int blocknum)
+        LevLoader ark, string compareLabel, int blocknum)
     {
         for (int i = 0; i < json.Count - 1; i++)
         {
@@ -145,10 +145,10 @@ public class CompareWithHanksEditor
     /// <param name="blocknum"></param>
     /// <param name="pristine"></param>
     /// <returns></returns>
-    private Tuple<ArkLoader, List<Dictionary<string, int>>> selectArkAndJson(int blocknum,
+    private Tuple<LevLoader, List<Dictionary<string, int>>> selectArkAndJson(int blocknum,
         PossibleLevArkToTest pristine)
     {
-        ArkLoader ark;
+        LevLoader ark;
         List<Dictionary<string, int>> json;
         if (pristine == PossibleLevArkToTest.pristine)
         {
@@ -161,6 +161,6 @@ public class CompareWithHanksEditor
             ark = arkCleaned;
         }
 
-        return new Tuple<ArkLoader, List<Dictionary<string, int>>>(ark, json);
+        return new Tuple<LevLoader, List<Dictionary<string, int>>>(ark, json);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
+using UWRandomizerEditor.LEV;
 using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 
@@ -173,18 +174,18 @@ public class Tile : IBufferObject, IEquatable<Tile>
 
 
     // TODO: Review this
-    public uint[] XYPos
+    public Point XYPos
     {
         get
         {
-            var row = EntryNum % TileMapMasterObjectListBlock.TileHeight;
-            var col = EntryNum / TileMapMasterObjectListBlock.TileWidth;
-            return new [] {row, col};
+            var row = (int) EntryNum % TileMapMasterObjectListBlock.TileHeight;
+            var col = (int) EntryNum / TileMapMasterObjectListBlock.TileWidth;
+            return new Point(row, col);
         }
     }
 
-    public uint XPos => XYPos[0];
-    public uint YPos => XYPos[1];
+    public int XPos => XYPos.x;
+    public int YPos => XYPos.y;
 
     // TODO: I could add more checks here
     public bool ReconstructBuffer()

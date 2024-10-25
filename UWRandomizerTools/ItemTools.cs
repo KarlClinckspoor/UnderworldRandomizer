@@ -1,26 +1,20 @@
 ﻿using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEVdotARK.Blocks;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
 
 namespace UWRandomizerTools;
 
-public class ItemTools
+public static class ItemTools
 {
     public static List<GameObject> ExtractMovableItems(Tile tile, ItemRandomizationSettings settings)
     {
         return ExtractMovableItems(tile.ObjectChain, settings);
     }
 
-    public static List<GameObject> ExtractMovableItems(UWLinkedList list, ItemRandomizationSettings settings)
+    public static List<GameObject> ExtractMovableItems(UWLinkedList list, IRandoSettings settings)
     {
-        var tempList = new List<GameObject>();
-        foreach (var obj in list)
-        {
-            if (ShouldBeMoved(obj, settings))
-            {
-                tempList.Add(obj);
-            }
-        }
+        var tempList = list.Where(obj => settings.ShouldBeMoved(obj)).ToList();
 
         foreach (var removedObject in tempList)
         {
@@ -30,50 +24,67 @@ public class ItemTools
         return tempList;
     }
 
-    private static bool ShouldBeMoved(GameObject obj, ItemRandomizationSettings settings)
+    public static void ShuffleItemsInAllLevels(LevLoader arkFile, Random RandomInstance,
+        ItemRandomizationSettings settings)
     {
-        // If the object is invalid (idx 0, 1 or in "Free" slot, it should be ignored)
-        if (obj.Invalid) return false;
-        
-        // We have to ignore objects that are in containers
-        if (obj.InContainer) return false;
-        
-        // Then filter by the class
-        bool res;
-        try
+        foreach (var block in arkFile.TileMapObjectsBlocks)
         {
-            res = settings.MovableRulesByClass[obj.GetType()];
-        }
-        catch (KeyNotFoundException)
-        {
-            res = ItemRandomizationSettings.DefaultMovableRuleByClass;
+            ShuffleItemsInOneLevel(block, RandomInstance, settings);
+            block.ReconstructBuffer();
         }
 
-        return res;
+        arkFile.ReconstructBuffer();
     }
-}
 
-public class ItemRandomizationSettings
-{
-    public readonly Dictionary<Type, bool> MovableRulesByClass = new Dictionary<Type, bool>()
+    private static void ShuffleItemsInOneLevel(TileMapMasterObjectListBlock block, Random RandomInstance,
+        ItemRandomizationSettings settings)
     {
-        { typeof(Furniture), false },
-        { typeof(Door), false },
-        { typeof(Trigger), false },
-        { typeof(TexturedGameObject), false },
-        { typeof(MobileObject), false },
-        { typeof(Lock), false },
-        { typeof(Trap), false },
-        { typeof(GameObject), false },
-        { typeof(StaticObject), true },
-        { typeof(QuantityGameObject), true },
-        { typeof(EnchantedArmor), true },
-        { typeof(EnchantedObject), true },
-        { typeof(EnchantedWand), true },
-        { typeof(EnchantedWeapon), true },
-        { typeof(Key), true },
-        { typeof(Container), true},
-    };
+        Stack<GameObject> objectsInLevel = new Stack<GameObject>();
+        foreach (var tile in block.Tiles)
+        {
+            foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
+            {
+                objectsInLevel.Push(obj);
+            }
+        }
 
-    public const bool DefaultMovableRuleByClass = true;
+        while (objectsInLevel.Count > 0)
+        {
+            int chosenTileIdx = RandomInstance.Next(0, block.Tiles.Length);
+            Tile chosenTile = block.Tiles[chosenTileIdx];
+            if (!ShuffleItems.IsTileValid(chosenTile))
+                continue;
+            chosenTile.ObjectChain.Add(objectsInLevel.Pop());
+            chosenTile.MoveObjectsToSameZLevel();
+        }
+
+        block.ReconstructBuffer();
+    }
+
+    private static bool RevealEnchantmentOfItem(GameObject obj, bool verbose = false)
+    {
+        if (obj is MobileObject | obj is TexturedGameObject | obj is Furniture | obj is Door | obj is Trigger |
+            obj is Trap | obj is Key | obj is Lock) return false;
+        
+        if (verbose)
+        {
+            Console.WriteLine($"Changed object {{obj}} enchantment reveal status from {obj.Heading} to 2 (identified)");
+        }
+        obj.Heading = 7;
+        return true;
+    }
+
+    public static void RevealEnchantmentOfAllItems(LevLoader arkFile)
+    {
+        var ctrLevel = 0;
+        var ctrModifications = 0;
+        foreach (var level in arkFile.TileMapObjectsBlocks)
+        {
+            Console.WriteLine($"Evaluating level {ctrLevel}");
+            foreach (var obj in level.StaticObjects)
+            {
+                ctrModifications += RevealEnchantmentOfItem(obj, verbose: true) ? 1 : 0;
+            } 
+        }
+    }
 }

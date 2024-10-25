@@ -13,7 +13,7 @@ namespace RandomizerUnitTests.Tools;
 public class TestMovingItemsInLevel
 {
 
-    private Tile Move10ItemsNearSpawn(ArkLoader arkFile, ItemRandomizationSettings settings)
+    private Tile Move10ItemsNearSpawn(LevLoader arkFile, ItemRandomizationSettings settings)
     {
         var lvl = arkFile.TileMapObjectsBlocks[0];
         var leftTile = lvl.Tiles[159]; // X 31 Y 2
@@ -23,15 +23,15 @@ public class TestMovingItemsInLevel
         int count = 0;
         foreach (var tile in lvl.Tiles)
         {
-            // if (tile.XYPos[0] == 31 & tile.XYPos[1] == 2) continue;
+            // if (tile.XYPos.x == 31 & tile.XYPos.y == 2) continue;
             if (count >= 10)
             {
                 break;
             }
             foreach (var obj in ItemTools.ExtractMovableItems(tile, settings))
             {
-                // TODO: Change XYPos[0] to XPos
-                Console.WriteLine($"Extracted obj {obj.IdxAtObjectArray} from Tile {tile.EntryNum} XY {tile.XYPos[0]}:{tile.XYPos[1]}");
+                // TODO: Change XYPos.x to XPos
+                Console.WriteLine($"Extracted obj {obj.IdxAtObjectArray} from Tile {tile.EntryNum} XY {tile.XYPos.x}:{tile.XYPos.y}");
                 objectsInLevel.Push(obj);
                 count++;
             }
@@ -48,7 +48,7 @@ public class TestMovingItemsInLevel
         leftTile.ReconstructBuffer();
         return leftTile;
     }
-    private Tile MoveSpecificItemsNearSpawn(ArkLoader arkFile, ItemRandomizationSettings settings, bool firstPass)
+    private Tile MoveSpecificItemsNearSpawn(LevLoader arkFile, ItemRandomizationSettings settings, bool firstPass)
     {
         var lvl = arkFile.TileMapObjectsBlocks[0];
         var leftTile = lvl.Tiles[159]; // X 31 Y 2
@@ -63,9 +63,9 @@ public class TestMovingItemsInLevel
         var Tile2 = lvl.Tiles[indexTile2];
         var Tile3 = lvl.Tiles[indexTile3];
 
-        Assert.True(Tile1.XYPos[0] == 26 && Tile1.XYPos[1] == 12);
-        Assert.True(Tile2.XYPos[0] == 28 && Tile2.XYPos[1] == 4);
-        Assert.True(Tile3.XYPos[0] == 38 && Tile3.XYPos[1] == 39);
+        Assert.True(Tile1.XYPos.x == 26 && Tile1.XYPos.y == 12);
+        Assert.True(Tile2.XYPos.x == 28 && Tile2.XYPos.y == 4);
+        Assert.True(Tile3.XYPos.x == 38 && Tile3.XYPos.y == 39);
         
         if (firstPass)
             Assert.True(Tile2.ObjectChain[0].ItemID == 241);
@@ -112,7 +112,7 @@ public class TestMovingItemsInLevel
         var leftTile = MoveSpecificItemsNearSpawn(arkFile, settings, true);
         arkFile.ReconstructBuffer();
         var path = UWRandomizerEditor.Utils.SaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
-        var newArkFile = new ArkLoader(path);
+        var newArkFile = new LevLoader(path);
         
         Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
         Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
@@ -144,7 +144,7 @@ public class TestMovingItemsInLevel
         var leftTile = Move10ItemsNearSpawn(arkFile, settings);
         arkFile.ReconstructBuffer();
         var path = UWRandomizerEditor.Utils.SaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
-        var newArkFile = new ArkLoader(path);
+        var newArkFile = new LevLoader(path);
         
         Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
         Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);

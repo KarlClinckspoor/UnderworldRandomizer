@@ -14,7 +14,7 @@ public class TestRemovingLockFromAllDoorsInArk
     public void TestManualLockRemoval()
     {
         var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
-        var ArkEditor = new ArkLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
+        var ArkEditor = new LevLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
 
         var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
         var doorUnlockedByEditor = (Door) ArkEditor.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -33,7 +33,7 @@ public class TestRemovingLockFromAllDoorsInArk
         var path = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginal, Paths.BufferTestsPath,
             "ark_withdoor1012unlocked.bin");
 
-        var ArkModified = new ArkLoader(path);
+        var ArkModified = new LevLoader(path);
         var doorUnlockedHere = (Door) ArkModified.TileMapObjectsBlocks[0].AllGameObjects[1012];
         Assert.False(doorUnlockedHere.HasLock());
         Assert.True(doorUnlockedHere.Equals(doorUnlockedByEditor));
@@ -50,8 +50,8 @@ public class TestRemovingLockFromAllDoorsInArk
         var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
         var ArkOriginalToModify = Utils.LoadAndAssertOriginalLevArk();
 
-        var ArkCleaned = new ArkLoader(Paths.UW_ArkCleanedPath);
-        var ArkCleanedToModify = new ArkLoader(Paths.UW_ArkCleanedPath);
+        var ArkCleaned = new LevLoader(Paths.UW_ArkCleanedPath);
+        var ArkCleanedToModify = new LevLoader(Paths.UW_ArkCleanedPath);
 
         int countOfLocksRemovedOriginal = RandoTools.RemoveAllDoorReferencesToLocks(ArkOriginalToModify);
         int countOfLocksRemovedCleaned = RandoTools.RemoveAllDoorReferencesToLocks(ArkCleanedToModify);
@@ -66,8 +66,8 @@ public class TestRemovingLockFromAllDoorsInArk
             Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
             "ark_cleaned_nodoors.bin");
 
-        var ArkOriginalModified = new ArkLoader(pathOriginal);
-        var ArkCleanedModified = new ArkLoader(pathCleaned);
+        var ArkOriginalModified = new LevLoader(pathOriginal);
+        var ArkCleanedModified = new LevLoader(pathCleaned);
 
         // Seeing if the buffers were saved correctly and if the buffers were altered in any way
         Assert.AreEqual(Utils.CompareTwoBuffers(ArkOriginalModified.Buffer, ArkOriginalToModify.Buffer).Item1, 0);
