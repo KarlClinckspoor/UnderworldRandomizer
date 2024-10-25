@@ -7,7 +7,7 @@ namespace RandomizerUnitTests.Editor.LEVDotArk;
 // ReSharper disable once InconsistentNaming
 public class HeaderTestUW1
 {
-    private ArkLoader _myArkLoader = null!;
+    private LevLoader _myArkLoader = null!;
     private Header _header = null!;
     private const int ValidEntriesWithInfo = 9 * 3;
     private const int ValidEntries = 45;
@@ -17,7 +17,7 @@ public class HeaderTestUW1
     [SetUp]
     public void SetUp()
     {
-        _myArkLoader = new ArkLoader(Paths.UW_ArkOriginalPath);
+        _myArkLoader = new LevLoader(Paths.UW_ArkOriginalPath);
         _header = _myArkLoader.header;
     }
 

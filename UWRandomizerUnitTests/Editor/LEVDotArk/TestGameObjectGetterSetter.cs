@@ -12,13 +12,13 @@ namespace RandomizerUnitTests.Editor.LEVDotArk;
 public class TestObjectGetterSetter
 {
 #pragma warning disable CS8618
-    private ArkLoader ark;
+    private LevLoader ark;
 #pragma warning restore CS8618
     
     [OneTimeSetUp]
     public void SetUp()
     {
-        ark = new ArkLoader(Paths.UW_ArkOriginalPath);
+        ark = new LevLoader(Paths.UW_ArkOriginalPath);
     }
 
     private byte[] CreateBufferCopy(IBufferObject obj)

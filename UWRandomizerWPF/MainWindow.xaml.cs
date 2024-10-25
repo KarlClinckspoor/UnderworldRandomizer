@@ -13,7 +13,7 @@ namespace UWRandomizerWPF;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private ArkLoader ark;
+    private LevLoader ark;
     private int seed = 42;
     private ItemRandomizationSettings _itemSettings;
 
@@ -29,7 +29,7 @@ public partial class MainWindow : Window
         AddMsgToLog($"Attempting to load lev.ark");
         try
         {
-            ark = new ArkLoader(TxtBoxPathToArk.Text);
+            ark = new LevLoader(TxtBoxPathToArk.Text);
             StackTools.IsEnabled = true;
             BtnSaveChanges.IsEnabled = true;
             AddMsgToLog($"Loaded lev.ark");
@@ -89,7 +89,7 @@ public partial class MainWindow : Window
     private void Btn_BackupLevArk_Click(object sender, RoutedEventArgs e)
     {
         AddMsgToLog($"Saving LEV.ARK as LEV.ARK.BCK.");
-        var tempArk = new ArkLoader(ark.Path);
+        var tempArk = new LevLoader(ark.Path);
         UWRandomizerEditor.Utils.SaveBuffer(tempArk, Path.GetDirectoryName(tempArk.Path), "LEV.ARK.BCK");
     }
 
@@ -125,7 +125,7 @@ public partial class MainWindow : Window
 
             foreach (var tile in block.Tiles)
             {
-                sb.Append($"\tTile: ({tile.XYPos[0]},{tile.XYPos[1]}): ");
+                sb.Append($"\tTile: ({tile.XYPos.x},{tile.XYPos.y}): ");
                 foreach (var obj in tile.ObjectChain)
                 {
                     sb.Append($"({obj.ToString()},{obj.ItemID});");
@@ -149,7 +149,7 @@ public partial class MainWindow : Window
             AddMsgToLog($"Renaming backup to LEV.ARK");
             File.Copy(backupPath, ark.Path);
             AddMsgToLog($"Reloading LEV.ARK");
-            ark = new ArkLoader(ark.Path);
+            ark = new LevLoader(ark.Path);
             return;
         }
         AddMsgToLog("Couldn't find backup file LEV.ARK.BCK. Didn't do anything");

@@ -13,8 +13,8 @@ public class TestWhatUWEditorFixes
     [Category("FishyTests")]
     public void DetectDifferencesAfterLoadingInUltimateEditor()
     {
-        var ArkCleaned = new ArkLoader(Paths.UW_ArkCleanedPath);
-        var ArkCleanedNoDoors = new ArkLoader(Paths.UW_ArkCleanedPath);
+        var ArkCleaned = new LevLoader(Paths.UW_ArkCleanedPath);
+        var ArkCleanedNoDoors = new LevLoader(Paths.UW_ArkCleanedPath);
         var countLocksRemoved =
             RandoTools.RemoveAllDoorReferencesToLocks(ArkCleanedNoDoors); // Assumes this is working correctly
 
@@ -30,7 +30,7 @@ public class TestWhatUWEditorFixes
             Console.ReadLine();
         }
 
-        var ArkCleanedNoDoorsFixed = new ArkLoader(Paths.UWArkCleanedNoDoorsPath_Fixed);
+        var ArkCleanedNoDoorsFixed = new LevLoader(Paths.UWArkCleanedNoDoorsPath_Fixed);
 
         var (countDiffs, positionDiffs) =
             Utils.CompareTwoBuffers(ArkCleanedNoDoors.Buffer, ArkCleanedNoDoorsFixed.Buffer);
