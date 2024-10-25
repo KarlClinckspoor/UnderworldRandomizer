@@ -24,7 +24,7 @@ public static class ItemTools
         return tempList;
     }
 
-    public static void ShuffleItemsInAllLevels(ArkLoader arkFile, Random RandomInstance,
+    public static void ShuffleItemsInAllLevels(LevLoader arkFile, Random RandomInstance,
         ItemRandomizationSettings settings)
     {
         foreach (var block in arkFile.TileMapObjectsBlocks)
@@ -74,7 +74,7 @@ public static class ItemTools
         return true;
     }
 
-    public static void RevealEnchantmentOfAllItems(ArkLoader arkFile)
+    public static void RevealEnchantmentOfAllItems(LevLoader arkFile)
     {
         var ctrLevel = 0;
         var ctrModifications = 0;
