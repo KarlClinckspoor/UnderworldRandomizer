@@ -13,7 +13,7 @@ public class TestLotusTurboEsprit
     [Category("RequiresSettings")]
     public void TestLotus()
     {
-        var AL = new LevLoader(Paths.UW_ArkOriginalPath);
+        var AL = new LevLoader(Paths.UW1_ArkOriginalPath);
         // var obj = AL.TileMapObjectsBlocks[0].StaticObjects[539] as Container;
         if (AL.TileMapObjectsBlocks[0].AllGameObjects[539] is Container cont)
         {

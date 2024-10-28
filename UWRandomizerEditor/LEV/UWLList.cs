@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Data;
 using System.Diagnostics;
+using System.Text;
 using UWRandomizerEditor.LEVdotARK.GameObjects;
 
 namespace UWRandomizerEditor.LEVdotARK;
@@ -490,5 +491,14 @@ public class UWLinkedList: IList<GameObject>
             Add(obj);
         }
 
+    }
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        foreach (var obj in objects)
+        {
+            builder.Append($"{obj.ItemID} (idx={obj.IdxAtObjectArray});");
+        }
+        return builder.ToString();
     }
 }

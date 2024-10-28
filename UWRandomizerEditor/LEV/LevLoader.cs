@@ -80,9 +80,8 @@ public class LevLoader : IBufferObject
             // Reconstruct the buffer itself by copying the buffers of the blocks.
             var tempBufferList = new List<byte>();
             tempBufferList.AddRange(header.Buffer);
-            foreach (var (offset, block) in System.Linq.Enumerable.Zip<int, Block>(offsetList, blocks))
+            foreach (var block in blocks)
             {
-                //Debug.Assert(tempBufferList.Count == offset);
                 tempBufferList.AddRange(block.Buffer);
             }
 

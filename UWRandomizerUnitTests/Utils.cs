@@ -125,7 +125,7 @@ public class Utils
 
     public static LevLoader LoadAndAssertOriginalLevArk(string? path = null)
     {
-        path ??= Paths.UW_ArkOriginalPath;
+        path ??= Paths.UW1_ArkOriginalPath;
         var AL = new LevLoader(path);
         if (!CheckEqualityOfSha256Hash(AL.Buffer, OriginalLevArkSha256Hash))
         {

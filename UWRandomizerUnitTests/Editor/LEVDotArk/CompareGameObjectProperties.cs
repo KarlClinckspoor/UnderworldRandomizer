@@ -63,18 +63,20 @@ public class CompareWithHanksEditor
         for (int blocknum = 0; blocknum < numOfLevels; blocknum++)
         {
             // Jesus this looks ugly. But it's only Loading the jsons into the lists, and the appropriate ArkLoader instances
+            // streamsPristine[blocknum] =
+            //     File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             streamsPristine[blocknum] =
-                File.ReadAllText(Path.Join(Paths.RUT_TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
+                File.ReadAllText(Path.Join(Paths.TestDataPath, @$"PristineUW1\Block{blocknum}_objects.json"));
             jsonsPristine.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(streamsPristine[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkPristine = new LevLoader(Paths.UW_ArkOriginalPath);
+            arkPristine = new LevLoader(Paths.UW1_ArkOriginalPath);
 
             streamsCleaned[blocknum] = File.ReadAllText(
-                Path.Join(Paths.RUT_TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));
+                Path.Join(Paths.TestDataPath, $@"CleanedUW1\Block{blocknum}_objects.json"));
             jsonsCleaned.Add(JsonSerializer.Deserialize<List<Dictionary<string, int>>>(
                 streamsCleaned[blocknum],
                 new JsonSerializerOptions() {AllowTrailingCommas = true}) ?? throw new InvalidOperationException());
-            arkCleaned = new LevLoader(Paths.UW_ArkOriginalPath);
+            arkCleaned = new LevLoader(Paths.UW1_ArkOriginalPath);
         }
     }
 

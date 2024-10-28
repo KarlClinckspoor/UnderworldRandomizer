@@ -14,7 +14,8 @@ public class TestRemovingLockFromAllDoorsInArk
     public void TestManualLockRemoval()
     {
         var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
-        var ArkEditor = new LevLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
+        // var ArkEditor = new LevLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
+        var ArkEditor = new LevLoader(Path.Join(".", @"UW - Doors\Data\Lev.ark"));
 
         var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
         var doorUnlockedByEditor = (Door) ArkEditor.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -50,8 +51,8 @@ public class TestRemovingLockFromAllDoorsInArk
         var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
         var ArkOriginalToModify = Utils.LoadAndAssertOriginalLevArk();
 
-        var ArkCleaned = new LevLoader(Paths.UW_ArkCleanedPath);
-        var ArkCleanedToModify = new LevLoader(Paths.UW_ArkCleanedPath);
+        var ArkCleaned = new LevLoader(Paths.UW1_ArkCleanedPath);
+        var ArkCleanedToModify = new LevLoader(Paths.UW1_ArkCleanedPath);
 
         int countOfLocksRemovedOriginal = RandoTools.RemoveAllDoorReferencesToLocks(ArkOriginalToModify);
         int countOfLocksRemovedCleaned = RandoTools.RemoveAllDoorReferencesToLocks(ArkCleanedToModify);

@@ -17,7 +17,7 @@ public class HeaderTestUW1
     [SetUp]
     public void SetUp()
     {
-        _myArkLoader = new LevLoader(Paths.UW_ArkOriginalPath);
+        _myArkLoader = new LevLoader(Paths.UW1_ArkOriginalPath);
         _header = _myArkLoader.header;
     }
 

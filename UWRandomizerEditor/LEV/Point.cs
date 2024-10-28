@@ -37,6 +37,11 @@ namespace UWRandomizerEditor.LEV
         }
 
         public int[] ToArray() { return new int[] { x, y }; }
+        
+        public override string ToString()
+        {
+            return $"({x}, {y})";
+        }
 
     }
 }

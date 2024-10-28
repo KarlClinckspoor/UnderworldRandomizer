@@ -18,7 +18,7 @@ public class TestObjectGetterSetter
     [OneTimeSetUp]
     public void SetUp()
     {
-        ark = new LevLoader(Paths.UW_ArkOriginalPath);
+        ark = new LevLoader(Paths.UW1_ArkOriginalPath);
     }
 
     private byte[] CreateBufferCopy(IBufferObject obj)

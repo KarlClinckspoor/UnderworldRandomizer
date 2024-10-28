@@ -139,7 +139,7 @@ public class TestCombinationsFile
     [Category("RequiresSettings")]
     public void TestCtorBuffer()
     {
-        var path = Paths.UW_CMBPath;
+        var path = Paths.UW1_CMBPath;
         var combinations = new CombinationsFile(path);
         Assert.True(Utils.CheckEqualityOfSha256Hash(combinations.Buffer, correctSHA256)); // Just to be safe the following are correct
         for (int i = 0; i < stdFile.Combinations.Count; i++)

@@ -12,6 +12,7 @@
     <Authors>UWRandomizerEditor</Authors>
     <Company>UWRandomizerEditor</Company>
     <Product>UWRandomizerEditor</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

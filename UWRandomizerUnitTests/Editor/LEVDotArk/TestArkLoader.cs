@@ -17,12 +17,12 @@ class ArkLoaderTest
     [Test]
     public void CompareLoadSerializeOriginal()
     {
-        var myArkLoader = new LevLoader(Paths.UW_ArkOriginalPath);
+        var myArkLoader = new LevLoader(Paths.UW1_ArkOriginalPath);
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         myArkLoader.ReconstructBuffer();
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         string savedPath =
-            UWRandomizerEditor.Utils.SaveBuffer(myArkLoader, Paths.BufferTestsPath, "reconstructedOriginalArk.bin");
+            UWRandomizerEditor.Utils.SaveBuffer(myArkLoader, Paths.TestDataOutput, "reconstructedOriginalArk.bin");
 
         // Reloading and checking if everything was saved correctly.
         var myArkLoader2 = new LevLoader(savedPath);
@@ -37,7 +37,7 @@ class ArkLoaderTest
     [Test]
     public void CompareLoadSerializeDifficult()
     {
-        var myArkLoader = new LevLoader(Paths.UW_ArkDifficultPath);
+        var myArkLoader = new LevLoader(Paths.UW1_ArkDifficultPath);
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
         myArkLoader.ReconstructBuffer();
         Assert.True(Utils.CheckEqualityOfSha256Hash(myArkLoader.Buffer, Utils.OriginalLevArkSha256Hash));
@@ -60,8 +60,8 @@ class ArkLoaderTest
     [Test]
     public void TestReconstructBufferCleaned()
     {
-        var AL = new LevLoader(Paths.UW_ArkCleanedPath);
-        var AL_Unreconstructed = new LevLoader(Paths.UW_ArkCleanedPath);
+        var AL = new LevLoader(Paths.UW1_ArkCleanedPath);
+        var AL_Unreconstructed = new LevLoader(Paths.UW1_ArkCleanedPath);
         AL.ReconstructBuffer();
         var (diffs, positions) = Utils.CompareTwoBuffers(AL.Buffer, AL_Unreconstructed.Buffer);
         Assert.True(diffs == 0);
@@ -81,7 +81,7 @@ class ArkLoaderTest
     [Test]
     public void TestSpecificObjectProperties()
     {
-        var AL = new LevLoader(Paths.UW_ArkOriginalPath);
+        var AL = new LevLoader(Paths.UW1_ArkOriginalPath);
         // Testing Lvl1 starting bag
         var lvl1 = AL.TileMapObjectsBlocks[0];
 
