@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 public class Key : StaticObject
 {

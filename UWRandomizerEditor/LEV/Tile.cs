@@ -2,10 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
 using UWRandomizerEditor.LEV;
-using UWRandomizerEditor.LEVdotARK.Blocks;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEV.Blocks;
+using UWRandomizerEditor.LEV.GameObjects;
 
-namespace UWRandomizerEditor.LEVdotARK;
+namespace UWRandomizerEditor.LEV;
 
 public class Tile : IBufferObject, IEquatable<Tile>
 {

@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEV;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests.Editor.LEV;
 
 [TestFixture]
 public class TestTileInfo

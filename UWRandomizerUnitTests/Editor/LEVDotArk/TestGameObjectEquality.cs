@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEV.GameObjects;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests.Editor.LEV;
 
 [TestFixture]
 class TestGameObjectEquality

@@ -1,6 +1,6 @@
-﻿using UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿using UWRandomizerEditor.LEV.GameObjects;
 
-namespace UWRandomizerEditor.LEVdotARK.Blocks;
+namespace UWRandomizerEditor.LEV.Blocks;
 
 // TODO: Separate this into TileMap and Object List...?
 public partial class TileMapMasterObjectListBlock 

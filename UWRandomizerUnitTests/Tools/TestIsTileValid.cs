@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEV;
 using UWRandomizerTools;
 
 namespace RandomizerUnitTests.Tools;
@@ -14,7 +14,7 @@ public class TestIsTileValid
     {
         for (uint i = 0; i < 64*64; i++)
         {
-            var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEVdotARK.Tile.FixedSize, levelNumber) {TileType = (uint) UWRandomizerEditor.LEVdotARK.Tile.TileTypes.Open};
+            var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEV.Tile.FixedSize, levelNumber) {TileType = (uint) UWRandomizerEditor.LEV.Tile.TileTypes.Open};
             if (((Tile.XPos>= 30) & (Tile.XPos <= 33) & (Tile.YPos >= 30) & (Tile.YPos <= 33))) 
                 Assert.False(ShuffleItems.IsTileValid(Tile));
             else
@@ -75,7 +75,7 @@ public class TestIsTileValid
             
         for (uint i = 0; i < 64 * 64; i++)
         {
-            var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEVdotARK.Tile.FixedSize, 6) {TileType = (uint) UWRandomizerEditor.LEVdotARK.Tile.TileTypes.Open};
+            var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEV.Tile.FixedSize, 6) {TileType = (uint) UWRandomizerEditor.LEV.Tile.TileTypes.Open};
             if (invalidPositions.Any(x=>x.SequenceEqual(Tile.XYPos.ToArray())))
                 Assert.False(ShuffleItems.IsTileValid(Tile));
             else
@@ -88,7 +88,7 @@ public class TestIsTileValid
     {
         for (uint i = 0; i < 64 * 64; i++)
         {
-            var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEVdotARK.Tile.FixedSize, 7) {TileType = (uint) UWRandomizerEditor.LEVdotARK.Tile.TileTypes.Open};
+            var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEV.Tile.FixedSize, 7) {TileType = (uint) UWRandomizerEditor.LEV.Tile.TileTypes.Open};
             if ((Tile.XPos >= 29) & (Tile.XPos <= 35) & (Tile.YPos >= 30) & (Tile.YPos <= 35))
                 Assert.False(ShuffleItems.IsTileValid(Tile), $"X:{Tile.XPos} Y:{Tile.YPos}");
             else if (Tile.XPos >= 31 & Tile.XPos <= 33 & Tile.YPos == 29)

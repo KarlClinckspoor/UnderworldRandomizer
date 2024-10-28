@@ -1,9 +1,9 @@
 using UWRandomizerEditor.Interfaces;
-using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEV.Blocks;
 
 // TODO: What about empty entries? And the null entry (id = 0)?
 // TODO: Add checks that prevent modification if id=0.
-namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+namespace UWRandomizerEditor.LEV.GameObjects;
 
 public abstract class GameObject : IEquatable<GameObject>, IBufferObject
 {

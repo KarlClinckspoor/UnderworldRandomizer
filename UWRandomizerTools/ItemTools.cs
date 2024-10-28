@@ -1,7 +1,7 @@
-﻿using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.Blocks;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
-using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+﻿using UWRandomizerEditor.LEV;
+using UWRandomizerEditor.LEV.Blocks;
+using UWRandomizerEditor.LEV.GameObjects;
+using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 namespace UWRandomizerTools;
 

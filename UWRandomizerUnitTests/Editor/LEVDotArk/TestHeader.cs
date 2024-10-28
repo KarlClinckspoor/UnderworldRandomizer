@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEV;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests.Editor.LEV;
 
 [Category("RequiresSettings")]
 // ReSharper disable once InconsistentNaming

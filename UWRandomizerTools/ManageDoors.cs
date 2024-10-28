@@ -1,5 +1,5 @@
-﻿using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+﻿using UWRandomizerEditor.LEV;
+using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 namespace UWRandomizerTools;
 

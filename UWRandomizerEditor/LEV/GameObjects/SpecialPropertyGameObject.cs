@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿namespace UWRandomizerEditor.LEV.GameObjects;
 
 // is_quant is true, quantity > 512 (special property)
 public class SpecialPropertyGameObject : StaticObject

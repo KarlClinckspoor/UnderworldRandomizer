@@ -2,10 +2,10 @@
 using System.Linq;
 using NUnit.Framework;
 using UWRandomizerEditor.Interfaces;
-using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEV;
+using UWRandomizerEditor.LEV.GameObjects;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests.Editor.LEV;
 
 [TestFixture]
 [Category("RequiresSettings")]

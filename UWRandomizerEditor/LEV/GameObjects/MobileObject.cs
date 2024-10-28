@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿namespace UWRandomizerEditor.LEV.GameObjects;
 
 /// <summary>
 /// Class that describes Mobile Objects (e.g. NPCs). Inheritance should use the parameterless constructor because of the virtual methods to update buffer/entries.

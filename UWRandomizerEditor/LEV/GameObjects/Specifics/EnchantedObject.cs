@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 // Todo: Get enchantment name in strings chunk 5
 // Todo: create an enum or something with spell names, and their indices, to use here.

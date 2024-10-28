@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.Blocks;
+﻿namespace UWRandomizerEditor.LEV.Blocks;
 
 /// <summary>
 /// Block that stores map notes. Its length is 0 if there are no block notes

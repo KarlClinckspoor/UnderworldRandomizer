@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿namespace UWRandomizerEditor.LEV.GameObjects;
 
 /// <summary>
 /// This is essentially the same as GameObject, but I decided to have it separate for semantic reasons.

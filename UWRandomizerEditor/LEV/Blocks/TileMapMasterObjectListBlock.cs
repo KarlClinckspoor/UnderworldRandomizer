@@ -1,9 +1,9 @@
 ﻿using System.Data;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEV.GameObjects;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 
-namespace UWRandomizerEditor.LEVdotARK.Blocks;
+namespace UWRandomizerEditor.LEV.Blocks;
 
 public partial class TileMapMasterObjectListBlock : Block
 {

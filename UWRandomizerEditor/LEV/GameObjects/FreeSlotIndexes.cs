@@ -1,7 +1,7 @@
 ﻿using UWRandomizerEditor.Interfaces;
-using UWRandomizerEditor.LEVdotARK.Blocks;
+using UWRandomizerEditor.LEV.Blocks;
 
-namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+namespace UWRandomizerEditor.LEV.GameObjects;
 
 public class FreeSlotIndexes : IBufferObject
 {

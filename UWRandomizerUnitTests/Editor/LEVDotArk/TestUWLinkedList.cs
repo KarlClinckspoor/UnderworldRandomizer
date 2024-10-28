@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
-using UWRandomizerEditor.LEVdotARK;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
-using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+using UWRandomizerEditor.LEV;
+using UWRandomizerEditor.LEV.GameObjects;
+using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests.Editor.LEV;
 
 [TestFixture]
 public class TestUWLinkedList

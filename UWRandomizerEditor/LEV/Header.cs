@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UWRandomizerEditor.Interfaces;
 
-namespace UWRandomizerEditor.LEVdotARK;
+namespace UWRandomizerEditor.LEV;
 
 /// <summary>
 /// A small class that contains the header of a lev.ark file. The header is composed of a short with the number of

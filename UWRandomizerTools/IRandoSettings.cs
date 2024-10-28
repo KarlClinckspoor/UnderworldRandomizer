@@ -1,4 +1,4 @@
-﻿using UWRandomizerEditor.LEVdotARK.GameObjects;
+﻿using UWRandomizerEditor.LEV.GameObjects;
 
 namespace UWRandomizerTools;
 

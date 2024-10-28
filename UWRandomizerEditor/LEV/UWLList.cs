@@ -2,9 +2,9 @@
 using System.Data;
 using System.Diagnostics;
 using System.Text;
-using UWRandomizerEditor.LEVdotARK.GameObjects;
+using UWRandomizerEditor.LEV.GameObjects;
 
-namespace UWRandomizerEditor.LEVdotARK;
+namespace UWRandomizerEditor.LEV;
 
 /// <summary>
 /// A UWLinkedList is used to keep items that belong to a tile, container or npc updated as items are added or removed

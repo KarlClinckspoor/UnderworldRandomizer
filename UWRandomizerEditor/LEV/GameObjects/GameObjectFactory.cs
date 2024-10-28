@@ -1,7 +1,7 @@
-﻿using UWRandomizerEditor.LEVdotARK.Blocks;
-using UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+﻿using UWRandomizerEditor.LEV.Blocks;
+using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
-namespace UWRandomizerEditor.LEVdotARK.GameObjects;
+namespace UWRandomizerEditor.LEV.GameObjects;
 
 /// <summary>
 /// This class controls the creation of game objects based upon their id and a large reference table.

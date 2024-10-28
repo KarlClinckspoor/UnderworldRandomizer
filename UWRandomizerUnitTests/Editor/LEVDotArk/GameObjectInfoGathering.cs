@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using UWRandomizerEditor.LEVdotARK;
+using UWRandomizerEditor.LEV;
 
-namespace RandomizerUnitTests.Editor.LEVDotArk;
+namespace RandomizerUnitTests.Editor.LEV;
 
 /// <summary>
 /// The purpose of this is to evaluate properties of the GameObjects and see if I'm implementing the free slots and

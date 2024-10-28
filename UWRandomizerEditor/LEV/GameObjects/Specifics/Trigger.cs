@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.LEVdotARK.GameObjects.Specifics;
+﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 // TODO: special link or special property?
 public class Trigger : SpecialLinkGameObject
