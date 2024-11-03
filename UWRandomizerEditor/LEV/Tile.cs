@@ -178,14 +178,14 @@ public class Tile : IBufferObject, IEquatable<Tile>
     {
         get
         {
-            var row = (int) EntryNum % TileMapMasterObjectListBlock.TileHeight;
-            var col = (int) EntryNum / TileMapMasterObjectListBlock.TileWidth;
+            var row = (int) EntryNum % MapObjBlock.TileHeight;
+            var col = (int) EntryNum / MapObjBlock.TileWidth;
             return new Point(row, col);
         }
     }
 
-    public int XPos => XYPos.x;
-    public int YPos => XYPos.y;
+    public int Row => XYPos.Row;
+    public int Column => XYPos.Column;
 
     // TODO: I could add more checks here
     public bool ReconstructBuffer()

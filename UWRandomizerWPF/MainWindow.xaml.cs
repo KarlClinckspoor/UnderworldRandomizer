@@ -125,7 +125,7 @@ public partial class MainWindow : Window
 
             foreach (var tile in block.Tiles)
             {
-                sb.Append($"\tTile: ({tile.XYPos.x},{tile.XYPos.y}): ");
+                sb.Append($"\tTile: ({tile.XYPos.Row},{tile.XYPos.Column}): ");
                 foreach (var obj in tile.ObjectChain)
                 {
                     sb.Append($"({obj.ToString()},{obj.ItemID});");

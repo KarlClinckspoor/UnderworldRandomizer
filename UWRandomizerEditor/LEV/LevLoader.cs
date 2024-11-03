@@ -100,7 +100,7 @@ public class LevLoader : IBufferObject
 
     public Header header;
     public Block[] blocks;
-    public TileMapMasterObjectListBlock[] TileMapObjectsBlocks;
+    public MapObjBlock[] TileMapObjectsBlocks;
     public ObjectAnimationOverlayInfoBlock[] ObjAnimBlocks;
     public TextureMappingBlock[] TextMapBlocks;
     public AutomapInfosBlock[] AutomapBlocks;
@@ -118,7 +118,7 @@ public class LevLoader : IBufferObject
 
     IDictionary<Sections, int> BlockLengths = new Dictionary<Sections, int>()
     {
-        {Sections.LevelTilemapObjlist, TileMapMasterObjectListBlock.FixedBlockLength},
+        {Sections.LevelTilemapObjlist, MapObjBlock.FixedBlockLength},
         {Sections.ObjectAnimOverlayInfo, ObjectAnimationOverlayInfoBlock.FixedBlockLength},
         {Sections.TextureMappings, TextureMappingBlock.FixedBlockLength},
         {Sections.AutomapInfos, 0},
@@ -141,7 +141,7 @@ public class LevLoader : IBufferObject
         header = new Header(_buffer[0..headerSize], _buffer.Length);
 
         blocks = new Block[header.NumEntries];
-        TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
+        TileMapObjectsBlocks = new MapObjBlock[NumOfLevels];
         ObjAnimBlocks = new ObjectAnimationOverlayInfoBlock[NumOfLevels];
         TextMapBlocks = new TextureMappingBlock[NumOfLevels];
         AutomapBlocks = new AutomapInfosBlock[NumOfLevels];
@@ -163,7 +163,7 @@ public class LevLoader : IBufferObject
         var headerSize = Header.blockNumSize + Header.blockOffsetSize * Header.NumEntriesFromBuffer(_buffer);
         header = new Header(_buffer[0..headerSize], _buffer.Length);
         blocks = new Block[header.NumEntries];
-        TileMapObjectsBlocks = new TileMapMasterObjectListBlock[NumOfLevels];
+        TileMapObjectsBlocks = new MapObjBlock[NumOfLevels];
         ObjAnimBlocks = new ObjectAnimationOverlayInfoBlock[NumOfLevels];
         TextMapBlocks = new TextureMappingBlock[NumOfLevels];
         AutomapBlocks = new AutomapInfosBlock[NumOfLevels];
@@ -191,7 +191,7 @@ public class LevLoader : IBufferObject
 
             switch (block)
             {
-                case TileMapMasterObjectListBlock tilemap:
+                case MapObjBlock tilemap:
                     TileMapObjectsBlocks[currBlockTypeCount] = tilemap;
                     break;
                 case ObjectAnimationOverlayInfoBlock obj:
@@ -274,7 +274,7 @@ public class LevLoader : IBufferObject
         switch (BlockType)
         {
             case Sections.LevelTilemapObjlist:
-                return new TileMapMasterObjectListBlock(buffer, levelnumber);
+                return new MapObjBlock(buffer, levelnumber);
             case Sections.ObjectAnimOverlayInfo:
                 return new ObjectAnimationOverlayInfoBlock(buffer, levelnumber);
             case Sections.TextureMappings:

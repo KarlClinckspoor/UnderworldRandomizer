@@ -3,16 +3,16 @@ using UWRandomizerEditor.LEV.Blocks;
 
 namespace UWRandomizerEditor.LEV.GameObjects;
 
-public class FreeSlotIndexes : IBufferObject
+public class IdxOfFreeObj : IBufferObject
 {
-    public const int FixedSize = TileMapMasterObjectListBlock.FreeListStaticObjectsEntrySize;
+    public const int FixedSize = MapObjBlock.FreeListStaticObjectsEntrySize;
     public byte[] Buffer { get; set; } = new byte[FixedSize];
 
     /// <summary>
     /// Index of the GameObject at a TileMapMasterObjectListBlock's AllGameObjects.
     /// Therefore, it can refer either to a StaticObject or MobileObject.
     /// </summary>
-    public ushort IdxAtFullArray
+    public ushort Value
     {
         get => BitConverter.ToUInt16(Buffer);
         set
@@ -22,9 +22,10 @@ public class FreeSlotIndexes : IBufferObject
         }
     }
 
+    // TODO: is this field really necessary?
     public readonly int EntryNum;
 
-    public FreeSlotIndexes(byte[] buffer, int entryNum)
+    public IdxOfFreeObj(byte[] buffer, int entryNum)
     {
         if (Buffer.Length != FixedSize)
         {
@@ -34,9 +35,9 @@ public class FreeSlotIndexes : IBufferObject
         EntryNum = entryNum;
     }
 
-    public FreeSlotIndexes(ushort idxAtFullArray, int entryNum)
+    public IdxOfFreeObj(ushort value, int entryNum)
     {
-        IdxAtFullArray = idxAtFullArray;
+        Value = value;
         EntryNum = entryNum;
     }
 
@@ -47,6 +48,6 @@ public class FreeSlotIndexes : IBufferObject
 
     public override string ToString()
     {
-        return $"FreeSlotNr{EntryNum}({IdxAtFullArray})";
+        return $"FreeSlotNr{EntryNum}({Value})";
     }
 }

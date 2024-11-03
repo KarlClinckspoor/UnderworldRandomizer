@@ -8,22 +8,22 @@ namespace UWRandomizerEditor.LEV
 {
     public class Point
     {
-        public int x;
-        public int y;
-        public Point(int x, int y)
+        public int Row;
+        public int Column;
+        public Point(int row, int column)
         {
-            this.x = x;
-            this.y = y;
+            this.Row = row;
+            this.Column = column;
         }
 
         public static Point operator +(Point a, Point b)
         {
-            return new Point(a.x + b.x, a.y + b.y);
+            return new Point(a.Row + b.Row, a.Column + b.Column);
         }
 
         public static Point operator -(Point a, Point b)
         {
-            return new Point(a.x - b.x, a.y - b.y);
+            return new Point(a.Row - b.Row, a.Column - b.Column);
         }
 
         public double DistanceTo(Point other)
@@ -33,14 +33,14 @@ namespace UWRandomizerEditor.LEV
 
         public static double DistanceBetween(Point a, Point b)
         {
-            return Math.Sqrt( (a.x - b.x) ^ 2+ (a.y - b.y) ^ 2 );
+            return Math.Sqrt( (a.Row - b.Row) ^ 2+ (a.Column - b.Column) ^ 2 );
         }
 
-        public int[] ToArray() { return new int[] { x, y }; }
+        public int[] ToArray() { return new int[] { Row, Column }; }
         
         public override string ToString()
         {
-            return $"({x}, {y})";
+            return $"({Row}, {Column})";
         }
 
     }

@@ -51,24 +51,24 @@ public class GameObjectInfoGathering
             var block = AL.TileMapObjectsBlocks[lvl];
             extraCSVcontent.AppendLine(
                                        $"{block.LevelNumber};" +
-                                       $"{block.FirstFreeMobileSlot};" +
-                                       $"{block.FirstFreeStaticSlot};" +
-                                       $"{block.AllFreeObjectSlots[block.FirstFreeMobileSlot]};" +
-                                       $"{block.AllFreeObjectSlots[block.FirstFreeStaticSlot]};" +
-                                       $"{block.FirstFreeMobileObjectIdx};" +
-                                       $"{block.FirstFreeStaticObjectIdx};" +
-                                       $"{block.FirstFreeMobileObject.IdxAtObjectArray};" +
-                                       $"{block.FirstFreeStaticObject.IdxAtObjectArray}"
+                                       $"{block.IdxLookupOfFreeMobileObject};" +
+                                       $"{block.IdxLookupOfFreeStaticObject};" +
+                                       $"{block.IndicesOfFreeObjects[block.IdxLookupOfFreeMobileObject]};" +
+                                       $"{block.IndicesOfFreeObjects[block.IdxLookupOfFreeStaticObject]};" +
+                                       $"{block.IdxOfFreeMobileObject};" +
+                                       $"{block.IdxOfFreeStaticObject};" +
+                                       $"{block.CurrentFreeMobileObject.IdxAtObjectArray};" +
+                                       $"{block.CurrentFreeStaticObject.IdxAtObjectArray}"
                                        );
             
             foreach (var gameObject in block.AllGameObjects)
             {
-                var isReferencedByFreeSlot = block.AllFreeObjectSlots.Any(x => x.IdxAtFullArray == gameObject.IdxAtObjectArray);
+                var isReferencedByFreeSlot = block.IndicesOfFreeObjects.Any(x => x == gameObject.IdxAtObjectArray);
                 var whichTileReferencesGameObject =
                     block.Tiles
                         .Where(x => x.ObjectChain.Any(
                             y => y.IdxAtObjectArray == gameObject.IdxAtObjectArray)
-                        ).Select(x => $"{x.XPos},{x.YPos}");
+                        ).Select(x => $"{x.Row},{x.Column}");
                 mainCSVcontent.AppendLine(
                     $"{lvl};" +
                     $"{gameObject.IdxAtObjectArray};" +

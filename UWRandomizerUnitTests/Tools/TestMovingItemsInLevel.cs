@@ -62,9 +62,9 @@ public class TestMovingItemsInLevel
         var Tile2 = lvl.Tiles[indexTile2];
         var Tile3 = lvl.Tiles[indexTile3];
 
-        Assert.True(Tile1.XYPos.x == 26 && Tile1.XYPos.y == 12);
-        Assert.True(Tile2.XYPos.x == 28 && Tile2.XYPos.y == 4);
-        Assert.True(Tile3.XYPos.x == 38 && Tile3.XYPos.y == 39);
+        Assert.True(Tile1.XYPos.Row == 26 && Tile1.XYPos.Column == 12);
+        Assert.True(Tile2.XYPos.Row == 28 && Tile2.XYPos.Column == 4);
+        Assert.True(Tile3.XYPos.Row == 38 && Tile3.XYPos.Column == 39);
         
         if (firstPass)
             Assert.True(Tile2.ObjectChain[0].ItemID == 241);

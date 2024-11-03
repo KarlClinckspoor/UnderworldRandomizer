@@ -17,7 +17,7 @@ public class ShuffleItems
         arkFile.ReconstructBuffer();
     }
 
-    public static void ShuffleItemsInLevel(TileMapMasterObjectListBlock block, Random RandomInstance, ItemRandomizationSettings settings)
+    public static void ShuffleItemsInLevel(MapObjBlock block, Random RandomInstance, ItemRandomizationSettings settings)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();
         foreach (var tile in block.Tiles)
@@ -120,8 +120,8 @@ public class ShuffleItems
         uint topRightX, uint bottomLeftY)
     {
         if (
-            (tile.XPos >= topLeftX & tile.XPos <= topRightX) &
-            (tile.YPos >= bottomLeftY & tile.YPos <= topLeftY)
+            (tile.Row >= topLeftX & tile.Row <= topRightX) &
+            (tile.Column >= bottomLeftY & tile.Column <= topLeftY)
         )
         {
             return true;

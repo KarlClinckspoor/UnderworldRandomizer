@@ -15,7 +15,7 @@ public class TestIsTileValid
         for (uint i = 0; i < 64*64; i++)
         {
             var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEV.Tile.FixedSize, levelNumber) {TileType = (uint) UWRandomizerEditor.LEV.Tile.TileTypes.Open};
-            if (((Tile.XPos>= 30) & (Tile.XPos <= 33) & (Tile.YPos >= 30) & (Tile.YPos <= 33))) 
+            if (((Tile.Row>= 30) & (Tile.Row <= 33) & (Tile.Column >= 30) & (Tile.Column <= 33))) 
                 Assert.False(ShuffleItems.IsTileValid(Tile));
             else
                 Assert.True(ShuffleItems.IsTileValid(Tile));
@@ -89,12 +89,12 @@ public class TestIsTileValid
         for (uint i = 0; i < 64 * 64; i++)
         {
             var Tile = new Tile(i, 0, i * UWRandomizerEditor.LEV.Tile.FixedSize, 7) {TileType = (uint) UWRandomizerEditor.LEV.Tile.TileTypes.Open};
-            if ((Tile.XPos >= 29) & (Tile.XPos <= 35) & (Tile.YPos >= 30) & (Tile.YPos <= 35))
-                Assert.False(ShuffleItems.IsTileValid(Tile), $"X:{Tile.XPos} Y:{Tile.YPos}");
-            else if (Tile.XPos >= 31 & Tile.XPos <= 33 & Tile.YPos == 29)
-                Assert.False(ShuffleItems.IsTileValid(Tile), $"X:{Tile.XPos} Y:{Tile.YPos}");
+            if ((Tile.Row >= 29) & (Tile.Row <= 35) & (Tile.Column >= 30) & (Tile.Column <= 35))
+                Assert.False(ShuffleItems.IsTileValid(Tile), $"X:{Tile.Row} Y:{Tile.Column}");
+            else if (Tile.Row >= 31 & Tile.Row <= 33 & Tile.Column == 29)
+                Assert.False(ShuffleItems.IsTileValid(Tile), $"X:{Tile.Row} Y:{Tile.Column}");
             else
-                Assert.True(ShuffleItems.IsTileValid(Tile), $"X:{Tile.XPos} Y:{Tile.YPos}");
+                Assert.True(ShuffleItems.IsTileValid(Tile), $"X:{Tile.Row} Y:{Tile.Column}");
         }
     }
 }

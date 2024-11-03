@@ -13,7 +13,7 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     public const int FixedBufferLength = NumberOfFields * SizeOfFields;
 
     /// <summary>
-    /// References the <see cref="TileMapMasterObjectListBlock.AllGameObjects"/> array
+    /// References the <see cref="MapObjBlock.AllGameObjects"/> array
     /// </summary>
     public ushort IdxAtObjectArray;
 
@@ -84,9 +84,9 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
         // Otherwise, will use these conditions will always yield an invalid object.
         if (IdxAtObjectArray == 0 | IdxAtObjectArray == 1)
             return true;
-        if (this is MobileObject & IdxAtObjectArray >= TileMapMasterObjectListBlock.MobileObjectNum)
+        if (this is MobileObject & IdxAtObjectArray >= MapObjBlock.MobileObjectNum)
             return true;
-        if (this is StaticObject & IdxAtObjectArray < TileMapMasterObjectListBlock.MobileObjectNum)
+        if (this is StaticObject & IdxAtObjectArray < MapObjBlock.MobileObjectNum)
             return true;
         return false;
     }

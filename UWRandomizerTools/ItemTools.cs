@@ -36,7 +36,7 @@ public static class ItemTools
         arkFile.ReconstructBuffer();
     }
 
-    private static void ShuffleItemsInOneLevel(TileMapMasterObjectListBlock block, Random RandomInstance,
+    private static void ShuffleItemsInOneLevel(MapObjBlock block, Random RandomInstance,
         ItemRandomizationSettings settings)
     {
         Stack<GameObject> objectsInLevel = new Stack<GameObject>();

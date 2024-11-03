@@ -27,6 +27,6 @@ public class LevEditor
     public GameObject RemoveItem(int level, Point position, int ID) { throw new NotImplementedException(); }
     public int RemoveItem(GameObject item, int level) { throw new NotImplementedException(); }
     public (int lvlNumber, int index) FindItem(GameObject item) { throw new NotImplementedException(); }
-    public (int lvlNumber, int index, GameObject obj) FindItemByID(int id) { throw new NotImplementedException(); }
+    public (int lvlNumber, int index, GameObject obj) FindAnyItemWithID(int id) { throw new NotImplementedException(); }
 
 }

@@ -16,16 +16,16 @@ public class CompareWithUWdump
         var problematicObject = AL.TileMapObjectsBlocks[4].AllGameObjects[0x01a9];
         var shouldBeFreeObject = AL.TileMapObjectsBlocks[4].AllGameObjects[0x01a7];
         var coinID = 160;
-        var temp1 = AL.TileMapObjectsBlocks[4].FreeMobileObjIndexes.ToList();
-        var temp2 = AL.TileMapObjectsBlocks[4].FreeStaticObjIndexes.ToList();
+        var temp1 = AL.TileMapObjectsBlocks[4].IndicesOfFreeMobileObjects.ToList();
+        var temp2 = AL.TileMapObjectsBlocks[4].IndicesOfFreeStaticObjects.ToList();
         var temp3 = temp1.Concat(temp2).ToList();
 
         temp3.Add(0);
 
-        Console.WriteLine(AL.TileMapObjectsBlocks[4].FirstFreeMobileSlot);
-        Console.WriteLine(AL.TileMapObjectsBlocks[4].FirstFreeMobileObjectIdx);
-        Console.WriteLine(AL.TileMapObjectsBlocks[4].FirstFreeStaticSlot);
-        Console.WriteLine(AL.TileMapObjectsBlocks[4].FirstFreeStaticObjectIdx);
+        Console.WriteLine(AL.TileMapObjectsBlocks[4].IdxLookupOfFreeMobileObject);
+        Console.WriteLine(AL.TileMapObjectsBlocks[4].IdxOfFreeMobileObject);
+        Console.WriteLine(AL.TileMapObjectsBlocks[4].IdxLookupOfFreeStaticObject);
+        Console.WriteLine(AL.TileMapObjectsBlocks[4].IdxOfFreeStaticObject);
         var nums = new ushort[]
         {
             0x0000, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 0x0008, 0x0009, 0x000a, 0x000b, 0x000c, 0x000d, 0x000e, 0x000f, 0x0010,

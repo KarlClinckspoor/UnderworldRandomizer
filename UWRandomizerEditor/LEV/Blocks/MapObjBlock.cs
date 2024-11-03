@@ -1,11 +1,12 @@
 ﻿using System.Data;
 using UWRandomizerEditor.LEV.GameObjects;
+using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 // ReSharper disable AccessToStaticMemberViaDerivedType
 
 namespace UWRandomizerEditor.LEV.Blocks;
 
-public partial class TileMapMasterObjectListBlock : Block
+public partial class MapObjBlock : Block
 {
     /// <summary>
     /// Contains all tiles in a continuous array
@@ -66,50 +67,62 @@ public partial class TileMapMasterObjectListBlock : Block
         }
     }
 
-    private FreeSlotIndexes[] _freeMobileObjectSlots = new FreeSlotIndexes[FreeMobileObjectSlotsNumber];
+    private ushort[] _indicesOfFreeMobileObjects = new ushort[NumOfFreeMobileObjects];
+    // private IdxOfFreeObj[] _indicesOfFreeMobileObjects = new IdxOfFreeObj[NumOfFreeMobileObjects];
 
-    /// <summary>
-    /// Contains a list of objects that point to the slot in MobileObjects that is "free", i.e. unused.
-    /// </summary>
-    /// <exception cref="ArgumentException">If the array length is different from <see cref="FreeMobileObjectSlotsNumber"/></exception>
-    public FreeSlotIndexes[] FreeMobileObjectSlots
+    // /// <summary>
+    // /// Contains a list of objects that point to the slot in MobileObjects that is "free", i.e. unused.
+    // /// </summary>
+    // /// <exception cref="ArgumentException">If the array length is different from <see cref="NumOfFreeMobileObjects"/></exception>
+    // public IdxOfFreeObj[] IndicesOfFreeMobileObjects
+    // {
+    //     get => _indicesOfFreeMobileObjects;
+    //     private set
+    //     {
+    //         if (value.Length != NumOfFreeMobileObjects)
+    //             throw new ArgumentException($"Length of IndicesIntoFreeSlots should be {NumOfFreeMobileObjects}");
+    //         _indicesOfFreeMobileObjects = value;
+    //     }
+    // }
+    public ushort[] IndicesOfFreeMobileObjects
     {
-        get => _freeMobileObjectSlots;
+        get => _indicesOfFreeMobileObjects;
         private set
         {
-            if (value.Length != FreeMobileObjectSlotsNumber)
-                throw new ArgumentException($"Length of FreeMobileObjectSlots should be {FreeMobileObjectSlotsNumber}");
-            _freeMobileObjectSlots = value;
+            if (value.Length != NumOfFreeMobileObjects)
+                throw new ArgumentException($"Length of IndicesIntoFreeSlots should be {NumOfFreeMobileObjects}");
+            _indicesOfFreeMobileObjects = value;
         }
     }
 
-    private FreeSlotIndexes[] _freeStaticObjectSlots = new FreeSlotIndexes[FreeStaticObjectSlotsNumber];
+    // private IdxOfFreeObj[] _indicesOfFreeStaticObjects = new IdxOfFreeObj[FreeStaticObjectSlotsNumber];
+    private ushort[] _indicesOfFreeStaticObjects = new ushort[FreeStaticObjectSlotsNumber];
 
     /// <summary>
     /// Contains a list of objects that point to the slot in StaticObjects that is "free", i.e. unused.
     /// </summary>
     /// <exception cref="ArgumentException">If the array length is different from <see cref="FreeStaticObjectSlotsNumber"/></exception>
-    public FreeSlotIndexes[] FreeStaticObjectSlots
+    public ushort[] IndicesOfFreeStaticObjects
     {
-        get => _freeStaticObjectSlots;
+        get => _indicesOfFreeStaticObjects;
         private set
         {
             if (value.Length != FreeStaticObjectSlotsNumber)
                 throw new ArgumentException($"Length of FreeStaticObjectSlots should be {FreeStaticObjectSlotsNumber}");
-            _freeStaticObjectSlots = value;
+            _indicesOfFreeStaticObjects = value;
         }
     }
 
     /// <summary>
-    /// Joins together <see cref="FreeMobileObjectSlots"/> and <see cref="FreeStaticObjectSlots"/> into one array.
+    /// Joins together <see cref="IndicesOfFreeMobileObjects"/> and <see cref="IndicesOfFreeStaticObjects"/> into one array.
     /// </summary>
-    public FreeSlotIndexes[] AllFreeObjectSlots
+    public ushort[] IndicesOfFreeObjects
     {
         get
         {
-            var temp = new List<FreeSlotIndexes>();
-            temp.AddRange(FreeMobileObjectSlots);
-            temp.AddRange(FreeStaticObjectSlots);
+            var temp = new List<ushort>();
+            temp.AddRange(IndicesOfFreeMobileObjects);
+            temp.AddRange(IndicesOfFreeStaticObjects);
             return temp.ToArray();
         }
     }
@@ -142,7 +155,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <summary>
     /// This value represents the index of the first slot that points to a free mobile entry in the <see cref="AllGameObjects"/> array 
     /// </summary>
-    public ushort FirstFreeMobileSlot
+    public ushort IdxLookupOfFreeMobileObject
     {
         get => BitConverter.ToUInt16(_buffer, FirstFreeSlotInMobileSlotsOffset);
         set => BitConverter.GetBytes(value).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
@@ -151,7 +164,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <summary>
     /// This value represents the index of the first slot that points to a free static entry in the <see cref="AllGameObjects"/> array 
     /// </summary>
-    public ushort FirstFreeStaticSlot
+    public ushort IdxLookupOfFreeStaticObject
     {
         get => BitConverter.ToUInt16(_buffer, FirstFreeSlotInStaticSlotsOffset);
         set => BitConverter.GetBytes(value).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
@@ -160,22 +173,23 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <summary>
     /// The index in the <see cref="AllGameObjects"/> array (and <see cref="MobileObjects"/> array) that points to an unused <see cref="MobileObject"/> and can be freely modified.
     /// </summary>
-    public ushort FirstFreeMobileObjectIdx => FreeMobileObjectSlots[FirstFreeMobileSlot].IdxAtFullArray;
+    public ushort IdxOfFreeMobileObject => IndicesOfFreeObjects[IdxLookupOfFreeMobileObject];
 
     /// <summary>
     /// The index in the <see cref="AllGameObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
     /// </summary>
-    public ushort FirstFreeStaticObjectIdx => FreeStaticObjectSlots[FirstFreeStaticSlot].IdxAtFullArray;
+    public ushort IdxOfFreeStaticObject => (ushort) (IndicesOfFreeObjects[IdxLookupOfFreeStaticObject] + 254);
+    // The +254 above was taken from krokots' UltimateEditor, GetNextFreeStaticIndex
 
     /// <summary>
     /// The first <see cref="MobileObject"/> that can be freely modified.
     /// </summary>
-    public MobileObject FirstFreeMobileObject => MobileObjects[FirstFreeMobileObjectIdx];
+    public MobileObject CurrentFreeMobileObject => MobileObjects[IdxOfFreeMobileObject];
 
     /// <summary>
     /// The first <see cref="StaticObject"/> that can be freely modified.
     /// </summary>
-    public StaticObject FirstFreeStaticObject => (StaticObject) AllGameObjects[FirstFreeStaticObjectIdx];
+    public StaticObject CurrentFreeStaticObject => (StaticObject) AllGameObjects[IdxOfFreeStaticObject];
 
     // todo: Recheck and make sure the number of entries is correct.
     /// <summary>
@@ -231,9 +245,8 @@ public partial class TileMapMasterObjectListBlock : Block
         FreeListStaticObjectBuffer.CopyTo(_buffer, FreeListStaticObjectsOffset);
         UnknownBuffer.CopyTo(_buffer, UnknownOffset);
         Unknown2Buffer.CopyTo(_buffer, Unknown2Offset);
-        // todo: do I really need these 2? Seems this is always kept updated.
-        BitConverter.GetBytes(FirstFreeMobileSlot).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
-        BitConverter.GetBytes(FirstFreeStaticSlot).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
+        BitConverter.GetBytes(IdxLookupOfFreeMobileObject).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
+        BitConverter.GetBytes(IdxLookupOfFreeStaticObject).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
         BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, EndOfBlockConfirmationOffset);
         if (_buffer.Length != FixedBlockLength)
         {
@@ -288,11 +301,14 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     private void ReconstructFreeListStaticObjectBuffer()
     {
-        foreach (var obj in FreeStaticObjectSlots)
+        var tempAcc = new List<byte>();
+        foreach (var obj in IndicesOfFreeStaticObjects)
         {
-            obj.ReconstructBuffer();
-            obj.Buffer.CopyTo(FreeListStaticObjectBuffer, obj.EntryNum * FreeSlotIndexes.FixedSize);
+            tempAcc.AddRange(BitConverter.GetBytes(obj));
+            // obj.Buffer.CopyTo(FreeListStaticObjectBuffer, obj.EntryNum * IdxOfFreeObj.FixedSize);
         }
+
+        FreeListStaticObjectBuffer = tempAcc.ToArray();
     }
 
     /// <summary>
@@ -300,11 +316,14 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     private void ReconstructFreeListMobileObjectBuffer()
     {
-        foreach (var obj in FreeMobileObjectSlots)
+        var tempAcc = new List<byte>();
+        foreach (var obj in IndicesOfFreeMobileObjects)
         {
-            obj.ReconstructBuffer();
-            obj.Buffer.CopyTo(FreeListMobileObjectBuffer, obj.EntryNum * FreeSlotIndexes.FixedSize);
+            tempAcc.AddRange(BitConverter.GetBytes(obj));
+            // obj.Buffer.CopyTo(FreeListStaticObjectBuffer, obj.EntryNum * IdxOfFreeObj.FixedSize);
         }
+
+        FreeListMobileObjectBuffer = tempAcc.ToArray();
     }
 
     /// <summary>
@@ -342,7 +361,7 @@ public partial class TileMapMasterObjectListBlock : Block
                     (i * StaticObject.FixedBufferLength)..((i + 1) * StaticObject.FixedBufferLength)];
             var currObj =
                 (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + MobileObjectNum));
-            if (i < FirstFreeStaticObjectIdx - MobileObjectNum + 2) // +2 because of objs 0 and 1
+            if (i < IdxOfFreeStaticObject - MobileObjectNum + 2) // +2 because of objs 0 and 1
                 currObj.Invalid = true;
 
             if ((currObj.IdxAtObjectArray < MobileObjectNum) & (currObj.Invalid))
@@ -370,7 +389,7 @@ public partial class TileMapMasterObjectListBlock : Block
                 MobileObjectInfoBuffer[
                     (i * MobileObject.FixedMobileBufferLength)..((i + 1) * MobileObject.FixedMobileBufferLength)];
             var obj = (MobileObject) GameObjectFactory.CreateFromBuffer(buffer, i);
-            if (i <= FirstFreeMobileObjectIdx)
+            if (i <= IdxOfFreeMobileObject)
                 obj.Invalid = true;
 
             if (obj.IdxAtObjectArray >= MobileObjectNum)
@@ -388,12 +407,11 @@ public partial class TileMapMasterObjectListBlock : Block
     /// </summary>
     private void PopulateFreeListMobileObjectArrFromBuffer()
     {
-        for (int i = 0; i < FreeMobileObjectSlotsNumber; i++)
+        for (int i = 0; i < NumOfFreeMobileObjects; i++)
         {
-            var buffer =
-                FreeListMobileObjectBuffer[(i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
-            var obj = new FreeSlotIndexes(buffer, i);
-            FreeMobileObjectSlots[i] = obj;
+            var val =BitConverter.ToUInt16(
+                FreeListMobileObjectBuffer[(i * IdxOfFreeObj.FixedSize)..((i + 1) * IdxOfFreeObj.FixedSize)]);
+            IndicesOfFreeMobileObjects[i] = val;
         }
     }
 
@@ -404,10 +422,10 @@ public partial class TileMapMasterObjectListBlock : Block
     {
         for (int i = 0; i < FreeStaticObjectSlotsNumber; i++)
         {
-            var buffer =
-                FreeListStaticObjectBuffer[(i * FreeSlotIndexes.FixedSize)..((i + 1) * FreeSlotIndexes.FixedSize)];
-            var obj = new FreeSlotIndexes(buffer, i);
-            FreeStaticObjectSlots[i] = obj;
+            var val = BitConverter.ToUInt16(
+                FreeListStaticObjectBuffer[(i * IdxOfFreeObj.FixedSize)..((i + 1) * IdxOfFreeObj.FixedSize)]);
+            // var obj = new IdxOfFreeObj(buffer, i);
+            IndicesOfFreeStaticObjects[i] = val;
         }
     }
 
@@ -417,7 +435,7 @@ public partial class TileMapMasterObjectListBlock : Block
     /// <param name="buffer">Byte buffer containing the data. Must be <see cref="FixedBlockLength"/> bytes long.</param>
     /// <param name="levelNumber">Level number, for convenience. Isn't required for anything.</param>
     /// <exception cref="ArgumentException">Thrown in case the length of buffer is different from <see cref="FixedBlockLength"/>.</exception>
-    public TileMapMasterObjectListBlock(byte[] buffer, int levelNumber)
+    public MapObjBlock(byte[] buffer, int levelNumber)
     {
         if (buffer.Length != FixedBlockLength)
         {
@@ -441,6 +459,7 @@ public partial class TileMapMasterObjectListBlock : Block
 
         PopulateFreeListMobileObjectArrFromBuffer();
         PopulateFreeListStaticObjectArrFromBuffer();
+        // PopulageGameObjectsFromBuffer();
         PopulateMobileObjectsFromBuffer();
         PopulateStaticObjectsFromBuffer();
         PopulateTiles();
@@ -688,32 +707,69 @@ public partial class TileMapMasterObjectListBlock : Block
             value.CopyTo(_unknown2Buffer, 0);
         }
     }
-
-    public ushort[] FreeMobileObjIndexes
+    
+    public void AddNewGameObjectToTile(Point position, GameObject obj)
     {
-        // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
-        get => FreeMobileObjectSlots[0..(FirstFreeMobileSlot+1)].Select(x => x.IdxAtFullArray).ToArray();
-    }
-
-    public ushort[] FreeStaticObjIndexes
-    {
-        // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
-        get => FreeStaticObjectSlots[0..(FirstFreeStaticSlot+1)].Select(x => x.IdxAtFullArray).ToArray();
-    }
-
-public bool isObjectInFreeSlot(GameObject obj)
-    {
-        var idx = obj.IdxAtObjectArray;
-        if (idx == 0) return true;
-        if (idx == 1) return false;
-        
-        if (obj is StaticObject)
+        ushort idx = obj is MobileObject ? IdxOfFreeMobileObject : IdxOfFreeStaticObject;
+        if (idx <= 0)
         {
-            return FreeStaticObjIndexes.Contains(idx);
+            throw new BlockOperationException("Can't add another object, no free slots remaining!");
+        }
+
+        var tile = Tiles2D[position.Row, position.Column];
+        tile.ObjectChain.Add(obj);
+        // TODO: Check if this will update the individual arrays. 
+        AllGameObjects[idx] = obj;
+        
+        if (obj is MobileObject)
+        {
+            IdxLookupOfFreeMobileObject--;
         }
         else
         {
-            return FreeMobileObjIndexes.Contains(idx);
+            IdxLookupOfFreeStaticObject--;
         }
     }
+
+    public void AddNewGameObjectToContainer(Container container, GameObject obj)
+    {
+        ushort idx;
+        idx = obj is MobileObject ? IdxOfFreeMobileObject : IdxOfFreeStaticObject;
+        if (idx <=0)
+        {
+            throw new BlockOperationException("Can't add another object, no free slots remaining!");
+        }
+        AllGameObjects[idx] = obj;
+        IdxLookupOfFreeStaticObject--;
+        container.Contents.Add(obj);
+    }
+
+//
+//     public ushort[] FreeMobileObjIndexes
+//     {
+//         // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
+//         get => IndicesOfFreeMobileObjects[0..(IdxLookupOfFreeMobileObject+1)].Select(x => x).ToArray();
+//     }
+//
+//     public ushort[] FreeStaticObjIndexes
+//     {
+//         // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
+//         get => IndicesOfFreeStaticObjects[0..(IdxLookupOfFreeStaticObject+1)].Select(x => x).ToArray();
+//     }
+//
+// public bool isObjectInFreeSlot(GameObject obj)
+//     {
+//         var idx = obj.IdxAtObjectArray;
+//         if (idx == 0) return true;
+//         if (idx == 1) return false;
+//         
+//         if (obj is StaticObject)
+//         {
+//             return FreeStaticObjIndexes.Contains(idx);
+//         }
+//         else
+//         {
+//             return FreeMobileObjIndexes.Contains(idx);
+//         }
+//     }
 }

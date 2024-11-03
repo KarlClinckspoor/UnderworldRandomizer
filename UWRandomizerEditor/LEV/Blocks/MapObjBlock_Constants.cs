@@ -2,8 +2,7 @@
 
 namespace UWRandomizerEditor.LEV.Blocks;
 
-// TODO: Separate this into TileMap and Object List...?
-public partial class TileMapMasterObjectListBlock 
+public partial class MapObjBlock 
 {
     // From uw-formats.txt
     // offset  size   description
@@ -31,7 +30,7 @@ public partial class TileMapMasterObjectListBlock
     public const int FreeListMobileObjectsOffset = 0x7300;
     public const int FreeListMobileObjectsLength = 0x01fc;
     public const int FreeListMobileObjectsEntrySize = 2;
-    public const int FreeMobileObjectSlotsNumber = 254;
+    public const int NumOfFreeMobileObjects = 254;
 
     // 74fc    0600   free list for static objects (objects 0100-03ff, 768 x 2 bytes)
     public const int FreeListStaticObjectsOffset = 0x74fc;

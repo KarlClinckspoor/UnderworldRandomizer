@@ -44,8 +44,8 @@ public static class TileMap
     /// <returns>Reshaped [64,64] array of numbers </returns>
     static int[,] ReshapeTileNumbers(int[] TileNumbers)
     {
-        return Utils.ReshapeArray(TileNumbers, TileMapMasterObjectListBlock.TileHeight,
-            TileMapMasterObjectListBlock.TileWidth);
+        return Utils.ReshapeArray(TileNumbers, MapObjBlock.TileHeight,
+            MapObjBlock.TileWidth);
     }
 
     /// <summary>
@@ -54,9 +54,9 @@ public static class TileMap
     /// <param name="TileNumbers">64x64 array of tile numbers</param>
     static void PrintReshapedTiles(int[,] TileNumbers)
     {
-        for (int i = TileMapMasterObjectListBlock.TileHeight - 1; i > 0; i--) // Start is lower left
+        for (int i = MapObjBlock.TileHeight - 1; i > 0; i--) // Start is lower left
         {
-            for (int j = 0; j < TileMapMasterObjectListBlock.TileWidth; j++) // Cols work as normal
+            for (int j = 0; j < MapObjBlock.TileWidth; j++) // Cols work as normal
             {
                 Console.Write(TileNumbers[i, j].ToString());
             }
@@ -71,9 +71,9 @@ public static class TileMap
     /// <param name="TileChars">64x64 array of tile characters</param>
     static void PrintReshapedTiles(char[,] TileChars)
     {
-        for (int i = TileMapMasterObjectListBlock.TileHeight - 1; i > 0; i--) // Start is lower left
+        for (int i = MapObjBlock.TileHeight - 1; i > 0; i--) // Start is lower left
         {
-            for (int j = 0; j < TileMapMasterObjectListBlock.TileWidth; j++) // Cols work as normal
+            for (int j = 0; j < MapObjBlock.TileWidth; j++) // Cols work as normal
             {
                 Console.Write(TileChars[i, j]);
             }
@@ -93,9 +93,9 @@ public static class TileMap
     {
         using StreamWriter sw = new($"{basepath}_${blocknum}.txt");
 
-        for (int i = TileMapMasterObjectListBlock.TileHeight - 1; i > 0; i--) // Start is lower left
+        for (int i = MapObjBlock.TileHeight - 1; i > 0; i--) // Start is lower left
         {
-            for (int j = 0; j < TileMapMasterObjectListBlock.TileWidth; j++) // Cols work as normal
+            for (int j = 0; j < MapObjBlock.TileWidth; j++) // Cols work as normal
             {
                 sw.Write(TileNumbers[i, j].ToString());
             }
@@ -117,9 +117,9 @@ public static class TileMap
     {
         using StreamWriter sw = new($"{basepath}_${blocknum}.txt");
 
-        for (int i = TileMapMasterObjectListBlock.TileHeight - 1; i > 0; i--) // Start is lower left
+        for (int i = MapObjBlock.TileHeight - 1; i > 0; i--) // Start is lower left
         {
-            for (int j = 0; j < TileMapMasterObjectListBlock.TileWidth; j++)
+            for (int j = 0; j < MapObjBlock.TileWidth; j++)
             {
                 sw.Write(TileNumbers[i, j]);
             }

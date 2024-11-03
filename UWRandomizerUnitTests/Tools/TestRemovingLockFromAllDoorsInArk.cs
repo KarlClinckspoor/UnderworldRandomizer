@@ -15,7 +15,7 @@ public class TestRemovingLockFromAllDoorsInArk
     {
         var ArkOriginal = Utils.LoadAndAssertOriginalLevArk();
         // var ArkEditor = new LevLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
-        var ArkEditor = new LevLoader(Path.Join(".", @"UW - Doors\Data\Lev.ark"));
+        var ArkEditor = new LevLoader(Path.Join(Paths.TestDataPath, @"Doors_LEV.ARK"));
 
         var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
         var doorUnlockedByEditor = (Door) ArkEditor.TileMapObjectsBlocks[0].AllGameObjects[1012];
@@ -60,11 +60,13 @@ public class TestRemovingLockFromAllDoorsInArk
         Assert.True(countOfLocksRemovedOriginal > 0);
         Assert.True(countOfLocksRemovedCleaned > 0);
 
+        var RemovingDoorsPath = Path.Join(Paths.BufferTestsPath, "RemovingDoors");
+        Directory.CreateDirectory(RemovingDoorsPath);
         var pathOriginal = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginalToModify,
-            Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
+            RemovingDoorsPath,
             "ark_nodoors.bin");
         var pathCleaned = UWRandomizerEditor.Utils.SaveBuffer(ArkCleanedToModify,
-            Path.Join(Paths.BufferTestsPath, "RemovingDoors"),
+            RemovingDoorsPath,
             "ark_cleaned_nodoors.bin");
 
         var ArkOriginalModified = new LevLoader(pathOriginal);

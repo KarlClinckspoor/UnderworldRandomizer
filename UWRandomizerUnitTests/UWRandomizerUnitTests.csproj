@@ -59,6 +59,9 @@
         <None Update="testdata\UW1Cleaned_LEV.ARK">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="testdata\Doors_LEV.ARK">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

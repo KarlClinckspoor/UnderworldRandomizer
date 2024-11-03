@@ -35,7 +35,7 @@ public static class GameObjectFactory
         var itemID = tempObject.ItemID;
 
         // Start is always MobileObjects
-        if (idxAtArray < TileMapMasterObjectListBlock.MobileObjectNum)
+        if (idxAtArray < MapObjBlock.MobileObjectNum)
         {
             if (buffer.Length != MobileObject.FixedMobileBufferLength)
             {
@@ -54,7 +54,7 @@ public static class GameObjectFactory
         }
 
         // Rest is always StaticObjects
-        if (idxAtArray < (TileMapMasterObjectListBlock.MobileObjectNum + TileMapMasterObjectListBlock.StaticObjectNum))
+        if (idxAtArray < (MapObjBlock.MobileObjectNum + MapObjBlock.StaticObjectNum))
         {
             // ReSharper disable once AccessToStaticMemberViaDerivedType
             if (buffer.Length != StaticObject.FixedBufferLength)
