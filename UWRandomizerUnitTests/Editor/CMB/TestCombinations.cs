@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using UWRandomizerEditor.CMBdotDAT;
+using UWRandomizerEditor.CMB;
 // ReSharper disable ObjectCreationAsStatement
 
-namespace RandomizerUnitTests.Editor.CMBdotDAT;
+namespace RandomizerUnitTests.Editor.CMB;
 
 [TestFixture]
 public class TestCombinations

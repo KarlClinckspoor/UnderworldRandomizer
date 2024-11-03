@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using UWRandomizerEditor.CMBdotDAT;
+using UWRandomizerEditor.CMB;
 
-namespace RandomizerUnitTests.Editor.CMBdotDAT;
+namespace RandomizerUnitTests.Editor.CMB;
 
 [TestFixture]
 public class TestFinalCombination

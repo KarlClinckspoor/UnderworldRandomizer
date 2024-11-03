@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using NUnit.Framework;
-using UWRandomizerEditor;
 using UWRandomizerEditor.LEV;
-using UWRandomizerEditor.LEV.Blocks;
-using UWRandomizerEditor.LEV.GameObjects;
-using UWRandomizerEditor.LEV.GameObjects.Specifics;
-using System.Configuration;
 
-namespace RandomizerUnitTests;
+namespace RandomizerUnitTests.Editor.LEV;
 
 [TestFixture]
 [Category("PropertyComparisons")]

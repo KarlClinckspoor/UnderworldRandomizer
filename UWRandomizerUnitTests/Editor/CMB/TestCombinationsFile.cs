@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using UWRandomizerEditor.CMBdotDAT;
+using UWRandomizerEditor.CMB;
 
-namespace RandomizerUnitTests.Editor.CMBdotDAT;
+namespace RandomizerUnitTests.Editor.CMB;
 
 // ReSharper disable file ObjectCreationAsStatement
 
