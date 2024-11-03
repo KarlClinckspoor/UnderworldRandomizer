@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.CMBdotDAT;
+﻿namespace UWRandomizerEditor.CMB;
 
 /// <summary>
 /// Exception that occurs when trying to create or modify ItemCombinations with invalid data.

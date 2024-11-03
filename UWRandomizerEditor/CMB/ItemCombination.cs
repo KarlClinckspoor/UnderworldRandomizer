@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
 
-namespace UWRandomizerEditor.CMBdotDAT;
+namespace UWRandomizerEditor.CMB;
 
 /// <summary>
 /// Represents a 2-item combination that produces another item.

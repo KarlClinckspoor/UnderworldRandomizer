@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using UWRandomizerEditor.CMBdotDAT;
+using UWRandomizerEditor.CMB;
 
 namespace ItemCombinations;
 

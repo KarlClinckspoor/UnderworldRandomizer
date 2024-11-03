@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using UWRandomizerEditor.Interfaces;
 
-namespace UWRandomizerEditor.CMBdotDAT;
+namespace UWRandomizerEditor.CMB;
 
 /// <summary>
 /// An BufferAsUShort is a short where the first bit is whether it's destroyed or not and the remaining bits are the ItemID

@@ -1,4 +1,4 @@
-﻿namespace UWRandomizerEditor.CMBdotDAT;
+﻿namespace UWRandomizerEditor.CMB;
 
 public class FinalCombination : ItemCombination
 {

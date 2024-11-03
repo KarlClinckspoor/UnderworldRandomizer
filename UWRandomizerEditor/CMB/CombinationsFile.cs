@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using UWRandomizerEditor.Interfaces;
 
-namespace UWRandomizerEditor.CMBdotDAT;
+namespace UWRandomizerEditor.CMB;
 
 /// <summary>
 /// This class simulates the sequence of item combinations present in CMB.DAT.
