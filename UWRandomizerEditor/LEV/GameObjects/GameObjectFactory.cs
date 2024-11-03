@@ -27,7 +27,7 @@ public static class GameObjectFactory
     {
         if ((idxAtArray == 0) | (idxAtArray == 1)) // These never hold actual object data.
         {
-            return new MobileObject(buffer, idxAtArray) {Invalid = true};
+            return new MobileObject(buffer, idxAtArray);
         }
 
         // Create a StaticObject just to get the ItemID for later.
@@ -50,7 +50,7 @@ public static class GameObjectFactory
             }
 
             // Outside this range, it's not a valid MobileObject
-            return new MobileObject(buffer, idxAtArray) {Invalid = true};
+            return new MobileObject(buffer, idxAtArray);
         }
 
         // Rest is always StaticObjects
@@ -69,7 +69,7 @@ public static class GameObjectFactory
                 return new StaticObject(buffer, idxAtArray);
             // Monsters -- dealt above. Always MobileObject. If it's here, it's invalid
             if (itemID >= 0x40 & itemID <= 0x7f)
-                return new StaticObject(buffer, idxAtArray) {Invalid = true};
+                return new StaticObject(buffer, idxAtArray);
             if (itemID >= 0x80 & itemID <= 0x8f) // Containers
                 return new Container(buffer, idxAtArray);
             if (itemID >= 0x90 & itemID <= 0x97) // Light sources

@@ -78,7 +78,6 @@ public class GameObjectInfoGathering
                     $"({string.Join(" ", whichTileReferencesGameObject)});"+
                     $"{gameObject.InContainer};"+
                     $"{isReferencedByFreeSlot};"+
-                    $"{gameObject.Invalid};" +
                     $"{gameObject}"
                     );
             }

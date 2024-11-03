@@ -21,49 +21,44 @@ public partial class MapObjBlock : Block
     /// <summary>
     /// This conveniently joins the Mobile Object and Static Object arrays into one, from 0 to <see cref="MobileObjectNum"/>+<see cref="StaticObjectNum"/>
     /// </summary>
+    private GameObject[] _allGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
     public GameObject[] AllGameObjects
     {
         get
         {
-            var temp = new List<GameObject>();
-            temp.AddRange(MobileObjects);
-            temp.AddRange(StaticObjects);
-            return temp.ToArray();
+            return _allGameObjects;
+        }
+        set
+        {
+            // TODO: verify if the number of static and mobile objects are correct.
+            _allGameObjects = value;
         }
     }
-
-    private MobileObject[] _mobileObjects = new MobileObject[MobileObjectNum];
 
     /// <summary>
     /// Contains all the <see cref="MobileObject"/>s in the level, including objects 0 and 1, which
-    /// should never be accessed.
+    /// should never be accessed. Should only be used for convenience! Nver replace a value in this array!
+    /// Modifications can be used though (preserves reference).
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the new array length is different from <see cref="MobileObjectNum"/></exception>
     public MobileObject[] MobileObjects
     {
-        get => _mobileObjects;
-        private set
+        get
         {
-            if (value.Length != MobileObjectNum)
-                throw new ArgumentException($"Length of MobileObjects must be {MobileObjectNum}");
-            _mobileObjects = value;
+            var temp = _allGameObjects[0..MobileObjectNum];
+            return temp.Select(x => (MobileObject) x).ToArray();
         }
     }
 
-    private StaticObject[] _staticObjects = new StaticObject[StaticObjectNum];
-
     /// <summary>
-    /// Contains all the <see cref="StaticObject"/>s in the level.
+    /// Contains all the <see cref="StaticObject"/>s in the level. Should only be used for convenience! Never
+    /// replace a value in this array! Modifications can be used though (preserves reference)
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the new array length is different from <see cref="StaticObjectNum"/></exception>
     public StaticObject[] StaticObjects
     {
-        get => _staticObjects;
-        private set
+        get
         {
-            if (value.Length != StaticObjectNum)
-                throw new ArgumentException($"Length of StaticObjects must be {StaticObjectNum}");
-            _staticObjects = value;
+            var temp = _allGameObjects[MobileObjectNum..(MobileObjectNum+StaticObjectNum)];
+            return temp.Select(x => (StaticObject)x).ToArray();
         }
     }
 
@@ -206,13 +201,13 @@ public partial class MapObjBlock : Block
                 $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
 
-        if (StaticObjects.Length != StaticObjectNum)
+        if (AllGameObjects.Select(x => x is StaticObject).Count() != StaticObjectNum)
         {
             throw new BlockOperationException(
                 $"Somehow there's more static objects ({StaticObjects.Length}) than the max ({StaticObjectNum})");
         }
 
-        if (MobileObjects.Length != MobileObjectNum)
+        if (AllGameObjects.Select(x => x is MobileObject).Count() != MobileObjectNum)
         {
             throw new BlockOperationException(
                 $"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({MobileObjectNum})");
@@ -361,16 +356,14 @@ public partial class MapObjBlock : Block
                     (i * StaticObject.FixedBufferLength)..((i + 1) * StaticObject.FixedBufferLength)];
             var currObj =
                 (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + MobileObjectNum));
-            if (i < IdxOfFreeStaticObject - MobileObjectNum + 2) // +2 because of objs 0 and 1
-                currObj.Invalid = true;
 
-            if ((currObj.IdxAtObjectArray < MobileObjectNum) & (currObj.Invalid))
+            if ((currObj.IdxAtObjectArray < MobileObjectNum))
             {
                 throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
-            StaticObjects[i] = currObj;
+            AllGameObjects[i+MobileObjectNum] = currObj;
         }
     }
 
@@ -389,19 +382,16 @@ public partial class MapObjBlock : Block
                 MobileObjectInfoBuffer[
                     (i * MobileObject.FixedMobileBufferLength)..((i + 1) * MobileObject.FixedMobileBufferLength)];
             var obj = (MobileObject) GameObjectFactory.CreateFromBuffer(buffer, i);
-            if (i <= IdxOfFreeMobileObject)
-                obj.Invalid = true;
-
             if (obj.IdxAtObjectArray >= MobileObjectNum)
             {
                 throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
-            MobileObjects[i] = obj;
+            AllGameObjects[i] = obj;
         }
     }
-
+    
     /// <summary>
     /// Goes through the buffer and creates the FreeSlotIndexes at the appropriate locations.
     /// </summary>
@@ -414,6 +404,7 @@ public partial class MapObjBlock : Block
             IndicesOfFreeMobileObjects[i] = val;
         }
     }
+    
 
     /// <summary>
     /// Goes through the buffer and creates the FreeSlotIndexes at the appropriate locations.
@@ -459,7 +450,6 @@ public partial class MapObjBlock : Block
 
         PopulateFreeListMobileObjectArrFromBuffer();
         PopulateFreeListStaticObjectArrFromBuffer();
-        // PopulageGameObjectsFromBuffer();
         PopulateMobileObjectsFromBuffer();
         PopulateStaticObjectsFromBuffer();
         PopulateTiles();
@@ -544,7 +534,6 @@ public partial class MapObjBlock : Block
         var containersToProcessLater = new List<IContainer>();
         foreach (var gameObject in AllGameObjects)
         {
-            if (gameObject.Invalid) continue;
             // Only considering containers that were placed in Tiles, which are "relevant". If this isn't checked, objects in unused
             // slots might be referenced and lead to bugs.
             if (gameObject.ReferenceCount < 1) continue;
@@ -720,6 +709,7 @@ public partial class MapObjBlock : Block
         tile.ObjectChain.Add(obj);
         // TODO: Check if this will update the individual arrays. 
         AllGameObjects[idx] = obj;
+        obj.IdxAtObjectArray = idx;
         
         if (obj is MobileObject)
         {
@@ -740,6 +730,7 @@ public partial class MapObjBlock : Block
             throw new BlockOperationException("Can't add another object, no free slots remaining!");
         }
         AllGameObjects[idx] = obj;
+        obj.IdxAtObjectArray = idx;
         IdxLookupOfFreeStaticObject--;
         container.Contents.Add(obj);
     }

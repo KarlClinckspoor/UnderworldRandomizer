@@ -315,7 +315,6 @@ public class MobileObject : GameObject, IContainer
 
     protected MobileObject()
     {
-        Invalid = true;
         Contents = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
     }
 }
