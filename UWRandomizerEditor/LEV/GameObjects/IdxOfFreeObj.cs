@@ -5,7 +5,7 @@ namespace UWRandomizerEditor.LEV.GameObjects;
 
 public class IdxOfFreeObj : IBufferObject
 {
-    public const int FixedSize = MapObjBlock.FreeListStaticObjectsEntrySize;
+    public const int FixedSize = MapObjBlock.EntrySizeOfFreeListStaticObjects;
     public byte[] Buffer { get; set; } = new byte[FixedSize];
 
     /// <summary>

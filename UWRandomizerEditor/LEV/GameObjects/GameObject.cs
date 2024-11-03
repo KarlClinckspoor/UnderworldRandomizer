@@ -84,9 +84,9 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
         // Otherwise, will use these conditions will always yield an invalid object.
         if (IdxAtObjectArray == 0 | IdxAtObjectArray == 1)
             return true;
-        if (this is MobileObject & IdxAtObjectArray >= MapObjBlock.MobileObjectNum)
+        if (this is MobileObject & IdxAtObjectArray >= MapObjBlock.NumOfMobileObjects)
             return true;
-        if (this is StaticObject & IdxAtObjectArray < MapObjBlock.MobileObjectNum)
+        if (this is StaticObject & IdxAtObjectArray < MapObjBlock.NumOfMobileObjects)
             return true;
         return false;
     }

@@ -11,7 +11,7 @@ public partial class MapObjBlock : Block
     /// <summary>
     /// Contains all tiles in a continuous array
     /// </summary>
-    public Tile[] Tiles = new Tile[TileMapLength / TileMapEntrySize];
+    public Tile[] Tiles = new Tile[LengthOfTileMap / EntrySizeOfTileMap];
 
     /// <summary>
     /// Reshapes <see cref="Tiles"/> into a <see cref="TileWidth"/> by <see cref="TileHeight"/> array on the fly, for convenience.
@@ -19,9 +19,9 @@ public partial class MapObjBlock : Block
     public Tile[,] Tiles2D => Utils.ReshapeArray(Tiles, TileWidth, TileHeight);
 
     /// <summary>
-    /// This conveniently joins the Mobile Object and Static Object arrays into one, from 0 to <see cref="MobileObjectNum"/>+<see cref="StaticObjectNum"/>
+    /// This conveniently joins the Mobile Object and Static Object arrays into one, from 0 to <see cref="NumOfMobileObjects"/>+<see cref="NumOfStaticObjects"/>
     /// </summary>
-    private GameObject[] _allGameObjects = new GameObject[MobileObjectNum + StaticObjectNum];
+    private GameObject[] _allGameObjects = new GameObject[NumOfMobileObjects + NumOfStaticObjects];
     public GameObject[] AllGameObjects
     {
         get
@@ -44,7 +44,7 @@ public partial class MapObjBlock : Block
     {
         get
         {
-            var temp = _allGameObjects[0..MobileObjectNum];
+            var temp = _allGameObjects[0..NumOfMobileObjects];
             return temp.Select(x => (MobileObject) x).ToArray();
         }
     }
@@ -57,7 +57,7 @@ public partial class MapObjBlock : Block
     {
         get
         {
-            var temp = _allGameObjects[MobileObjectNum..(MobileObjectNum+StaticObjectNum)];
+            var temp = _allGameObjects[NumOfMobileObjects..(NumOfMobileObjects+NumOfStaticObjects)];
             return temp.Select(x => (StaticObject)x).ToArray();
         }
     }
@@ -90,20 +90,20 @@ public partial class MapObjBlock : Block
         }
     }
 
-    // private IdxOfFreeObj[] _indicesOfFreeStaticObjects = new IdxOfFreeObj[FreeStaticObjectSlotsNumber];
-    private ushort[] _indicesOfFreeStaticObjects = new ushort[FreeStaticObjectSlotsNumber];
+    // private IdxOfFreeObj[] _indicesOfFreeStaticObjects = new IdxOfFreeObj[NumberOfFreeStaticObjectSlots];
+    private ushort[] _indicesOfFreeStaticObjects = new ushort[NumberOfFreeStaticObjectSlots];
 
     /// <summary>
     /// Contains a list of objects that point to the slot in StaticObjects that is "free", i.e. unused.
     /// </summary>
-    /// <exception cref="ArgumentException">If the array length is different from <see cref="FreeStaticObjectSlotsNumber"/></exception>
+    /// <exception cref="ArgumentException">If the array length is different from <see cref="NumberOfFreeStaticObjectSlots"/></exception>
     public ushort[] IndicesOfFreeStaticObjects
     {
         get => _indicesOfFreeStaticObjects;
         private set
         {
-            if (value.Length != FreeStaticObjectSlotsNumber)
-                throw new ArgumentException($"Length of FreeStaticObjectSlots should be {FreeStaticObjectSlotsNumber}");
+            if (value.Length != NumberOfFreeStaticObjectSlots)
+                throw new ArgumentException($"Length of FreeStaticObjectSlots should be {NumberOfFreeStaticObjectSlots}");
             _indicesOfFreeStaticObjects = value;
         }
     }
@@ -152,8 +152,8 @@ public partial class MapObjBlock : Block
     /// </summary>
     public ushort IdxLookupOfFreeMobileObject
     {
-        get => BitConverter.ToUInt16(_buffer, FirstFreeSlotInMobileSlotsOffset);
-        set => BitConverter.GetBytes(value).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
+        get => BitConverter.ToUInt16(_buffer, OffsetOfFirstFreeSlotInMobileSlots);
+        set => BitConverter.GetBytes(value).CopyTo(_buffer, OffsetOfFirstFreeSlotInMobileSlots);
     }
 
     /// <summary>
@@ -161,8 +161,8 @@ public partial class MapObjBlock : Block
     /// </summary>
     public ushort IdxLookupOfFreeStaticObject
     {
-        get => BitConverter.ToUInt16(_buffer, FirstFreeSlotInStaticSlotsOffset);
-        set => BitConverter.GetBytes(value).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
+        get => BitConverter.ToUInt16(_buffer, OffsetOfFirstFreeSlotInStaticSlots);
+        set => BitConverter.GetBytes(value).CopyTo(_buffer, OffsetOfFirstFreeSlotInStaticSlots);
     }
 
     /// <summary>
@@ -201,16 +201,16 @@ public partial class MapObjBlock : Block
                 $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
 
-        if (AllGameObjects.Select(x => x is StaticObject).Count() != StaticObjectNum)
+        if (AllGameObjects.Select(x => x is StaticObject).Count() != NumOfStaticObjects)
         {
             throw new BlockOperationException(
-                $"Somehow there's more static objects ({StaticObjects.Length}) than the max ({StaticObjectNum})");
+                $"Somehow there's more static objects ({StaticObjects.Length}) than the max ({NumOfStaticObjects})");
         }
 
-        if (AllGameObjects.Select(x => x is MobileObject).Count() != MobileObjectNum)
+        if (AllGameObjects.Select(x => x is MobileObject).Count() != NumOfMobileObjects)
         {
             throw new BlockOperationException(
-                $"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({MobileObjectNum})");
+                $"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({NumOfMobileObjects})");
         }
 
         if (Tiles.Length != (TileWidth * TileHeight))
@@ -233,16 +233,16 @@ public partial class MapObjBlock : Block
 
         ReconstructSubBuffers();
 
-        TileMapBuffer.CopyTo(_buffer, TileMapOffset);
-        MobileObjectInfoBuffer.CopyTo(_buffer, MobileObjectInfoOffset);
-        StaticObjectInfoBuffer.CopyTo(_buffer, StaticObjectInfoOffset);
-        FreeListMobileObjectBuffer.CopyTo(_buffer, FreeListMobileObjectsOffset);
-        FreeListStaticObjectBuffer.CopyTo(_buffer, FreeListStaticObjectsOffset);
+        TileMapBuffer.CopyTo(_buffer, OffsetOfTileMap);
+        MobileObjectInfoBuffer.CopyTo(_buffer, OffsetOfMobileObjectInfo);
+        StaticObjectInfoBuffer.CopyTo(_buffer, OffsetOfStaticObjectInfo);
+        FreeListMobileObjectBuffer.CopyTo(_buffer, OffsetOfFreeListMobileObjects);
+        FreeListStaticObjectBuffer.CopyTo(_buffer, OffsetOfFreeListStaticObjects);
         UnknownBuffer.CopyTo(_buffer, UnknownOffset);
         Unknown2Buffer.CopyTo(_buffer, Unknown2Offset);
-        BitConverter.GetBytes(IdxLookupOfFreeMobileObject).CopyTo(_buffer, FirstFreeSlotInMobileSlotsOffset);
-        BitConverter.GetBytes(IdxLookupOfFreeStaticObject).CopyTo(_buffer, FirstFreeSlotInStaticSlotsOffset);
-        BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, EndOfBlockConfirmationOffset);
+        BitConverter.GetBytes(IdxLookupOfFreeMobileObject).CopyTo(_buffer, OffsetOfFirstFreeSlotInMobileSlots);
+        BitConverter.GetBytes(IdxLookupOfFreeStaticObject).CopyTo(_buffer, OffsetOfFirstFreeSlotInStaticSlots);
+        BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, OffsetOfEndOfBlockConfirmation);
         if (_buffer.Length != FixedBlockLength)
         {
             throw new ConstraintException(
@@ -287,7 +287,7 @@ public partial class MapObjBlock : Block
         {
             obj.ReconstructBuffer();
             obj.Buffer.CopyTo(StaticObjectInfoBuffer,
-                (obj.IdxAtObjectArray - MobileObjectNum) * StaticObject.FixedBufferLength);
+                (obj.IdxAtObjectArray - NumOfMobileObjects) * StaticObject.FixedBufferLength);
         }
     }
 
@@ -349,21 +349,21 @@ public partial class MapObjBlock : Block
     /// got placed in the MobileObjects array</exception>
     private void PopulateStaticObjectsFromBuffer()
     {
-        for (short i = 0; i < StaticObjectNum; i++)
+        for (short i = 0; i < NumOfStaticObjects; i++)
         {
             var currBuffer =
                 StaticObjectInfoBuffer[
                     (i * StaticObject.FixedBufferLength)..((i + 1) * StaticObject.FixedBufferLength)];
             var currObj =
-                (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + MobileObjectNum));
+                (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + NumOfMobileObjects));
 
-            if ((currObj.IdxAtObjectArray < MobileObjectNum))
+            if ((currObj.IdxAtObjectArray < NumOfMobileObjects))
             {
                 throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
-            AllGameObjects[i+MobileObjectNum] = currObj;
+            AllGameObjects[i+NumOfMobileObjects] = currObj;
         }
     }
 
@@ -376,13 +376,13 @@ public partial class MapObjBlock : Block
     /// got placed in the StaticObjects array</exception>
     private void PopulateMobileObjectsFromBuffer()
     {
-        for (ushort i = 0; i < MobileObjectNum; i++)
+        for (ushort i = 0; i < NumOfMobileObjects; i++)
         {
             byte[] buffer =
                 MobileObjectInfoBuffer[
                     (i * MobileObject.FixedMobileBufferLength)..((i + 1) * MobileObject.FixedMobileBufferLength)];
             var obj = (MobileObject) GameObjectFactory.CreateFromBuffer(buffer, i);
-            if (obj.IdxAtObjectArray >= MobileObjectNum)
+            if (obj.IdxAtObjectArray >= NumOfMobileObjects)
             {
                 throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
@@ -411,7 +411,7 @@ public partial class MapObjBlock : Block
     /// </summary>
     private void PopulateFreeListStaticObjectArrFromBuffer()
     {
-        for (int i = 0; i < FreeStaticObjectSlotsNumber; i++)
+        for (int i = 0; i < NumberOfFreeStaticObjectSlots; i++)
         {
             var val = BitConverter.ToUInt16(
                 FreeListStaticObjectBuffer[(i * IdxOfFreeObj.FixedSize)..((i + 1) * IdxOfFreeObj.FixedSize)]);
@@ -438,13 +438,13 @@ public partial class MapObjBlock : Block
         buffer.CopyTo(_buffer, 0);
         LevelNumber = levelNumber;
 
-        TileMapBuffer = buffer[TileMapOffset..(TileMapOffset + TileMapLength)];
-        MobileObjectInfoBuffer = buffer[MobileObjectInfoOffset..(MobileObjectInfoOffset + MobileObjectInfoLength)];
-        StaticObjectInfoBuffer = buffer[StaticObjectInfoOffset..(StaticObjectInfoOffset + StaticObjectInfoLength)];
+        TileMapBuffer = buffer[OffsetOfTileMap..(OffsetOfTileMap + LengthOfTileMap)];
+        MobileObjectInfoBuffer = buffer[OffsetOfMobileObjectInfo..(OffsetOfMobileObjectInfo + LengthOfMobileObjectInfo)];
+        StaticObjectInfoBuffer = buffer[OffsetOfStaticObjectInfo..(OffsetOfStaticObjectInfo + LengthOfStaticObjectInfo)];
         FreeListMobileObjectBuffer =
-            buffer[FreeListMobileObjectsOffset..(FreeListMobileObjectsOffset + FreeListMobileObjectsLength)];
+            buffer[OffsetOfFreeListMobileObjects..(OffsetOfFreeListMobileObjects + LengthOfFreeListMobileObjects)];
         FreeListStaticObjectBuffer =
-            buffer[FreeListStaticObjectsOffset..(FreeListStaticObjectsOffset + FreeListStaticObjectsLength)];
+            buffer[OffsetOfFreeListStaticObjects..(OffsetOfFreeListStaticObjects + LengthOfFreeListStaticObjects)];
         UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
         Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
 
@@ -462,9 +462,9 @@ public partial class MapObjBlock : Block
     /// </summary>
     private void PopulateTiles()
     {
-        for (uint i = 0; i < TileMapLength / TileMapEntrySize; i++)
+        for (uint i = 0; i < LengthOfTileMap / EntrySizeOfTileMap; i++)
         {
-            var offset = i * TileMapEntrySize;
+            var offset = i * EntrySizeOfTileMap;
             var entry = BitConverter.ToUInt32(TileMapBuffer, (int) offset);
             var currTile = new Tile(i, entry, offset, LevelNumber);
             Tiles[i] = currTile;
@@ -557,7 +557,7 @@ public partial class MapObjBlock : Block
     }
 
 
-    private byte[] _tileMapBuffer = new byte[TileMapLength];
+    private byte[] _tileMapBuffer = new byte[LengthOfTileMap];
 
     /// <summary>
     /// Controls the buffer to the tile map.
@@ -568,7 +568,7 @@ public partial class MapObjBlock : Block
         get => _tileMapBuffer;
         set
         {
-            if (value.Length != TileMapLength)
+            if (value.Length != LengthOfTileMap)
             {
                 throw new ArgumentException($"Invalid length of TileMapBuffer");
             }
@@ -577,18 +577,18 @@ public partial class MapObjBlock : Block
         }
     }
 
-    private byte[] _mobileObjectInfoBuffer = new byte[MobileObjectInfoLength];
+    private byte[] _mobileObjectInfoBuffer = new byte[LengthOfMobileObjectInfo];
 
     /// <summary>
     /// Controls the buffer that contains all the mobile objects.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="MobileObjectInfoLength"/></exception>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="LengthOfMobileObjectInfo"/></exception>
     private byte[] MobileObjectInfoBuffer
     {
         get => _mobileObjectInfoBuffer;
         set
         {
-            if (value.Length != MobileObjectInfoLength)
+            if (value.Length != LengthOfMobileObjectInfo)
             {
                 throw new ArgumentException($"Invalid length of MobileObjectInfoBuffer");
             }
@@ -597,18 +597,18 @@ public partial class MapObjBlock : Block
         }
     }
 
-    private byte[] _staticObjectInfoBuffer = new byte[StaticObjectInfoLength];
+    private byte[] _staticObjectInfoBuffer = new byte[LengthOfStaticObjectInfo];
 
     /// <summary>
     /// Controls the buffer that contains all the static objects.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="StaticObjectInfoLength"/></exception>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="LengthOfStaticObjectInfo"/></exception>
     private byte[] StaticObjectInfoBuffer
     {
         get => _staticObjectInfoBuffer;
         set
         {
-            if (value.Length != StaticObjectInfoLength)
+            if (value.Length != LengthOfStaticObjectInfo)
             {
                 throw new ArgumentException($"Invalid length of StaticObjectInfoBuffer");
             }
@@ -617,18 +617,18 @@ public partial class MapObjBlock : Block
         }
     }
 
-    private byte[] _freeListMobileObjectBuffer = new byte[FreeListMobileObjectsLength];
+    private byte[] _freeListMobileObjectBuffer = new byte[LengthOfFreeListMobileObjects];
 
     /// <summary>
     /// Controls the buffer that contains all the slot pointers to mobile objects.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="FreeListMobileObjectsLength"/></exception>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="LengthOfFreeListMobileObjects"/></exception>
     private byte[] FreeListMobileObjectBuffer
     {
         get => _freeListMobileObjectBuffer;
         set
         {
-            if (value.Length != FreeListMobileObjectsLength)
+            if (value.Length != LengthOfFreeListMobileObjects)
             {
                 throw new ArgumentException($"Invalid length of FreeListMobileObjectBuffer");
             }
@@ -637,18 +637,18 @@ public partial class MapObjBlock : Block
         }
     }
 
-    private byte[] _freeListStaticObjectBuffer = new byte[FreeListStaticObjectsLength];
+    private byte[] _freeListStaticObjectBuffer = new byte[LengthOfFreeListStaticObjects];
 
     /// <summary>
     /// Controls the buffer that contains all the slot pointers to static objects.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="FreeListStaticObjectsLength"/></exception>
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="LengthOfFreeListStaticObjects"/></exception>
     private byte[] FreeListStaticObjectBuffer
     {
         get => _freeListStaticObjectBuffer;
         set
         {
-            if (value.Length != FreeListStaticObjectsLength)
+            if (value.Length != LengthOfFreeListStaticObjects)
             {
                 throw new ArgumentException($"Invalid length of FreeListStaticObjectBuffer");
             }
