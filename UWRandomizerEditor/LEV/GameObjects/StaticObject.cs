@@ -25,4 +25,6 @@ public class StaticObject : GameObject
         : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray) { }
     
     protected StaticObject() { }
+
+    public StaticObject Clone() => new StaticObject(this.Buffer, this.IdxAtObjectArray);
 }

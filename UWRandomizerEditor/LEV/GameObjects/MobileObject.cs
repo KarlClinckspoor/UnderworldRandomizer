@@ -317,4 +317,6 @@ public class MobileObject : GameObject, IContainer
     {
         Contents = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
     }
+    
+    public MobileObject Copy() => new MobileObject(Buffer, IdxAtObjectArray);
 }
