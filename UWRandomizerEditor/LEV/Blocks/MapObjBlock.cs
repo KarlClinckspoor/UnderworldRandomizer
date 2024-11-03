@@ -201,13 +201,13 @@ public partial class MapObjBlock : Block
                 $"Somehow the length of TileMapMasterObjectListBlock has the invalid length of {_buffer.Length}");
         }
 
-        if (AllGameObjects.Select(x => x is StaticObject).Count() != NumOfStaticObjects)
+        if (AllGameObjects.Count(x => x is StaticObject) != NumOfStaticObjects)
         {
             throw new BlockOperationException(
                 $"Somehow there's more static objects ({StaticObjects.Length}) than the max ({NumOfStaticObjects})");
         }
 
-        if (AllGameObjects.Select(x => x is MobileObject).Count() != NumOfMobileObjects)
+        if (AllGameObjects.Count(x => x is MobileObject) != NumOfMobileObjects)
         {
             throw new BlockOperationException(
                 $"Somehow there's more mobile objects ({MobileObjects.Length}) than the max ({NumOfMobileObjects})");
