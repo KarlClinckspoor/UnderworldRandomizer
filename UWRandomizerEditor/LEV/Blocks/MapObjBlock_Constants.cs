@@ -38,15 +38,15 @@ public partial class MapObjBlock
     public const int EntrySizeOfFreeListStaticObjects = 2;
     public const int NumberOfFreeStaticObjectSlots = 768;
 
-    // 7afc    0104   unknown(260 bytes)
-    public const int UnknownOffset = 0x7afc;
-    public const int UnknownLength = 0x104;
-    public const int UnknownEntrySize = 1; // irrelevant ATM
+    // 7afc    0104   unknown(260 bytes) - known now thanks to krokots' work.
+    public const int OffsetOfListOfActiveMobileObjects = 0x7afc;
+    public const int LengthOfListOfActiveMobileObjects = 0x104;
+    public const int EntrySizeOfListOfActiveMobs = 1;
 
     // 7c00    0002
-    public const int Unknown2Offset = 0x7c00;
-    public const int Unknown2Length = 2;
-    public const int Unknown2EntrySize = 2;
+    public const int OffsetOfIdxLookupOfActiveMobs = 0x7c00;
+    public const int LengthOfIdxLookupOfActiveMobs = 2;
+    public const int EntrySizeOfIdxLookupOfActiveMobs = 2;
 
     // 7c02    0002   no.entries in mobile free list minus 1
     public const int OffsetOfFirstFreeSlotInMobileSlots = 0x7c02;

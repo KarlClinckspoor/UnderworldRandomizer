@@ -7,6 +7,8 @@ public class MobileObject : GameObject, IContainer
 {
     public const int ExtraMobileBufferLength = 19;
     public const int FixedMobileBufferLength = FixedBufferLength + ExtraMobileBufferLength;
+    public bool IsActive = false;
+    public ushort IdxAtActiveMobj = 0; // Hope this doesn't bite me.
     
     // These refer to the full buffer
     private const int baseoffset_HP = 0x8;

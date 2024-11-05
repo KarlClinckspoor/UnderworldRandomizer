@@ -218,16 +218,10 @@ public partial class MapObjBlock : Block
                 $"Somehow there's more tiles ({Tiles.Length}) than the max ({TileWidth * TileHeight}");
         }
 
-        if (UnknownBuffer.Length != UnknownLength)
+        if (ListOfActiveMobs.Length != LengthOfListOfActiveMobileObjects)
         {
             throw new BlockOperationException(
-                $"Somehow UnknownBuffer length ({UnknownBuffer.Length}) is different from {UnknownLength}");
-        }
-
-        if (Unknown2Buffer.Length != Unknown2Length)
-        {
-            throw new BlockOperationException(
-                $"Somehow Unknown2Buffer length ({Unknown2Buffer.Length}) is different from {Unknown2Length}");
+                $"Somehow ListOfActiveMobs length ({ListOfActiveMobs.Length}) is different from {LengthOfListOfActiveMobileObjects}");
         }
 
         ReconstructSubBuffers();
@@ -237,8 +231,8 @@ public partial class MapObjBlock : Block
         StaticObjectInfoBuffer.CopyTo(_buffer, OffsetOfStaticObjectInfo);
         FreeListMobileObjectBuffer.CopyTo(_buffer, OffsetOfFreeListMobileObjects);
         FreeListStaticObjectBuffer.CopyTo(_buffer, OffsetOfFreeListStaticObjects);
-        UnknownBuffer.CopyTo(_buffer, UnknownOffset);
-        Unknown2Buffer.CopyTo(_buffer, Unknown2Offset);
+        ListOfActiveMobs.CopyTo(_buffer, OffsetOfListOfActiveMobileObjects);
+        BitConverter.GetBytes(IdxLookupOfActiveMobs).CopyTo(_buffer, OffsetOfIdxLookupOfActiveMobs);
         BitConverter.GetBytes(IdxLookupOfFreeMobileObject).CopyTo(_buffer, OffsetOfFirstFreeSlotInMobileSlots);
         BitConverter.GetBytes(IdxLookupOfFreeStaticObject).CopyTo(_buffer, OffsetOfFirstFreeSlotInStaticSlots);
         BitConverter.GetBytes(EndOfBlockConfirmationValue).CopyTo(_buffer, OffsetOfEndOfBlockConfirmation);
@@ -444,8 +438,8 @@ public partial class MapObjBlock : Block
             buffer[OffsetOfFreeListMobileObjects..(OffsetOfFreeListMobileObjects + LengthOfFreeListMobileObjects)];
         FreeListStaticObjectBuffer =
             buffer[OffsetOfFreeListStaticObjects..(OffsetOfFreeListStaticObjects + LengthOfFreeListStaticObjects)];
-        UnknownBuffer = buffer[UnknownOffset..(UnknownOffset + UnknownLength)];
-        Unknown2Buffer = buffer[Unknown2Offset..(Unknown2Offset + Unknown2Length)];
+        ListOfActiveMobs = buffer[OffsetOfListOfActiveMobileObjects..(OffsetOfListOfActiveMobileObjects + LengthOfListOfActiveMobileObjects)];
+        IdxLookupOfActiveMobs = BitConverter.ToUInt16(buffer, OffsetOfIdxLookupOfActiveMobs);
 
         PopulateFreeListMobileObjectArrFromBuffer();
         PopulateFreeListStaticObjectArrFromBuffer();
@@ -656,44 +650,34 @@ public partial class MapObjBlock : Block
         }
     }
 
-    private byte[] _unknownBuffer = new byte[UnknownLength];
+    private byte[] _listOfActiveMobs = new byte[LengthOfListOfActiveMobileObjects];
 
     /// <summary>
-    /// Controls one of the, for the moment, unknown buffer.
+    /// Controls the list of active mob indices
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="UnknownLength"/></exception>
-    private byte[] UnknownBuffer
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="LengthOfListOfActiveMobileObjects"/></exception>
+    public byte[] ListOfActiveMobs
     {
-        get => _unknownBuffer;
+        get => _listOfActiveMobs;
         set
         {
-            if (value.Length != UnknownLength)
+            if (value.Length != LengthOfListOfActiveMobileObjects)
             {
                 throw new ArgumentException($"Invalid length");
             }
 
-            value.CopyTo(_unknownBuffer, 0);
+            value.CopyTo(_listOfActiveMobs, 0);
         }
     }
 
-    private byte[] _unknown2Buffer = new byte[Unknown2Length];
-
     /// <summary>
-    /// Controls another of the unknown buffers.
+    /// This is the index into the list of active mobs. Doubles as a count of active mobs.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="Unknown2Buffer"/></exception>
-    private byte[] Unknown2Buffer
+    /// <exception cref="ArgumentException">Thrown in case the set value has a length different from <see cref="IdxLookupOfActiveMobs"/></exception>
+    public ushort IdxLookupOfActiveMobs
     {
-        get => _unknown2Buffer;
-        set
-        {
-            if (value.Length != Unknown2Length)
-            {
-                throw new ArgumentException($"Invalid length");
-            }
-
-            value.CopyTo(_unknown2Buffer, 0);
-        }
+        get => BitConverter.ToUInt16(_buffer, OffsetOfIdxLookupOfActiveMobs);
+        set => BitConverter.GetBytes(value).CopyTo(_buffer, OffsetOfIdxLookupOfActiveMobs);
     }
     
     /// <summary>
@@ -704,43 +688,67 @@ public partial class MapObjBlock : Block
     /// <exception cref="BlockOperationException"></exception>
     public void AddNewGameObjectToTile(Point p, GameObject obj)
     {
-        ushort idx = obj is MobileObject ? IdxOfFreeMobileObject : IdxOfFreeStaticObject;
-        if (idx <= 0)
+        ushort idxLookup = obj is MobileObject ? IdxLookupOfFreeMobileObject : IdxLookupOfFreeStaticObject;
+        if (idxLookup <= 0)
         {
             throw new BlockOperationException("Can't add another object, no free slots remaining!");
         }
 
+        ushort idxOfNewObject = obj is MobileObject
+            ? IndicesOfFreeMobileObjects[idxLookup]
+            : IndicesOfFreeStaticObjects[idxLookup];
+
         var tile = Tiles2D[p.Row, p.Column];
-        obj.IdxAtObjectArray = idx;
+        obj.IdxAtObjectArray = idxOfNewObject;
         tile.ObjectChain.Add(obj);
-        AllGameObjects[idx] = obj;
+        AllGameObjects[idxOfNewObject] = obj;
         
-        if (obj is MobileObject)
+        if (obj is MobileObject mobj)
         {
             IdxLookupOfFreeMobileObject--;
+            // Activating mobile object
+            // Technically, this would activate adventurer, two unknowns and indices 0 and 1.
+            // Guarding against that. This is from UWE.
+            if (!((new [] { 125, 126, 127 }.Contains(mobj.ItemID)) | (mobj.IdxAtObjectArray == 0) |
+                  (mobj.IdxAtObjectArray == 1)))
+            {
+                mobj.IsActive = true;
+                mobj.IdxAtActiveMobj = IdxLookupOfActiveMobs;
+                ListOfActiveMobs[IdxLookupOfActiveMobs] = (byte) (mobj.IdxAtObjectArray & 0xFF);
+                IdxLookupOfActiveMobs++;
+            }
         }
         else
         {
             IdxLookupOfFreeStaticObject--;
         }
         tile.MoveObjectsToSameZLevel();
-        if (obj is Container cont)
-        {
+        if (obj is IContainer cont) // In case the created object supposedly has "contents". IContainer because
+        {                           // the object can be mobile or static
             cont.Contents.Clear();
         }
     }
 
-    public void AddNewGameObjectToContainer(Container container, GameObject obj)
+    public void AddNewGameObjectToExistingContainer(IContainer container, GameObject obj)
     {
-        ushort idx;
-        idx = obj is MobileObject ? IdxOfFreeMobileObject : IdxOfFreeStaticObject;
-        if (idx <=0)
+        ushort idxLookup = obj is MobileObject ? IdxLookupOfFreeMobileObject : IdxLookupOfFreeStaticObject;
+        if (idxLookup <=0)
         {
             throw new BlockOperationException("Can't add another object, no free slots remaining!");
         }
-        AllGameObjects[idx] = obj;
-        obj.IdxAtObjectArray = idx;
-        IdxLookupOfFreeStaticObject--;
+        ushort idxOfNewObject = obj is MobileObject
+            ? IndicesOfFreeMobileObjects[idxLookup]
+            : IndicesOfFreeStaticObjects[idxLookup];
+        AllGameObjects[idxOfNewObject] = obj;
+        obj.IdxAtObjectArray = idxOfNewObject;
+        if (obj is MobileObject)
+        {
+            IdxLookupOfFreeMobileObject--; // TODO: Be sure to leave object deactivated.
+        }
+        else 
+        {
+            IdxLookupOfFreeStaticObject--;
+        }
         container.Contents.Add(obj);
     }
 
