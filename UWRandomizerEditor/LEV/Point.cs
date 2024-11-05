@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UWRandomizerEditor.LEV.Blocks;
 
 namespace UWRandomizerEditor.LEV
 {
@@ -15,6 +16,15 @@ namespace UWRandomizerEditor.LEV
             this.Row = row;
             this.Column = column;
         }
+
+        public Point(int index, int height = MapObjBlock.TileHeight, int width = MapObjBlock.TileWidth)
+        {
+            this.Row = index / width;
+            this.Column = index % width;
+        }
+
+        public int X => Column;
+        public int Y => Row;
 
         public static Point operator +(Point a, Point b)
         {
