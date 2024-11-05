@@ -30,7 +30,7 @@ public class TestObjectGetterSetter
 
     private void IterAllObjectsAndExecuteAction(Action<GameObject> action)
     {
-        foreach (var tilemap in ark.TileMapObjectsBlocks)
+        foreach (var tilemap in ark.MapObjBlocks)
         {
             foreach (var obj in tilemap.AllGameObjects)
             {

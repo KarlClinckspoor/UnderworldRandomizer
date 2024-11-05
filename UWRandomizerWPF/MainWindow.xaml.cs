@@ -117,7 +117,7 @@ public partial class MainWindow : Window
         AddMsgToLog("Creating spoiler log, 1-indexed.");
         sb.AppendLine($"Spoiler log: lev.ark, seed {seed}. Entries are XY pos (starts from bottom left) and the number is the object ID.");
         int level = 0; // 1 indexed
-        foreach (var block in ark.TileMapObjectsBlocks)
+        foreach (var block in ark.MapObjBlocks)
         {
             level++;
             AddMsgToLog($"Processing level {level}");

@@ -113,7 +113,7 @@ public class TestGettersAndSetters
     public void TestingGettersAndSettersThatModifyBuffer()
     {
         var ark = Utils.LoadAndAssertOriginalLevArk();
-        foreach (var block in ark.TileMapObjectsBlocks)
+        foreach (var block in ark.MapObjBlocks)
         {
             foreach (var tile in block.Tiles)
             {
@@ -140,7 +140,7 @@ public class TestGettersAndSetters
     public void TestCreatingTileFromSetters()
     {
         var ark = Utils.LoadAndAssertOriginalLevArk();
-        foreach (var block in ark.TileMapObjectsBlocks)
+        foreach (var block in ark.MapObjBlocks)
         {
             foreach (var tile in block.Tiles)
             {

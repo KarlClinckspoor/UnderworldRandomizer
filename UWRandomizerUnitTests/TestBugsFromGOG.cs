@@ -16,11 +16,11 @@ public class TestBugsFromGOG
     //     var path = @"C:\Users\karl9\OneDrive\UnderworldStudy\UW\SAVE1\LEV.ARK";
     //     var AL = new LevLoader(path);
     //
-    //     var problematicObject = AL.TileMapObjectsBlocks[4].AllGameObjects[0x01a9];
-    //     var shouldBeFreeObject = AL.TileMapObjectsBlocks[4].AllGameObjects[0x01a7];
+    //     var problematicObject = AL.MapObjBlocks[4].AllGameObjects[0x01a9];
+    //     var shouldBeFreeObject = AL.MapObjBlocks[4].AllGameObjects[0x01a7];
     //     var coinID = 160;
-    //     var temp1 = AL.TileMapObjectsBlocks[4].FreeMobileObjIndexes.ToList();
-    //     var temp2 = AL.TileMapObjectsBlocks[4].FreeStaticObjIndexes.ToList();
+    //     var temp1 = AL.MapObjBlocks[4].FreeMobileObjIndexes.ToList();
+    //     var temp2 = AL.MapObjBlocks[4].FreeStaticObjIndexes.ToList();
     //     var temp3 = temp1.Concat(temp2);
     //     int counter = 1;
     //     Console.Write("[0000] ");
@@ -34,8 +34,8 @@ public class TestBugsFromGOG
     //
     //         counter++;
     //     }
-    //     Assert.False(AL.TileMapObjectsBlocks[4].isObjectInFreeSlot(problematicObject));
-    //     Assert.True(AL.TileMapObjectsBlocks[4].isObjectInFreeSlot(shouldBeFreeObject));
+    //     Assert.False(AL.MapObjBlocks[4].isObjectInFreeSlot(problematicObject));
+    //     Assert.True(AL.MapObjBlocks[4].isObjectInFreeSlot(shouldBeFreeObject));
     //
     //     var potentialBuffer = new StaticObject(0x80a0, 0x5080, 0x0028, 0x01c0, 0x01a9);
     //     
@@ -49,7 +49,7 @@ public class TestBugsFromGOG
     //     var path = @"C:\Users\karl9\OneDrive\UnderworldStudy\UW\SAVE1\LEV.ARK";
     //     var AL = new LevLoader(path);
     //
-    //     foreach (var block in AL.TileMapObjectsBlocks)
+    //     foreach (var block in AL.MapObjBlocks)
     //     {
     //         foreach (var obj in block.AllGameObjects)
     //         {

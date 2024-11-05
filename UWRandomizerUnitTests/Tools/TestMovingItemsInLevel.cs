@@ -15,7 +15,7 @@ public class TestMovingItemsInLevel
 
     private Tile Move10ItemsNearSpawn(LevLoader arkFile, ItemRandomizationSettings settings)
     {
-        var lvl = arkFile.TileMapObjectsBlocks[0];
+        var lvl = arkFile.MapObjBlocks[0];
         var leftTile = lvl.Tiles[159]; // X 31 Y 2
         // Assert.True(leftTile.FirstObjIdx == 981);
         
@@ -49,7 +49,7 @@ public class TestMovingItemsInLevel
     }
     private Tile MoveSpecificItemsNearSpawn(LevLoader arkFile, ItemRandomizationSettings settings, bool firstPass)
     {
-        var lvl = arkFile.TileMapObjectsBlocks[0];
+        var lvl = arkFile.MapObjBlocks[0];
         var leftTile = lvl.Tiles[159]; // X 31 Y 2
         Assert.True(leftTile.FirstObjIdx == 981);
         
@@ -113,22 +113,22 @@ public class TestMovingItemsInLevel
         var path = UWRandomizerEditor.Utils.SaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
         var newArkFile = new LevLoader(path);
         
-        Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
-        Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
+        Assert.True(newArkFile.MapObjBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
+        Assert.True(newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
         Assert.True(
-            (from obj in newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
+            (from obj in newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
             .SequenceEqual
-            (from obj in arkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
+            (from obj in arkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
             );
 
         var leftTile2 = MoveSpecificItemsNearSpawn(newArkFile, settings, false);
         
-        Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
-        Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
+        Assert.True(newArkFile.MapObjBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
+        Assert.True(newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
         Assert.True(
-            (from obj in newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
+            (from obj in newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
             .SequenceEqual
-            (from obj in arkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
+            (from obj in arkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
             );
         
     }
@@ -145,12 +145,12 @@ public class TestMovingItemsInLevel
         var path = UWRandomizerEditor.Utils.SaveBuffer(arkFile, Path.GetDirectoryName(arkFile.Path), "mod.ark");
         var newArkFile = new LevLoader(path);
         
-        Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
-        Assert.True(newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
+        Assert.True(newArkFile.MapObjBlocks[0].Tiles[159].FirstObjIdx == leftTile.FirstObjIdx);
+        Assert.True(newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain.Count == leftTile.ObjectChain.Count);
         Assert.True(
-            (from obj in newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
+            (from obj in newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
             .SequenceEqual
-            (from obj in arkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
+            (from obj in arkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray)
             );
 
         var leftTile2 = Move10ItemsNearSpawn(newArkFile, settings);
@@ -158,9 +158,9 @@ public class TestMovingItemsInLevel
         // TODO: When moving, this is finding the same tile and inverting the item sequence.
         // TODO: also, the blood stain is at the wrong z height. Check
         Assert.True(
-            (from obj in newArkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray).OrderBy(x=>x)
+            (from obj in newArkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray).OrderBy(x=>x)
             .SequenceEqual
-            ((from obj in arkFile.TileMapObjectsBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray).OrderBy(x=>x))
+            ((from obj in arkFile.MapObjBlocks[0].Tiles[159].ObjectChain select obj.IdxAtObjectArray).OrderBy(x=>x))
             );
     }
     

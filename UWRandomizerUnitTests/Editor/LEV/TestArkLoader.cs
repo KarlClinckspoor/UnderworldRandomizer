@@ -3,6 +3,8 @@ using System.Configuration;
 using System.IO;
 using NUnit.Framework;
 using UWRandomizerEditor.LEV;
+using UWRandomizerEditor.LEV.Blocks;
+using UWRandomizerEditor.LEV.GameObjects;
 using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 namespace RandomizerUnitTests.Editor.LEV;
@@ -83,7 +85,7 @@ class ArkLoaderTest
     {
         var AL = new LevLoader(Paths.UW1_ArkOriginalPath);
         // Testing Lvl1 starting bag
-        var lvl1 = AL.TileMapObjectsBlocks[0];
+        var lvl1 = AL.MapObjBlocks[0];
 
         Assert.True(lvl1.AllGameObjects[942] is Container);
         Assert.False(lvl1.AllGameObjects[942].InContainer);

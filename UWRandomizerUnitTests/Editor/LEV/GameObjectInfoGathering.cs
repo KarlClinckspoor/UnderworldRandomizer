@@ -46,9 +46,9 @@ public class GameObjectInfoGathering
                                    "FirstFreeStaticObjIdx" +
                                    "");
 
-        for (int lvl = 0; lvl < AL.TileMapObjectsBlocks.Length; lvl++)
+        for (int lvl = 0; lvl < AL.MapObjBlocks.Length; lvl++)
         {
-            var block = AL.TileMapObjectsBlocks[lvl];
+            var block = AL.MapObjBlocks[lvl];
             extraCSVcontent.AppendLine(
                                        $"{block.LevelNumber};" +
                                        $"{block.IdxLookupOfFreeMobileObject};" +

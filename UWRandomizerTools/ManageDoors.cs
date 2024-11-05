@@ -13,7 +13,7 @@ public static partial class RandoTools
     public static int RemoveAllDoorReferencesToLocks(LevLoader arkFile)
     {
         int count = 0;
-        foreach (var block in arkFile.TileMapObjectsBlocks)
+        foreach (var block in arkFile.MapObjBlocks)
         {
             foreach (var staticObject in block.StaticObjects)
             {

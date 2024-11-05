@@ -27,7 +27,7 @@ public static class ItemTools
     public static void ShuffleItemsInAllLevels(LevLoader arkFile, Random RandomInstance,
         ItemRandomizationSettings settings)
     {
-        foreach (var block in arkFile.TileMapObjectsBlocks)
+        foreach (var block in arkFile.MapObjBlocks)
         {
             ShuffleItemsInOneLevel(block, RandomInstance, settings);
             block.ReconstructBuffer();
@@ -78,7 +78,7 @@ public static class ItemTools
     {
         var ctrLevel = 0;
         var ctrModifications = 0;
-        foreach (var level in arkFile.TileMapObjectsBlocks)
+        foreach (var level in arkFile.MapObjBlocks)
         {
             Console.WriteLine($"Evaluating level {ctrLevel}");
             foreach (var obj in level.StaticObjects)

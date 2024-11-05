@@ -223,3 +223,28 @@ public class TestArrayFunctions
         Assert.True(UWRandomizerEditor.Utils.DropDimension(test2).SequenceEqual(arr));
     }
 }
+
+[TestFixture]
+public class TestCompareArrays
+{
+    [Test]
+    public void TestCompareArraysEqual()
+    {
+        var arr1 = new byte[] {0, 1, 2, 3, 4, 5};
+        var arr2 = new byte[] {0, 1, 2, 3, 4, 5};
+        (var count, var pos) = (RandomizerUnitTests.Utils.CompareTwoBuffers(arr1, arr2));
+        Assert.True(count == 0);
+        Assert.True(pos.Count == 0);
+    }
+
+    [Test]
+    public void TestCompareArraysDifferent()
+    {
+        var arr1 = new byte[] {0, 1, 2, 2, 2, 2};
+        var arr2 = new byte[] {0, 1, 2, 3, 4, 5};
+        (var count, var pos) = (RandomizerUnitTests.Utils.CompareTwoBuffers(arr1, arr2));
+        Assert.True(count == 3);
+        Assert.True(pos.Count == 3);
+    }
+
+}

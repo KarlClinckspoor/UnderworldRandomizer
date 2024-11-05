@@ -88,7 +88,7 @@ public class CompareWithHanksEditor
 
         // For whatever reason, hank's loader has objects [0-1024], but it should have been [0-1024[, right? krokot's goes
         // goes up to 1023.
-        Assert.True(json.Count - 1 == ark.TileMapObjectsBlocks[blocknum].AllGameObjects.Length);
+        Assert.True(json.Count - 1 == ark.MapObjBlocks[blocknum].AllGameObjects.Length);
 
         IterateAndCompareAttributesStaticObject(json, key, ark, json_to_UWR[key], blocknum);
     }
@@ -102,7 +102,7 @@ public class CompareWithHanksEditor
 
             if (i < 256)
             {
-                var compare = ark.TileMapObjectsBlocks[blocknum].MobileObjects[i];
+                var compare = ark.MapObjBlocks[blocknum].MobileObjects[i];
                 var correctProperty = correct[correctLabel];
                 var compareProperty = GetPropertyValue(compare, compareLabel);
                 Assert.True(correctProperty == compareProperty,
@@ -110,7 +110,7 @@ public class CompareWithHanksEditor
             }
             else
             {
-                var compare = ark.TileMapObjectsBlocks[blocknum].StaticObjects[i - 256];
+                var compare = ark.MapObjBlocks[blocknum].StaticObjects[i - 256];
                 var correctProperty = correct[correctLabel];
                 var compareProperty = GetPropertyValue(compare, compareLabel);
                 Assert.True(correctProperty == compareProperty,

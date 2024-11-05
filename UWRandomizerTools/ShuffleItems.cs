@@ -8,7 +8,7 @@ public class ShuffleItems
 {
     public static void ShuffleAllLevels(LevLoader arkFile, Random RandomInstance, ItemRandomizationSettings settings)
     {
-        foreach (var block in arkFile.TileMapObjectsBlocks)
+        foreach (var block in arkFile.MapObjBlocks)
         {
             ShuffleItemsInLevel(block, RandomInstance, settings);
             block.ReconstructBuffer();

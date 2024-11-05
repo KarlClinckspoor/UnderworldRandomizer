@@ -17,8 +17,8 @@ public class TestRemovingLockFromAllDoorsInArk
         // var ArkEditor = new LevLoader(Path.Join(Paths.BasePath, @"UW - Doors\Data\Lev.ark"));
         var ArkEditor = new LevLoader(Path.Join(Paths.TestDataPath, @"Doors_LEV.ARK"));
 
-        var doorToUnlock = (Door) ArkOriginal.TileMapObjectsBlocks[0].AllGameObjects[1012];
-        var doorUnlockedByEditor = (Door) ArkEditor.TileMapObjectsBlocks[0].AllGameObjects[1012];
+        var doorToUnlock = (Door) ArkOriginal.MapObjBlocks[0].AllGameObjects[1012];
+        var doorUnlockedByEditor = (Door) ArkEditor.MapObjBlocks[0].AllGameObjects[1012];
 
         Assert.True(doorToUnlock.HasLock());
         Assert.False(doorUnlockedByEditor.HasLock());
@@ -29,13 +29,13 @@ public class TestRemovingLockFromAllDoorsInArk
         Assert.True(doorToUnlock.Equals(doorUnlockedByEditor));
         Assert.True(doorToUnlock.Equals(new Door(new byte[] {0x41, 0x01, 0x50, 0x6F, 0x28, 0x00, 0x00, 0x00}, 1012)));
 
-        ArkOriginal.TileMapObjectsBlocks[0].ReconstructBuffer();
+        ArkOriginal.MapObjBlocks[0].ReconstructBuffer();
         ArkOriginal.ReconstructBuffer();
         var path = UWRandomizerEditor.Utils.SaveBuffer(ArkOriginal, Paths.BufferTestsPath,
             "ark_withdoor1012unlocked.bin");
 
         var ArkModified = new LevLoader(path);
-        var doorUnlockedHere = (Door) ArkModified.TileMapObjectsBlocks[0].AllGameObjects[1012];
+        var doorUnlockedHere = (Door) ArkModified.MapObjBlocks[0].AllGameObjects[1012];
         Assert.False(doorUnlockedHere.HasLock());
         Assert.True(doorUnlockedHere.Equals(doorUnlockedByEditor));
         Assert.True(

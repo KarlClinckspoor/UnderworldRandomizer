@@ -368,7 +368,7 @@ public class TestUWLinkedList
     public void TestReferenceCounts()
     {
         var AL = Utils.LoadAndAssertOriginalLevArk();
-        foreach (var block in AL.TileMapObjectsBlocks)
+        foreach (var block in AL.MapObjBlocks)
         {
             Assert.True(block.AllGameObjects.All(x => x.ReferenceCount <= 1),
                 $"These objects in block {block.LevelNumber} have more than 1 reference: " +
