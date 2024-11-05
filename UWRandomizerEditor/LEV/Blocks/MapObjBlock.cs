@@ -173,8 +173,7 @@ public partial class MapObjBlock : Block
     /// <summary>
     /// The index in the <see cref="AllGameObjects"/> array that points to an unused <see cref="StaticObject"/> and can be freely modified.
     /// </summary>
-    public ushort IdxOfFreeStaticObject => (ushort) (IndicesOfFreeObjects[IdxLookupOfFreeStaticObject] + 254);
-    // The +254 above was taken from krokots' UltimateEditor, GetNextFreeStaticIndex
+    public ushort IdxOfFreeStaticObject => IndicesOfFreeStaticObjects[IdxLookupOfFreeStaticObject];
 
     /// <summary>
     /// The first <see cref="MobileObject"/> that can be freely modified.
@@ -697,7 +696,13 @@ public partial class MapObjBlock : Block
         }
     }
     
-    public void AddNewGameObjectToTile(Point position, GameObject obj)
+    /// <summary>
+    /// Be careful when adding containers! The contents will be removed and the items linked might go missing!
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="obj"></param>
+    /// <exception cref="BlockOperationException"></exception>
+    public void AddNewGameObjectToTile(Point p, GameObject obj)
     {
         ushort idx = obj is MobileObject ? IdxOfFreeMobileObject : IdxOfFreeStaticObject;
         if (idx <= 0)
@@ -705,11 +710,10 @@ public partial class MapObjBlock : Block
             throw new BlockOperationException("Can't add another object, no free slots remaining!");
         }
 
-        var tile = Tiles2D[position.Row, position.Column];
-        tile.ObjectChain.Add(obj);
-        // TODO: Check if this will update the individual arrays. 
-        AllGameObjects[idx] = obj;
+        var tile = Tiles2D[p.Row, p.Column];
         obj.IdxAtObjectArray = idx;
+        tile.ObjectChain.Add(obj);
+        AllGameObjects[idx] = obj;
         
         if (obj is MobileObject)
         {
@@ -718,6 +722,11 @@ public partial class MapObjBlock : Block
         else
         {
             IdxLookupOfFreeStaticObject--;
+        }
+        tile.MoveObjectsToSameZLevel();
+        if (obj is Container cont)
+        {
+            cont.Contents.Clear();
         }
     }
 
@@ -735,32 +744,4 @@ public partial class MapObjBlock : Block
         container.Contents.Add(obj);
     }
 
-//
-//     public ushort[] FreeMobileObjIndexes
-//     {
-//         // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
-//         get => IndicesOfFreeMobileObjects[0..(IdxLookupOfFreeMobileObject+1)].Select(x => x).ToArray();
-//     }
-//
-//     public ushort[] FreeStaticObjIndexes
-//     {
-//         // The +1 here was suggested by looking at the free object list dumps from uwdump from underworld adventures
-//         get => IndicesOfFreeStaticObjects[0..(IdxLookupOfFreeStaticObject+1)].Select(x => x).ToArray();
-//     }
-//
-// public bool isObjectInFreeSlot(GameObject obj)
-//     {
-//         var idx = obj.IdxAtObjectArray;
-//         if (idx == 0) return true;
-//         if (idx == 1) return false;
-//         
-//         if (obj is StaticObject)
-//         {
-//             return FreeStaticObjIndexes.Contains(idx);
-//         }
-//         else
-//         {
-//             return FreeMobileObjIndexes.Contains(idx);
-//         }
-//     }
 }
