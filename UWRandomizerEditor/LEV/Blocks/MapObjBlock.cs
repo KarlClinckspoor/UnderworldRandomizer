@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using UWRandomizerEditor.LEV.GameObjects;
 using UWRandomizerEditor.LEV.GameObjects.Specifics;
 
@@ -24,15 +25,8 @@ public partial class MapObjBlock : Block
     private GameObject[] _allGameObjects = new GameObject[NumOfMobileObjects + NumOfStaticObjects];
     public GameObject[] AllGameObjects
     {
-        get
-        {
-            return _allGameObjects;
-        }
-        set
-        {
-            // TODO: verify if the number of static and mobile objects are correct.
-            _allGameObjects = value;
-        }
+        get => _allGameObjects;
+        set => _allGameObjects = value;
     }
 
     /// <summary>
@@ -65,20 +59,6 @@ public partial class MapObjBlock : Block
     private ushort[] _indicesOfFreeMobileObjects = new ushort[NumOfFreeMobileObjects];
     // private IdxOfFreeObj[] _indicesOfFreeMobileObjects = new IdxOfFreeObj[NumOfFreeMobileObjects];
 
-    // /// <summary>
-    // /// Contains a list of objects that point to the slot in MobileObjects that is "free", i.e. unused.
-    // /// </summary>
-    // /// <exception cref="ArgumentException">If the array length is different from <see cref="NumOfFreeMobileObjects"/></exception>
-    // public IdxOfFreeObj[] IndicesOfFreeMobileObjects
-    // {
-    //     get => _indicesOfFreeMobileObjects;
-    //     private set
-    //     {
-    //         if (value.Length != NumOfFreeMobileObjects)
-    //             throw new ArgumentException($"Length of IndicesIntoFreeSlots should be {NumOfFreeMobileObjects}");
-    //         _indicesOfFreeMobileObjects = value;
-    //     }
-    // }
     public ushort[] IndicesOfFreeMobileObjects
     {
         get => _indicesOfFreeMobileObjects;
@@ -90,7 +70,6 @@ public partial class MapObjBlock : Block
         }
     }
 
-    // private IdxOfFreeObj[] _indicesOfFreeStaticObjects = new IdxOfFreeObj[NumberOfFreeStaticObjectSlots];
     private ushort[] _indicesOfFreeStaticObjects = new ushort[NumberOfFreeStaticObjectSlots];
 
     /// <summary>
@@ -448,6 +427,7 @@ public partial class MapObjBlock : Block
         PopulateTiles();
         AddObjectsToTiles();
         AddObjectsToContainers();
+        AttributeActivityStatusToMobileObjects();
     }
 
     /// <summary>
@@ -731,16 +711,23 @@ public partial class MapObjBlock : Block
         }
     }
 
-    public void AddNewGameObjectToExistingContainer(IContainer container, GameObject obj)
+    public void AddNewGameObjectToExistingContainer(GameObject container, GameObject obj)
     {
+        // Let's assert the game object exists
+        Debug.Assert(container.Equals(AllGameObjects[container.IdxAtObjectArray]));
+        // Let's assert the object implements IContainer
+        if (!(container is IContainer))
+        {
+            throw new BlockOperationException("Can't add an item to a non-container in this operation");
+        }
+        
+        // Can be a monster with inventory or a bag, etc.
         ushort idxLookup = obj is MobileObject ? IdxLookupOfFreeMobileObject : IdxLookupOfFreeStaticObject;
         if (idxLookup <=0)
         {
             throw new BlockOperationException("Can't add another object, no free slots remaining!");
         }
-        ushort idxOfNewObject = obj is MobileObject
-            ? IndicesOfFreeMobileObjects[idxLookup]
-            : IndicesOfFreeStaticObjects[idxLookup];
+        ushort idxOfNewObject = obj is MobileObject ? IndicesOfFreeMobileObjects[idxLookup] : IndicesOfFreeStaticObjects[idxLookup];
         AllGameObjects[idxOfNewObject] = obj;
         obj.IdxAtObjectArray = idxOfNewObject;
         if (obj is MobileObject)
@@ -751,7 +738,12 @@ public partial class MapObjBlock : Block
         {
             IdxLookupOfFreeStaticObject--;
         }
-        container.Contents.Add(obj);
+        ((IContainer) container).Contents.Add(obj);
+    }
+
+    private void AttributeActivityStatusToMobileObjects()
+    {
+        throw new NotImplementedException();
     }
 
 }
