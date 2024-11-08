@@ -707,13 +707,15 @@ public partial class MapObjBlock : Block
         {
             IdxLookupOfFreeMobileObject--;
             // Activating mobile object
-            // Technically, this would activate adventurer, two unknowns and indices 0 and 1.
-            // Guarding against that. This is from UWE.
+            // Guarding against that activating some unknown objects on the upper range of mobile object id. This is from UWE.
+            // TODO: test if these really are problematic.
             if (!((new [] { 125, 126, 127 }.Contains(mobj.ItemID)) | (mobj.IdxAtObjectArray == 0) |
                   (mobj.IdxAtObjectArray == 1)))
             {
                 mobj.IsActive = true;
                 mobj.IdxAtActiveMobj = IdxLookupOfActiveMobs;
+                mobj.XHome = p.X;
+                mobj.YHome = p.Y;
                 ListOfActiveMobs[IdxLookupOfActiveMobs] = (byte) (mobj.IdxAtObjectArray & 0xFF);
                 IdxLookupOfActiveMobs++;
             }

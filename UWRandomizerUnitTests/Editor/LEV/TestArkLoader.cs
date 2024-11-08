@@ -211,8 +211,6 @@ class ArkLoaderTest
         
         Assert.True(AL2.MapObjBlocks[0].Tiles[223].FirstObjIdx == newObj.IdxAtObjectArray);
         Assert.True(didItSaveCorrectly == 0);
-        Assert.True(false); // The goblin added with this method is unresponsive. Maybe I should add it to the list of
-        // active npcs? Setting this to false to fail the test until I get this right.
     }
 
     [Test]
