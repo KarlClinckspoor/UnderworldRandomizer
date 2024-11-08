@@ -732,7 +732,10 @@ public partial class MapObjBlock : Block
         obj.IdxAtObjectArray = idxOfNewObject;
         if (obj is MobileObject)
         {
-            IdxLookupOfFreeMobileObject--; // TODO: Be sure to leave object deactivated.
+            // Be sure to leave object deactivated.
+            IdxLookupOfFreeMobileObject--; 
+            // UWE has some checks about objects not being able to be added to the container, like npcs.
+            // TODO: Do I really need those checks?
         }
         else 
         {
@@ -743,7 +746,18 @@ public partial class MapObjBlock : Block
 
     private void AttributeActivityStatusToMobileObjects()
     {
-        throw new NotImplementedException();
+        foreach (var mobj in MobileObjects)
+        {
+            // Goes through the number of active mobs and sets their activity to true if they're in 
+            for (int i = 0; i < IdxLookupOfActiveMobs; i++)
+            {
+                if (mobj.IdxAtObjectArray == ListOfActiveMobs[i])
+                {
+                    mobj.IsActive = true;
+                    break;
+                }
+            }
+        }
     }
 
 }
