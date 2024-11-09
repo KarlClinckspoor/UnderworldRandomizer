@@ -27,4 +27,6 @@ public class StaticObject : GameObject
     protected StaticObject() { }
 
     public StaticObject Clone() => new StaticObject(this.Buffer, this.IdxAtObjectArray);
+
+    public static StaticObject ZeroedOutStaticObject(ushort idx) => new StaticObject() {IdxAtObjectArray = idx};
 }

@@ -666,8 +666,13 @@ public partial class MapObjBlock : Block
     /// <param name="position"></param>
     /// <param name="obj"></param>
     /// <exception cref="BlockOperationException"></exception>
-    public void AddNewGameObjectToTile(Point p, GameObject obj)
+    public GameObject AddNewGameObjectToTile(Point p, GameObject obj, bool stayInactive = false)
     {
+        if (AllGameObjects[obj.IdxAtObjectArray].Equals(obj))
+        {
+            throw new BlockOperationException(
+                "Can't add an object that is already present in the level! Try cloning it.");
+        }
         ushort idxLookup = obj is MobileObject ? IdxLookupOfFreeMobileObject : IdxLookupOfFreeStaticObject;
         if (idxLookup <= 0)
         {
@@ -686,18 +691,21 @@ public partial class MapObjBlock : Block
         if (obj is MobileObject mobj)
         {
             IdxLookupOfFreeMobileObject--;
+            mobj.XHome = p.X;
+            mobj.YHome = p.Y;
+            
             // Activating mobile object
             // Guarding against that activating some unknown objects on the upper range of mobile object id. This is from UWE.
             // TODO: test if these really are problematic.
-            if (!((new [] { 125, 126, 127 }.Contains(mobj.ItemID)) | (mobj.IdxAtObjectArray == 0) |
-                  (mobj.IdxAtObjectArray == 1)))
+            if (!((new [] { 125, 126, 127 }.Contains(mobj.ItemID)) | (mobj.IdxAtObjectArray == 0) | (mobj.IdxAtObjectArray == 1)))
             {
-                mobj.IsActive = true;
-                mobj.IdxAtActiveMobj = IdxLookupOfActiveMobs;
-                mobj.XHome = p.X;
-                mobj.YHome = p.Y;
-                ListOfActiveMobs[IdxLookupOfActiveMobs] = (byte) (mobj.IdxAtObjectArray & 0xFF);
-                IdxLookupOfActiveMobs++;
+                if (!stayInactive)
+                {
+                    mobj.IsActive = true;
+                    mobj.IdxAtActiveMobj = IdxLookupOfActiveMobs;
+                    ListOfActiveMobs[IdxLookupOfActiveMobs] = (byte) (mobj.IdxAtObjectArray & 0xFF);
+                    IdxLookupOfActiveMobs++;
+                }
             }
         }
         else
@@ -709,9 +717,11 @@ public partial class MapObjBlock : Block
         {                           // the object can be mobile or static
             cont.Contents.Clear();
         }
+
+        return obj;
     }
 
-    public void AddNewGameObjectToExistingContainer(GameObject container, GameObject obj)
+    public GameObject AddNewGameObjectToExistingContainer(GameObject container, GameObject obj)
     {
         // Let's assert the game object exists
         Debug.Assert(container.Equals(AllGameObjects[container.IdxAtObjectArray]));
@@ -732,7 +742,7 @@ public partial class MapObjBlock : Block
         obj.IdxAtObjectArray = idxOfNewObject;
         if (obj is MobileObject)
         {
-            // Be sure to leave object deactivated.
+            // TODO: Should I activate the mobj, for funsies?
             IdxLookupOfFreeMobileObject--; 
             // UWE has some checks about objects not being able to be added to the container, like npcs.
             // TODO: Do I really need those checks?
@@ -742,6 +752,79 @@ public partial class MapObjBlock : Block
             IdxLookupOfFreeStaticObject--;
         }
         ((IContainer) container).Contents.Add(obj);
+        return obj;
+    }
+    
+    public List<GameObject> RemoveGameObjectFromTile(Point p, GameObject obj)
+    {
+        var tile = Tiles2D[p.Row, p.Column];
+        // List<GameObject>  
+        // Iterate through every possible object, down to base, and add them to a list of objects to remove
+        // from array, but only remove the requested object from the tile. Return a list of objects that were
+        // removed.
+        void RecursiveGetContentsOfContainer(IContainer container_, List<GameObject> toRemove)
+        {
+            foreach (var content in container_.Contents)
+            {
+                toRemove.Add(content);
+                if (content is IContainer cont)
+                {
+                    RecursiveGetContentsOfContainer(cont, toRemove);
+                }
+            }
+        }
+
+        var objectsToRemoveNotOnTheTile = new List<GameObject>();
+        if (obj is IContainer container)
+        {
+            RecursiveGetContentsOfContainer(container, objectsToRemoveNotOnTheTile);
+        }
+        
+        // Take care of object in the tile
+        tile.ObjectChain.Remove(obj);
+
+        // Then clean up the indices.
+        var allRemovedObjects = new List<GameObject> { obj };
+        allRemovedObjects.AddRange(objectsToRemoveNotOnTheTile);
+        
+        // TODO: Lookup the order. First increment then set, or set then increment?
+        foreach (var objToRemove in allRemovedObjects)
+        {
+            // TODO: is it better if I replace the object with one with a buffer equal to zeroes?
+            if (objToRemove is MobileObject mobj)
+            {
+                // Replace with zeroes
+                MobileObjects[mobj.IdxAtObjectArray] = MobileObject.ZeroedOutMobileObject(mobj.IdxAtObjectArray);
+                // Activity
+                mobj.IsActive = false;
+                mobj.IdxAtActiveMobj = 0;
+                IdxLookupOfActiveMobs--;
+                // Indices
+                IdxLookupOfFreeMobileObject++;
+                IndicesOfFreeMobileObjects[IdxLookupOfFreeMobileObject] = mobj.IdxAtObjectArray;
+            }
+            else
+            {
+                // Replace with zeroes
+                AllGameObjects[objToRemove.IdxAtObjectArray] = StaticObject.ZeroedOutStaticObject(objToRemove.IdxAtObjectArray);
+                // Clean up indices
+                IdxLookupOfFreeStaticObject++;
+                IndicesOfFreeStaticObjects[IdxLookupOfFreeStaticObject] = objToRemove.IdxAtObjectArray;
+            }
+        }
+        foreach (var specialObj in AllGameObjects)
+        {
+            switch (specialObj)
+            {
+                case Trigger trig:
+                    trig.SpecialIdx = 0;
+                    break;
+                case Trap trap:
+                    trap.SpecialIdx = 0;
+                    break;
+            }
+        }
+        return allRemovedObjects;
     }
 
     private void AttributeActivityStatusToMobileObjects()

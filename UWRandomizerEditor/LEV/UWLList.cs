@@ -118,6 +118,7 @@ public class UWLinkedList: IList<GameObject>
 
         if (idx == -1)
         {
+            // TODO: Should I raise an error?
             return false; // Couldn't be found
         }
 

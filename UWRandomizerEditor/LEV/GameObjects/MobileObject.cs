@@ -315,10 +315,12 @@ public class MobileObject : GameObject, IContainer
         Contents = new UWLinkedList() {StartingIdx = QuantityOrSpecialLinkOrSpecialProperty, RepresentingContainer = true};
     }
 
-    protected MobileObject()
+    private MobileObject(): base()
     {
         Contents = new UWLinkedList() {StartingIdx = 0, RepresentingContainer = true};
     }
+
+    public static MobileObject ZeroedOutMobileObject(ushort idx) => new MobileObject() {IdxAtObjectArray = idx};
     
     public MobileObject Clone() => new MobileObject(Buffer, IdxAtObjectArray);
 }
