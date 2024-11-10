@@ -755,7 +755,7 @@ public partial class MapObjBlock : Block
         return obj;
     }
     
-    public List<GameObject> RemoveGameObjectFromTile(Point p, GameObject obj)
+    public List<GameObject> RemoveGameObjectFromTile(Point p, GameObject obj, bool replaceWithZeroes = false)
     {
         var tile = Tiles2D[p.Row, p.Column];
         // List<GameObject>  
@@ -787,14 +787,12 @@ public partial class MapObjBlock : Block
         var allRemovedObjects = new List<GameObject> { obj };
         allRemovedObjects.AddRange(objectsToRemoveNotOnTheTile);
         
-        // TODO: Lookup the order. First increment then set, or set then increment?
         foreach (var objToRemove in allRemovedObjects)
         {
-            // TODO: is it better if I replace the object with one with a buffer equal to zeroes?
             if (objToRemove is MobileObject mobj)
             {
-                // Replace with zeroes
-                MobileObjects[mobj.IdxAtObjectArray] = MobileObject.ZeroedOutMobileObject(mobj.IdxAtObjectArray);
+                if (replaceWithZeroes)
+                    MobileObjects[mobj.IdxAtObjectArray] = MobileObject.ZeroedOutMobileObject(mobj.IdxAtObjectArray);
                 // Activity
                 mobj.IsActive = false;
                 mobj.IdxAtActiveMobj = 0;
@@ -805,8 +803,8 @@ public partial class MapObjBlock : Block
             }
             else
             {
-                // Replace with zeroes
-                AllGameObjects[objToRemove.IdxAtObjectArray] = StaticObject.ZeroedOutStaticObject(objToRemove.IdxAtObjectArray);
+                if (replaceWithZeroes)
+                    AllGameObjects[objToRemove.IdxAtObjectArray] = StaticObject.ZeroedOutStaticObject(objToRemove.IdxAtObjectArray);
                 // Clean up indices
                 IdxLookupOfFreeStaticObject++;
                 IndicesOfFreeStaticObjects[IdxLookupOfFreeStaticObject] = objToRemove.IdxAtObjectArray;
