@@ -25,6 +25,11 @@ public static class GameObjectFactory
     /// <exception cref="Exception">Thrown when the itemID can't be matched to an existing object (greater than 0x1ff)</exception>
     public static GameObject CreateFromBuffer(byte[] buffer, ushort idxAtArray)
     {
+        // Next refactor:
+        // Accept a dict which correlated the object ID and its corresponding object type to be created.
+        // Use Activator.CreateInstance(dict[id], buffer, idxAtArray) to instantiate the object
+        // Add it to the AllGameObjects array
+        
         if ((idxAtArray == 0) | (idxAtArray == 1)) // These never hold actual object data.
         {
             return new MobileObject(buffer, idxAtArray);

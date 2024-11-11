@@ -372,7 +372,7 @@ public partial class MapObjBlock : Block
         for (int i = 0; i < NumOfFreeMobileObjects; i++)
         {
             var val =BitConverter.ToUInt16(
-                FreeListMobileObjectBuffer[(i * IdxOfFreeObj.FixedSize)..((i + 1) * IdxOfFreeObj.FixedSize)]);
+                FreeListMobileObjectBuffer[(i * MapObjBlock.EntrySizeOfFreeListStaticObjects)..((i + 1) * MapObjBlock.EntrySizeOfFreeListStaticObjects)]);
             IndicesOfFreeMobileObjects[i] = val;
         }
     }
@@ -386,7 +386,7 @@ public partial class MapObjBlock : Block
         for (int i = 0; i < NumberOfFreeStaticObjectSlots; i++)
         {
             var val = BitConverter.ToUInt16(
-                FreeListStaticObjectBuffer[(i * IdxOfFreeObj.FixedSize)..((i + 1) * IdxOfFreeObj.FixedSize)]);
+                FreeListStaticObjectBuffer[(i * MapObjBlock.EntrySizeOfFreeListStaticObjects)..((i + 1) * MapObjBlock.EntrySizeOfFreeListStaticObjects)]);
             // var obj = new IdxOfFreeObj(buffer, i);
             IndicesOfFreeStaticObjects[i] = val;
         }

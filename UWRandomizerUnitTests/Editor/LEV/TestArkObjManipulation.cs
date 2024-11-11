@@ -105,6 +105,7 @@ class ArkObjectAdditionRemoval
         var block = AL.MapObjBlocks[0];
         MobileObject obj = block.MobileObjects[219]; // Green goblin
         var newObj = obj.Clone();
+        newObj.IdxAtObjectArray = 0;
         
         var originalIdx = block.IdxOfFreeMobileObject;
         
