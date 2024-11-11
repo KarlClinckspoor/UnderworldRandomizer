@@ -1,6 +1,6 @@
 ﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
-public class EnchantedArmor : SpecialLinkGameObject
+public class Armor : SpecialLinkGameObject
 {
     public new readonly int EnchantFlag = 1;
 
@@ -17,11 +17,11 @@ public class EnchantedArmor : SpecialLinkGameObject
         set => Enchantment = value - 256 - 16;
     }
 
-    public EnchantedArmor(byte[] buffer, ushort idx) : base(buffer, idx)
+    public Armor(byte[] buffer, ushort idx) : base(buffer, idx)
     {
     }
 
-    public EnchantedArmor(ushort objIdFlags, ushort position, ushort qualityChain,
+    public Armor(ushort objIdFlags, ushort position, ushort qualityChain,
         ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }

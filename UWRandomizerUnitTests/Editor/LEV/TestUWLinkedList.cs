@@ -29,7 +29,7 @@ public class TestUWLinkedList
             new Door(fillerBytes, 2) {next = 6}, // 1.2         immovable
             new Trap(fillerBytes, 3) {next = 4}, // 2.1         immovable
             new TexturedGameObject(fillerBytes, 4) {next = 5}, // 2.2   immovable
-            new EnchantedArmor(fillerBytes, 5) {next = 0}, // 2.3 (last) movable
+            new Armor(fillerBytes, 5) {next = 0}, // 2.3 (last) movable
             new EnchantedWeapon(fillerBytes, 6) {next = 0} // 1.3 (last) movable
         };
 

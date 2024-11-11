@@ -32,7 +32,7 @@ public class TestItemRemoval
             new Door(fillerBytes, 3) {next = 7}, // 1.2         immovable
             new Trap(fillerBytes, 4) {next = 5}, // 2.1         immovable
             new TexturedGameObject(fillerBytes, 5) {next = 6}, // 2.2   immovable
-            new EnchantedArmor(fillerBytes, 6) {next = 0}, // 2.3 (last) movable
+            new Armor(fillerBytes, 6) {next = 0}, // 2.3 (last) movable
             new EnchantedWeapon(fillerBytes, 7) {next = 0} // 1.3 (last) movable
         };
 

@@ -25,7 +25,7 @@ public class TestItemRemoval_Containers
     ///          | (in)
     ///          -> bag1(4)    -> end(0)
     ///              | (in)
-    ///              -> Key(1) -> EnchantedWeapon(2) -> EnchantedArmor(3) -> end(0)
+    ///              -> Key(1) -> EnchantedWeapon(2) -> Armor(3) -> end(0)
     ///
     /// Movables: bag2, EnchantedWeapon
     /// </summary>
@@ -50,7 +50,7 @@ public class TestItemRemoval_Containers
             new StaticObject(tempbuffer, 0), // Empty obj
             new Key(tempbuffer, 1) {next = 2},
             new EnchantedWeapon(tempbuffer, 2) {next = 3},
-            new EnchantedArmor(tempbuffer, 3) {next = 0},
+            new Armor(tempbuffer, 3) {next = 0},
             _bag1,
             _bag2,
             new Door(tempbuffer, 6) {next = 7},
