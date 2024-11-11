@@ -33,7 +33,7 @@ public class TestItemRemoval
             new Trap(fillerBytes, 4) {next = 5}, // 2.1         immovable
             new TexturedGameObject(fillerBytes, 5) {next = 6}, // 2.2   immovable
             new Armor(fillerBytes, 6) {next = 0}, // 2.3 (last) movable
-            new EnchantedWeapon(fillerBytes, 7) {next = 0} // 1.3 (last) movable
+            new Weapon(fillerBytes, 7) {next = 0} // 1.3 (last) movable
         };
 
         LList1 = new UWLinkedList();

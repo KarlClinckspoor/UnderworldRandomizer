@@ -1,28 +1,92 @@
 ﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
-public class EnchantedWeapon : SpecialLinkGameObject
+public class Weapon : StaticObject, IEnchantable<WeaponEnchantment>
 {
-    public new readonly int EnchantFlag = 1;
+    public bool IsEnchanted { get; private set; }
 
-    public int Enchantment
+    public ushort SpecialIdx
+    {
+        get => QuantityOrSpecialLinkOrSpecialProperty;
+        // TODO: Should't 'LinkSpecial' be 'QuantityOrSpecialLinkOrSpecialProperty'?
+        set => LinkSpecial = (ushort) Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
+    }
+
+    public int EnchantmentNumber
     {
         get => SpecialIdx - 512;
         set => SpecialIdx = (ushort) (value + 512);
     }
 
-    // Oh boy. This is more complicated. Need to have logic to differentiate between Acc/Dam/Prot/Tough and other spells
-    public int Spell
+    public int SpellValue
     {
-        get => Enchantment + 256;
-        set => Enchantment = value - 256;
+        get => EnchantmentNumber >= 192 ? EnchantmentNumber + 256 : SpecialIdx; // UWE
     }
 
-    public EnchantedWeapon(byte[] buffer, ushort idx) : base(buffer, idx)
+    public WeaponEnchantment Enchantment => IsEnchanted ? (WeaponEnchantment)SpellValue : WeaponEnchantment.Nothing;
+
+    public void AddEnchantment(WeaponEnchantment enchant)
+    {
+        EnchantmentNumber = ((int)enchant - 256); // TODO: test
+        IsEnchanted = true;
+    }
+
+    public void RemoveEnchantment()
+    {
+        IsEnchanted = false;
+        EnchantmentNumber = 1;
+    }
+
+    public Weapon(byte[] buffer, ushort idx) : base(buffer, idx)
     {
     }
 
-    public EnchantedWeapon(ushort objIdFlags, ushort position, ushort qualityChain,
+    public Weapon(ushort objIdFlags, ushort position, ushort qualityChain,
         ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
 }
+
+public class RangedWeapon: Weapon
+{
+    public RangedWeapon(byte[] buffer, ushort idx) : base(buffer, idx)
+    {
+    }
+
+    public RangedWeapon(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+}
+
+public class SpecialRangedWeapon: Weapon
+{
+    public SpecialRangedWeapon(byte[] buffer, ushort idx) : base(buffer, idx)
+    {
+    }
+
+    public SpecialRangedWeapon(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+}
+
+public enum WeaponEnchantment
+{
+    MinorAccuracy=448,
+    Accuracy=449,
+    AdditionalAccuracy=450,
+    MajorAccuracy=451,
+    GreatAccuracy=452,
+    VeryGreatAccuracy=453,
+    TremendousAccuracy=454,
+    UnsurpassedAccuracy=455,
+    MinorDamage=456,
+    Damage=457,
+    AdditionalDamage=458,
+    MajorDamage=459,
+    GreatDamage=460,
+    VeryGreatDamage=461,
+    TremendousDamage=462,
+    UnsurpassedDamage=463,
+    Nothing=1,
+}
+    
+

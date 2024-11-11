@@ -22,7 +22,7 @@ public class TestUWLinkedList_Containers
     ///    |
     ///    -> bag1(4) -> end(0)
     ///        |
-    ///        -> Key(1) -> EnchantedWeapon(2) -> Armor(3) -> end(0)
+    ///        -> Key(1) -> Weapon(2) -> Armor(3) -> end(0)
     /// Tile either points to bag1 or bag2 (depends on test)
     /// </summary>
     [SetUp]
@@ -44,7 +44,7 @@ public class TestUWLinkedList_Containers
         {
             new StaticObject(tempbuffer, 0), // Empty obj
             new Key(tempbuffer, 1) {next = 2},
-            new EnchantedWeapon(tempbuffer, 2) {next = 3},
+            new Weapon(tempbuffer, 2) {next = 3},
             new Armor(tempbuffer, 3) {next = 0},
             _bag1,
             _bag2,

@@ -42,7 +42,7 @@ public class ItemRandomizationSettings : IRandoSettings
         {typeof(Armor), true},
         {typeof(EnchantedObject), true},
         {typeof(EnchantedWand), true},
-        {typeof(EnchantedWeapon), true},
+        {typeof(Weapon), true},
         {typeof(Key), true},
         {typeof(Container), true},
     };

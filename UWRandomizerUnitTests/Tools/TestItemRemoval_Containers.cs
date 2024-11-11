@@ -21,13 +21,13 @@ public class TestItemRemoval_Containers
     
     /// <summary>
     /// Item sequence:
-    /// Tile -> bag2(5)  -> Door(6) -> Trap(7) -> EnchantedWeapon(8) -> Trigger(10) -> end(0)
+    /// Tile -> bag2(5)  -> Door(6) -> Trap(7) -> Weapon(8) -> Trigger(10) -> end(0)
     ///          | (in)
     ///          -> bag1(4)    -> end(0)
     ///              | (in)
-    ///              -> Key(1) -> EnchantedWeapon(2) -> Armor(3) -> end(0)
+    ///              -> Key(1) -> Weapon(2) -> Armor(3) -> end(0)
     ///
-    /// Movables: bag2, EnchantedWeapon
+    /// Movables: bag2, Weapon
     /// </summary>
     [SetUp]
     public void SetUp()
@@ -49,13 +49,13 @@ public class TestItemRemoval_Containers
         {
             new StaticObject(tempbuffer, 0), // Empty obj
             new Key(tempbuffer, 1) {next = 2},
-            new EnchantedWeapon(tempbuffer, 2) {next = 3},
+            new Weapon(tempbuffer, 2) {next = 3},
             new Armor(tempbuffer, 3) {next = 0},
             _bag1,
             _bag2,
             new Door(tempbuffer, 6) {next = 7},
             new Trap(tempbuffer, 7) {next = 8},
-            new EnchantedWeapon(tempbuffer, 8) {next = 10},
+            new Weapon(tempbuffer, 8) {next = 10},
             new TexturedGameObject(tempbuffer, 9) {next = 0}, // Unused on purpose
             new Trigger(tempbuffer, 10) {next = 0}
         };
