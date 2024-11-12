@@ -30,6 +30,12 @@ public class Weapon : StaticObject, IEnchantable<WeaponEnchantment>
         IsEnchanted = true;
     }
 
+    public void ForceAddEnchantment(int value)
+    {
+        EnchantmentNumber = value;
+        IsEnchanted = true;
+    }
+
     public void RemoveEnchantment()
     {
         IsEnchanted = false;

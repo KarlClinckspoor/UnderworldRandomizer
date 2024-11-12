@@ -4,6 +4,7 @@ public interface IEnchantable<T> where T: Enum
 {
     public bool IsEnchanted { get; }
     public void AddEnchantment(T value);
+    public void ForceAddEnchantment(int value);
     public void RemoveEnchantment();
     public T Enchantment { get; }
     public int SpellValue { get; }

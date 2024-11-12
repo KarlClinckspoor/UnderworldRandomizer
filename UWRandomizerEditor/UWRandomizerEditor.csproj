@@ -21,5 +21,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="LEV\GameObjects\Specifics\EnchantedObject.cs" />
+  </ItemGroup>
+
 
 </Project>

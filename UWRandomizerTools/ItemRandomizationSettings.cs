@@ -40,8 +40,6 @@ public class ItemRandomizationSettings : IRandoSettings
         {typeof(StaticObject), true},
         {typeof(QuantityGameObject), true},
         {typeof(Armor), true},
-        {typeof(EnchantedObject), true},
-        {typeof(EnchantedWand), true},
         {typeof(Weapon), true},
         {typeof(Key), true},
         {typeof(Container), true},

@@ -1,7 +1,6 @@
 ﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
-// TODO: I don't think this should be "unenchantable".
-public class Spell: StaticObject, IEnchantable<SpellEnchantment>
+public class Scroll: StaticObject, IEnchantable<ScrollEnchantment>
 {
     public bool IsEnchanted { get; private set; }
 
@@ -12,12 +11,11 @@ public class Spell: StaticObject, IEnchantable<SpellEnchantment>
         set => LinkSpecial = (ushort)Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
     }
 
-    public void AddEnchantment(SpellEnchantment enchant)
+    public void AddEnchantment(ScrollEnchantment enchant)
     {
         EnchantmentNumber = ((int)enchant - 256);
         IsEnchanted = true;
     }
-
 
     public void ForceAddEnchantment(int value)
     {
@@ -28,10 +26,10 @@ public class Spell: StaticObject, IEnchantable<SpellEnchantment>
     public void RemoveEnchantment()
     {
         IsEnchanted = false;
-        EnchantmentNumber = 0;
+        EnchantmentNumber = 0; // TODO: which value? 0? -1?
     }
 
-    public SpellEnchantment Enchantment => IsEnchanted ? (SpellEnchantment)SpellValue : SpellEnchantment.Nothing;
+    public ScrollEnchantment Enchantment => IsEnchanted ? (ScrollEnchantment)SpellValue : ScrollEnchantment.Nothing;
 
     public int SpellValue
     {
@@ -52,7 +50,7 @@ public class Spell: StaticObject, IEnchantable<SpellEnchantment>
     }
 }
 
-public enum SpellEnchantment
+public enum ScrollEnchantment
 {
     Light = 256,
     ResistBlows = 257,
@@ -112,4 +110,3 @@ public enum SpellEnchantment
     Hallucination = 213,
     Nothing = 0
 }
-

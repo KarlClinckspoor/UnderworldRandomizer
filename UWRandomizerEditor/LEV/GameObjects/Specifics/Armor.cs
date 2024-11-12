@@ -31,6 +31,12 @@ public class Armor : StaticObject, IEnchantable<ArmorEnchantment>
         IsEnchanted = true;
     }
 
+    public void ForceAddEnchantment(int value)
+    {
+        EnchantmentNumber = value;
+        IsEnchanted = true;
+    }
+
     public void RemoveEnchantment()
     {
         EnchantmentNumber = 1;
