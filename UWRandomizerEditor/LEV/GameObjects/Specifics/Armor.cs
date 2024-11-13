@@ -11,6 +11,12 @@ public class Armor : StaticObject, IEnchantable<ArmorEnchantment>
         set => LinkSpecial = (ushort)Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
     }
 
+    public IdentificationStatus IDStatus
+    {
+        get => (IdentificationStatus)(Heading & 0b111);
+        set => Heading = (byte) Utils.SetBits(Heading, (byte)value, 0b111, 0);
+    }
+
     public int EnchantmentNumber
     {
         get => SpecialIdx - 512;

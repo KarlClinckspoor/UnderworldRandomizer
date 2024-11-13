@@ -22,6 +22,12 @@ public class Potion: StaticObject, IEnchantable<PotionEnchantment>
         EnchantmentNumber = value;
         IsEnchanted = true;
     }
+    
+    public IdentificationStatus IDStatus
+    {
+        get => (IdentificationStatus)(Heading & 0b111);
+        set => Heading = (byte) Utils.SetBits(Heading, (byte)value, 0b111, 0);
+    }
 
     public void RemoveEnchantment()
     {

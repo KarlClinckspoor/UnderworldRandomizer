@@ -41,6 +41,12 @@ public class Weapon : StaticObject, IEnchantable<WeaponEnchantment>
         IsEnchanted = false;
         EnchantmentNumber = 1;
     }
+    
+    public IdentificationStatus IDStatus
+    {
+        get => (IdentificationStatus)(Heading & 0b111);
+        set => Heading = (byte) Utils.SetBits(Heading, (byte)value, 0b111, 0);
+    }
 
     public Weapon(byte[] buffer, ushort idx) : base(buffer, idx)
     {
@@ -50,6 +56,13 @@ public class Weapon : StaticObject, IEnchantable<WeaponEnchantment>
         ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
     {
     }
+}
+
+public class MeleeWeapon : Weapon
+{
+    public MeleeWeapon(byte[] buffer, ushort idx) : base(buffer, idx) { }
+
+    public MeleeWeapon(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray) { }
 }
 
 public class RangedWeapon: Weapon

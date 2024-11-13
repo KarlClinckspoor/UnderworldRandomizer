@@ -427,7 +427,21 @@ public partial class MapObjBlock : Block
         PopulateTiles();
         AddObjectsToTiles();
         AddObjectsToContainers();
+        AddSpellsToWands();
         AttributeActivityStatusToMobileObjects();
+    }
+
+    private void AddSpellsToWands()
+    {
+        foreach (var obj in StaticObjects)
+        {
+            if (obj is Wand wand)
+            {
+                // TODO: This is a hack. Should use the top one.
+                // wand.SpellObject = AllGameObjects[wand.QuantityOrSpecialLinkOrSpecialProperty];
+                wand.ForceReplaceSpellObject(AllGameObjects[wand.QuantityOrSpecialLinkOrSpecialProperty]);
+            }
+        }
     }
 
     /// <summary>

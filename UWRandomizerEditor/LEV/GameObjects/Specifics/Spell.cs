@@ -18,6 +18,11 @@ public class Spell: StaticObject, IEnchantable<SpellEnchantment>
         IsEnchanted = true;
     }
 
+    public IdentificationStatus IDStatus
+    {
+        get => (IdentificationStatus)(Heading & 0b111);
+        set => Heading = (byte) Utils.SetBits(Heading, (byte)value, 0b111, 0);
+    }
 
     public void ForceAddEnchantment(int value)
     {

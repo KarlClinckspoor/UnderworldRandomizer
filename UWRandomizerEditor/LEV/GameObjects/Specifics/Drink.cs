@@ -11,6 +11,12 @@ public class Drink : StaticObject, IEnchantable<DrinkEnchantment>
         set => LinkSpecial = (ushort)Utils.SetBits(LinkSpecial, value, 0b1111111111, 6);
     }
 
+    public IdentificationStatus IDStatus
+    {
+        get => (IdentificationStatus)(Heading & 0b111);
+        set => Heading = (byte) Utils.SetBits(Heading, (byte)value, 0b111, 0);
+    }
+
     public void AddEnchantment(DrinkEnchantment enchant)
     {
         EnchantmentNumber = ((int)enchant - 256);

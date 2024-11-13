@@ -29,6 +29,11 @@ public class Scroll: StaticObject, IEnchantable<ScrollEnchantment>
         EnchantmentNumber = 0; // TODO: which value? 0? -1?
     }
 
+    public IdentificationStatus IDStatus
+    {
+        get => (IdentificationStatus)(Heading & 0b111);
+        set => Heading = (byte) Utils.SetBits(Heading, (byte)value, 0b111, 0);
+    }
     public ScrollEnchantment Enchantment => IsEnchanted ? (ScrollEnchantment)SpellValue : ScrollEnchantment.Nothing;
 
     public int SpellValue

@@ -76,6 +76,8 @@ public class LevLoader : IBufferObject
 
             var headerBuffer = newHeaderBuffer.ToArray();
             header.Buffer = headerBuffer;
+            
+            // TODO: Iterate through each pair of MapObjBlocks and AnimOverlay set the animations appropriately
 
             // Reconstruct the buffer itself by copying the buffers of the blocks.
             var tempBufferList = new List<byte>();
@@ -108,7 +110,7 @@ public class LevLoader : IBufferObject
 
     public enum Sections
     {
-        LevelTilemapObjlist = 0,
+        MapObj = 0,
         ObjectAnimOverlayInfo = 1,
         TextureMappings = 2,
         AutomapInfos = 3,
@@ -118,7 +120,7 @@ public class LevLoader : IBufferObject
 
     IDictionary<Sections, int> BlockLengths = new Dictionary<Sections, int>()
     {
-        {Sections.LevelTilemapObjlist, MapObjBlock.FixedBlockLength},
+        {Sections.MapObj, MapObjBlock.FixedBlockLength},
         {Sections.ObjectAnimOverlayInfo, ObjectAnimationOverlayInfoBlock.FixedBlockLength},
         {Sections.TextureMappings, TextureMappingBlock.FixedBlockLength},
         {Sections.AutomapInfos, 0},
@@ -273,7 +275,7 @@ public class LevLoader : IBufferObject
         var buffer = GetBlockBuffer(BlockNum, BlockLength);
         switch (BlockType)
         {
-            case Sections.LevelTilemapObjlist:
+            case Sections.MapObj:
                 return new MapObjBlock(buffer, levelnumber);
             case Sections.ObjectAnimOverlayInfo:
                 return new ObjectAnimationOverlayInfoBlock(buffer, levelnumber);
