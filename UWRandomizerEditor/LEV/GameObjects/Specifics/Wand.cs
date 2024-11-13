@@ -1,15 +1,11 @@
-﻿namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
+﻿using System.Diagnostics;
+
+namespace UWRandomizerEditor.LEV.GameObjects.Specifics;
 
 public class Wand: StaticObject
 {
-    private Wand(byte[] buffer, ushort idxAtArray) : base(buffer, idxAtArray) { }
-    private Wand(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray) { }
-
-    public Wand(byte[] buffer, ushort idxAtArray, Spell spell) : base(buffer, idxAtArray)
-    {
-        SpellObject = spell;
-        LinkSpecial = SpellObject.IdxAtObjectArray;
-    }
+    public Wand(byte[] buffer, ushort idxAtArray) : base(buffer, idxAtArray) { }
+    public Wand(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray) { }
 
     public void SetCharges(byte value)
     {
@@ -23,11 +19,11 @@ public class Wand: StaticObject
         set => SpellObject.Quality = value;
     }
 
-    private GameObject _spellObject;
+    private GameObject? _spellObject;
 
     public Spell SpellObject
     {
-        get => (Spell) _spellObject;
+        get => (Spell)_spellObject ?? throw new InvalidOperationException();
         set => _spellObject = value;
     }
 
