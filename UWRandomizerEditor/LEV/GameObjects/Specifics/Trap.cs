@@ -6,3 +6,10 @@ public class Trap : SpecialLinkGameObject
     {
     }
 }
+
+public class DoorTrap : Trap
+{
+    public DoorTrap(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
+}

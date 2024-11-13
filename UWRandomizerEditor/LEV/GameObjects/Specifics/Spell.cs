@@ -3,6 +3,14 @@
 // TODO: I don't think this should be "unenchantable".
 public class Spell: StaticObject, IEnchantable<SpellEnchantment>
 {
+    public Spell(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
+
+    public Spell(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+
     public bool IsEnchanted { get; private set; }
 
     public ushort SpecialIdx

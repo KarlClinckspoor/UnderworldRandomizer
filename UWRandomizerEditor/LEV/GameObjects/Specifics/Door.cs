@@ -10,6 +10,10 @@ public class Door : SpecialLinkGameObject
     // Bit 1 of "owner" field is set, door is spiked
     // sp_link field points to a_lock object (010f), door is locked.
 
+    public Door(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+
     /// <summary>
     /// Points the "sp_link" field to 0, removing any reference to a lock.
     /// </summary>
@@ -82,5 +86,12 @@ public class Door : SpecialLinkGameObject
         {
             throw new InvalidOperationException("Cannot unlock because door isn't pointing to a lock object");
         }
+    }
+}
+
+public class SecretDoor: Door
+{
+    public SecretDoor(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
     }
 }

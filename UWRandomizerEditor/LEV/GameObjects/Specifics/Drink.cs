@@ -2,6 +2,14 @@
 
 public class Drink : StaticObject, IEnchantable<DrinkEnchantment>
 {
+    public Drink(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
+
+    public Drink(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+
     public bool IsEnchanted { get; private set; }
 
     public ushort SpecialIdx

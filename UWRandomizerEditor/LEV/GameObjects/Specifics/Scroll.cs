@@ -2,6 +2,14 @@
 
 public class Scroll: StaticObject, IEnchantable<ScrollEnchantment>
 {
+    public Scroll(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
+
+    public Scroll(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+
     public bool IsEnchanted { get; private set; }
 
     public ushort SpecialIdx

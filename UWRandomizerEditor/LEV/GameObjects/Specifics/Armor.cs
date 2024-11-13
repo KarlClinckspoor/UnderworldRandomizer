@@ -72,6 +72,17 @@ public class Bauble : Armor
     }
 }
 
+public class SpecialBauble : Armor
+{
+    public SpecialBauble(byte[] buffer, ushort idx) : base(buffer, idx)
+    {
+    }
+
+    public SpecialBauble(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+}
+
 public class Shield : Armor
 {
     public Shield(byte[] buffer, ushort idx) : base(buffer, idx)

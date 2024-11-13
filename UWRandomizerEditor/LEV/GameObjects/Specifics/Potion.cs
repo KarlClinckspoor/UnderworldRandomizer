@@ -2,6 +2,14 @@
 
 public class Potion: StaticObject, IEnchantable<PotionEnchantment>
 {
+    public Potion(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
+    {
+    }
+
+    public Potion(ushort objIdFlags, ushort position, ushort qualityChain, ushort linkSpecial, ushort idxAtObjectArray) : base(objIdFlags, position, qualityChain, linkSpecial, idxAtObjectArray)
+    {
+    }
+
     public bool IsEnchanted { get; private set; }
 
     public ushort SpecialIdx
