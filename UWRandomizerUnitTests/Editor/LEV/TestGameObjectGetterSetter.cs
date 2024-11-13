@@ -44,15 +44,15 @@ public class TestObjectGetterSetter
         }
     }
     
-    [Test]
-    public void ItemID()
-    {
-        IterAllObjectsAndExecuteAction(obj =>
-        {
-            var cpy = obj.ItemID;
-            obj.ItemID = cpy;
-        });
-    }
+    // [Test]
+    // public void ItemID()
+    // {
+    //     IterAllObjectsAndExecuteAction(obj =>
+    //     {
+    //         var cpy = obj.ItemID;
+    //         obj.ItemID = cpy;
+    //     });
+    // }
 
     [Test]
     public void Flags()

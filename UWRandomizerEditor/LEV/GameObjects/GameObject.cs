@@ -119,8 +119,10 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     public int ItemID
     {
         get => Utils.GetBits(ObjIdFlags, 0b111111111, 0);
-        set => ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value, 0b111111111, 0);
+        private set => ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, value, 0b111111111, 0);
     }
+    
+    public void ForceSetItemID(int id) => ObjIdFlags = (ushort) Utils.SetBits(ObjIdFlags, id, 0b111111111, 0);
 
     public int Flags
     {
