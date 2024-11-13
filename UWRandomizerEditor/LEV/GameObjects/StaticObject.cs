@@ -9,6 +9,19 @@ public class StaticObject : GameObject
     {
         return true;
     }
+    
+    public override byte[] Buffer
+    {
+        get
+        {
+            ReconstructBuffer();
+            var temp = new List<byte>();
+            temp.AddRange(BasicInfoBuffer);
+            return temp.ToArray();
+        }
+        set => value.CopyTo(BasicInfoBuffer, 0);
+    }
+    
 
     public StaticObject(byte[] buffer, ushort idxAtObjArray) : base(buffer, idxAtObjArray)
     {

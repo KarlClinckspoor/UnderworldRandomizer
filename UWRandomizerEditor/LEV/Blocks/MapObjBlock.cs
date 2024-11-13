@@ -326,8 +326,7 @@ public partial class MapObjBlock : Block
             var currBuffer =
                 StaticObjectInfoBuffer[
                     (i * StaticObject.FixedBufferLength)..((i + 1) * StaticObject.FixedBufferLength)];
-            var currObj =
-                (StaticObject) GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + NumOfMobileObjects));
+            var currObj = GameObjectFactory.CreateFromBuffer(currBuffer, (ushort) (i + NumOfMobileObjects), UW1ObjectHC.UW1ObjectTypes);
 
             if ((currObj.IdxAtObjectArray < NumOfMobileObjects))
             {
@@ -353,14 +352,15 @@ public partial class MapObjBlock : Block
             byte[] buffer =
                 MobileObjectInfoBuffer[
                     (i * MobileObject.FixedMobileBufferLength)..((i + 1) * MobileObject.FixedMobileBufferLength)];
-            var obj = (MobileObject) GameObjectFactory.CreateFromBuffer(buffer, i);
-            if (obj.IdxAtObjectArray >= NumOfMobileObjects)
+            // var obj = GameObjectFactory.CreateFromBuffer(buffer, i, UW1ObjectHC.UW1ObjectTypes) as MobileObject;
+            var mobj = new MobileObject(buffer, i);
+            if (mobj.IdxAtObjectArray >= NumOfMobileObjects)
             {
                 throw new BlockOperationException(
                     "Attempted to add a static object to the region of mobile objects. Should not happen!");
             }
 
-            AllGameObjects[i] = obj;
+            AllGameObjects[i] = mobj;
         }
     }
     

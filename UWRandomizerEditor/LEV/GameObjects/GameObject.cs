@@ -11,6 +11,8 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     private const int SizeOfFields = 2;
     private const int NumberOfFields = 4;
     public const int FixedBufferLength = NumberOfFields * SizeOfFields;
+    public const int ExtraMobileBufferLength = 19;
+    public const int FixedMobileBufferLength = FixedBufferLength + ExtraMobileBufferLength;
 
     /// <summary>
     /// References the <see cref="MapObjBlock.AllGameObjects"/> array
@@ -28,12 +30,12 @@ public abstract class GameObject : IEquatable<GameObject>, IBufferObject
     public bool InContainer { get; set; }
 
     protected byte[] BasicInfoBuffer = new byte[FixedBufferLength];
-    protected byte[] ExtraInfoBuffer = Array.Empty<byte>(); // Can be 19 bytes long if a MobileObject
+    protected byte[] ExtraInfoBuffer = new byte[ExtraMobileBufferLength];
 
     /// <summary>
     /// The Buffer represents the game object as it's stored in lev.ark
     /// </summary>
-    public byte[] Buffer
+    public virtual byte[] Buffer
     {
         get
         {
