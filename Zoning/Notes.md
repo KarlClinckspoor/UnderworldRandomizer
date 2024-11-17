@@ -257,6 +257,7 @@ Other notes:
 * There is a teleport from the lower area to the inner tunnels, in the north.
 * There is a room with loot behind a secret door in the north, I'm assuming it's accessed pretty normally.
 * There is a locked door, key ID11, that guards the threshold between gray and other lizardmen, but it can be circumvented by going the long way around.
+* Zak has the taper. Artifact!
 
 ### Zone 24: alcove behind waterfall
 
@@ -330,9 +331,120 @@ What's the trigger? Do I just move in?
 
 ## Lvl 4
 
+Status: **unfinished**. Need to paint in the area to the northwest.
+
 ### Zone 2 continuing from lvl3
+
+Status: **Unfinished**
 
 Connected to:
 
 * **Lvl 3 X 41 Y 2** Near fighters to the south, still [Zone 2](#zone-2-continuing-from-lvl2).
 * **Lvl 3 X 25 Y 36** Close to lizardmen, still [Zone 2](#zone-2-continuing-from-lvl2)
+* [Zone 40](#zone-40-rawstag-ankh-shrine), massive unbreakable door, rawstag doorman.
+* [Zone 41](#zone-41-alcove-after-lever-puzzle-e), needs to have a pole or levitation (or jump?) to trigger the level.
+* [Zone 43](#zone-43-bullfrog-exit-se). Requires levitation/flying or solving the bullfrog puzzle. Wand (555) is enchanted with the spell to reset the puzzle.
+* **Lvl 5 X 35 Y 47** and **Lvl 5 X 28 Y 47**, north of dining hall.
+* [Zone 44](#zone-44-maze-west-rodrick), unbreakable massive door with key ID13.
+* **Lvl 5 X 39 Y 26** near ghouls.
+* [Zone 46](#zone-46-waterfall-area), needs levitation or waterwalking+jumping.
+* [Zone 47](#zone-47-waterfall-area-north-step), needs levitation or waterwalking+jumping.
+* [Zone 48](#zone-48-knight-armory), dorna is the doorman. Locked massive unbreakable door with no key.
+* Bullfrog exit NE **Lvl 5 X 54 Y 59** leads to tombs. Since the tombs can be accessed through zone 2, this makes the corridor zone 2, too (not 42).
+<!-- * [Zone 42](#zone-42-bullfrog-exit-ne). Requires levitation/flying or solving the bullfrog puzzle. Wand (555) is enchanted with the spell to reset the puzzle. -->
+
+Has:
+
+* Key ID13 with Rodrick
+
+Other notes:
+
+### Zone 40 rawstag ankh shrine
+
+* [Zone 2](#zone-2-continuing-from-lvl3), massive unbreakable door, can't be opened from this side.
+
+### Zone 41 alcove after lever puzzle, E
+
+* [Zone 2](#zone-2-continuing-from-lvl3), but can't be triggered from this area.
+
+### Zone 42 Bullfrog exit NE (removed)
+
+* [Zone 2](#zone-2-continuing-from-lvl3), falling down to bullfrog
+
+### Zone 43 Bullfrog exit SE
+
+* [Zone 2](#zone-2-continuing-from-lvl3), falling down to bullfrog
+
+### Zone 44 Maze west rodrick
+
+* [Zone 2](#zone-2-continuing-from-lvl3), unbreakable massive door with key ID13.
+* [Zone 45](#zone-45-plate-secret-area), lever puzzle
+
+### Zone 45 Plate secret area
+
+* [Zone 44](#zone-44-maze-west-rodrick), but is inaccessible from here. Massive unbreakable door.
+
+### Zone 46 waterfall area
+
+* [Zone 2](#zone-2-continuing-from-lvl3), falling down.
+* [Zone 47](#zone-47-waterfall-area-north-step), falling down.
+
+### Zone 47 waterfall area north step
+
+* [Zone 2](#zone-2-continuing-from-lvl3), falling down
+* [Zone 46](#zone-46-waterfall-area), levitation or flying or waterwalk+jumping.
+
+### Zone 48 knight armory
+
+* [Zone 2](#zone-2-continuing-from-lvl3), through a lever. Door is massive, unbreakable and doesn't have a key associated.
+
+## Lvl 5
+
+Status: **unfinished** needs to fill in area to the NW where you climb up.
+
+### Zone 2: continuing from lvl4
+
+Connected to:
+
+* **Lvl4 X 30 Y 47** and **Lvl4 X 34 Y 47** near rodrick. [Zone 2](#zone-2-continuing-from-lvl3)
+* **Lvl4 X 41 Y 26** near outcasts. [Zone 2](#zone-2-continuing-from-lvl3)
+* **Lvl4 X 56 Y 59** bullfrog exit NE.
+* **Lvl6 X 43 Y 27** near lava in center. **TODO fill in**
+
+* [Zone 49](#zone-49-zanium-mine-dispatch-corridor), needs code from Kneenibble, otherwise it's free access. Teleport is behind unbreakable portcullis.
+* [Zone 51](#zone-51-nolant-tomb-vestibule), lever
+
+* Ring is to the NNW. Artifact!
+* Judy is here, and has the key of love if you show her a picture of Tom. **TODO** should this be "technically" a new zone, connected to 2?
+* Tombs can be accessed by going through the ghoul area, then finding and opening the secret door, which doesn't have a lock.
+* Sword hilt is found in the tombs. Artifact!
+* Grave of Garamon is found here too, near a light mace.
+
+### Zone 49 Zanium mine dispatch corridor
+
+* [Zone 50](#zone-50-zanium-mine), from teleport
+
+Connection to Zone 2 is dependent on the portcullis being open, so it's technically one-way.
+
+### Zone 50 Zanium mine
+
+* [Zone 2](#zone-2-continuing-from-lvl4), one-way teleport
+
+### Zone 51 Nolant tomb vestibule
+
+* [Zone 2](#zone-2-continuing-from-lvl4), unbreakable portcullis, key ID15.
+* [Zone 52](#zone-52-nolant-tomb), massive door, key ID15.
+
+Has: a trigger that makes a ghost appear, which has key ID15.
+
+### Zone 52 Nolant tomb
+
+* [Zone 51](#zone-51-nolant-tomb-vestibule), massive door, key ID15.
+
+## Lvl 6
+
+Status: **incomplete**
+
+### Zone 2 (continuing from lvl5)
+
+* **Lvl 5 X 43 Y 31** near the central pillar, south of dining area.
