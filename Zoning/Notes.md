@@ -20,15 +20,25 @@ The rest of the file are notes of the zoning. Part of this will become part of t
 
 Status: **Mapping out level finished**. **Needs to map "leaks" to lvl2**. **Needs revision**.
 
+### Zone 53 starting area
+
+Turns out I completely missed the lock to the shrine of the silver sapling. So now I'm shoehorning in this area number.
+
+Connected to:
+* [Zone 2](#zone-2-main-level-1-areas). Door to sapling room, ID1, door to corridor, ID1.
+* [Zone 10](#zone-10-close-to-outcasts). Door near bragit, ID1.
+
+Keys found:
+
+* ID1 (in backpack close to bragit)
+
 ### Zone 2: main Level 1 areas
 
-Status: **Unfinished!** need to populate lvl2. If I go from the backside, can I get the door with the lever open?
-
 Key IDs found:
-* ID1 (in backpack close to bragit)
 * ID2 (1 on SE, close to acid slug, another on spiral stairs close to access to lvl2, NW)
 
 Connected to:
+* [Zone 53](#zone-53-starting-area), door to silver sapling  room, ID1, door to corridor, ID1.
 * [Zone 3](#zone-3-gray-goblin-area), gray goblin area, by gray goblin doorman (Eb). Unbreakable portcullis.
 * **Lvl 2, coords X 35 Y 20** (access in alcove, jumping gap SW of central pillar). Ultimately zone 2 wraps around to this area so, despite the lock with key ID2, it can be circumvented.
 * **Lvl 2, coords X 7  Y 38** (spiral staircase, NWW of central pillar)
@@ -36,11 +46,11 @@ Connected to:
 * [Zone 6](#zone-6-green-goblin-area), green goblin doorman (Drog).
 * [Zone 8](#zone-8-skeleroom) Key ID2. Breakable?
 * [Zone 9](#zone-9-pillar-height-puzzle-control-room-and-treasure). Key ID2.
-* [Zone 10](#zone-10-close-to-outcasts). Door near water, breakable. Door near bragit, ID1. Levitating up viewing area.
+* [Zone 10](#zone-10-close-to-outcasts). Door near water, breakable. Levitating up viewing area.
 
 Other notes:
 
-* Key ID1 can make the area quicker to travel, but isn't necessary to unlock the doors. The water below the shrine can be considered a softlock in a way, since bashing open the door becomes a necessity (and bashing doors isn't "accepted"). However, if you complete the jumping puzzle, you can continue, so this was considered a single zone.
+* The water below the shrine can be considered a softlock in a way, since bashing open the door becomes a necessity (and bashing doors isn't "accepted"). However, if you complete the jumping puzzle, you can continue, so this was considered a single zone.
 
 ### Zone 3: Gray goblin area
 
@@ -147,6 +157,7 @@ Connected to:
 * **Lvl3, X 42 Y 61** Northern area that splits in two, EW.
 * [Zone 21](#zone-21-maze-room-with-potions) with breakable door, KeyID 6.
 * [Zone 22](#zone-22-area-reached-by-flying) by flying/levitating ONLY.
+* [Zone 83](#zone-83-moonorb-area), after you have gate traveled there.
 
 Keys:
 
@@ -220,9 +231,10 @@ Can be used to peer into the moonstone area.
 
 * [Zone 22](#zone-22-area-reached-by-flying) by breakable(?) door with Key ID6.
 
-### Lvl2 Other notes
+### Zone 83 Moonorb area
 
-* The moonorb and gate travel scroll area - what leads here?
+* [Zone 2](#zone-2-continuing-from-lvl1), by moving to a specific tile.
+* Can be accessed by any area if you have a gate travel spell.
 
 ## Lvl3
 
@@ -329,6 +341,24 @@ What's the trigger? Do I just move in?
 
 * [Zone 2](#zone-2-continuing-from-lvl2), key ID11, unbreakable door.
 
+### Zone 66 (continuing from lvl4)
+
+* **Lvl 4 X 7 Y 61** and **Lvl4 X 7 Y 50** to area with wisp
+* [Zone 67](#zone-67-shadow-beasts) behind a breakable door with no key
+* [Zone 68](#zone-68-key-of-courage-room) behind an unbreakable door with key ID10
+
+### Zone 67 shadow beasts
+
+* [Zone 66](#zone-66-continuing-from-lvl4), breakable door with no key.
+
+Has Key ID10.
+
+### Zone 68 Key of courage room
+
+* [Zone 66](#zone-66-continuing-from-lvl4), unbreakable door with key ID10.
+
+Has key of courage. Artifact!
+
 ## Lvl 4
 
 Status: **unfinished**. Need to paint in the area to the northwest.
@@ -398,6 +428,11 @@ Other notes:
 
 * [Zone 2](#zone-2-continuing-from-lvl3), through a lever. Door is massive, unbreakable and doesn't have a key associated.
 
+### Zone 66 (continuing from lvl5)
+
+* **Lvl5 X 8 Y 45** area with traps and room
+* **Lvl3 X 7 Y 59** and **Lvl3 X 7 Y 52** swamp area with key of courage
+
 ## Lvl 5
 
 Status: **unfinished** needs to fill in area to the NW where you climb up.
@@ -441,6 +476,11 @@ Has: a trigger that makes a ghost appear, which has key ID15.
 
 * [Zone 51](#zone-51-nolant-tomb-vestibule), massive door, key ID15.
 
+### Zone 66 (continuing from lvl6)
+
+* **Lvl6 X 11 Y 55** lava corridor
+* **Lvl4 X 8 Y 43** area with wisps
+
 ## Lvl 6
 
 Status: **incomplete**
@@ -448,3 +488,295 @@ Status: **incomplete**
 ### Zone 2 (continuing from lvl5)
 
 * **Lvl 5 X 43 Y 31** near the central pillar, south of dining area.
+* [Zone 54](#zone-54-lava-south), ramp to the south.
+* **Lvl 7 X 19 Y 13**, typical entrance near Cardon.
+* [Zone 55](#zone-55-lava-north), multiple entrances and exits
+* [Zone 56](#zone-56-small-alcove-on-lava-east), falling down from square room with lava walls and gold floor.
+* [Zone 57](#zone-57-alcove-with-crown-near-bridge) if you jump well. **TODO** test.
+* [Zone 58](#zone-58-alcove-with-shield-near-crown), levitation.
+
+Contains:
+
+* Book of honesty. Artifact!
+* Shield of valor with Golem. Artifact!
+* Wine. Artifact!
+
+### Zone 54 lava south
+
+* [Zone 2](#zone-2-continuing-from-lvl5), climbing up some stairs.
+
+### Zone 55 Lava north
+
+* [Zone 2](#zone-2-continuing-from-lvl5), multiple entrances and exits.
+* [Zone 56](#zone-56-small-alcove-on-lava-east), jumping up a little.
+* [Zone 57](#zone-57-alcove-with-crown-near-bridge), by a jump spell (**TODO test**) or floating.
+* [Zone 58](#zone-58-alcove-with-shield-near-crown), levitating up.
+
+### Zone 56 small alcove on lava, East
+
+* [Zone 2](#zone-2-continuing-from-lvl5), floating up.
+* [Zone 55](#zone-55-lava-north), falling down a little
+
+### Zone 57 Alcove with crown near bridge
+
+* [Zone 55](#zone-55-lava-north), falling down
+* Possibly [Zone 2](#zone-2-continuing-from-lvl5), if you jump well. **TODO** test
+
+### Zone 58 Alcove with shield, near crown
+
+* [Zone 2](#zone-2-continuing-from-lvl5), levitation.
+* [Zone 55](#zone-55-lava-north), falling down.
+
+### Zone 66 (continuing from lvl7)
+
+* **Lvl7 X 2 Y 61** secret passage behind prison
+* **Lvl5 X 14 Y 55** corridor and room with traps
+
+## Lvl 7
+
+There's a single square on the north of the map that I think is inaccessible, so I left it unassigned. Same with the central pillar.
+
+### Zone 2 (continuing form lvl6)
+
+* **Lvl 6 X 18 Y 10** near mages, after bridge.
+
+I swore I went through the backdoor to Tyball at least once, but I couldn't replicate it. What's the trigger?
+
+Connected to:
+
+* [Zone 59](#zone-59-guard-room-1), through an indestructible portcullis which can, at first, be opened by having a medallion or engaging in combat with everyone.
+* [Zone 71](#zone-71-tyball-crib), through a secret wall **TODO: that is perhaps opened if you have a scroll of reveal?**
+* [Zone 69](#zone-69-entrance-to-damaging-maze) through a locked breakable door, key ID24.
+* [Zone 75](#zone-75-tombs-p1), if you previously opened the way of the secret door. **TODO if you have a scroll of reveal, will this open too?**.
+* [Zone 82](#zone-82-top-of-waterfall), levitation or flying.
+
+Items:
+
+* Medallion that allows you to go through the guard gates.
+
+### Zone 59 Guard room 1
+
+* [Zone 2](#zone-2-continuing-form-lvl6), potentially by a lever. **TODO the editor doesn't say you can go back, but it might be possible**
+* [Zone 60](#zone-60-spider-maze), by having talked to the goblin with the talisman or fought through the guardpost.
+
+### Zone 60 spider maze
+
+* **Lvl8 X12 Y33**, sectioned off area with some treasure.
+* **Lvl8 X60 Y62**, area with orb rock.
+
+* [Zone 59](#zone-59-guard-room-1), if you fought through the guards, instead of presenting the medallion. Or key ID23
+* [Zone 61](#zone-61-guardroom-2), if you fight through or have medallion.
+* [Zone 63](#zone-63-prison-corridor), if you opened it up from Dantes' room.
+* [Zone 67](#zone-67-alcove-with-gate-travel-scroll), if you can jump or can levitate.
+* [Zone 79](#zone-79-northern-lava-river), falling down.
+* [Zone 75](#zone-75-tombs-p1), if you have the Kallistan crystal.
+
+Has:
+
+Key ID25, near a spider den
+Key ID24, below a skull near cavern with dead things.
+
+
+### Zone 61 Guardroom 2
+
+* [Zone 60](#zone-60-spider-maze), by key ID23 or talking to goblins
+* [Zone 62](#zone-62-prison-foyer), by key ID23
+
+Key ID23 on troll.
+
+Apparently you get imprisoned if you go here. You need some treasure to get the troll to open the door.
+
+### Zone 62 Prison foyer
+
+* [Zone 61](#zone-61-guardroom-2), key ID23.
+* [Zone 63](#zone-63-prison-corridor), 
+
+### Zone 63 Prison corridor
+
+* [Zone 62](#zone-62-prison-foyer) through a portcullis, key ID23.
+* [Zone 64](#zone-64-prison-cells-id23), several prison cells with breakable doors with key ID23.
+* [Zone 65](#zone-65-prison-cells-id27), three prison cells with unbreakable doors with key ID27.
+
+### Zone 64 Prison cells ID23
+
+* [Zone 62](#zone-63-prison-corridor), through breakable doors with key ID23.
+* [Zone 60](#zone-60-spider-maze), through a hole through Dantes room. This makes the troll guard hostile.
+
+Fintor, griffle, kallistan, dantes
+
+Kallistan has crystal that opens up passages in this level, but you need the password deco morono.
+
+### Zone 65 Prison cells ID27
+
+* [Zone 63](#zone-63-prison-corridor), through unbreakable massive doors with key ID27.
+
+Smonden (Key ID26 which goes up to key of courage), Bolinard (Tom picture which goes to key of love), Gurstang which has the phrase for Illomo, to find the key of Truth.
+
+### Zone 66 Up to key of courage
+
+* [Zone 60](#zone-60-spider-maze), chasms, unbreakable door with key ID26.
+* **Lvl 6 X 5 Y 61** lava corridor.
+
+### Zone 67 Alcove with gate travel scroll
+
+* [Zone 60](#zone-60-spider-maze), falling down.
+
+### Zone 68 Cavern of dead things
+
+* [Zone 60](#zone-60-spider-maze), through a breakable door with no key
+* [Zone 69](#zone-69-entrance-to-damaging-maze), through a breakable door with no key
+
+### Zone 69 entrance to damaging maze
+
+* [Zone 68](#zone-68-cavern-of-dead-things), through a breakable door with no key
+* [Zone 70](#zone-70-damaging-maze), just walk, but would need the crown.
+* [Zone 78](#zone-78-passage-to-imp), if you opened the way **TODO will a reveal spell open this?**
+* [Zone 81](#zone-81-ring-of-levitation-and-misc-steps), falling down or levitation.
+* [Zone 79](#zone-79-northern-lava-river), falling down.
+
+### Zone 70 Damaging maze
+
+* Need the crown of maze navigation (found in [zone 78](#zone-78-passage-to-imp)) to travel safely, but can be memorized.
+* [Zone 79](#zone-79-northern-lava-river), falling down.
+* [Zone 69](#zone-69-entrance-to-damaging-maze) just walk.
+* [Zone 71](#zone-71-tyball-crib)
+
+### Zone 71 Tyball crib
+
+* [Zone 70](#zone-70-damaging-maze), just walk
+* [Zone 72](#zone-72-arielle-prison), unbreakable portcullis with key ID27
+* [Zone 2](#zone-2-continuing-form-lvl6), by a secret wall.
+* [Zone 73](#zone-73-corridor-to-stairs-into-main-lvl8), through an unbreakable door with key ID27.
+
+Tyball has key ID23 and key ID27.
+
+### Zone 72 Arial prison
+
+* [Zone 71](#zone-71-tyball-crib), unbreakable portcullis with key ID27.
+
+### Zone 73 corridor to stairs into main lvl8
+
+* [Zone 71](#zone-71-tyball-crib) through an unbreakable door with key ID27.
+* **Lvl 8 X 59 Y 2**, southeastern area.
+
+### Zone 74 guard room 3
+
+* [Zone 2](#zone-2-continuing-form-lvl6), if you have key ID23 (from west, locked massive door), talking to goblin and having talisman (east) or fighting your way through.
+
+### Zone 75 tombs P1
+
+* [Zone 60](#zone-60-spider-maze), if it was previously opened with the crystal **TODO** will this open with reveal?
+* [Zone 2](#zone-2-continuing-form-lvl6), by a secret door to the bottom.
+* [Zone 76](#zone-76-tombs-p2), by finding a secret door on NE tomb.
+**TODO some rocks fall behind you, cutting off access to zone 60. Add a new intermediate zone?**
+
+### Zone 76 tombs P2
+
+* [Zone 75](#zone-75-tombs-p1), if you previously opened the path. **TODO** will this open with reveal?
+* [Zone 77](#zone-77-puke-corridor) by finding the secret door.
+
+### Zone 77 puke corridor
+
+* [Zone 76](#zone-76-tombs-p2), if you found the secret path. **TODO** Will this open with reveal?
+* [Zone 78](#zone-78-passage-to-imp), breakable door with key ID25.
+
+### Zone 78 passage to imp
+
+* [Zone 77](#zone-77-puke-corridor), breakable door with key ID25.
+* [Zone 79](#zone-79-northern-lava-river), breakable door with key ID25.
+* **Lvl 8 X 38 Y 47** small central region.
+* **Lvl 8 X 35 Y 44** small central region, other side.
+* [Zone 69](#zone-69-entrance-to-damaging-maze), through a secret door to the south.
+* [Zone 80](#zone-80-alcoves-with-imp), levitating or flying.
+
+Contains: crown of maze navigation.
+
+### Zone 79 northern lava river
+
+* [Zone 78](#zone-78-passage-to-imp), breakable door with key ID25.
+* [Zone 81](#zone-81-ring-of-levitation-and-misc-steps), jumping up or levitation.
+* [Zone 69](#zone-69-entrance-to-damaging-maze), floating up.
+* [Zone 69](#zone-60-spider-maze), floating up or climbing up at the northwest area.
+
+Floor is lava and has lots and lots and lots of fire elementals.
+
+### Zone 80 alcoves with imp
+
+* [Zone 78](#zone-78-passage-to-imp), falling down.
+
+### Zone 81 Ring of levitation and misc steps
+
+* [Zone 79](#zone-79-northern-lava-river), falling down
+* [Zone 69](#zone-69-entrance-to-damaging-maze), flying or levitation
+
+### Zone 82 Top of waterfall
+
+Single square zone that would be funny to add something.
+
+* [Zone 2](#zone-2-continuing-form-lvl6), falling down.
+
+## Lvl 8
+
+### Zone 60 (continuing from lvl7) small sectioned off mine
+
+* **Lvl 7 X 10 Y 33**, spider maze start
+* [Zone 89](#zone-89-lava-corridors-in-western-section), just walk.
+
+### Zone 60 (continuing from lvl7) area with orb rock
+
+* **Lvl 7 X 58 Y 54**, near plaque of evil dead
+* **Lvl 7 X 56 Y 62**, near gate travel scroll
+* [Zone 88](#zone-88-small-lava-eastern-section) just walk, but it has lava.
+
+### Zone 73 (continued from lvl7)
+
+* **Lvl 7 X 61 Y 2** near tyball's crib.
+* [Zone 83](#zone-83-carasso), breakable door with no key
+
+
+### Zone 78 (continued from lvl7)
+
+* **Lvl 7 X 38 Y 50** staircase that leads to puke corridor
+* **Lvl 7 X 35 Y 39** imp with crown of maze navigation.
+
+### Zone 83 Carasso
+
+* [Zone 73](#zone-73-continued-from-lvl7), breakable door with no key
+
+Has key ID28
+
+### Zone 84 Corridors to central chamber
+
+* [Zone 73](#zone-73-continued-from-lvl7), unbreakable door with key ID28 and perhaps jumping from the southern bit.
+* [Zone 85](#zone-85-lava-and-connected-regions), falling down.
+* [Zone 86](#zone-86-slasher-chamber), need key of love, courage and truth, tripartite key.
+
+### Zone 85 Lava and connected regions
+
+* [Zone 84](#zone-84-corridors-to-central-chamber), going up
+* [Zone 73](#zone-73-continued-from-lvl7), lots of ways. Ramps, flying, etc
+
+Needs lava boots, lots of fire elementals
+
+### Zone 86 Slasher chamber
+
+* [Zone 84](#84-corridors-to-central-chamber), if you opened the door previously.
+* [Zone 87](#zone-87-final-stretch), if you have all 8 talismans.
+
+### Zone 88 Small lava eastern section
+
+* [Zone 60](#zone-60-continuing-from-lvl7-area-with-orb-rock), just walking
+
+Lava area
+
+### Zone 89 Lava corridors in western section
+
+* [Zone 60](#zone-60-continuing-from-lvl7-small-sectioned-off-mine), just walk
+
+### Zone 
+
+## Lvl 9
+
+### Zone 87 final stretch
+
+* No way back, only forward. Traditionally, green path.
