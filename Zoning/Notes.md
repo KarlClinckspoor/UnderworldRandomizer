@@ -780,3 +780,23 @@ Lava area
 ### Zone 87 final stretch
 
 * No way back, only forward. Traditionally, green path.
+
+## Final notes
+
+### Types of connections
+
+* Breakable locked doors with keys. Always two-way.
+* Breakable locked doors wo keys. Always two-way. Need to/expected to be broken.
+* Unbreakable locked doors with keys. Always two-way. **TODO Can all be lockpicked with sufficient skill?**
+* Unbreakable locked doors wo keys. Only opened by characters (e.g. trolls and knight quest).
+* "Gravity" connections. One way is falling down, other way requires levitation/flying scroll/potion/spell
+* One-way doormen connections. E.g. goblins, mountainmen. Sometimes needs items, like treasure (troll guard) or a password (deco morono).
+* Item requirement connections. E.g. crystal, lava boots, **TODO pickaxe?**, **TODO pole?**
+* Reveal spell connections. E.g. backway into Tyball. **TODO: Many other similar instances of similar construction, do they all work?**
+  * One-way that becomes two-way if you enter at least once, which is kinda a subset of the above connection type.
+* One-way that requires using levers in a certain area. E.g. bullfrog, first door to the right when starting.
+
+### Other considerations
+
+* Are there any instances where throwing the moonstone would unlock passage to certain areas? E.g. portcullises or chasms (lvl2?)
+* How does lockpicking affect the zoning? Need to do some calculations.
