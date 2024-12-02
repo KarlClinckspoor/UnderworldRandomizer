@@ -620,11 +620,13 @@ Smonden (Key ID26 which goes up to key of courage), Bolinard (Tom picture which 
 ### Zone 67 Alcove with gate travel scroll
 
 * [Zone 60](#zone-60-spider-maze), falling down.
+TODO: Change number, this was already taken for the area at the end of the key of courage gauntlet.
 
 ### Zone 68 Cavern of dead things
 
 * [Zone 60](#zone-60-spider-maze), through a breakable door with no key
 * [Zone 69](#zone-69-entrance-to-damaging-maze), through a breakable door with no key
+TODO: Change number, this was already taken for the area at the end of the key of courage gauntlet.
 
 ### Zone 69 entrance to damaging maze
 
@@ -749,7 +751,7 @@ Has key ID28
 
 * [Zone 73](#zone-73-continued-from-lvl7), unbreakable door with key ID28 and perhaps jumping from the southern bit.
 * [Zone 85](#zone-85-lava-and-connected-regions), falling down.
-* [Zone 86](#zone-86-slasher-chamber), need key of love, courage and truth, tripartite key.
+* [Zone 90](#zone-90-slasher-chamber), need key of love, courage and truth, tripartite key.
 
 ### Zone 85 Lava and connected regions
 
@@ -758,10 +760,12 @@ Has key ID28
 
 Needs lava boots, lots of fire elementals
 
-### Zone 86 Slasher chamber
+### Zone 90 Slasher chamber
 
 * [Zone 84](#84-corridors-to-central-chamber), if you opened the door previously.
 * [Zone 87](#zone-87-final-stretch), if you have all 8 talismans.
+
+Can't be 86 because, for whatever reason, the LUT I was using has the same color of 2 and 86!
 
 ### Zone 88 Small lava eastern section
 
