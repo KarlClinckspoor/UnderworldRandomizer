@@ -1,3 +1,8 @@
+---
+title: Zoning
+date: 2024-12-07
+---
+
 # Zoning
 
 This file documents the "zones" of UW1, which means areas where you can move in "freely", without spells, glitches or bashing open doors (because that'd be annoying to constantly do). The main reason for this is to add some logic to the randomizer so that, for instance, a key item (typically a key itself) can't be placed behind its own locked door.
@@ -25,12 +30,17 @@ Status: **Mapping out level finished**. **Needs to map "leaks" to lvl2**. **Need
 Turns out I completely missed the lock to the shrine of the silver sapling. So now I'm shoehorning in this area number.
 
 Connected to:
-* [Zone 2](#zone-2-main-level-1-areas). Door to sapling room, ID1, door to corridor, ID1.
+* [Zone 91](#zone-91-small-room-behind-pullchain), through a pull chain that opens a locked breakable door with no key.
 * [Zone 10](#zone-10-close-to-outcasts). Door near bragit, ID1.
 
 Keys found:
 
 * ID1 (in backpack close to bragit)
+
+### Zone 91: Small room behind pullchain
+
+* [Zone 53](#zone-53-starting-area), through a breakable locked door with no key, and no pullchain on this side.
+* [Zone 2](#zone-2-main-level-1-areas), through locked doors, key ID1.
 
 ### Zone 2: main Level 1 areas
 
@@ -38,7 +48,7 @@ Key IDs found:
 * ID2 (1 on SE, close to acid slug, another on spiral stairs close to access to lvl2, NW)
 
 Connected to:
-* [Zone 53](#zone-53-starting-area), door to silver sapling  room, ID1, door to corridor, ID1.
+* [Zone 91](#zone-91-small-room-behind-pullchain), through locked doors, key ID1.
 * [Zone 3](#zone-3-gray-goblin-area), gray goblin area, by gray goblin doorman (Eb). Unbreakable portcullis.
 * **Lvl 2, coords X 35 Y 20** (access in alcove, jumping gap SW of central pillar). Ultimately zone 2 wraps around to this area so, despite the lock with key ID2, it can be circumvented.
 * **Lvl 2, coords X 7  Y 38** (spiral staircase, NWW of central pillar)
@@ -54,7 +64,7 @@ Other notes:
 
 ### Zone 3: Gray goblin area
 
-Status: **Unfinished!** Need to populate lvl2. Is secret door breakable?
+Status: **Unfinished!** Is secret door breakable?
 
 Key IDs:
 * ID3. With gray goblin Retichall.
@@ -175,21 +185,22 @@ Connected to:
 
 * [Zone 2](#zone-2-continuing-from-lvl1). Unbreakable portcullis, Key ID6, button on wall.
 * [Zone 2](#zone-2-continuing-from-lvl1). Unbreakable(?) door, key ID5.
-* [Zone 13](#zone-13-mountainfolk-storage-1). Key ID5. Breakable door.
-* [Zone 14](#zone-14-mountainfolk-storage-2). Key ID5. Breakable door.
+* [Zone 13](#zone-13-mountainfolk-storage). Key ID5. Breakable door.
 * [Zone 15](#zone-15-mountainfolk-stairs). Key ID5. Breakable door.
 * [Zone 16](#zone-16-royal-bedroom). Key ID5. Breakable door.
-* [Zone 17](#zone-17-vault). Password deco morono, Steeltoe doorman. Unbreakable door.
+* [Zone 17](#zone-17-vault-ledge). Password deco morono, Steeltoe doorman. Unbreakable door.
 
-### Zone 13: Mountainfolk storage 1
+### Zone 13: Mountainfolk storage
 
 Connected to:
 
 * [Zone 12](#zone-12-mountainfolk). Key ID5. Breakable door. Apparently no one would get angry if bashed.
 
-### Zone 14: Mountainfolk storage 2
+<!-- ### Zone 14: Mountainfolk storage 2
 
-* [Zone 12](#zone-12-mountainfolk). Key ID5. Breakable door. Apparently no one would get angry if bashed.
+* [Zone 12](#zone-12-mountainfolk). Key ID5. Breakable door. Apparently no one would get angry if bashed. 
+Got merged into Zone 13
+-->
 
 ### Zone 15: Mountainfolk stairs
 
@@ -201,9 +212,14 @@ Connected to:
 
 * [Zone 12](#zone-12-mountainfolk). Key ID5. Breakable door. Apparently no one would get angry if bashed.
 
-### Zone 17: Vault
+### Zone 17: Vault ledge
 
 * [Zone 12](#zone-12-mountainfolk). Unbreakable door. Unopenable from this side. To leave, would need to silver sapling out.
+* [Zone 14](#zone-14-vault-lower-area), falling down.
+
+### Zone 14: Vault lower area
+
+* [Zone 17](#zone-17-vault-ledge), flying or levitation.
 
 ### Zone 19: One-way passage, undertow.
 
@@ -567,9 +583,10 @@ Items:
 * [Zone 59](#zone-59-guard-room-1), if you fought through the guards, instead of presenting the medallion. Or key ID23
 * [Zone 61](#zone-61-guardroom-2), if you fight through or have medallion.
 * [Zone 63](#zone-63-prison-corridor), if you opened it up from Dantes' room.
-* [Zone 67](#zone-67-alcove-with-gate-travel-scroll), if you can jump or can levitate.
+* [Zone 92](#zone-92-alcove-with-gate-travel-scroll), if you can jump or can levitate.
 * [Zone 79](#zone-79-northern-lava-river), falling down.
 * [Zone 75](#zone-75-tombs-p1), if you have the Kallistan crystal.
+* [Zone 93](#zone-93-cavern-of-dead-things), through a locked breakable door with no key
 
 Has:
 
@@ -617,20 +634,18 @@ Smonden (Key ID26 which goes up to key of courage), Bolinard (Tom picture which 
 * [Zone 60](#zone-60-spider-maze), chasms, unbreakable door with key ID26.
 * **Lvl 6 X 5 Y 61** lava corridor.
 
-### Zone 67 Alcove with gate travel scroll
+### Zone 92 Alcove with gate travel scroll
 
 * [Zone 60](#zone-60-spider-maze), falling down.
-TODO: Change number, this was already taken for the area at the end of the key of courage gauntlet.
 
-### Zone 68 Cavern of dead things
+### Zone 93 Cavern of dead things
 
 * [Zone 60](#zone-60-spider-maze), through a breakable door with no key
 * [Zone 69](#zone-69-entrance-to-damaging-maze), through a breakable door with no key
-TODO: Change number, this was already taken for the area at the end of the key of courage gauntlet.
 
 ### Zone 69 entrance to damaging maze
 
-* [Zone 68](#zone-68-cavern-of-dead-things), through a breakable door with no key
+* [Zone 93](#zone-93-cavern-of-dead-things), through a breakable door with no key
 * [Zone 70](#zone-70-damaging-maze), just walk, but would need the crown.
 * [Zone 78](#zone-78-passage-to-imp), if you opened the way **TODO will a reveal spell open this?**
 * [Zone 81](#zone-81-ring-of-levitation-and-misc-steps), falling down or levitation.
@@ -733,7 +748,7 @@ Single square zone that would be funny to add something.
 ### Zone 73 (continued from lvl7)
 
 * **Lvl 7 X 61 Y 2** near tyball's crib.
-* [Zone 83](#zone-83-carasso), breakable door with no key
+* [Zone 94](#zone-94-carasso), breakable door with no key
 
 
 ### Zone 78 (continued from lvl7)
@@ -741,7 +756,7 @@ Single square zone that would be funny to add something.
 * **Lvl 7 X 38 Y 50** staircase that leads to puke corridor
 * **Lvl 7 X 35 Y 39** imp with crown of maze navigation.
 
-### Zone 83 Carasso
+### Zone 94 Carasso
 
 * [Zone 73](#zone-73-continued-from-lvl7), breakable door with no key
 
